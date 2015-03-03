@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright (C) 2015 www.phantombot.net
+
+Credits: mast3rplan, gmt2001, PhantomIndex, GloriousEggroll
+gloriouseggroll@gmail.com, phantomindex@gmail.com
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+-->
+
+<project name="PhantomBot" default="default" basedir=".">
+    <description>Builds, tests, and runs the project PhantomBot.</description>
+    <import file="nbproject/build-impl.xml"/>
+	
+	<target name="-pre-init">
+		<property name="project.name" value="PhantomBot" />
+		<property name="version.num" value="1.5.1" />
+		<property name="libs" value="build/libs"/>
+		<tstamp>
+			<format property="NOW" pattern="yyyy-MM-dd HH:mm:ss z" />
+		</tstamp>
+		<path id="classpath">
+            <fileset dir="lib" includes="*.jar"/>
+		</path>
+		<pathconvert property="mf.classpath" pathsep=" ">
+            <path refid="classpath"/>
+            <mapper>
+                    <chainedmapper>
+                            <flattenmapper/>
+                            <globmapper from="*.jar" to="lib/*.jar"/>
+                    </chainedmapper>
+            </mapper>
+		</pathconvert>
+
+
+		<manifest file="MANIFEST.MF">
+			<attribute name="Bundle-Name" value="${project.name}" />           
+			<attribute name="Bundle-Version" value="${version.num}" />
+			<attribute name="Bundle-Date" value="${NOW}" />
+			<attribute name="Implementation-Title" value="${project.name}" />
+			<attribute name="Implementation-Version" value="${version.num}" />
+			<attribute name="Implementation-URL" value="http://www.phantombot.net" />
+			<attribute name="Class-Path" value="${mf.classpath}"/>
+			<attribute name="Main-Class" value="me.mast3rplan.phantombot.PhantomBot"/>
+		</manifest>
+	</target>
+<!-- to copy data & images folders' contents to dist folder on build. -->
+    <target name="-post-jar" description="Copying Images">
+        <property name="res.dir" value="${dist.dir}/" />
+        <property name="lib.dir" value="${dist.dir}/lib" />
+
+        <copy todir="${lib.dir}">
+            <fileset dir="./lib" />
+        </copy>
+        <echo level="info" message="lib folder content was copied."/>
+
+        <copy todir="${res.dir}">
+            <fileset dir="./res" />
+        </copy>
+        <echo level="info" message="res folder content was copied."/>
+    </target>
+</project>
