@@ -2,6 +2,9 @@
 Thumbs.db
 ehthumbs.db
 
+# Manifest created by build
+MANIFEST.MF
+
 # Folder config file
 Desktop.ini
 
@@ -41,3 +44,6 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+/nbproject/private/
+/dist/
+/build/

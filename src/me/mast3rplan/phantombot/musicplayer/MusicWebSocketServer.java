@@ -179,12 +179,13 @@ public class MusicWebSocketServer
         File playlist = new File("playlist.txt");                                       //make the playlist known
         File stealsong = new File("stealsong.txt");                                     //this is where the stolen playlist songs go
         String data;                                                                    //establish variable for playlist lines
+        out.write("");                                                                  //write new blank file stealsong.txt
         while ((data = in.readLine()) != null)                                          //read each playlist line
         {
                 data = data.trim();                                                     // remove leading and trailing whitespace
-                if (!data.equals(""))                                                   // don't write out blank lines
+                if (!data.equals(""))                                                   // don't write out blank lines that exist on playlist.txt
                 {
-                    out.write(data);                                                    //write playlist data to stealsong
+                    out.append(data);                                                    //write playlist data to stealsong
                     out.newLine();                                                      //append a blank line so our stolen song doesnt get put side by side
                 }
         }                                                                               //after line reading, and writing all data to stealsong.txt, exit the loop
