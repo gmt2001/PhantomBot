@@ -93,7 +93,7 @@ public class PhantomBot implements Listener
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
         
         com.gmt2001.Console.out.println();
-        com.gmt2001.Console.out.println("PhantomBot Core build 3/03/2015 12:53 AM EST");
+        com.gmt2001.Console.out.println("PhantomBot Core 1.5.2 3/04/2015 12:30 AM EST");
         com.gmt2001.Console.out.println("Creator: mast3rplan");
         com.gmt2001.Console.out.println("Developers: gmt2001, PhantomIndex, GloriousEggroll");
         com.gmt2001.Console.out.println("www.phantombot.net");
@@ -176,7 +176,7 @@ public class PhantomBot implements Listener
 
                 int pid = (Integer) pid_method.invoke(mgmt);
 
-                File f = new File("/var/run/PhantomBotJ." + this.username.toLowerCase() + ".pid");
+                File f = new File("/var/run/PhantomBot." + this.username.toLowerCase() + ".pid");
 
                 try (FileOutputStream fs = new FileOutputStream(f, false))
                 {

@@ -1,6 +1,11 @@
 package me.mast3rplan.phantombot.musicplayer;
 
 import java.io.IOException;
+import java.io.File;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.net.InetSocketAddress;
 import java.util.Collection;
 import java.util.logging.Level;
@@ -119,6 +124,36 @@ public class MusicWebSocketServer extends WebSocketServer {
     public void currentVolume() {
         sendToAll("currentvolume");
     }
+    
+  public void stealSong(String songurl)
+  {
+    try {
+        BufferedReader in = new BufferedReader(new FileReader("playlist.txt"));         //playlist reader
+        BufferedWriter out = new BufferedWriter(new FileWriter("stealsong.txt", true)); //writes stolen songs read from playlist
+        File playlist = new File("playlist.txt");                                       //make the playlist known
+        File stealsong = new File("stealsong.txt");                                     //this is where the stolen playlist songs go
+        String data;                                                                    //establish variable for playlist lines
+        out.write("");                                                                  //write new blank file stealsong.txt
+        while ((data = in.readLine()) != null)                                          //read each playlist line
+        {
+                data = data.trim();                                                     // remove leading and trailing whitespace
+                if (!data.equals(""))                                                   // don't write out blank lines that exist on playlist.txt
+                {
+                    out.append(data);                                                    //write playlist data to stealsong
+                    out.newLine();                                                      //append a blank line so our stolen song doesnt get put side by side
+                }
+        }                                                                               //after line reading, and writing all data to stealsong.txt, exit the loop
+        out.append(songurl);                                                //add our stolen song
+        in.close();                                                         //close playlist
+        out.close();                                                        //close stealsong
+        playlist.delete();                                                  //delete playlist
+        stealsong.renameTo(playlist);                                       //rename stealsong to our new playlist
+
+    } catch (IOException e) {
+        sendToAll("Steal song failed due to playlist.txt not existing.");
+    }
+  }
+
 
     public void onWebsocketClosing(WebSocket ws, int code, String reason, boolean remote)
     {

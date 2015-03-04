@@ -59,7 +59,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
      </target>
 
      <target depends="pre.compile.test" name="compile.src">
-         <javac target="1.7" source="1.7" debug="on" memoryMaximumSize="256m" memoryInitialSize="256m" fork="true" destdir="${classes}" srcdir="${src}" includeantruntime="false" >
+         <javac debug="on" destdir="${classes}" srcdir="${src}" includeantruntime="false" >
              <classpath refid="reference.class.path" />
          </javac>
      </target>
@@ -89,11 +89,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
             <fileset dir="./res" />
         </copy>
         <echo level="info" message="res folder content was copied."/>
-	<zip destfile="${dist}/${name}-${version}.zip" basedir="${dist}" update="true" />
+		<zip destfile="${dist}/${name}-${version}.zip" basedir="${dist}" update="true" />
      </target>
 
      <target name="clean">
          <delete dir="${build}"/>
+	 <delete dir="${dist}"/>
      </target>
 
  </project>
