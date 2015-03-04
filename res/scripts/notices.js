@@ -157,7 +157,7 @@ $.on('command', function (event) {
         if (message == null) {
             $.say("Insert an notice at the end of the rotation. !notice add <message>");
         } else {
-            $.inidb.incr('notices', 'num_messages', 1)
+            $.inidb.incr('notices', 'num_messages', 1);
 
             num_messages = $.inidb.get('notices', 'num_messages');
 
