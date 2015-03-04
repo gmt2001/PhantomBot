@@ -38,8 +38,8 @@ $.on('command', function(event) {
 
     }
     
-    if(args.length >= 1) {
-        if(command.equalsIgnoreCase("delcom")) {
+    if(command.equalsIgnoreCase("delcom")) {
+		if(args.length >= 1) {
             if (!$.isMod(sender)) {
                 $.say("You must be a Moderator to use that command!");
                 return;
@@ -57,7 +57,40 @@ $.on('command', function(event) {
             $.say($.username.resolve(sender) + ", the command !" + commandString + " was successfully removed!");
             return;
         }
+		$.say("Usage: !delcom <command>");
+		return;
     }
+	
+	if (command.equalsIgnoreCase("editcom")) {
+		if(args.length >= 1) {
+			if (!$.isMod(sender)) {
+				$.say("You must be a Moderator to use that command!");
+				return;
+			}
+			
+            commandString = args[0].toLowerCase();
+			message = argsString.substring(argsString.indexOf(args[0]) + $.strlen(args[0]) + 1);
+
+
+			if ($.inidb.get('command', commandString) == null) {
+				$.say("There is no such command, " + sender + "!");
+				return;
+			}
+
+			if (message.isEmpty()) {
+				$.say("Usage: !editcom <command> <message>");
+				return;
+			}
+	
+        
+			$.inidb.set('command', commandString, message);
+			$.say("Command !" + commandString + " has been modified!");
+			return;
+		}
+		$.say("Usage: !editcom <command> <message>");
+		return;
+	}
+	
     
     if (command.equalsIgnoreCase("permcom")) {
         if (!isAdmin(sender)) {
@@ -230,6 +263,7 @@ $.on('command', function(event) {
 });
 
 $.registerChatCommand("./commands/addCommand.js", "addcom", "mod");
+$.registerChatCommand("./commands/addCommand.js", "editcom", "mod");
 $.registerChatCommand("./commands/addCommand.js", "delcom", "mod");
 $.registerChatCommand("./commands/addCommand.js", "permcom", "admin");
 $.registerChatCommand("./commands/addCommand.js", "helpcom", "mod");
