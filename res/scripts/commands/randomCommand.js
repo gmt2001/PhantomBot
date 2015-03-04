@@ -145,7 +145,7 @@ $.on('command', function(event) {
             messageCommand = messageCommand.replace('(random)', $.username.resolve(randomPerson));
         }
         while (messageCommand.indexOf('(#)') != -1) {
-            messageCommand = messageCommand.replace('(#)', $.username.resolve(randomNum));
+            messageCommand = messageCommand.replace('(#)', randomNum);
         }
 
         $.say(messageCommand);
