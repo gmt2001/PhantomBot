@@ -93,10 +93,10 @@ public class PhantomBot implements Listener
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
         
         com.gmt2001.Console.out.println();
-        com.gmt2001.Console.out.println("PhantomBot Core build February 20, 2015");
-        com.gmt2001.Console.out.println("by mast3rplan");
-        com.gmt2001.Console.out.println("updated and improved by gmt2001");
-        com.gmt2001.Console.out.println("scripts by mast3rplan, gmt2001, & phantomindex");
+        com.gmt2001.Console.out.println("PhantomBot Core build 3/03/2015 12:53 AM EST");
+        com.gmt2001.Console.out.println("Creator: mast3rplan");
+        com.gmt2001.Console.out.println("Developers: gmt2001, PhantomIndex, GloriousEggroll");
+        com.gmt2001.Console.out.println("www.phantombot.net");
         com.gmt2001.Console.out.println();
 
         if (System.getProperty("interactive") == null)
@@ -197,7 +197,7 @@ public class PhantomBot implements Listener
 
         if (clientid.length() == 0)
         {
-            this.clientid = "fno0eqq3t8ivzr2c9vnwveu8nxgwh27";
+            this.clientid = "rp2uhin43rvpr70nzwnh07417x2gck0";
         } else
         {
             this.clientid = clientid;
@@ -454,7 +454,7 @@ public class PhantomBot implements Listener
                 data += "port=" + port + "\r\n";
                 data += "msglimit30=" + msglimit30;
 
-                FileUtils.writeStringToFile(new File("./botlogin"), data);
+                FileUtils.writeStringToFile(new File("./botlogin.txt"), data);
 
                 mws.dispose();
                 mhs.dispose();
@@ -642,7 +642,7 @@ public class PhantomBot implements Listener
         String owner = "";
         String hostname = "";
         boolean useTwitch = false;
-        int baseport = 25565;
+        int baseport = 25000;
         int port = 0;
         double msglimit30 = 0;
 
@@ -652,7 +652,7 @@ public class PhantomBot implements Listener
 
         try
         {
-            String data = FileUtils.readFileToString(new File("./botlogin"));
+            String data = FileUtils.readFileToString(new File("./botlogin.txt"));
             String[] lines = data.replaceAll("\\r", "").split("\\n");
 
             for (int i = 0; i < lines.length; i++)
@@ -873,7 +873,7 @@ public class PhantomBot implements Listener
             data += "port=" + port + "\r\n";
             data += "msglimit30=" + msglimit30;
 
-            FileUtils.writeStringToFile(new File("./botlogin"), data);
+            FileUtils.writeStringToFile(new File("./botlogin.txt"), data);
         }
 
         PhantomBot.instance = new PhantomBot(user, oauth, apioauth, clientid, channel, owner, useTwitch, baseport, hostname, port, msglimit30);
