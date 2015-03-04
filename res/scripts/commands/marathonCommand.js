@@ -1,4 +1,4 @@
-$.schedulelimit = 2;
+$.schedulelimit = 3;
 
 var cal = java.util.Calendar.getInstance(java.util.TimeZone.getTimeZone($.timezone));
 
@@ -348,7 +348,7 @@ if (lastAnnounce == undefined || lastAnnounce == null || lastAnnounce < 0) {
     lastAnnounce = cal.getTime();
 }
 
-$api.setInterval($script, function() {
+$.timer.addTimer("./commands/marathonCommand.js", "announce", true, function() {
     if (!$.moduleEnabled("./commands/marathonCommand.js")) {
         return;
     }
@@ -370,4 +370,3 @@ $api.setInterval($script, function() {
         announceSchedule();
     }
 }, 60 * 1000);
-

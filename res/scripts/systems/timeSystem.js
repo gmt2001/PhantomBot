@@ -156,7 +156,7 @@ $.registerChatCommand("./systems/timeSystem.js", "timezone");
 
 
 
-$api.setInterval($script, function() {
+$.setInterval(function() {
     if (!$.moduleEnabled("./systems/timeSystem.js")) {
         return;
     }

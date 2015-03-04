@@ -1,5 +1,5 @@
 var seconds = 0; // uptime in seconds
-$api.setInterval($script, function() {
+$.setInterval(function() {
     seconds++;
 }, 1000);
 

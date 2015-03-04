@@ -553,7 +553,7 @@ $.registerChatCommand("./util/permissions.js", "users");
 $.registerChatCommand("./util/permissions.js", "mods");
 $.registerChatCommand("./util/permissions.js", "admins");
 
-$api.setInterval($script, function() {
+$.setInterval(function() {
     if (!$.moduleEnabled("./systems/timeSystem.js")) {
         return;
     }

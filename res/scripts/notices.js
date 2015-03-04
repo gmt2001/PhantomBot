@@ -233,7 +233,7 @@ $.on('ircChannelMessage', function (event) {
     messageCount++;
 });
 
-$api.setInterval($script, function() {
+$.setInterval(function() {
     if (!$.moduleEnabled("./notices.js") || ($.notices_toggle != undefined && $.notices_toggle != null && !$.notices_toggle)) {
         return;
     }

@@ -315,7 +315,7 @@ $.on('command', function (event) {
 
 });
 
-$api.setInterval($script, function() {
+$.setInterval(function() {
     if (!$.moduleEnabled("./systems/pointSystem.js")) {
         return;
     }
