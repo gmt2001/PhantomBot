@@ -159,10 +159,10 @@ $.on('command', function (event) {
         } else {
             $.inidb.incr('notices', 'num_messages', 1)
 
-            num_messages = $.inidb.get('notices', 'num_messages')
+            num_messages = $.inidb.get('notices', 'num_messages');
 
-            $.inidb.set('notices', 'message_' + (num_messages - 1), message)
-            $.say("Notice added! '" + message + "' There are now " + num_messages + " notices!")
+            $.inidb.set('notices', 'message_' + (num_messages - 1), message);
+            $.say("Notice added! '" + message + "' There are now " + num_messages + " notices!");
         }
     }
 
@@ -174,7 +174,7 @@ $.on('command', function (event) {
             return;
         }
         if (num_messages == null) {
-            $.say("Delete the notice at the specified slot. !notice del <id>")
+            $.say("Delete the notice at the specified slot. !notice del <id>");
         } else {
             if (isNaN(num_messages) || num_messages == 0) {
                 $.say("There are no notices at this time");
@@ -191,11 +191,11 @@ $.on('command', function (event) {
 
             $.inidb.del('notices', 'message_' + (num_messages - 1))
 
-            $.inidb.decr('notices', 'num_messages', 1)
+            $.inidb.decr('notices', 'num_messages', 1);
 
-            num_messages = $.inidb.get('notices', 'num_messages')
+            num_messages = $.inidb.get('notices', 'num_messages');
 
-            $.say("Notice removed! There are now " + num_messages + " notices!")
+            $.say("Notice removed! There are now " + num_messages + " notices!");
         }
     }
 
@@ -219,7 +219,7 @@ function sendMessage() {
         return;
     }
 
-    var message = $.inidb.get('notices', 'message_' + messageIndex)
+    var message = $.inidb.get('notices', 'message_' + messageIndex);
 
     messageIndex++;
 
