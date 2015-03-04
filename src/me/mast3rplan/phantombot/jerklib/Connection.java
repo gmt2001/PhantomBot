@@ -1,29 +1,6 @@
-/* 
- * Copyright (C) 2015 www.phantombot.net
- *
- * Credits: mast3rplan, gmt2001, PhantomIndex, GloriousEggroll
- * gloriouseggroll@gmail.com, phantomindex@gmail.com
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
 package me.mast3rplan.phantombot.jerklib;
 
-import com.gmt2001.Console.err;
-import com.gmt2001.UncaughtExceptionHandler;
 import java.io.IOException;
-import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.channels.SocketChannel;
@@ -33,202 +10,419 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
-import me.mast3rplan.phantombot.jerklib.Channel;
-import me.mast3rplan.phantombot.jerklib.ConnectionManager;
-import me.mast3rplan.phantombot.jerklib.Profile;
-import me.mast3rplan.phantombot.jerklib.RequestedConnection;
-import me.mast3rplan.phantombot.jerklib.Session;
-import me.mast3rplan.phantombot.jerklib.WriteRequest;
+import me.mast3rplan.phantombot.jerklib.Session.State;
 import me.mast3rplan.phantombot.jerklib.events.IRCEvent;
+import me.mast3rplan.phantombot.jerklib.events.IRCEvent.Type;
 import me.mast3rplan.phantombot.jerklib.listeners.WriteRequestListener;
 
-class Connection {
-    private Logger log;
-    private final ConnectionManager manager;
-    private final SocketChannel socChannel;
-    final List<WriteRequest> writeRequests;
-    private final ByteBuffer readBuffer;
-    private boolean gotFragment;
-    private final StringBuffer stringBuff;
-    private String actualHostName;
-    private final Session session;
-    long lastWrite;
-    int bursts;
-    int maxBurst;
-    long nextWrite;
+/**
+ * A class for reading and writing to an IRC connection. This class will also
+ * handle PING/PONG.
+ *
+ * @author mohadib
+ */
+class Connection
+{
 
-    Connection(ConnectionManager manager, SocketChannel socChannel, Session session) {
-        this.log = Logger.getLogger(this.getClass().getName());
-        this.writeRequests = Collections.synchronizedList(new ArrayList());
-        this.readBuffer = ByteBuffer.allocate(2048);
-        this.stringBuff = new StringBuffer();
-        this.lastWrite = System.currentTimeMillis();
-        this.bursts = 0;
-        this.maxBurst = 5;
-        this.nextWrite = -1;
+    private Logger log = Logger.getLogger(this.getClass().getName());
+
+    /* ConnectionManager for this Connection */
+    private final ConnectionManager manager;
+
+    /* SocketChannel this connection will use for reading/writing */
+    private final SocketChannel socChannel;
+
+    /* A Buffer for write request */
+    final List<WriteRequest> writeRequests = Collections.synchronizedList(new ArrayList<WriteRequest>());
+
+    /* ByteBuffer for readinging into */
+    private final ByteBuffer readBuffer = ByteBuffer.allocate(2048);
+
+    /* indicates if an event fragment is waiting */
+    private boolean gotFragment;
+
+    /* buffer for event fragments */
+    private final StringBuffer stringBuff = new StringBuffer();
+
+    /* actual hostname connected to */
+    private String actualHostName;
+
+    /* Session Connection belongs to */
+    private final Session session;
+
+    /**
+     * @param manager
+     * @param socChannel - socket channel to read from
+     * @param session - Session this Connection belongs to
+     */
+    Connection(ConnectionManager manager, SocketChannel socChannel, Session session)
+    {
         this.manager = manager;
         this.socChannel = socChannel;
         this.session = session;
-        Thread.setDefaultUncaughtExceptionHandler(UncaughtExceptionHandler.instance());
+        
+        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 
-    Profile getProfile() {
-        return this.session.getRequestedConnection().getProfile();
+    /**
+     * Get profile use for this Connection
+     *
+     * @return the Profile
+     */
+    Profile getProfile()
+    {
+        return session.getRequestedConnection().getProfile();
     }
 
-    void setHostName(String name) {
-        this.actualHostName = name;
+    /**
+     * Sets the actual host name of this Connection.
+     *
+     * @param name
+     */
+    void setHostName(String name)
+    {
+        actualHostName = name;
     }
 
-    String getHostName() {
-        return this.actualHostName;
+    /**
+     * Gets actual hostname for Connection.
+     *
+     * @return hostname
+     */
+    String getHostName()
+    {
+        return actualHostName;
     }
 
-    void addWriteRequest(WriteRequest request) {
-        this.writeRequests.add(request);
+    /**
+     * Adds a listener to be notified of all data written via this Connection
+     *
+     * @param request
+     */
+    void addWriteRequest(WriteRequest request)
+    {
+        writeRequests.add(request);
     }
 
-    boolean finishConnect() throws IOException {
-        return this.socChannel.finishConnect();
+    /**
+     * Called to finish the Connection Process
+     *
+     * @return true if fincon is successfull
+     * @throws java.io.IOException
+     */
+    boolean finishConnect() throws IOException
+    {
+        return socChannel.finishConnect();
     }
 
-    int read() {
-        if (!this.socChannel.isConnected()) {
-            this.log.severe("Read call while sochan.isConnected() == false");
+    /**
+     * Reads from connection and creates default IRCEvents that are added to the
+     * ConnectionManager for relaying
+     *
+     * @return bytes read
+     */
+    int read()
+    {
+
+        if (!socChannel.isConnected())
+        {
+            log.severe("Read call while sochan.isConnected() == false");
             return -1;
         }
-        this.readBuffer.clear();
+
+        readBuffer.clear();
+
         int numRead = 0;
-        try {
-            numRead = this.socChannel.read(this.readBuffer);
+
+        try
+        {
+            numRead = socChannel.read(readBuffer);
+        } catch (Exception e)
+        {
+            com.gmt2001.Console.err.printStackTrace(e);
+            session.disconnected(e);
         }
-        catch (Exception e) {
-            err.printStackTrace(e);
-            this.session.disconnected(e);
+
+        if (numRead == -1)
+        {
+            session.disconnected(new Exception("Num read -1"));
         }
-        if (numRead == -1) {
-            this.session.disconnected(new Exception("Num read -1"));
-        }
-        if (this.session.getState() == Session.State.DISCONNECTED || numRead <= 0) {
+
+        if (session.getState() == State.DISCONNECTED || numRead <= 0)
+        {
             return 0;
         }
-        this.readBuffer.flip();
-        String tmpStr = new String(this.readBuffer.array(), 0, numRead);
-        if (tmpStr.indexOf("\r\n") == -1) {
-            this.stringBuff.append(tmpStr);
-            this.gotFragment = true;
+
+        readBuffer.flip();
+
+        String tmpStr = new String(readBuffer.array(), 0, numRead);
+
+        // read did not contain a \r\n
+        if (tmpStr.indexOf("\r\n") == -1)
+        {
+            // append whole thing to buffer and set fragment flag
+            stringBuff.append(tmpStr);
+            gotFragment = true;
+
             return numRead;
         }
-        if (this.gotFragment) {
-            tmpStr = this.stringBuff.toString() + tmpStr;
-            this.stringBuff.delete(0, this.stringBuff.length());
-            this.gotFragment = false;
+
+        // this read had a \r\n in it
+
+        if (gotFragment)
+        {
+            // prepend fragment to front of current message
+            tmpStr = stringBuff.toString() + tmpStr;
+            stringBuff.delete(0, stringBuff.length());
+            gotFragment = false;
         }
+
         String[] strSplit = tmpStr.split("\r\n");
-        for (int i = 0; i < strSplit.length - 1; ++i) {
-            this.manager.addToEventQueue(new IRCEvent(strSplit[i], this.session, IRCEvent.Type.DEFAULT));
+
+        for (int i = 0; i < (strSplit.length - 1); i++)
+        {
+            manager.addToEventQueue(new IRCEvent(strSplit[i], session, Type.DEFAULT));
         }
+
         String last = strSplit[strSplit.length - 1];
-        if (!tmpStr.endsWith("\r\n")) {
-            this.stringBuff.append(last);
-            this.gotFragment = true;
-        } else {
-            this.manager.addToEventQueue(new IRCEvent(last, this.session, IRCEvent.Type.DEFAULT));
+
+        if (!tmpStr.endsWith("\r\n"))
+        {
+            // since string did not end with \r\n we need to
+            // append the last element in strSplit to a stringbuffer
+            // for next read and set flag to indicate we have a fragment waiting
+            stringBuff.append(last);
+            gotFragment = true;
+        } else
+        {
+            manager.addToEventQueue(new IRCEvent(last, session, Type.DEFAULT));
         }
+
         return numRead;
     }
+    /**
+     * Writes all requests in queue to server
+     *
+     * @return number bytes written
+     */
+    long lastWrite = System.currentTimeMillis();
+    int bursts = 0;
+    int maxBurst = 5;
+    long nextWrite = -1;
+    /*
+     *  if lastwrite was less than a second ago:
+     *  	if burst == limit return;
+     *  	else burst++; write packet; recordtime;
+     *  else
+     *  	burst = 0;
+     *  	write packet; record time;
+     * 
+     * 
+     */
 
-    int doWrites() {
-        String data;
-        if (this.writeRequests.isEmpty()) {
+    int doWrites()
+    {
+        if (writeRequests.isEmpty())
+        {
             return 0;
         }
+
         WriteRequest req = null;
-        if (this.nextWrite > System.currentTimeMillis()) {
+        if (nextWrite > System.currentTimeMillis())
+        {
             return 0;
         }
-        if (System.currentTimeMillis() - this.lastWrite < 3000) {
-            if (this.bursts == this.maxBurst) {
-                this.nextWrite = System.currentTimeMillis() + 8000;
-                this.bursts = 0;
+        if (System.currentTimeMillis() - lastWrite < 3000)
+        {
+            if (bursts == maxBurst)
+            {
+                nextWrite = System.currentTimeMillis() + 8000;
+                bursts = 0;
                 return 0;
             }
-            ++this.bursts;
-        } else {
-            this.bursts = 0;
-            this.lastWrite = System.currentTimeMillis();
+            bursts++;
+        } else
+        {
+            //bursts = Math.max(bursts-- , 0);
+            bursts = 0;
+            lastWrite = System.currentTimeMillis();
         }
-        req = this.writeRequests.remove(0);
-        if (req.getType() == WriteRequest.Type.CHANNEL_MSG) {
+
+        req = writeRequests.remove(0);
+
+
+        String data;
+        if (req.getType() == WriteRequest.Type.CHANNEL_MSG)
+        {
             data = "PRIVMSG " + req.getChannel().getName() + " :" + req.getMessage() + "\r\n";
-        } else if (req.getType() == WriteRequest.Type.PRIVATE_MSG) {
-            if (req.getMessage().length() > 255) {
-                this.writeRequests.add(0, new WriteRequest(req.getMessage().substring(100), req.getSession(), req.getNick()));
+        } else if (req.getType() == WriteRequest.Type.PRIVATE_MSG)
+        {
+            if (req.getMessage().length() > 255)
+            {
+                writeRequests.add(0, new WriteRequest(req.getMessage().substring(100), req.getSession(), req.getNick()));
                 data = "PRIVMSG " + req.getNick() + " :" + req.getMessage().substring(0, 100) + "\r\n";
-            } else {
+            } else
+            {
                 data = "PRIVMSG " + req.getNick() + " :" + req.getMessage() + "\r\n";
             }
-        } else {
+        } else
+        {
             data = req.getMessage();
-            if (!data.endsWith("\r\n")) {
-                data = data + "\r\n";
+            if (!data.endsWith("\r\n"))
+            {
+                data += "\r\n";
             }
         }
+
         int amount = 0;
-        try {
+        try
+        {
             Charset ch = Charset.forName("utf-8");
             CharsetEncoder cr = ch.newEncoder();
-            ByteBuffer bf = cr.encode(CharBuffer.wrap((CharSequence)data));
+            ByteBuffer bf = cr.encode(CharBuffer.wrap(data));
             ByteBuffer buff = ByteBuffer.allocate(bf.capacity());
+
             buff.put(bf);
             buff.flip();
-            amount = this.socChannel.write(buff);
+
+            amount = socChannel.write(buff);
+        } catch (IOException e)
+        {
+            com.gmt2001.Console.err.printStackTrace(e);
+            session.disconnected(e);
         }
-        catch (IOException e) {
-            err.printStackTrace(e);
-            this.session.disconnected(e);
-        }
-        if (this.session.getState() == Session.State.DISCONNECTED) {
+
+        if (session.getState() == State.DISCONNECTED)
+        {
             return amount;
         }
-        this.fireWriteEvent(req);
+
+        fireWriteEvent(req);
+
+        // com.gmt2001.Console.out.println("Wrote " + amount + " " + req.getType() + " " + req.getMessage() + " " + bursts);
+
         return amount;
     }
 
-    void ping() {
-        this.writeRequests.add(new WriteRequest("PING " + this.actualHostName + "\r\n", this.session));
-        this.session.pingSent();
+    /*
+     int doWrites()
+     {
+     int amount = 0;
+
+     List<WriteRequest> tmpReqs = new ArrayList<WriteRequest>();
+     synchronized (writeRequests)
+     {
+     tmpReqs.addAll(writeRequests);
+     writeRequests.clear();
+     }
+
+     for (WriteRequest request : tmpReqs)
+     {
+     String data;
+
+     if (request.getType() == WriteRequest.Type.CHANNEL_MSG)
+     {
+     data = "PRIVMSG " + request.getChannel().getName() + " :" + request.getMessage() + "\r\n";
+     }
+     else if (request.getType() == WriteRequest.Type.PRIVATE_MSG)
+     {
+     data = "PRIVMSG " + request.getNick() + " :" + request.getMessage() + "\r\n";
+     }
+     else
+     {
+     data = request.getMessage();
+     if (!data.endsWith("\r\n"))
+     {
+     data += "\r\n";
+     }
+     }
+
+     byte[] dataArray = data.getBytes();
+     ByteBuffer buff = ByteBuffer.allocate(dataArray.length);
+     buff.put(dataArray);
+     buff.flip();
+
+     try
+     {
+     amount += socChannel.write(buff);
+     }
+     catch (IOException e)
+     {
+     com.gmt2001.Console.err.printStackTrace(e);
+     session.disconnected();
+     }
+
+     if (session.getState() == State.DISCONNECTED) { return amount; }
+
+     fireWriteEvent(request);
+     }
+
+     return amount;
+     }
+     */
+    /**
+     * Send a ping
+     */
+    void ping()
+    {
+        writeRequests.add(new WriteRequest("PING " + actualHostName + "\r\n", session));
+        session.pingSent();
     }
 
-    void pong(IRCEvent event) {
-        this.session.gotResponse();
+    /**
+     * Send a pong
+     *
+     * @param event , the Ping event
+     */
+    void pong(IRCEvent event)
+    {
+        session.gotResponse();
         String data = event.getRawEventData().substring(event.getRawEventData().lastIndexOf(":") + 1);
-        this.writeRequests.add(new WriteRequest("PONG " + data + "\r\n", this.session));
+        writeRequests.add(new WriteRequest("PONG " + data + "\r\n", session));
     }
 
-    void gotPong() {
-        this.session.gotResponse();
+    /**
+     * Alert connection a pong was received
+     */
+    void gotPong()
+    {
+        session.gotResponse();
     }
 
-    void quit(String quitMessage) {
-        try {
-            if (quitMessage == null) {
+    /**
+     * Close connection
+     *
+     * @param quitMessage
+     */
+    void quit(String quitMessage)
+    {
+        try
+        {
+            if (quitMessage == null)
+            {
                 quitMessage = "";
             }
-            WriteRequest request = new WriteRequest("QUIT :" + quitMessage + "\r\n", this.session);
-            this.writeRequests.add(request);
-            this.doWrites();
-            this.socChannel.close();
-        }
-        catch (IOException e) {
-            err.printStackTrace(e);
+            WriteRequest request = new WriteRequest("QUIT :" + quitMessage + "\r\n", session);
+            writeRequests.add(request);
+            // clear out write queue
+            doWrites();
+            socChannel.close();
+        } catch (IOException e)
+        {
+            com.gmt2001.Console.err.printStackTrace(e);
         }
     }
 
-    void fireWriteEvent(WriteRequest request) {
-        for (WriteRequestListener listener : this.manager.getWriteListeners()) {
+    /**
+     * Fires a write request to all write listeners
+     *
+     * @param request
+     */
+    void fireWriteEvent(WriteRequest request)
+    {
+        for (WriteRequestListener listener : manager.getWriteListeners())
+        {
             listener.receiveEvent(request);
         }
     }
 }
-

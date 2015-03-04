@@ -1,23 +1,3 @@
-/* 
- * Copyright (C) 2015 www.phantombot.net
- *
- * Credits: mast3rplan, gmt2001, PhantomIndex, GloriousEggroll
- * gloriouseggroll@gmail.com, phantomindex@gmail.com
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
 package org.json;
 
 import java.io.BufferedReader;
@@ -56,7 +36,7 @@ SOFTWARE.
  * it. It is used by the JSONObject and JSONArray constructors to parse
  * JSON source strings.
  * @author JSON.org
- * @version 2014-05-03
+ * @version 2012-02-16
  */
 public class JSONTokener {
 
@@ -89,7 +69,6 @@ public class JSONTokener {
 
     /**
      * Construct a JSONTokener from an InputStream.
-     * @param inputStream The source.
      */
     public JSONTokener(InputStream inputStream) throws JSONException {
         this(new InputStreamReader(inputStream));
@@ -271,7 +250,7 @@ public class JSONTokener {
      */
     public String nextString(char quote) throws JSONException {
         char c;
-        StringBuilder sb = new StringBuilder();
+        StringBuffer sb = new StringBuffer();
         for (;;) {
             c = this.next();
             switch (c) {
@@ -327,7 +306,7 @@ public class JSONTokener {
      * @return   A string.
      */
     public String nextTo(char delimiter) throws JSONException {
-        StringBuilder sb = new StringBuilder();
+        StringBuffer sb = new StringBuffer();
         for (;;) {
             char c = this.next();
             if (c == delimiter || c == 0 || c == '\n' || c == '\r') {
@@ -349,7 +328,7 @@ public class JSONTokener {
      */
     public String nextTo(String delimiters) throws JSONException {
         char c;
-        StringBuilder sb = new StringBuilder();
+        StringBuffer sb = new StringBuffer();
         for (;;) {
             c = this.next();
             if (delimiters.indexOf(c) >= 0 || c == 0 ||
@@ -396,7 +375,7 @@ public class JSONTokener {
          * formatting character.
          */
 
-        StringBuilder sb = new StringBuilder();
+        StringBuffer sb = new StringBuffer();
         while (c >= ' ' && ",:]}/\\\"[{;=#".indexOf(c) < 0) {
             sb.append(c);
             c = this.next();
@@ -435,9 +414,10 @@ public class JSONTokener {
                     return c;
                 }
             } while (c != to);
-        } catch (IOException exception) {
-            throw new JSONException(exception);
+        } catch (IOException exc) {
+            throw new JSONException(exc);
         }
+
         this.back();
         return c;
     }

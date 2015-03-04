@@ -1,66 +1,122 @@
-/* 
- * Copyright (C) 2015 www.phantombot.net
- *
- * Credits: mast3rplan, gmt2001, PhantomIndex, GloriousEggroll
- * gloriouseggroll@gmail.com, phantomindex@gmail.com
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
 package org.json.zip;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import org.json.zip.BitInputStream;
-import org.json.zip.BitWriter;
 
-public class BitOutputStream
-implements BitWriter {
+/*
+ Copyright (c) 2013 JSON.org
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
+
+ The Software shall be used for Good, not Evil.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+ */
+
+/**
+ * This is a big endian bit writer. It writes its bits to an OutputStream.
+ *
+ * @version 2013-04-18
+ *
+ */
+public class BitOutputStream implements BitWriter {
+
+    /**
+     * The number of bits written.
+     */
     private long nrBits = 0;
+
+    /**
+     * The destination of the bits.
+     */
     private OutputStream out;
+
+    /**
+     * Holder of bits not yet written.
+     */
     private int unwritten;
+
+    /**
+     * The number of unused bits in this.unwritten.
+     */
     private int vacant = 8;
 
+    /**
+     * Use an OutputStream to produce a BitWriter. The BitWriter will send its
+     * bits to the OutputStream as each byte is filled.
+     *
+     * @param out
+     *            An Output Stream
+     */
     public BitOutputStream(OutputStream out) {
         this.out = out;
     }
 
-    @Override
+    /**
+     * Returns the number of bits that have been written to this
+     * bitOutputStream. This may include bits that have not yet been written
+     * to the underlying outputStream.
+     */
     public long nrBits() {
         return this.nrBits;
     }
 
-    @Override
+    /**
+     * Write a 1 bit.
+     *
+     * @throws IOException
+     */
     public void one() throws IOException {
-        this.write(1, 1);
+        write(1, 1);
     }
 
-    @Override
+    /**
+     * Pad the rest of the block with zeroes and flush. pad(8) flushes the last
+     * unfinished byte. The underlying OutputStream will be flushed.
+     *
+     * @param factor
+     *            The size of the block to pad. This will typically be 8, 16,
+     *            32, 64, 128, 256, etc.
+     * @return this
+     * @throws IOException
+     */
     public void pad(int factor) throws IOException {
-        int padding = factor - (int)(this.nrBits % (long)factor);
+        int padding = factor - (int) (nrBits % factor);
         int excess = padding & 7;
         if (excess > 0) {
             this.write(0, excess);
-            padding-=excess;
+            padding -= excess;
         }
-        for (; padding > 0; padding-=8) {
+        while (padding > 0) {
             this.write(0, 8);
+            padding -= 8;
         }
         this.out.flush();
     }
 
-    @Override
+    /**
+     * Write some bits. Up to 32 bits can be written at a time.
+     *
+     * @param bits
+     *            The bits to be written.
+     * @param width
+     *            The number of bits to write. (0..32)
+     * @throws IOException
+     */
     public void write(int bits, int width) throws IOException {
         if (bits == 0 && width == 0) {
             return;
@@ -73,20 +129,26 @@ implements BitWriter {
             if (actual > this.vacant) {
                 actual = this.vacant;
             }
-            this.unwritten|=(bits >>> width - actual & BitInputStream.mask[actual]) << this.vacant - actual;
-            width-=actual;
-            this.nrBits+=(long)actual;
-            this.vacant-=actual;
-            if (this.vacant != 0) continue;
-            this.out.write(this.unwritten);
-            this.unwritten = 0;
-            this.vacant = 8;
+            this.unwritten |= ((bits >>> (width - actual)) &
+                    BitInputStream.mask[actual]) << (this.vacant - actual);
+            width -= actual;
+            nrBits += actual;
+            this.vacant -= actual;
+            if (this.vacant == 0) {
+                this.out.write(this.unwritten);
+                this.unwritten = 0;
+                this.vacant = 8;
+            }
         }
     }
 
-    @Override
+    /**
+     * Write a 0 bit.
+     *
+     * @throws IOException
+     */
     public void zero() throws IOException {
-        this.write(0, 1);
+        write(0, 1);
+
     }
 }
-

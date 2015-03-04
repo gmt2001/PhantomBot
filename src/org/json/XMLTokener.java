@@ -1,23 +1,3 @@
-/* 
- * Copyright (C) 2015 www.phantombot.net
- *
- * Credits: mast3rplan, gmt2001, PhantomIndex, GloriousEggroll
- * gloriouseggroll@gmail.com, phantomindex@gmail.com
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
 package org.json;
 
 /*
@@ -48,7 +28,7 @@ SOFTWARE.
  * The XMLTokener extends the JSONTokener to provide additional methods
  * for the parsing of XML texts.
  * @author JSON.org
- * @version 2014-05-03
+ * @version 2012-11-13
  */
 public class XMLTokener extends JSONTokener {
 
@@ -56,10 +36,10 @@ public class XMLTokener extends JSONTokener {
    /** The table of entity values. It initially contains Character values for
     * amp, apos, gt, lt, quot.
     */
-   public static final java.util.HashMap<String, Character> entity;
+   public static final java.util.HashMap entity;
 
    static {
-       entity = new java.util.HashMap<String, Character>(8);
+       entity = new java.util.HashMap(8);
        entity.put("amp",  XML.AMP);
        entity.put("apos", XML.APOS);
        entity.put("gt",   XML.GT);
@@ -83,7 +63,7 @@ public class XMLTokener extends JSONTokener {
     public String nextCDATA() throws JSONException {
         char         c;
         int          i;
-        StringBuilder sb = new StringBuilder();
+        StringBuffer sb = new StringBuffer();
         for (;;) {
             c = next();
             if (end()) {
@@ -111,7 +91,7 @@ public class XMLTokener extends JSONTokener {
      */
     public Object nextContent() throws JSONException {
         char         c;
-        StringBuilder sb;
+        StringBuffer sb;
         do {
             c = next();
         } while (Character.isWhitespace(c));
@@ -121,7 +101,7 @@ public class XMLTokener extends JSONTokener {
         if (c == '<') {
             return XML.LT;
         }
-        sb = new StringBuilder();
+        sb = new StringBuffer();
         for (;;) {
             if (c == '<' || c == 0) {
                 back();
@@ -145,7 +125,7 @@ public class XMLTokener extends JSONTokener {
      * @throws JSONException If missing ';' in XML entity.
      */
     public Object nextEntity(char ampersand) throws JSONException {
-        StringBuilder sb = new StringBuilder();
+        StringBuffer sb = new StringBuffer();
         for (;;) {
             char c = next();
             if (Character.isLetterOrDigit(c) || c == '#') {
@@ -239,7 +219,7 @@ public class XMLTokener extends JSONTokener {
     public Object nextToken() throws JSONException {
         char c;
         char q;
-        StringBuilder sb;
+        StringBuffer sb;
         do {
             c = next();
         } while (Character.isWhitespace(c));
@@ -264,7 +244,7 @@ public class XMLTokener extends JSONTokener {
         case '"':
         case '\'':
             q = c;
-            sb = new StringBuilder();
+            sb = new StringBuffer();
             for (;;) {
                 c = next();
                 if (c == 0) {
@@ -283,7 +263,7 @@ public class XMLTokener extends JSONTokener {
 
 // Name
 
-            sb = new StringBuilder();
+            sb = new StringBuffer();
             for (;;) {
                 sb.append(c);
                 c = next();

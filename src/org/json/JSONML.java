@@ -1,23 +1,3 @@
-/* 
- * Copyright (C) 2015 www.phantombot.net
- *
- * Credits: mast3rplan, gmt2001, PhantomIndex, GloriousEggroll
- * gloriouseggroll@gmail.com, phantomindex@gmail.com
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
 package org.json;
 
 /*
@@ -53,7 +33,7 @@ import java.util.Iterator;
  * the JsonML transform.
  *
  * @author JSON.org
- * @version 2014-05-03
+ * @version 2012-03-28
  */
 public class JSONML {
 
@@ -73,12 +53,12 @@ public class JSONML {
     ) throws JSONException {
         String     attribute;
         char       c;
-        String     closeTag = null;
+        String       closeTag = null;
         int        i;
         JSONArray  newja = null;
         JSONObject newjo = null;
         Object     token;
-        String     tagName = null;
+        String       tagName = null;
 
 // Test for and skip past these forms:
 //      <!-- ... -->
@@ -332,15 +312,15 @@ public class JSONML {
      * @throws JSONException
      */
     public static String toString(JSONArray ja) throws JSONException {
-        int                 i;
-        JSONObject          jo;
-        String              key;
-        Iterator<String>    keys;
-        int                 length;
-        Object              object;
-        StringBuilder        sb = new StringBuilder();
-        String              tagName;
-        String               value;
+        int             i;
+        JSONObject   jo;
+        String       key;
+        Iterator     keys;
+        int             length;
+        Object         object;
+        StringBuffer sb = new StringBuffer();
+        String       tagName;
+        String       value;
 
 // Emit <tagName
 
@@ -359,7 +339,7 @@ public class JSONML {
 
             keys = jo.keys();
             while (keys.hasNext()) {
-                key = keys.next();
+                key = keys.next().toString();
                 XML.noSpace(key);
                 value = jo.optString(key);
                 if (value != null) {
@@ -375,7 +355,7 @@ public class JSONML {
             i = 1;
         }
 
-// Emit content in body
+//Emit content in body
 
         length = ja.length();
         if (i >= length) {
@@ -414,15 +394,15 @@ public class JSONML {
      * @throws JSONException
      */
     public static String toString(JSONObject jo) throws JSONException {
-        StringBuilder sb = new StringBuilder();
-        int                 i;
-        JSONArray           ja;
-        String              key;
-        Iterator<String>    keys;
-        int                 length;
-        Object              object;
-        String              tagName;
-        String              value;
+        StringBuffer sb = new StringBuffer();
+        int          i;
+        JSONArray    ja;
+        String       key;
+        Iterator     keys;
+        int          length;
+        Object         object;
+        String       tagName;
+        String       value;
 
 //Emit <tagName
 
@@ -439,7 +419,7 @@ public class JSONML {
 
         keys = jo.keys();
         while (keys.hasNext()) {
-            key = keys.next();
+            key = keys.next().toString();
             if (!"tagName".equals(key) && !"childNodes".equals(key)) {
                 XML.noSpace(key);
                 value = jo.optString(key);

@@ -1,32 +1,38 @@
-/* 
- * Copyright (C) 2015 www.phantombot.net
- *
- * Credits: mast3rplan, gmt2001, PhantomIndex, GloriousEggroll
- * gloriouseggroll@gmail.com, phantomindex@gmail.com
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
 package org.json.zip;
 
-import org.json.zip.JSONzip;
-import org.json.zip.None;
-import org.json.zip.PostMortem;
 
-abstract class Keep
-implements None,
-PostMortem {
+/*
+ Copyright (c) 2013 JSON.org
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
+
+ The Software shall be used for Good, not Evil.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+ */
+
+/**
+ * A keep is a data structure that associates strings (or substrings) with
+ * numbers. This allows the sending of small integers instead of strings.
+ *
+ * @author JSON.org
+ * @version 2013-04-18
+ */
+abstract class Keep implements None, PostMortem {
     protected int capacity;
     protected int length;
     protected int power;
@@ -39,23 +45,40 @@ PostMortem {
         this.uses = new long[this.capacity];
     }
 
+    /**
+     * When an item ages, its use count is reduced by at least half.
+     *
+     * @param use
+     *            The current use count of an item.
+     * @return The new use count for that item.
+     */
     public static long age(long use) {
         return use >= 32 ? 16 : use / 2;
     }
 
+    /**
+     * Return the number of bits required to contain an integer based on the
+     * current length of the keep. As the keep fills up, the number of bits
+     * required to identify one of its items goes up.
+     */
     public int bitsize() {
         while (JSONzip.twos[this.power] < this.length) {
-            ++this.power;
+            this.power += 1;
         }
         return this.power;
     }
 
+    /**
+     * Increase the usage count on an integer value.
+     */
     public void tick(int integer) {
-        long[] arrl = this.uses;
-        int n = integer;
-        arrl[n] = arrl[n] + 1;
+        this.uses[integer] += 1;
     }
 
-    public abstract Object value(int var1);
+    /**
+     * Get the value associated with an integer.
+     * @param integer The number of an item in the keep.
+     * @return The value.
+     */
+    abstract public Object value(int integer);
 }
-

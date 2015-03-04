@@ -1,51 +1,58 @@
-/* 
- * Copyright (C) 2015 www.phantombot.net
- *
- * Credits: mast3rplan, gmt2001, PhantomIndex, GloriousEggroll
- * gloriouseggroll@gmail.com, phantomindex@gmail.com
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
 package me.mast3rplan.phantombot.jerklib.events;
 
 import me.mast3rplan.phantombot.jerklib.Session;
-import me.mast3rplan.phantombot.jerklib.events.IRCEvent;
 
-public class ChannelListEvent
-extends IRCEvent {
-    private final String channelName;
-    private final String topic;
+
+/**
+ * The event fired when a line from a channel listing is parsed
+ *
+ * @author mohaidb
+ * @see Session#chanList()
+ * @see Session#chanList(String)
+ */
+public class ChannelListEvent extends IRCEvent {
+
+    private final String channelName, topic;
     private final int numUsers;
 
-    public ChannelListEvent(String rawEventData, String channelName, String topic, int numUsers, Session session) {
-        super(rawEventData, session, IRCEvent.Type.CHANNEL_LIST_EVENT);
+    public ChannelListEvent
+            (
+                    String rawEventData,
+                    String channelName,
+                    String topic,
+                    int numUsers,
+                    Session session) {
+        super(rawEventData, session, Type.CHANNEL_LIST_EVENT);
         this.channelName = channelName;
         this.topic = topic;
         this.numUsers = numUsers;
     }
 
+    /**
+     * Gets the channel name
+     *
+     * @return the channel name
+     */
     public String getChannelName() {
-        return this.channelName;
+        return channelName;
     }
 
+    /**
+     * Gets the number of users in the channel
+     *
+     * @return number of users
+     */
     public int getNumberOfUser() {
-        return this.numUsers;
+        return numUsers;
     }
 
+
+    /**
+     * Gets the topic of the channel
+     *
+     * @return the channel topic
+     */
     public String getTopic() {
-        return this.topic;
+        return topic;
     }
 }
-

@@ -1,44 +1,28 @@
-/* 
- * Copyright (C) 2015 www.phantombot.net
- *
- * Credits: mast3rplan, gmt2001, PhantomIndex, GloriousEggroll
- * gloriouseggroll@gmail.com, phantomindex@gmail.com
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
 package me.mast3rplan.phantombot.jerklib;
 
-import com.gmt2001.UncaughtExceptionHandler;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import me.mast3rplan.phantombot.jerklib.Connection;
-import me.mast3rplan.phantombot.jerklib.ModeAdjustment;
-import me.mast3rplan.phantombot.jerklib.ServerInformation;
-import me.mast3rplan.phantombot.jerklib.Session;
-import me.mast3rplan.phantombot.jerklib.WriteRequest;
+import me.mast3rplan.phantombot.jerklib.ModeAdjustment.Action;
 import me.mast3rplan.phantombot.jerklib.events.TopicEvent;
 
-public class Channel {
+/**
+ * A Class to represent a <b>joined</b> IRC channel. This class has methods to
+ * interact with IRC Channels like say() , part() , getChannelModes() etc.
+ * <p/>
+ * You will never need to create an instance of this class manually. Instead it
+ * will be created for you and stored in the Session when you successfully join
+ * a channel.
+ *
+ * @author mohadib
+ * @see Session
+ * @see Session#getChannel(String)
+ * @see Session#getChannels()
+ * @see me.mast3rplan.phantombot.jerklib.events.JoinCompleteEvent
+ */
+public class Channel
+{
+    /* channel name */
+
     private String name;
     private Session session;
     private Map<String, List<ModeAdjustment>> userMap;
@@ -50,229 +34,475 @@ public class Channel {
     private Boolean allowSendMessages = false;
     private long msginterval = 1600;
 
-    public Channel(String name, Session session) {
-        this.userMap = new HashMap<String, List<ModeAdjustment>>(){
+    class MessageTask extends TimerTask
+    {
 
+        Channel chan;
+        long lastMessage = 0;
+
+        public MessageTask(Channel c)
+        {
+            super();
+            chan = c;
+            
+            Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
+        }
+
+        @Override
+        public void run()
+        {
+            long now = System.currentTimeMillis();
+            if (now - lastMessage >= msginterval)
+            {
+                String pmsg = chan.prioritymessages.poll();
+                if (pmsg != null)
+                {
+                    chan.session.sayChannel(chan, pmsg);
+
+                    lastMessage = now;
+                } else
+                {
+                    String msg = chan.messages.poll();
+                    if (msg != null)
+                    {
+                        if (allowSendMessages || msg.startsWith(".timeout ") || msg.startsWith(".ban ")
+                                || msg.startsWith(".unban ") || msg.equals(".clear") || msg.equals(".mods"))
+                        {
+                            chan.session.sayChannel(chan, msg);
+                        }
+
+                        lastMessage = now;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * This should only be used internally and for testing
+     *
+     * @param name - Name of Channel
+     * @param session - Session Channel belongs to
+     */
+    public Channel(String name, Session session)
+    {
+        /* create a map that will match exact and key to lowercase */
+        userMap = new HashMap<String, List<ModeAdjustment>>()
+        {
             @Override
-            public List<ModeAdjustment> get(Object key) {
-                List rList = (List)super.get(key);
-                if (key != null && rList == null) {
-                    rList = (List)super.get(key.toString().toLowerCase());
+            public List<ModeAdjustment> get(Object key)
+            {
+                List<ModeAdjustment> rList = super.get(key);
+                if (key != null && rList == null)
+                {
+                    rList = super.get(key.toString().toLowerCase());
                 }
                 return rList;
             }
 
             @Override
-            public List<ModeAdjustment> remove(Object key) {
-                List rList = (List)super.remove(key);
-                if (key != null && rList == null) {
-                    rList = (List)super.remove(key.toString().toLowerCase());
+            public List<ModeAdjustment> remove(Object key)
+            {
+                List<ModeAdjustment> rList = super.remove(key);
+                if (key != null && rList == null)
+                {
+                    rList = super.remove(key.toString().toLowerCase());
                 }
                 return rList;
             }
 
             @Override
-            public boolean containsKey(Object key) {
+            public boolean containsKey(Object key)
+            {
                 boolean b = super.containsKey(key);
-                if (!b) {
+                if (!b)
+                {
                     b = super.containsKey(key.toString().toLowerCase());
                 }
                 return b;
             }
         };
+
         this.name = name;
         this.session = session;
-        Thread.setDefaultUncaughtExceptionHandler(UncaughtExceptionHandler.instance());
-        this.sayTimer.schedule((TimerTask)new MessageTask(this), 300, 100);
+
+        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
+        
+        sayTimer.schedule(new MessageTask(this), 300, 100);
     }
 
-    public void setAllowSendMessages(Boolean allow) {
-        this.allowSendMessages = allow;
+    public void setAllowSendMessages(Boolean allow)
+    {
+        allowSendMessages = allow;
     }
 
-    void updateModes(List<ModeAdjustment> modes) {
-        ServerInformation info = this.session.getServerInformation();
-        ArrayList<String> nickModes = new ArrayList<String>(info.getNickPrefixMap().values());
-        for (ModeAdjustment mode : modes) {
-            if (nickModes.contains(String.valueOf(mode.getMode())) && this.userMap.containsKey(mode.getArgument())) {
-                this.updateMode(mode, this.userMap.get(mode.getArgument()));
-                continue;
+    /**
+     * Updates Channel's modes.
+     * <p/>
+     * Only tracks channel modes that apply to users in the channel if the mode
+     * is in the nick prefix map received in numeric 005. If no numeric is
+     * passed o,v,h are used by default.
+     * <p/>
+     * So basically modes that do not change the apperance of a nick with a
+     * prefix are not tracked if the mode applies to a user. Example: q and b
+     * are not tracked.
+     * <p/>
+     * If the mode does not apply to a user in the channel , the mode will
+     * always be tracked. Example: i is tracked
+     *
+     * @param modes - list of ModeAdjustments
+     */
+    void updateModes(List<ModeAdjustment> modes)
+    {
+        ServerInformation info = session.getServerInformation();
+        List<String> nickModes = new ArrayList<String>(info.getNickPrefixMap().values());
+
+        for (ModeAdjustment mode : modes)
+        {
+            if (nickModes.contains(String.valueOf(mode.getMode())) && userMap.containsKey(mode.getArgument()))
+            {
+                updateMode(mode, userMap.get(mode.getArgument()));
+            } /* filter out channel modes that apply to users that are not in prefix map */ /* like +b - this behviour might not be desired , time will tell */ else if (mode.getMode() != 'q' && mode.getMode() != 'b')
+            {
+                updateMode(mode, channelModes);
             }
-            if (mode.getMode() == 'q' || mode.getMode() == 'b') continue;
-            this.updateMode(mode, this.channelModes);
         }
     }
 
-    private void updateMode(ModeAdjustment mode, List<ModeAdjustment> modes) {
-        int index = this.indexOfMode(mode.getMode(), modes);
-        if (mode.getAction() == ModeAdjustment.Action.MINUS) {
-            if (index != -1) {
+    /**
+     * If Action is MINUS and the same mode exists with a PLUS Action then just
+     * remove the PLUS mode ModeAdjustment from the collection.
+     * <p/>
+     * If Action is MINUS and the same mode with PLUS does not exist then add
+     * the MINUS mode to the ModeAdjustment collection
+     * <p/>
+     * if Action is PLUS and the same mode exists with a MINUS Action then
+     * remove MINUS mode and add PLUS mode
+     * <p/>
+     * If Action is PLUS and the same mode with MINUS does not exist then just
+     * add PLUS mode to collection
+     *
+     * @param mode
+     */
+    private void updateMode(ModeAdjustment mode, List<ModeAdjustment> modes)
+    {
+        int index = indexOfMode(mode.getMode(), modes);
+
+        if (mode.getAction() == Action.MINUS)
+        {
+            if (index != -1)
+            {
                 ModeAdjustment ma = modes.remove(index);
-                if (ma.getAction() == ModeAdjustment.Action.MINUS) {
+                if (ma.getAction() == Action.MINUS)
+                {
                     modes.add(ma);
                 }
-            } else {
+            } else
+            {
                 modes.add(mode);
             }
-        } else {
-            if (index != -1) {
+        } else
+        {
+            if (index != -1)
+            {
                 modes.remove(index);
             }
             modes.add(mode);
         }
     }
 
-    private int indexOfMode(char mode, List<ModeAdjustment> modes) {
-        for (int i = 0; i < modes.size(); ++i) {
+    /**
+     * Finds index of a mode in a List of ModeAdjustments
+     *
+     * @param mode mode to find
+     * @param modes list to search
+     * @return index or -1 if not found
+     */
+    private int indexOfMode(char mode, List<ModeAdjustment> modes)
+    {
+        for (int i = 0; i < modes.size(); i++)
+        {
             ModeAdjustment ma = modes.get(i);
-            if (ma.getMode() != mode) continue;
-            return i;
+            if (ma.getMode() == mode)
+            {
+                return i;
+            }
         }
         return -1;
     }
 
-    public List<ModeAdjustment> getUsersModes(String nick) {
-        if (this.userMap.containsKey(nick)) {
-            return new ArrayList<ModeAdjustment>((Collection)this.userMap.get(nick));
+    /**
+     * Get a list of user's channel modes Returns an empty list if the nick does
+     * not exist.
+     *
+     * @param nick
+     * @return list of ModeAdjustments for user
+     */
+    public List<ModeAdjustment> getUsersModes(String nick)
+    {
+        if (userMap.containsKey(nick))
+        {
+            return new ArrayList<ModeAdjustment>(userMap.get(nick));
+        } else
+        {
+            return new ArrayList<ModeAdjustment>();
         }
-        return new ArrayList<ModeAdjustment>();
     }
 
-    public List<String> getNicksForMode(ModeAdjustment.Action action, char mode) {
-        ArrayList<String> nicks = new ArrayList<String>();
-        for (String nick : this.getNicks()) {
-            List<ModeAdjustment> modes = this.userMap.get(nick);
-            for (ModeAdjustment ma : modes) {
-                if (ma.getMode() != mode || ma.getAction() != action) continue;
-                nicks.add(nick);
+    /**
+     * Gets a list of users in channel with a given mode set. A user will only
+     * match if they have the exact mode set. Non existance of +(mode) does not
+     * imply that the user is -(mode)
+     * <p/>
+     * So searching for -v would almost always return an empty list.
+     *
+     * @param action
+     * @param mode
+     * @return List of nicks with mode/action set
+     */
+    public List<String> getNicksForMode(Action action, char mode)
+    {
+        List<String> nicks = new ArrayList<String>();
+        for (String nick : getNicks())
+        {
+            List<ModeAdjustment> modes = userMap.get(nick);
+            for (ModeAdjustment ma : modes)
+            {
+                if (ma.getMode() == mode && ma.getAction() == action)
+                {
+                    nicks.add(nick);
+                }
             }
         }
         return nicks;
     }
 
-    public List<ModeAdjustment> getChannelModes() {
-        return new ArrayList<ModeAdjustment>(this.channelModes);
+    /**
+     * Returns a list of modes that apply to the channel but dont apply to users
+     * in the channel. I.E. +o is not returned as that applies to users in the
+     * channel not just the channel.
+     *
+     * @return List of ModeAdjustments for the Channel
+     */
+    public List<ModeAdjustment> getChannelModes()
+    {
+        return new ArrayList<ModeAdjustment>(channelModes);
     }
 
-    public void mode(String mode) {
-        this.session.mode(this.name, mode);
+    /**
+     * Sets a mode in the Channel if you have the permissions to do so.
+     * <p/>
+     * example: +vv00 foo bar baz bob example: -v+i foo
+     *
+     * @param mode to set.
+     */
+    public void mode(String mode)
+    {
+        session.mode(name, mode);
     }
 
-    public String getTopic() {
-        return this.topicEvent != null ? this.topicEvent.getTopic() : "";
+    /**
+     * Gets the topic for the channel or an empty string is the topic is not
+     * set.
+     *
+     * @return topic for channel
+     */
+    public String getTopic()
+    {
+        return topicEvent != null ? topicEvent.getTopic() : "";
     }
 
-    public String getTopicSetter() {
-        return this.topicEvent != null ? this.topicEvent.getSetBy() : "";
+    /**
+     * Gets the nick of who set the topic or an empty string if the topic is not
+     * set.
+     *
+     * @return nick of topic setter
+     */
+    public String getTopicSetter()
+    {
+        return topicEvent != null ? topicEvent.getSetBy() : "";
     }
 
-    public Date getTopicSetTime() {
-        return this.topicEvent == null ? null : this.topicEvent.getSetWhen();
+    /**
+     * Returns the Date the topic was set or null if the topic is unset.
+     *
+     * @return date topic was set or null if not set
+     */
+    public Date getTopicSetTime()
+    {
+        return topicEvent == null ? null : topicEvent.getSetWhen();
     }
 
-    public void setTopic(String topic) {
-        this.write(new WriteRequest("TOPIC " + this.name + " :" + topic, this.session));
+    /**
+     * Sets the topic of the Channel is you have the permissions to do so.
+     *
+     * @param topic to use.
+     */
+    public void setTopic(String topic)
+    {
+        write(new WriteRequest("TOPIC " + name + " :" + topic, session));
     }
 
-    public void setTopicEvent(TopicEvent topicEvent) {
+    /**
+     * This method should only be used internally
+     *
+     * @param topicEvent
+     */
+    public void setTopicEvent(TopicEvent topicEvent)
+    {
         this.topicEvent = topicEvent;
     }
 
-    public String getName() {
-        return this.name;
-    }
-
-    /*
-     * Unable to fully structure code
-     * Enabled aggressive block sorting
-     * Lifted jumps to return sites
+    /**
+     * Gets the Channel name.
+     *
+     * @return name of Channel
      */
-  public void say(String message)
-  {
-    if ((message.startsWith(".timeout ")) || (message.startsWith(".ban ")) || (message.startsWith(".unban ")) || (message.equals(".clear")) || (message.equals(".mods")))
+    public String getName()
     {
-      if (message.length() + 14 + this.name.length() < 512)
-      {
-        this.prioritymessages.add(message);
-      }
-      else
-      {
-        int maxlen = 498 - this.name.length();
-        int pos = 0;
-        for (int i = 0; pos < message.length(); i++) {
-          if (pos + maxlen >= message.length())
-          {
-            this.prioritymessages.add(message.substring(pos));
-          }
-          else
-          {
-            this.prioritymessages.add(message.substring(pos, pos + maxlen));
-          }
-          
-          pos += maxlen;
-        }
-      }
-    }
-    else if (message.length() + 14 + this.name.length() < 512)
-    {
-      this.messages.add(message);
-    }
-    else
-    {
-      int maxlen = 498 - this.name.length();
-      int pos = 0;
-      for (int i = 0; pos < message.length(); i++) {
-        if (pos + maxlen >= message.length())
-        {
-          this.messages.add(message.substring(pos));
-        }
-        else
-        {
-          this.messages.add(message.substring(pos, pos + maxlen));
-        }
-          
-        pos += maxlen;
-      }
-    }
-  }
-    public void notice(String message) {
-        this.session.notice(this.getName(), message);
+        return name;
     }
 
-    public void addNick(String nick) {
-        if (!this.userMap.containsKey(nick)) {
-            ServerInformation info = this.session.getServerInformation();
-            Map<String, String> nickPrefixMap = info.getNickPrefixMap();
-            ArrayList<ModeAdjustment> modes = new ArrayList<ModeAdjustment>();
-            for (String prefix : nickPrefixMap.keySet()) {
-                if (!nick.startsWith(prefix)) continue;
-                modes.add(new ModeAdjustment(ModeAdjustment.Action.PLUS, nickPrefixMap.get(prefix).charAt(0), ""));
+    /**
+     * Speak in the Channel.
+     *
+     * @param message - what to say
+     */
+    public void say(String message)
+    {
+        if (message.startsWith(".timeout ") || message.startsWith(".ban ")
+                || message.startsWith(".unban ") || message.equals(".clear") || message.equals(".mods"))
+        {
+            if (message.length() + 14 + name.length() < 512)
+            {
+                prioritymessages.add(message);
+            } else
+            {
+                int maxlen = 512 - 14 - name.length();
+                int pos = 0;
+
+                for (int i = 0; pos < message.length(); i++)
+                {
+                    if (pos + maxlen >= message.length())
+                    {
+                        prioritymessages.add(message.substring(pos));
+                    } else
+                    {
+                        prioritymessages.add(message.substring(pos, pos + maxlen));
+                    }
+                    
+                    pos += maxlen;
+                }
             }
-            if (!modes.isEmpty()) {
+        } else
+        {
+            if (message.length() + 14 + name.length() < 512)
+            {
+                messages.add(message);
+            } else
+            {
+                int maxlen = 512 - 14 - name.length();
+                int pos = 0;
+
+                for (int i = 0; pos < message.length(); i++)
+                {
+                    if (pos + maxlen >= message.length())
+                    {
+                        messages.add(message.substring(pos));
+                    } else
+                    {
+                        messages.add(message.substring(pos, pos + maxlen));
+                    }
+                    
+                    pos += maxlen;
+                }
+            }
+        }
+    }
+
+    /**
+     * Send a notice in the Channel
+     *
+     * @param message - notice messgae
+     */
+    public void notice(String message)
+    {
+        session.notice(getName(), message);
+    }
+
+    /**
+     * This method is for internal use only
+     *
+     * @param nick to add
+     */
+    public void addNick(String nick)
+    {
+        if (!userMap.containsKey(nick))
+        {
+
+            ServerInformation info = session.getServerInformation();
+            Map<String, String> nickPrefixMap = info.getNickPrefixMap();
+            List<ModeAdjustment> modes = new ArrayList<ModeAdjustment>();
+            for (String prefix : nickPrefixMap.keySet())
+            {
+                if (nick.startsWith(prefix))
+                {
+                    modes.add(new ModeAdjustment(Action.PLUS, nickPrefixMap.get(prefix).charAt(0), ""));
+                }
+            }
+
+            if (!modes.isEmpty())
+            {
                 nick = nick.substring(1);
             }
-            this.userMap.put(nick, modes);
+            userMap.put(nick, modes);
         }
     }
 
-    boolean removeNick(String nick) {
-        return this.userMap.remove(nick) != null;
+    /**
+     * removes a nick from the Channel nick list
+     *
+     * @param nick
+     * @return true if nick was removed else false
+     */
+    boolean removeNick(String nick)
+    {
+        return userMap.remove(nick) != null;
     }
 
-    void nickChanged(String oldNick, String newNick) {
-        List<ModeAdjustment> modes = this.userMap.remove(oldNick);
-        this.userMap.put(newNick, modes);
+    /**
+     * Called to update nick list when nick change happens
+     *
+     * @param oldNick
+     * @param newNick
+     */
+    void nickChanged(String oldNick, String newNick)
+    {
+        List<ModeAdjustment> modes = userMap.remove(oldNick);
+        userMap.put(newNick, modes);
     }
 
-    public List<String> getNicks() {
-        return new ArrayList<String>(this.userMap.keySet()){
-
+    /**
+     * Gets a list of nicks for Channel. The list returned has a case insenstive
+     * indexOf() and contains()
+     *
+     * @return List of nicks
+     */
+    public List<String> getNicks()
+    {
+        return new ArrayList<String>(userMap.keySet())
+        {
             @Override
-            public int indexOf(Object o) {
-                if (o != null) {
-                    for (int i = 0; i < this.size(); ++i) {
-                        if (!((String)this.get(i)).equalsIgnoreCase(o.toString())) continue;
-                        return i;
+            public int indexOf(Object o)
+            {
+                if (o != null)
+                {
+                    for (int i = 0; i < size(); i++)
+                    {
+                        if (get(i).equalsIgnoreCase(o.toString()))
+                        {
+                            return i;
+                        }
                     }
                 }
                 return -1;
@@ -280,114 +510,163 @@ public class Channel {
         };
     }
 
-    public void part(String partMsg) {
-        if (partMsg == null || partMsg.length() == 0) {
+    /**
+     * Part the channel
+     *
+     * @param partMsg
+     */
+    public void part(String partMsg)
+    {
+        if (partMsg == null || partMsg.length() == 0)
+        {
             partMsg = "Leaving";
         }
-        this.write(new WriteRequest("PART " + this.getName() + " :" + partMsg, this.session));
+
+        write(new WriteRequest("PART " + getName() + " :" + partMsg, session));
     }
 
-    public void action(String text) {
-        this.write(new WriteRequest("\u0001ACTION " + text + "\u0001", this, this.session));
+    /**
+     * Send an action
+     *
+     * @param text action text
+     */
+    public void action(String text)
+    {
+        write(new WriteRequest("\001ACTION " + text + "\001", this, session));
     }
 
-    public void names() {
-        this.write(new WriteRequest("NAMES " + this.getName(), this, this.session));
+    /**
+     * Send a names query to the server
+     */
+    public void names()
+    {
+        write(new WriteRequest("NAMES " + getName(), this, session));
     }
 
-    public void deVoice(String userName) {
-        this.write(new WriteRequest("MODE " + this.getName() + " -v " + userName, this.session));
+    /**
+     * Devoice a user
+     *
+     * @param userName
+     */
+    public void deVoice(String userName)
+    {
+        write(new WriteRequest("MODE " + getName() + " -v " + userName, session));
     }
 
-    public void voice(String userName) {
-        this.write(new WriteRequest("MODE " + this.getName() + " +v " + userName, this.session));
+    /**
+     * Voice a user
+     *
+     * @param userName
+     */
+    public void voice(String userName)
+    {
+        write(new WriteRequest("MODE " + getName() + " +v " + userName, session));
     }
 
-    public void op(String userName) {
-        this.write(new WriteRequest("MODE " + this.getName() + " +o " + userName, this.session));
+    /**
+     * Op a user
+     *
+     * @param userName
+     */
+    public void op(String userName)
+    {
+        write(new WriteRequest("MODE " + getName() + " +o " + userName, session));
     }
 
-    public void deop(String userName) {
-        this.write(new WriteRequest("MODE " + this.getName() + " -o " + userName, this.session));
+    /**
+     * DeOp a user
+     *
+     * @param userName
+     */
+    public void deop(String userName)
+    {
+        write(new WriteRequest("MODE " + getName() + " -o " + userName, session));
     }
 
-    public void kick(String userName, String reason) {
-        if (reason == null || reason.length() == 0) {
-            reason = this.session.getNick();
+    /**
+     * Kick a user
+     *
+     * @param userName
+     * @param reason
+     */
+    public void kick(String userName, String reason)
+    {
+        if (reason == null || reason.length() == 0)
+        {
+            reason = session.getNick();
         }
-        this.write(new WriteRequest("KICK " + this.getName() + " " + userName + " :" + reason, this.session));
+
+        write(new WriteRequest("KICK " + getName() + " " + userName + " :" + reason, session));
     }
 
-    private void write(WriteRequest req) {
-        this.session.getConnection().addWriteRequest(req);
+    /**
+     * Helper method for writing
+     *
+     * @param req
+     */
+    private void write(WriteRequest req)
+    {
+        session.getConnection().addWriteRequest(req);
     }
 
-    public Session getSession() {
-        return this.session;
+    /**
+     * Return the Session this Channel belongs to
+     */
+    public Session getSession()
+    {
+        return session;
     }
 
-    public boolean equals(Object o) {
-        if (this == o) {
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o)
+        {
             return true;
         }
-        if (!(o instanceof Channel)) {
+        if (!(o instanceof Channel))
+        {
             return false;
         }
-        Channel channel = (Channel)o;
-        if (!this.session.getConnectedHostName().equals(channel.getSession().getConnectedHostName())) {
+        Channel channel = (Channel) o;
+        if (!session.getConnectedHostName().equals(channel.getSession().getConnectedHostName()))
+        {
             return false;
         }
-        if (!this.name.equals(channel.getName())) {
+        if (!name.equals(channel.getName()))
+        {
             return false;
         }
+
         return true;
     }
 
-    public int hashCode() {
-        int result = this.name != null ? this.name.hashCode() : 0;
-        result = 31 * result + this.session.getConnectedHostName().hashCode();
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode()
+    {
+        int result;
+        result = (name != null ? name.hashCode() : 0);
+        result = 31 * result + session.getConnectedHostName().hashCode();
         return result;
     }
 
-    public String toString() {
-        return "[Channel: name=" + this.name + "]";
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString()
+    {
+        return "[Channel: name=" + name + "]";
     }
-
-    public void setMsgInterval(long msginterval) {
+    
+    public void setMsgInterval(long msginterval)
+    {
         this.msginterval = msginterval;
     }
-
-    class MessageTask
-    extends TimerTask {
-        Channel chan;
-        long lastMessage;
-
-        public MessageTask(Channel c) {
-            this.lastMessage = 0;
-            this.chan = c;
-            Thread.setDefaultUncaughtExceptionHandler(UncaughtExceptionHandler.instance());
-        }
-
-        @Override
-        public void run() {
-            long now = System.currentTimeMillis();
-            if (now - this.lastMessage >= Channel.this.msginterval) {
-                String pmsg = (String)this.chan.prioritymessages.poll();
-                if (pmsg != null) {
-                    this.chan.session.sayChannel(this.chan, pmsg);
-                    this.lastMessage = now;
-                } else {
-                    String msg = (String)this.chan.messages.poll();
-                    if (msg != null) {
-                        if (Channel.this.allowSendMessages.booleanValue() || msg.startsWith(".timeout ") || msg.startsWith(".ban ") || msg.startsWith(".unban ") || msg.equals(".clear") || msg.equals(".mods")) {
-                            this.chan.session.sayChannel(this.chan, msg);
-                        }
-                        this.lastMessage = now;
-                    }
-                }
-            }
-        }
-    }
-
 }
-

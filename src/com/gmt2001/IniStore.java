@@ -1,27 +1,5 @@
-/* 
- * Copyright (C) 2015 www.phantombot.net
- *
- * Credits: mast3rplan, gmt2001, PhantomIndex, GloriousEggroll
- * gloriouseggroll@gmail.com, phantomindex@gmail.com
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
 package com.gmt2001;
 
-import com.gmt2001.Console.out;
-import com.gmt2001.UncaughtExceptionHandler;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -34,297 +12,436 @@ import java.util.Set;
 import javax.swing.Timer;
 import org.apache.commons.io.FileUtils;
 
-public class IniStore
-implements ActionListener {
-    private HashMap<String, IniFile> files = new HashMap();
-    private HashMap<String, Date> changed = new HashMap();
+/**
+ *
+ * @author gmt2001
+ */
+public class IniStore implements ActionListener
+{
+
+    private HashMap<String, IniFile> files = new HashMap<>();
+    private HashMap<String, Date> changed = new HashMap<>();
     private Date nextSave = new Date(0);
     private Timer t;
     private Timer t2;
-    private static long saveInterval = 300000;
+    private static long saveInterval = 5 * 60 * 1000;
     private static final IniStore instance = new IniStore();
 
-    public static IniStore instance() {
+    public static IniStore instance()
+    {
         return instance;
     }
 
-    private IniStore() {
-        this.t = new Timer((int)saveInterval, this);
-        this.t2 = new Timer(1, this);
-        Thread.setDefaultUncaughtExceptionHandler(UncaughtExceptionHandler.instance());
-        this.t.start();
+    private IniStore()
+    {
+        t = new Timer((int) saveInterval, this);
+        t2 = new Timer(1, this);
+        
+        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
+
+        t.start();
     }
 
-    private boolean LoadFile(String fName, boolean force) {
-        if (!this.files.containsKey(fName) || force) {
-            try {
+    private boolean LoadFile(String fName, boolean force)
+    {
+        if (!files.containsKey(fName) || force)
+        {
+            try
+            {
                 String data = FileUtils.readFileToString(new File("./inistore/" + fName + ".ini"));
                 String[] lines = data.replaceAll("\\r", "").split("\\n");
+
                 IniFile f = new IniFile();
+
                 String section = "";
-                f.data.put(section, new HashMap());
-                for (int i = 0; i < lines.length; ++i) {
-                    if (lines[i].trim().startsWith(";")) continue;
-                    if (lines[i].trim().startsWith("[") && lines[i].trim().endsWith("]")) {
-                        section = lines[i].trim().substring(1, lines[i].trim().length() - 1);
-                        f.data.put(section, new HashMap());
-                        continue;
+
+                f.data.put(section, new HashMap<String, String>());
+
+                for (int i = 0; i < lines.length; i++)
+                {
+                    if (!lines[i].trim().startsWith(";"))
+                    {
+                        if (lines[i].trim().startsWith("[") && lines[i].trim().endsWith("]"))
+                        {
+                            section = lines[i].trim().substring(1, lines[i].trim().length() - 1);
+                            f.data.put(section, new HashMap<String, String>());
+                        } else if (!lines[i].trim().isEmpty())
+                        {
+                            String[] spl = lines[i].split("=", 2);
+                            f.data.get(section).put(spl[0], spl[1]);
+                        }
                     }
-                    if (lines[i].trim().isEmpty()) continue;
-                    String[] spl = lines[i].split("=", 2);
-                    f.data.get(section).put(spl[0], spl[1]);
                 }
-                this.files.put(fName, f);
-            }
-            catch (IOException ex) {
+
+                files.put(fName, f);
+            } catch (IOException ex)
+            {
                 IniFile f = new IniFile();
-                f.data.put("", new HashMap());
-                this.files.put(fName, f);
+                f.data.put("", new HashMap<String, String>());
+
+                files.put(fName, f);
                 return false;
             }
         }
+
         return true;
     }
 
-    private void SaveFile(String fName, IniFile data) {
-        try {
+    private void SaveFile(String fName, IniFile data)
+    {
+        try
+        {
             String wdata = "";
             Object[] adata = data.data.keySet().toArray();
-            for (int i = 0; i < adata.length; ++i) {
-                if (i > 0) {
-                    wdata = wdata + "\r\n";
+            Object[] akdata;
+            Object[] avdata;
+
+            for (int i = 0; i < adata.length; i++)
+            {
+                if (i > 0)
+                {
+                    wdata += "\r\n";
                 }
-                if (!((String)adata[i]).equals("")) {
-                    wdata = wdata + "[" + (String)adata[i] + "]\r\n";
+
+                if (!((String) adata[i]).equals(""))
+                {
+                    wdata += "[" + ((String) adata[i]) + "]\r\n";
                 }
-                Object[] akdata = data.data.get((String)adata[i]).keySet().toArray();
-                Object[] avdata = data.data.get((String)adata[i]).values().toArray();
-                for (int b = 0; b < akdata.length; ++b) {
-                    wdata = wdata + (String)akdata[b] + "=" + (String)avdata[b] + "\r\n";
+
+                akdata = data.data.get(((String) adata[i])).keySet().toArray();
+                avdata = data.data.get(((String) adata[i])).values().toArray();
+
+                for (int b = 0; b < akdata.length; b++)
+                {
+                    wdata += ((String) akdata[b]) + "=" + ((String) avdata[b]) + "\r\n";
                 }
             }
+
             FileUtils.writeStringToFile(new File("./inistore/" + fName + ".ini"), wdata);
-            this.changed.remove(fName);
-        }
-        catch (IOException ex) {
-            // empty catch block
+
+            changed.remove(fName);
+        } catch (IOException ex)
+        {
         }
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-        this.t2.stop();
-        this.SaveAll(false);
+    public void actionPerformed(ActionEvent e)
+    {
+        t2.stop();
+        SaveAll(false);
     }
 
-    public void SaveAll(boolean force) {
-        if (!this.nextSave.after(new Date()) || force) {
-            Object[] n = this.changed.keySet().toArray();
-            if (force) {
-                n = this.files.keySet().toArray();
+    private static class IniFile
+    {
+
+        protected HashMap<String, HashMap<String, String>> data = new HashMap<>();
+    }
+
+    public void SaveAll(boolean force)
+    {
+        if (!nextSave.after(new Date()) || force)
+        {
+            Object[] n = changed.keySet().toArray();
+
+            if (force)
+            {
+                n = files.keySet().toArray();
             }
-            out.println(">>>Saving " + n.length + " files");
-            for (int i = 0; i < n.length; ++i) {
-                if (!force && !this.changed.get((String)n[i]).after(this.nextSave) && !this.changed.get((String)n[i]).equals(this.nextSave)) continue;
-                this.SaveFile((String)n[i], this.files.get((String)n[i]));
+            
+            com.gmt2001.Console.out.println(">>>Saving " + n.length + " files");
+
+            for (int i = 0; i < n.length; i++)
+            {
+                if (force || changed.get((String) n[i]).after(nextSave) || changed.get((String) n[i]).equals(nextSave))
+                {
+                    SaveFile((String) n[i], files.get((String) n[i]));
+                }
             }
-            this.nextSave.setTime(new Date().getTime() + saveInterval);
-            out.println(">>>Save complete");
+
+            nextSave.setTime(new Date().getTime() + saveInterval);
+
+            com.gmt2001.Console.out.println(">>>Save complete");
         }
     }
 
-    public void ReloadFile(String fName) {
-        this.LoadFile(fName, true);
+    public void ReloadFile(String fName)
+    {
+        LoadFile(fName, true);
     }
 
-    public String[] GetFileList() {
+    public String[] GetFileList()
+    {
         Collection<File> f = FileUtils.listFiles(new File("./inistore/"), null, false);
+
         String[] s = new String[f.size()];
-        Iterator<File> it = f.iterator();
+
+        Iterator it = f.iterator();
         int i = 0;
-        while (it.hasNext()) {
-            s[i++] = it.next().getName();
+
+        while (it.hasNext())
+        {
+            s[i++] = ((File) it.next()).getName();
         }
+
         return s;
     }
 
-    public String[] GetCategoryList(String fName) {
-        if (!this.LoadFile(fName, false)) {
-            return new String[0];
+    public String[] GetCategoryList(String fName)
+    {
+        if (!LoadFile(fName, false))
+        {
+            return new String[]
+                    {
+                    };
         }
-        Set<String> o = this.files.get((Object)fName).data.keySet();
+
+        Set<String> o = files.get(fName).data.keySet();
+
         String[] s = new String[o.size()];
-        Iterator<String> it = o.iterator();
+
+        Iterator it = o.iterator();
         int i = 0;
-        while (it.hasNext()) {
-            s[i++] = it.next();
+
+        while (it.hasNext())
+        {
+            s[i++] = (String) it.next();
         }
+
         return s;
     }
 
-    public String[] GetKeyList(String fName, String section) {
-        if (!this.LoadFile(fName, false)) {
-            return new String[0];
+    public String[] GetKeyList(String fName, String section)
+    {
+        if (!LoadFile(fName, false))
+        {
+            return new String[]
+                    {
+                    };
         }
-        Set<String> o = this.files.get((Object)fName).data.get(section).keySet();
+
+        Set<String> o = files.get(fName).data.get(section).keySet();
+
         String[] s = new String[o.size()];
-        Iterator<String> it = o.iterator();
+
+        Iterator it = o.iterator();
         int i = 0;
-        while (it.hasNext()) {
-            s[i++] = it.next();
+
+        while (it.hasNext())
+        {
+            s[i++] = (String) it.next();
         }
+
         return s;
     }
 
-    public String GetString(String fName, String section, String key) {
-        if (!this.LoadFile(fName, false)) {
+    public String GetString(String fName, String section, String key)
+    {
+        if (!LoadFile(fName, false))
+        {
             return null;
         }
-        if ((key = key.replaceAll("=", "_eq_")).startsWith(";") || key.startsWith("[")) {
-            key = "_" + key;
-        }
-        if (!(this.files.containsKey(fName) && this.files.get((Object)fName).data.containsKey(section) && this.files.get((Object)fName).data.get(section).containsKey(key))) {
-            return null;
-        }
-        return this.files.get((Object)fName).data.get(section).get(key);
-    }
 
-    public void SetString(String fName, String section, String key, String value) {
-        this.LoadFile(fName, false);
         key = key.replaceAll("=", "_eq_");
-        if (key.startsWith(";") || key.startsWith("[")) {
+
+        if (key.startsWith(";") || key.startsWith("["))
+        {
             key = "_" + key;
         }
-        if (!this.files.get((Object)fName).data.containsKey(section)) {
-            this.files.get((Object)fName).data.put(section, new HashMap());
+
+        if (!files.containsKey(fName) || !files.get(fName).data.containsKey(section)
+                || !files.get(fName).data.get(section).containsKey(key))
+        {
+            return null;
         }
-        this.files.get((Object)fName).data.get(section).put(key, value);
-        this.changed.put(fName, new Date());
-        this.t2.start();
+
+        return (String) files.get(fName).data.get(section).get(key);
     }
 
-    public int GetInteger(String fName, String section, String key) {
-        String sval = this.GetString(fName, section, key);
-        try {
-            return Integer.parseInt(sval);
+    public void SetString(String fName, String section, String key, String value)
+    {
+        LoadFile(fName, false);
+
+        key = key.replaceAll("=", "_eq_");
+
+        if (key.startsWith(";") || key.startsWith("["))
+        {
+            key = "_" + key;
         }
-        catch (Exception ex) {
+
+        if (!files.get(fName).data.containsKey(section))
+        {
+            files.get(fName).data.put(section, new HashMap<String, String>());
+        }
+
+        files.get(fName).data.get(section).put(key, value);
+
+        changed.put(fName, new Date());
+
+        t2.start();
+    }
+
+    public int GetInteger(String fName, String section, String key)
+    {
+        String sval = GetString(fName, section, key);
+
+        try
+        {
+            return Integer.parseInt(sval);
+        } catch (Exception ex)
+        {
             return 0;
         }
     }
 
-    public void SetInteger(String fName, String section, String key, int value) {
+    public void SetInteger(String fName, String section, String key, int value)
+    {
         String sval = Integer.toString(value);
-        this.SetString(fName, section, key, sval);
+
+        SetString(fName, section, key, sval);
     }
 
-    public float GetFloat(String fName, String section, String key) {
-        String sval = this.GetString(fName, section, key);
-        try {
+    public float GetFloat(String fName, String section, String key)
+    {
+        String sval = GetString(fName, section, key);
+
+        try
+        {
             return Float.parseFloat(sval);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex)
+        {
             return 0.0f;
         }
     }
 
-    public void SetFloat(String fName, String section, String key, float value) {
+    public void SetFloat(String fName, String section, String key, float value)
+    {
         String sval = Float.toString(value);
-        this.SetString(fName, section, key, sval);
+
+        SetString(fName, section, key, sval);
     }
 
-    public double GetDouble(String fName, String section, String key) {
-        String sval = this.GetString(fName, section, key);
-        try {
+    public double GetDouble(String fName, String section, String key)
+    {
+        String sval = GetString(fName, section, key);
+
+        try
+        {
             return Double.parseDouble(sval);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex)
+        {
             return 0.0;
         }
     }
 
-    public void SetDouble(String fName, String section, String key, double value) {
+    public void SetDouble(String fName, String section, String key, double value)
+    {
         String sval = Double.toString(value);
-        this.SetString(fName, section, key, sval);
+
+        SetString(fName, section, key, sval);
     }
 
-    public Boolean GetBoolean(String fName, String section, String key) {
-        int ival = this.GetInteger(fName, section, key);
+    public Boolean GetBoolean(String fName, String section, String key)
+    {
+        int ival = GetInteger(fName, section, key);
+
         return ival == 1;
     }
 
-    public void SetBoolean(String fName, String section, String key, Boolean value) {
+    public void SetBoolean(String fName, String section, String key, Boolean value)
+    {
         int ival = 0;
-        if (value.booleanValue()) {
+
+        if (value)
+        {
             ival = 1;
         }
-        this.SetInteger(fName, section, key, ival);
+
+        SetInteger(fName, section, key, ival);
     }
 
-    public void RemoveKey(String fName, String section, String key) {
-        this.LoadFile(fName, false);
-        if (key.startsWith(";") || key.startsWith("[")) {
+    public void RemoveKey(String fName, String section, String key)
+    {
+        LoadFile(fName, false);
+
+        if (key.startsWith(";") || key.startsWith("["))
+        {
             key = "_" + key;
         }
-        this.files.get((Object)fName).data.get(section).remove(key);
-        this.SaveFile(fName, this.files.get(fName));
+
+        files.get(fName).data.get(section).remove(key);
+
+        SaveFile(fName, files.get(fName));
     }
 
-    public void RemoveSection(String fName, String section) {
-        this.LoadFile(fName, false);
-        this.files.get((Object)fName).data.remove(section);
-        this.SaveFile(fName, this.files.get(fName));
+    public void RemoveSection(String fName, String section)
+    {
+        LoadFile(fName, false);
+
+        files.get(fName).data.remove(section);
+
+        SaveFile(fName, files.get(fName));
     }
 
-    public void RemoveFile(String fName) {
+    public void RemoveFile(String fName)
+    {
         File f = new File("./inistore/" + fName + ".ini");
+
         f.delete();
     }
 
-    public boolean FileExists(String fName) {
+    public boolean FileExists(String fName)
+    {
         File f = new File("./inistore/" + fName + ".ini");
+
         return f.exists();
     }
 
-    public boolean HasKey(String fName, String section, String key) {
-        if (this.GetString(fName, section, key) == null) {
+    public boolean HasKey(String fName, String section, String key)
+    {
+        if (GetString(fName, section, key) == null)
+        {
             return false;
         }
+
         return true;
     }
 
-    public boolean exists(String type, String key) {
-        return this.HasKey(type, "", key);
+    public boolean exists(String type, String key)
+    {
+        return HasKey(type, "", key);
     }
 
-    public String get(String type, String key) {
-        return this.GetString(type, "", key);
+    public String get(String type, String key)
+    {
+        return GetString(type, "", key);
     }
 
-    public void set(String type, String key, String value) {
-        this.SetString(type, "", key, value);
+    public void set(String type, String key, String value)
+    {
+        SetString(type, "", key, value);
     }
 
-    public void del(String type, String key) {
-        this.RemoveKey(type, "", key);
+    public void del(String type, String key)
+    {
+        RemoveKey(type, "", key);
     }
 
-    public void incr(String type, String key, int amount) {
-        int ival = this.GetInteger(type, "", key);
-        this.SetInteger(type, "", key, ival+=amount);
+    public void incr(String type, String key, int amount)
+    {
+        int ival = GetInteger(type, "", key);
+
+        ival += amount;
+
+        SetInteger(type, "", key, ival);
     }
 
-    public void decr(String type, String key, int amount) {
-        int ival = this.GetInteger(type, "", key);
-        this.SetInteger(type, "", key, ival-=amount);
+    public void decr(String type, String key, int amount)
+    {
+        int ival = GetInteger(type, "", key);
+
+        ival -= amount;
+
+        SetInteger(type, "", key, ival);
     }
-
-    private static class IniFile {
-        protected HashMap<String, HashMap<String, String>> data = new HashMap();
-
-        private IniFile() {
-        }
-    }
-
 }
-

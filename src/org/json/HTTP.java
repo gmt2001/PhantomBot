@@ -1,23 +1,3 @@
-/* 
- * Copyright (C) 2015 www.phantombot.net
- *
- * Credits: mast3rplan, gmt2001, PhantomIndex, GloriousEggroll
- * gloriouseggroll@gmail.com, phantomindex@gmail.com
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
 package org.json;
 
 /*
@@ -49,7 +29,7 @@ import java.util.Iterator;
 /**
  * Convert an HTTP header to a JSONObject and back.
  * @author JSON.org
- * @version 2014-05-03
+ * @version 2010-12-24
  */
 public class HTTP {
 
@@ -145,9 +125,9 @@ public class HTTP {
      *  information.
      */
     public static String toString(JSONObject jo) throws JSONException {
-        Iterator<String>    keys = jo.keys();
-        String              string;
-        StringBuilder       sb = new StringBuilder();
+        Iterator     keys = jo.keys();
+        String       string;
+        StringBuffer sb = new StringBuffer();
         if (jo.has("Status-Code") && jo.has("Reason-Phrase")) {
             sb.append(jo.getString("HTTP-Version"));
             sb.append(' ');
@@ -167,7 +147,7 @@ public class HTTP {
         }
         sb.append(CRLF);
         while (keys.hasNext()) {
-            string = keys.next();
+            string = keys.next().toString();
             if (!"HTTP-Version".equals(string)      && !"Status-Code".equals(string) &&
                     !"Reason-Phrase".equals(string) && !"Method".equals(string) &&
                     !"Request-URI".equals(string)   && !jo.isNull(string)) {

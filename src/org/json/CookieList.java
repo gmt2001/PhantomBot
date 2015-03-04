@@ -1,23 +1,3 @@
-/* 
- * Copyright (C) 2015 www.phantombot.net
- *
- * Credits: mast3rplan, gmt2001, PhantomIndex, GloriousEggroll
- * gloriouseggroll@gmail.com, phantomindex@gmail.com
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
 package org.json;
 
 /*
@@ -49,7 +29,7 @@ import java.util.Iterator;
 /**
  * Convert a web browser cookie list string to a JSONObject and back.
  * @author JSON.org
- * @version 2014-05-03
+ * @version 2010-12-24
  */
 public class CookieList {
 
@@ -78,6 +58,7 @@ public class CookieList {
         return jo;
     }
 
+
     /**
      * Convert a JSONObject into a cookie list. A cookie list is a sequence
      * of name/value pairs. The names are separated from the values by '='.
@@ -88,12 +69,12 @@ public class CookieList {
      * @throws JSONException
      */
     public static String toString(JSONObject jo) throws JSONException {
-        boolean             b = false;
-        Iterator<String>    keys = jo.keys();
-        String              string;
-        StringBuilder sb = new StringBuilder();
+        boolean      b = false;
+        Iterator     keys = jo.keys();
+        String       string;
+        StringBuffer sb = new StringBuffer();
         while (keys.hasNext()) {
-            string = keys.next();
+            string = keys.next().toString();
             if (!jo.isNull(string)) {
                 if (b) {
                     sb.append(';');

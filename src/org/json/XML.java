@@ -1,23 +1,3 @@
-/* 
- * Copyright (C) 2015 www.phantombot.net
- *
- * Credits: mast3rplan, gmt2001, PhantomIndex, GloriousEggroll
- * gloriouseggroll@gmail.com, phantomindex@gmail.com
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
 package org.json;
 
 /*
@@ -46,40 +26,41 @@ SOFTWARE.
 
 import java.util.Iterator;
 
+
 /**
  * This provides static methods to convert an XML text into a JSONObject,
  * and to covert a JSONObject into an XML text.
  * @author JSON.org
- * @version 2014-05-03
+ * @version 2013-11-12
  */
 public class XML {
 
     /** The Character '&amp;'. */
-    public static final Character AMP   = '&';
+    public static final Character AMP   = new Character('&');
 
     /** The Character '''. */
-    public static final Character APOS  = '\'';
+    public static final Character APOS  = new Character('\'');
 
     /** The Character '!'. */
-    public static final Character BANG  = '!';
+    public static final Character BANG  = new Character('!');
 
     /** The Character '='. */
-    public static final Character EQ    = '=';
+    public static final Character EQ    = new Character('=');
 
     /** The Character '>'. */
-    public static final Character GT    = '>';
+    public static final Character GT    = new Character('>');
 
     /** The Character '&lt;'. */
-    public static final Character LT    = '<';
+    public static final Character LT    = new Character('<');
 
     /** The Character '?'. */
-    public static final Character QUEST = '?';
+    public static final Character QUEST = new Character('?');
 
     /** The Character '"'. */
-    public static final Character QUOT  = '"';
+    public static final Character QUOT  = new Character('"');
 
     /** The Character '/'. */
-    public static final Character SLASH = '/';
+    public static final Character SLASH = new Character('/');
 
     /**
      * Replace special characters with XML escapes:
@@ -93,7 +74,7 @@ public class XML {
      * @return The escaped string.
      */
     public static String escape(String string) {
-        StringBuilder sb = new StringBuilder(string.length());
+        StringBuffer sb = new StringBuffer();
         for (int i = 0, length = string.length(); i < length; i++) {
             char c = string.charAt(i);
             switch (c) {
@@ -122,7 +103,7 @@ public class XML {
     /**
      * Throw an exception if the string contains whitespace.
      * Whitespace is not allowed in tagNames and attributes.
-     * @param string A string.
+     * @param string
      * @throws JSONException
      */
     public static void noSpace(String string) throws JSONException {
@@ -398,15 +379,15 @@ public class XML {
      */
     public static String toString(Object object, String tagName)
             throws JSONException {
-        StringBuilder       sb = new StringBuilder();
-        int                 i;
-        JSONArray           ja;
-        JSONObject          jo;
-        String              key;
-        Iterator<String>    keys;
-        int                 length;
-        String              string;
-        Object              value;
+        StringBuffer sb = new StringBuffer();
+        int          i;
+        JSONArray    ja;
+        JSONObject   jo;
+        String       key;
+        Iterator     keys;
+        int          length;
+        String       string;
+        Object       value;
         if (object instanceof JSONObject) {
 
 // Emit <tagName>
@@ -422,12 +403,16 @@ public class XML {
             jo = (JSONObject)object;
             keys = jo.keys();
             while (keys.hasNext()) {
-                key = keys.next();
+                key = keys.next().toString();
                 value = jo.opt(key);
                 if (value == null) {
                     value = "";
                 }
-                string = value instanceof String ? (String)value : null;
+                if (value instanceof String) {
+                    string = (String)value;
+                } else {
+                    string = null;
+                }
 
 // Emit content in body
 

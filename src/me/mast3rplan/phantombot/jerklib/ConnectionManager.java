@@ -1,55 +1,14 @@
-/* 
- * Copyright (C) 2015 www.phantombot.net
- *
- * Credits: mast3rplan, gmt2001, PhantomIndex, GloriousEggroll
- * gloriouseggroll@gmail.com, phantomindex@gmail.com
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
 package me.mast3rplan.phantombot.jerklib;
 
-import com.gmt2001.Console.err;
-import com.gmt2001.Console.out;
-import com.gmt2001.UncaughtExceptionHandler;
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-import java.nio.channels.CancelledKeyException;
-import java.nio.channels.SelectableChannel;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
-import java.nio.channels.SocketChannel;
-import java.nio.channels.UnresolvedAddressException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
-import me.mast3rplan.phantombot.jerklib.Connection;
-import me.mast3rplan.phantombot.jerklib.DefaultInternalEventHandler;
-import me.mast3rplan.phantombot.jerklib.Profile;
-import me.mast3rplan.phantombot.jerklib.RequestedConnection;
-import me.mast3rplan.phantombot.jerklib.Session;
-import me.mast3rplan.phantombot.jerklib.WriteRequest;
+import java.nio.channels.*;
+import java.util.*;
+import me.mast3rplan.phantombot.jerklib.Session.State;
+import me.mast3rplan.phantombot.jerklib.events.ErrorEvent;
 import me.mast3rplan.phantombot.jerklib.events.GenericErrorEvent;
 import me.mast3rplan.phantombot.jerklib.events.IRCEvent;
+import me.mast3rplan.phantombot.jerklib.events.IRCEvent.Type;
 import me.mast3rplan.phantombot.jerklib.events.UnresolvedHostnameErrorEvent;
 import me.mast3rplan.phantombot.jerklib.listeners.IRCEventListener;
 import me.mast3rplan.phantombot.jerklib.listeners.WriteRequestListener;
@@ -58,432 +17,730 @@ import me.mast3rplan.phantombot.jerklib.parsers.InternalEventParser;
 import me.mast3rplan.phantombot.jerklib.tasks.Task;
 import me.mast3rplan.phantombot.jerklib.util.IdentServer;
 
-public final class ConnectionManager {
-    final Map<String, Session> sessionMap = Collections.synchronizedMap(new HashMap());
-    final Map<SocketChannel, Session> socChanMap = Collections.synchronizedMap(new HashMap());
-    private final List<WriteRequestListener> writeListeners = Collections.synchronizedList(new ArrayList(1));
+/**
+ * This class is used to control/store Sessions/Connections. Request new
+ * connections with this class.
+ *
+ * @author mohadib
+ */
+public final class ConnectionManager
+{
+    /* maps to index sessions by name and socketchannel */
+
+    final Map<String, Session> sessionMap = Collections.synchronizedMap(new HashMap<String, Session>());
+    final Map<SocketChannel, Session> socChanMap = Collections.synchronizedMap(new HashMap<SocketChannel, Session>());
+
+    /* event listener lists */
+    private final List<WriteRequestListener> writeListeners = Collections.synchronizedList(new ArrayList<WriteRequestListener>(1));
+
+    /* event queues */
     private final List<IRCEvent> eventQueue = new ArrayList<IRCEvent>();
     private final List<IRCEvent> relayQueue = new ArrayList<IRCEvent>();
     private final List<WriteRequest> requestForWriteListenerEventQueue = new ArrayList<WriteRequest>();
-    private IRCEventListener internalEventHandler;
-    private InternalEventParser internalEventParser;
+
+    /* internal event parser */
+    // private InternalEventParser parser = new InternalEventParserImpl(this);
+    private IRCEventListener internalEventHandler = new DefaultInternalEventHandler(this);
+    private InternalEventParser internalEventParser = new DefaultInternalEventParser();
+
+    /* main loop timer */
     private Timer loopTimer;
+
+    /* event dispatch timer */
     private Timer dispatchTimer;
+
+    /* default user profile to use for new connections */
     private Profile defaultProfile;
+
+    /* NIO Selector */
     private Selector selector;
-    private boolean autoReCon;
-    private int reconTriesShort;
-    private long reconnectIntervalShort;
-    private int reconTriesMed;
-    private long reconnectIntervalMed;
-    private int reconTriesLong;
-    private long reconnectIntervalLong;
 
-    public ConnectionManager(Profile defaultProfile) {
-        this.internalEventHandler = new DefaultInternalEventHandler(this);
-        this.internalEventParser = new DefaultInternalEventParser();
-        this.autoReCon = true;
-        this.reconTriesShort = 20;
-        this.reconnectIntervalShort = 30000;
-        this.reconTriesMed = 15;
-        this.reconnectIntervalMed = 120000;
-        this.reconTriesLong = 40;
-        this.reconnectIntervalLong = 300000;
+    /**
+     * Takes a profile to use as default profile for new Connections
+     *
+     * @param defaultProfile default user profile
+     * @see me.mast3rplan.phantombot.jerklib.Profile
+     */
+    public ConnectionManager(Profile defaultProfile)
+    {
         this.defaultProfile = defaultProfile;
-        Thread.setDefaultUncaughtExceptionHandler(UncaughtExceptionHandler.instance());
-        try {
-            this.selector = Selector.open();
+        
+        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
+
+        try
+        {
+            selector = Selector.open();
+        } catch (IOException e)
+        {
+            com.gmt2001.Console.err.printStackTrace(e);
         }
-        catch (IOException e) {
-            err.printStackTrace(e);
-        }
-        this.startMainLoop();
+
+        startMainLoop();
     }
 
-    ConnectionManager() {
-        this.internalEventHandler = new DefaultInternalEventHandler(this);
-        this.internalEventParser = new DefaultInternalEventParser();
-        this.autoReCon = true;
-        this.reconTriesShort = 20;
-        this.reconnectIntervalShort = 30000;
-        this.reconTriesMed = 15;
-        this.reconnectIntervalMed = 120000;
-        this.reconTriesLong = 40;
-        this.reconnectIntervalLong = 300000;
+    /**
+     * This is for testing purposes only. Do not use unless testing.
+     */
+    ConnectionManager()
+    {
     }
+    private boolean autoReCon = true;
+    private int reconTriesShort = 10 * 2;
+    private long reconnectIntervalShort = 30 * 1000;
+    private int reconTriesMed = 30 / 2;
+    private long reconnectIntervalMed = 2 * 60 * 1000;
+    private int reconTriesLong = ((3 * 60) + 20) / 5;
+    private long reconnectIntervalLong = 5 * 60 * 1000;
 
-    public void setAutoReconnect(boolean bool) {
+    public void setAutoReconnect(boolean bool)
+    {
         this.autoReCon = bool;
     }
 
-    public List<Session> getSessions() {
-        return Collections.unmodifiableList(new ArrayList<Session>(this.sessionMap.values()));
+    /**
+     * get a list of Sessions
+     *
+     * @return Session list
+     */
+    public List<Session> getSessions()
+    {
+        return Collections.unmodifiableList(new ArrayList<Session>(sessionMap.values()));
     }
 
-    public Session getSession(String name) {
-        return this.sessionMap.get(name);
+    /**
+     * gets a session by name
+     *
+     * @param name session name - the hostname of the server this session is for
+     * @return Session or null if no Session with name exists
+     */
+    public Session getSession(String name)
+    {
+        return sessionMap.get(name);
     }
 
-    public void reconnectSession(String hostname) {
-        Session s = this.getSession(hostname);
+    public void reconnectSession(String hostname)
+    {
+        Session s = getSession(hostname);
         s.reconnect();
     }
 
-    public void addWriteRequestListener(WriteRequestListener listener) {
-        this.writeListeners.add(listener);
+    /**
+     * Adds a listener to be notified of all writes
+     *
+     * @param listener to be notified
+     */
+    public void addWriteRequestListener(WriteRequestListener listener)
+    {
+        writeListeners.add(listener);
     }
 
-    public List<WriteRequestListener> getWriteListeners() {
-        return Collections.unmodifiableList(this.writeListeners);
+    /**
+     * gets an unmodifiable list of WriteListeners
+     *
+     * @return listeners
+     */
+    public List<WriteRequestListener> getWriteListeners()
+    {
+        return Collections.unmodifiableList(writeListeners);
     }
 
-    public Session requestConnection(String hostName) {
-        return this.requestConnection(hostName, 6667);
+    /**
+     * request a new connection to a host with the default port of 6667
+     *
+     * @param hostName DNS name or IP of host to connect to
+     * @return the {@link me.mast3rplan.phantombot.jerklib.Session} for this
+     * connection
+     */
+    public Session requestConnection(String hostName)
+    {
+        return requestConnection(hostName, 6667);
     }
 
-    public Session requestConnection(String hostName, int port) {
-        return this.requestConnection(hostName, port, this.defaultProfile.clone());
+    /**
+     * request a new connection to a host
+     *
+     * @param hostName DNS name or IP of host to connect to
+     * @param port port to use for connection
+     * @return the {@link me.mast3rplan.phantombot.jerklib.Session} for this
+     * connection
+     */
+    public Session requestConnection(String hostName, int port)
+    {
+        return requestConnection(hostName, port, defaultProfile.clone());
     }
 
-    public Session requestConnection(String hostName, int port, String pass) {
-        return this.requestConnection(hostName, port, pass, this.defaultProfile.clone());
+    public Session requestConnection(String hostName, int port, String pass)
+    {
+        return requestConnection(hostName, port, pass, defaultProfile.clone());
     }
 
-    public Session requestConnection(String hostName, int port, Profile profile) {
+    /**
+     * request a new connection to a host
+     *
+     * @param hostName DNS name or IP of host to connect to
+     * @param port port to use for connection
+     * @param profile profile to use for this connection
+     * @return the {@link me.mast3rplan.phantombot.jerklib.Session} for this
+     * connection
+     */
+    public Session requestConnection(String hostName, int port, Profile profile)
+    {
         RequestedConnection rCon = new RequestedConnection(hostName, port, profile);
+
         Session session = new Session(rCon, this);
-        session.setInternalParser(this.internalEventParser);
-        this.sessionMap.put(hostName, session);
-        new IdentServer(this.defaultProfile.getName());
+        session.setInternalParser(internalEventParser);
+        sessionMap.put(hostName, session);
+
+        new IdentServer(defaultProfile.getName());
+
         return session;
     }
 
-    public Session requestConnection(String hostName, int port, String pass, Profile profile) {
+    public Session requestConnection(String hostName, int port, String pass, Profile profile)
+    {
         RequestedConnection rCon = new RequestedConnection(hostName, port, pass, profile);
+
         Session session = new Session(rCon, this);
-        session.setInternalParser(this.internalEventParser);
-        this.sessionMap.put(hostName, session);
-        new IdentServer(this.defaultProfile.getName());
+        session.setInternalParser(internalEventParser);
+        sessionMap.put(hostName, session);
+
+        new IdentServer(defaultProfile.getName());
+
         return session;
     }
 
-    public synchronized void quit(String quitMsg) {
-        this.loopTimer.cancel();
-        this.dispatchTimer.cancel();
-        for (Session session : new ArrayList<Session>(this.sessionMap.values())) {
+    /**
+     * Closes all connections and shuts down manager
+     *
+     * @param quitMsg quit message
+     */
+    public synchronized void quit(String quitMsg)
+    {
+
+        loopTimer.cancel();
+
+        dispatchTimer.cancel();
+
+        for (Session session : new ArrayList<Session>(sessionMap.values()))
+        {
             session.close(quitMsg);
         }
-        this.sessionMap.clear();
-        this.socChanMap.clear();
-        try {
-            this.selector.close();
+
+        sessionMap.clear();
+
+        socChanMap.clear();
+
+        try
+        {
+            selector.close();
+        } catch (IOException e)
+        {
+            com.gmt2001.Console.err.printStackTrace(e);
         }
-        catch (IOException e) {
-            err.printStackTrace(e);
-        }
+
     }
 
-    public synchronized void quit() {
-        this.quit("");
+    /**
+     * Closes all Sessions and exits library
+     */
+    public synchronized void quit()
+    {
+        quit("");
     }
 
-    public Profile getDefaultProfile() {
-        return this.defaultProfile;
+    /**
+     * gets the default profile used for new connections
+     *
+     * @return default profile
+     */
+    public Profile getDefaultProfile()
+    {
+        return defaultProfile;
     }
 
-    public void setDefaultProfile(Profile profile) {
+    /**
+     * sets the default profile to use for new connections
+     *
+     * @param profile default profile to use for connections
+     */
+    public void setDefaultProfile(Profile profile)
+    {
         this.defaultProfile = profile;
     }
 
-    public void setDefaultInternalEventHandler(IRCEventListener handler) {
-        this.internalEventHandler = handler;
+    /**
+     * Sets the InternalEventHandler to use for this Session. This
+     * IRCEventListener is responsible for getting internal house keeping done -
+     * like nick caches, channel caches. This Listener is also responsible for
+     * redispatching events to other listeners if you choose to.
+     *
+     * @param handler
+     * @see me.mast3rplan.phantombot.jerklib.listeners.IRCEventListener
+     * @see DefaultInternalEventHandler
+     */
+    public void setDefaultInternalEventHandler(IRCEventListener handler)
+    {
+        internalEventHandler = handler;
     }
 
-    public IRCEventListener getDefaultEventHandler() {
-        return this.internalEventHandler;
+    /**
+     * Gets the InternalEventHandler to use for this Session.
+     *
+     * @return default Event Handler
+     */
+    public IRCEventListener getDefaultEventHandler()
+    {
+        return internalEventHandler;
     }
 
-    public void setDefaultInternalEventParser(InternalEventParser parser) {
-        this.internalEventParser = parser;
+    /**
+     * Set the InternalEventParser used for this Session.
+     *
+     * @param parser
+     */
+    public void setDefaultInternalEventParser(InternalEventParser parser)
+    {
+        internalEventParser = parser;
     }
 
-    public InternalEventParser getDefaultInternalEventParser() {
-        return this.internalEventParser;
+    /**
+     * Get the InternalEventParser used for this Session.
+     *
+     * @return InternalEventParser for Session
+     */
+    public InternalEventParser getDefaultInternalEventParser()
+    {
+        return internalEventParser;
     }
 
-    void removeSession(Session session) {
-        this.sessionMap.remove(session.getRequestedConnection().getHostName());
-        Iterator<Session> it = this.socChanMap.values().iterator();
-        while (it.hasNext()) {
-            if (!it.next().equals(session)) continue;
-            it.remove();
+    /**
+     * Remove a session
+     *
+     * @param session
+     */
+    void removeSession(Session session)
+    {
+        sessionMap.remove(session.getRequestedConnection().getHostName());
+        for (Iterator<Session> it = socChanMap.values().iterator(); it.hasNext();)
+        {
+            if (it.next().equals(session))
+            {
+                it.remove();
+                return;
+            }
+        }
+    }
+
+    /**
+     * Add an event to the EventQueue to be parsed and dispatched to Listeners
+     *
+     * @param event
+     */
+    void addToEventQueue(IRCEvent event)
+    {
+        eventQueue.add(event);
+    }
+
+    /**
+     * Add an event to be dispatched to Listeners(will not be parsed)
+     *
+     * @param event
+     */
+    void addToRelayList(IRCEvent event)
+    {
+        if (event == null)
+        {
+            com.gmt2001.Console.err.printStackTrace(new Exception());
+            quit("Null Pointers ?? In my Code??! :(");
             return;
         }
-    }
 
-    void addToEventQueue(IRCEvent event) {
-        this.eventQueue.add(event);
-    }
-
-    void addToRelayList(IRCEvent event) {
-        if (event == null) {
-            err.printStackTrace(new Exception());
-            this.quit("Null Pointers ?? In my Code??! :(");
-            return;
-        }
-        List<IRCEvent> list = this.relayQueue;
-        synchronized (list) {
-            this.relayQueue.add(event);
+        synchronized (relayQueue)
+        {
+            relayQueue.add(event);
         }
     }
 
-    void startMainLoop() {
-        this.dispatchTimer = new Timer();
-        this.loopTimer = new Timer();
-        TimerTask dispatchTask = new TimerTask(){
+    /**
+     * Starts a Thread for IO/Parsing/Checking-Making Connections Start another
+     * Thread for relaying events
+     */
+    void startMainLoop()
+    {
+        dispatchTimer = new Timer();
 
+        loopTimer = new Timer();
+
+        TimerTask dispatchTask = new TimerTask()
+        {
             @Override
-            public void run() {
-                ConnectionManager.this.relayEvents();
-                ConnectionManager.this.notifyWriteListeners();
+            public void run()
+            {
+                relayEvents();
+                notifyWriteListeners();
             }
         };
-        TimerTask loopTask = new TimerTask(){
 
+        TimerTask loopTask = new TimerTask()
+        {
             @Override
-            public void run() {
-                ConnectionManager.this.makeConnections();
-                ConnectionManager.this.doNetworkIO();
-                ConnectionManager.this.parseEvents();
-                ConnectionManager.this.checkServerConnections();
+            public void run()
+            {
+                makeConnections();
+                doNetworkIO();
+                parseEvents();
+                checkServerConnections();
             }
         };
-        this.loopTimer.schedule(loopTask, 0, 200);
-        this.dispatchTimer.schedule(dispatchTask, 0, 200);
+
+        loopTimer.schedule(loopTask, 0, 200);
+
+        dispatchTimer.schedule(dispatchTask, 0, 200);
     }
 
-    void doNetworkIO() {
-        try {
-            if (this.selector.selectNow() > 0) {
-                Iterator<SelectionKey> it = this.selector.selectedKeys().iterator();
-                while (it.hasNext()) {
+    /**
+     * Makes read and write request via Connections when they can be done
+     * without blocking.
+     */
+    void doNetworkIO()
+    {
+        try
+        {
+            if (selector.selectNow() > 0)
+            {
+                Iterator<SelectionKey> it = selector.selectedKeys().iterator();
+                while (it.hasNext())
+                {
                     SelectionKey key = it.next();
-                    Session session = this.socChanMap.get(key.channel());
+                    Session session = socChanMap.get(key.channel());
                     it.remove();
-                    try {
-                        if (!key.isValid()) continue;
-                        if (key.isReadable()) {
-                            this.socChanMap.get(key.channel()).getConnection().read();
+
+                    try
+                    {
+                        if (!key.isValid())
+                        {
+                            continue;
                         }
-                        if (key.isWritable()) {
-                            this.socChanMap.get(key.channel()).getConnection().doWrites();
+
+                        if (key.isReadable())
+                        {
+                            socChanMap.get(key.channel()).getConnection().read();
                         }
-                        if (!key.isConnectable()) continue;
-                        this.finishConnection(key);
-                    }
-                    catch (CancelledKeyException ke) {
+                        if (key.isWritable())
+                        {
+                            socChanMap.get(key.channel()).getConnection().doWrites();
+                        }
+                        if (key.isConnectable())
+                        {
+                            finishConnection(key);
+                        }
+                    } catch (CancelledKeyException ke)
+                    {
                         session.disconnected(ke);
                     }
                 }
             }
-        }
-        catch (IOException e) {
-            err.printStackTrace(e);
+        } catch (IOException e)
+        {
+            com.gmt2001.Console.err.printStackTrace(e);
         }
     }
 
-    void finishConnection(SelectionKey key) {
-        SocketChannel chan = (SocketChannel)key.channel();
-        Session session = this.socChanMap.get(chan);
-        if (chan.isConnectionPending()) {
-            try {
-                if (session.getConnection() == null) {
+    /**
+     * Attempts to finish a connection
+     *
+     * @param key
+     */
+    void finishConnection(SelectionKey key)
+    {
+        SocketChannel chan = (SocketChannel) key.channel();
+        Session session = socChanMap.get(chan);
+
+        if (chan.isConnectionPending())
+        {
+            try
+            {
+                if (session.getConnection() == null)
+                {
                     session.markForRemoval();
-                } else if (session.getConnection().finishConnect()) {
+                } else if (session.getConnection().finishConnect())
+                {
                     session.halfConnected();
                     session.login();
-                } else {
+                } else
+                {
                     session.connecting();
                 }
-            }
-            catch (IOException e) {
-                GenericErrorEvent error = new GenericErrorEvent(e.getMessage(), session, e);
-                this.addToRelayList(error);
+            } catch (IOException e)
+            {
+                ErrorEvent error = new GenericErrorEvent(e.getMessage(), session, e);
+                addToRelayList(error);
                 session.markForRemoval();
                 key.cancel();
-                err.printStackTrace(e);
+                com.gmt2001.Console.err.printStackTrace(e);
             }
         }
     }
 
-    void checkServerConnections() {
-        Map<String, Session> map = this.sessionMap;
-        synchronized (map) {
-            Iterator<Session> it = this.sessionMap.values().iterator();
-            while (it.hasNext()) {
+    /**
+     * Check livelyness of server connections
+     */
+    void checkServerConnections()
+    {
+        synchronized (sessionMap)
+        {
+            for (Iterator<Session> it = sessionMap.values().iterator(); it.hasNext();)
+            {
                 Session session = it.next();
-                Session.State state = session.getState();
-                if (state == Session.State.MARKED_FOR_REMOVAL) {
+                State state = session.getState();
+
+                if (state == State.MARKED_FOR_REMOVAL)
+                {
                     it.remove();
-                    continue;
+                } else if (state == State.NEED_TO_PING)
+                {
+                    session.getConnection().ping();
                 }
-                if (state != Session.State.NEED_TO_PING) continue;
-                session.getConnection().ping();
             }
         }
     }
 
-    void parseEvents() {
-        List<IRCEvent> list = this.eventQueue;
-        synchronized (list) {
-            if (this.eventQueue.isEmpty()) {
+    /**
+     * Parse Events
+     */
+    void parseEvents()
+    {
+        synchronized (eventQueue)
+        {
+            if (eventQueue.isEmpty())
+            {
                 return;
             }
-            for (IRCEvent event : this.eventQueue) {
+            for (IRCEvent event : eventQueue)
+            {
                 IRCEvent newEvent = event.getSession().getInternalEventParser().receiveEvent(event);
-                this.internalEventHandler.receiveEvent(newEvent);
+                internalEventHandler.receiveEvent(newEvent);
             }
-            this.eventQueue.clear();
+            eventQueue.clear();
         }
     }
 
-    Map<IRCEvent.Type, List<Task>> removeCanceled(Session session) {
-        Map<IRCEvent.Type, List<Task>> tasks;
-        Map<IRCEvent.Type, List<Task>> map = tasks = session.getTasks();
-        synchronized (map) {
-            for (List<Task> thisTasks : tasks.values()) {
-                Iterator<Task> x = thisTasks.iterator();
-                while (x.hasNext()) {
+    /**
+     * Remove Cancelled Tasks for a Session
+     *
+     * @param session
+     * @return remanding valid tasks
+     */
+    Map<Type, List<Task>> removeCanceled(Session session)
+    {
+        Map<Type, List<Task>> tasks = session.getTasks();
+        synchronized (tasks)
+        {
+            for (Iterator<List<Task>> it = tasks.values().iterator(); it.hasNext();)
+            {
+                List<Task> thisTasks = it.next();
+                for (Iterator<Task> x = thisTasks.iterator(); x.hasNext();)
+                {
                     Task rmTask = x.next();
-                    if (!rmTask.isCanceled()) continue;
-                    x.remove();
+                    if (rmTask.isCanceled())
+                    {
+                        x.remove();
+                    }
                 }
             }
         }
         return tasks;
     }
 
-    void relayEvents() {
-        ArrayList<IRCEvent> events = new ArrayList<IRCEvent>();
-        ArrayList<IRCEventListener> templisteners = new ArrayList<IRCEventListener>();
-        HashMap<IRCEvent.Type, List<Task>> tempTasks = new HashMap<IRCEvent.Type, List<Task>>();
-        List<IRCEvent> list = this.relayQueue;
-        synchronized (list) {
-            events.addAll(this.relayQueue);
-            this.relayQueue.clear();
+    /**
+     * Relay events to Listeners/Tasks
+     */
+    void relayEvents()
+    {
+        List<IRCEvent> events = new ArrayList<IRCEvent>();
+        List<IRCEventListener> templisteners = new ArrayList<IRCEventListener>();
+        Map<Type, List<Task>> tempTasks = new HashMap<Type, List<Task>>();
+
+        synchronized (relayQueue)
+        {
+            events.addAll(relayQueue);
+            relayQueue.clear();
         }
-        for (IRCEvent event : events) {
-            Collection<IRCEventListener> listeners;
-            List nullTasks;
+
+        for (IRCEvent event : events)
+        {
             Session s = event.getSession();
-            if (s == null) continue;
-            Collection<IRCEventListener> collection = listeners = s.getIRCEventListeners();
-            synchronized (collection) {
+
+            // if session is null , this means the session has been removed or
+            // quit() in Session has been called , but not before a few
+            // events could queue up for that session. So we should continue
+            // to the next event
+            if (s == null)
+            {
+                continue;
+            }
+
+            Collection<IRCEventListener> listeners = s.getIRCEventListeners();
+            synchronized (listeners)
+            {
                 templisteners.addAll(listeners);
             }
-            tempTasks.putAll(this.removeCanceled(s));
-            List typeTasks = (List)tempTasks.get((Object)event.getType());
-            if (typeTasks != null) {
+
+            tempTasks.putAll(removeCanceled(s));
+
+            List<Task> typeTasks = tempTasks.get(event.getType());
+            if (typeTasks != null)
+            {
                 templisteners.addAll(typeTasks);
             }
-            if ((nullTasks = (List)tempTasks.get(null)) != null) {
+
+            List<Task> nullTasks = tempTasks.get(null);
+            if (nullTasks != null)
+            {
                 templisteners.addAll(nullTasks);
             }
-            for (IRCEventListener listener : templisteners) {
-                try {
+
+            for (IRCEventListener listener : templisteners)
+            {
+                try
+                {
                     listener.receiveEvent(event);
-                }
-                catch (Exception e) {
-                    err.println("me.mast3rplan.phantombot.jerklib:Cought Client Exception");
-                    err.printStackTrace(e);
+                } catch (Exception e)
+                {
+                    com.gmt2001.Console.err.println("me.mast3rplan.phantombot.jerklib:Cought Client Exception");
+                    com.gmt2001.Console.err.printStackTrace(e);
                 }
             }
+
             templisteners.clear();
             tempTasks.clear();
         }
     }
 
-    void notifyWriteListeners() {
-        ArrayList<WriteRequestListener> list = new ArrayList<WriteRequestListener>();
-        ArrayList<WriteRequest> wRequests = new ArrayList<WriteRequest>();
-        List list2 = this.requestForWriteListenerEventQueue;
-        synchronized (list2) {
-            if (this.requestForWriteListenerEventQueue.isEmpty()) {
+    /**
+     * Relay write requests to listeners
+     */
+    void notifyWriteListeners()
+    {
+        List<WriteRequestListener> list = new ArrayList<WriteRequestListener>();
+        List<WriteRequest> wRequests = new ArrayList<WriteRequest>();
+
+        synchronized (requestForWriteListenerEventQueue)
+        {
+            if (requestForWriteListenerEventQueue.isEmpty())
+            {
                 return;
             }
-            wRequests.addAll(this.requestForWriteListenerEventQueue);
-            this.requestForWriteListenerEventQueue.clear();
+            wRequests.addAll(requestForWriteListenerEventQueue);
+            requestForWriteListenerEventQueue.clear();
         }
-        list2 = this.writeListeners;
-        synchronized (list2) {
-            list.addAll(this.writeListeners);
+
+        synchronized (writeListeners)
+        {
+            list.addAll(writeListeners);
         }
-        for (WriteRequestListener listener : list) {
-            for (WriteRequest request : wRequests) {
+
+        for (WriteRequestListener listener : list)
+        {
+            for (WriteRequest request : wRequests)
+            {
                 listener.receiveEvent(request);
             }
         }
     }
 
-    void makeConnections() {
-        Map<String, Session> map = this.sessionMap;
-        synchronized (map) {
-            for (Session session : this.sessionMap.values()) {
-                String msg;
-                Session.State state = session.getState();
-                if (state == Session.State.NEED_TO_RECONNECT) {
+    /**
+     * Make COnnections
+     */
+    void makeConnections()
+    {
+        synchronized (sessionMap)
+        {
+            for (Iterator<Session> it = sessionMap.values().iterator(); it.hasNext();)
+            {
+                Session session = it.next();
+                State state = session.getState();
+
+                if (state == State.NEED_TO_RECONNECT)
+                {
                     session.disconnected(new Exception("Connection Timeout Possibly"));
                 }
-                if (state != Session.State.DISCONNECTED || session.isClosing) continue;
-                long last = session.getLastRetry();
-                long current = System.currentTimeMillis();
-                long reconnectIntervalCur = this.reconnectIntervalShort;
-                int reconTriesCur = this.reconTriesShort;
-                if (session.getRetries() >= this.reconTriesShort) {
-                    if (session.getRetries() < this.reconTriesShort + this.reconTriesMed) {
-                        reconnectIntervalCur = this.reconnectIntervalMed;
-                        reconTriesCur = this.reconTriesMed;
-                    } else {
-                        reconnectIntervalCur = this.reconnectIntervalLong;
-                        reconTriesCur = this.reconTriesLong;
+
+                if (state == State.DISCONNECTED && !session.isClosing)
+                {
+                    long last = session.getLastRetry();
+                    long current = System.currentTimeMillis();
+                    
+                    long reconnectIntervalCur = reconnectIntervalShort;
+                    int reconTriesCur = reconTriesShort;
+                    
+                    if (session.getRetries() >= reconTriesShort)
+                    {
+                        if (session.getRetries() < (reconTriesShort + reconTriesMed))
+                        {
+                            reconnectIntervalCur = reconnectIntervalMed;
+                            reconTriesCur = reconTriesMed;
+                        } else 
+                        {
+                            reconnectIntervalCur = reconnectIntervalLong;
+                            reconTriesCur = reconTriesLong;
+                        }
                     }
-                }
-                if (last > 0 && current - last < reconnectIntervalCur) continue;
-                try {
-                    if (!(this.autoReCon && session.getRetries() < reconTriesCur)) {
-                        session.markForRemoval();
-                        err.println("Retries up, marked for removal");
+
+                    if (last > 0 && current - last < reconnectIntervalCur)
+                    {
                         continue;
                     }
-                    session.retried();
-                    this.connect(session);
-                }
-                catch (UnresolvedAddressException e) {
-                    msg = e.getMessage() == null ? e.toString() : e.getMessage();
-                    UnresolvedHostnameErrorEvent error = new UnresolvedHostnameErrorEvent(session, msg, session.getRequestedConnection().getHostName(), e);
-                    this.addToRelayList(error);
-                    session.disconnected(e);
-                }
-                catch (IOException e) {
-                    msg = e.getMessage() == null ? e.toString() : e.getMessage();
-                    GenericErrorEvent error = new GenericErrorEvent(msg, session, e);
-                    this.addToRelayList(error);
-                    session.disconnected(e);
+
+                    try
+                    {
+                        if (!autoReCon || session.getRetries() >= reconTriesCur)
+                        {
+                            session.markForRemoval();
+                            com.gmt2001.Console.err.println("Retries up, marked for removal");
+                        } else
+                        {
+                            session.retried();
+                            connect(session);
+                        }
+                    } catch (UnresolvedAddressException e)
+                    {
+                        String msg = e.getMessage() == null ? e.toString() : e.getMessage();
+                        ErrorEvent error = new UnresolvedHostnameErrorEvent(session, msg, session.getRequestedConnection().getHostName(), e);
+                        addToRelayList(error);
+                        session.disconnected(e);
+                    } catch (IOException e)
+                    {
+                        String msg = e.getMessage() == null ? e.toString() : e.getMessage();
+                        ErrorEvent error = new GenericErrorEvent(msg, session, e);
+                        addToRelayList(error);
+                        session.disconnected(e);
+                    }
                 }
             }
         }
     }
 
-    void connect(Session session) throws IOException {
+    /**
+     * Connect a Session to a server
+     *
+     * @param session
+     * @throws java.io.IOException
+     */
+    void connect(Session session) throws IOException
+    {
         SocketChannel sChannel = SocketChannel.open();
+
         sChannel.configureBlocking(false);
-        out.println("Connecting to " + session.getRequestedConnection().getHostName() + ":" + session.getRequestedConnection().getPort());
+
+        com.gmt2001.Console.out.println("Connecting to " + session.getRequestedConnection().getHostName() + ":" + session.getRequestedConnection().getPort());
         sChannel.connect(new InetSocketAddress(session.getRequestedConnection().getHostName(), session.getRequestedConnection().getPort()));
-        sChannel.register(this.selector, sChannel.validOps());
+
+        sChannel.register(selector, sChannel.validOps());
+
         Connection con = new Connection(this, sChannel, session);
         session.setConnection(con);
-        this.socChanMap.put(sChannel, session);
+
+        socChanMap.put(sChannel, session);
     }
-
 }
-

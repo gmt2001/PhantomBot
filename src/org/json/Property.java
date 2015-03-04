@@ -1,23 +1,3 @@
-/* 
- * Copyright (C) 2015 www.phantombot.net
- *
- * Credits: mast3rplan, gmt2001, PhantomIndex, GloriousEggroll
- * gloriouseggroll@gmail.com, phantomindex@gmail.com
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
 package org.json;
 
 /*
@@ -51,7 +31,7 @@ import java.util.Properties;
 /**
  * Converts a Property file data into JSONObject and back.
  * @author JSON.org
- * @version 2014-05-03
+ * @version 2013-05-23
  */
 public class Property {
     /**
@@ -70,6 +50,7 @@ public class Property {
             }
         }
         return jo;
+
     }
 
     /**
@@ -81,9 +62,10 @@ public class Property {
     public static Properties toProperties(JSONObject jo)  throws JSONException {
         Properties  properties = new Properties();
         if (jo != null) {
-            Iterator<String> keys = jo.keys();
+            Iterator keys = jo.keys();
+
             while (keys.hasNext()) {
-                String name = keys.next();
+                String name = keys.next().toString();
                 properties.put(name, jo.getString(name));
             }
         }

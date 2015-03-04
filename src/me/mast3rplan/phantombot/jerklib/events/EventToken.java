@@ -1,157 +1,274 @@
-/* 
- * Copyright (C) 2015 www.phantombot.net
- *
- * Credits: mast3rplan, gmt2001, PhantomIndex, GloriousEggroll
- * gloriouseggroll@gmail.com, phantomindex@gmail.com
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
 package me.mast3rplan.phantombot.jerklib.events;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class EventToken {
+/**
+ * A Class to parse a line of IRC text
+ * <p/>
+ * <
+ * pre> &lt;message&gt; ::= [':' &lt;prefix&gt; &lt;SPACE&gt; ] &lt;command&gt;
+ * &lt;params&gt; &lt;crlf&gt; &lt;prefix&gt; ::= &lt;servername&gt; |
+ * &lt;nick&gt; [ '!' &lt;user&gt; ] [ '
+ *
+ * @' &lt;host&gt; ] &lt;command&gt; ::= &lt;letter&gt; { &lt;letter&gt; } |
+ * &lt;number&gt; &lt;number&gt; &lt;number&gt; &lt;SPACE&gt; ::= ' ' { ' ' }
+ * &lt;params&gt; ::= &lt;SPACE&gt; [ ':' &lt;trailing&gt; | &lt;middle&gt;
+ * &lt;params&gt; ]
+ *
+ * &lt;middle&gt; ::= &lt;Any *non-empty* sequence of octets not including SPACE
+ * or NUL or CR or LF, the first of which may not be ':'&gt; &lt;trailing&gt;
+ * ::= &lt;Any, possibly *empty*, sequence of octets not including NUL or CR or
+ * LF&gt;
+ * </pre>
+ *
+ * @author mohadib
+ */
+public class EventToken
+{
+
     private final String data;
-    private String prefix = "";
-    private String command = "";
+    private String prefix = "", command = "";
     private List<String> arguments = new ArrayList<String>();
     private int offset = 0;
 
-    public EventToken(String data) {
+    /**
+     * Create a new EventToken
+     *
+     * @param data to parse
+     */
+    public EventToken(String data)
+    {
         this.data = data;
-        this.parse();
+        parse();
     }
 
-    private void parse() {
-        int idx;
-        if (this.data.length() == 0) {
+    /**
+     * Parse message
+     */
+    private void parse()
+    {
+        if (data.length() == 0)
+        {
             return;
         }
-        if (this.data.startsWith(":")) {
-            this.extractPrefix(this.data);
-            this.incTillChar();
+
+        //see if message has prefix
+        if (data.startsWith(":"))
+        {
+            extractPrefix(data);
+            incTillChar();
         }
-        if (this.data.length() > this.offset && (idx = this.data.indexOf(" ", this.offset)) >= 0) {
-            this.command = this.data.substring(this.offset, idx);
-            this.offset+=this.command.length();
+
+        //get command
+        if (data.length() > offset)
+        {
+            int idx = data.indexOf(" ", offset);
+
+            if (idx >= 0)
+            {
+                command = data.substring(offset, idx);
+                offset += command.length();
+            }
         }
-        this.incTillChar();
-        this.extractArguments();
+
+        incTillChar();
+        extractArguments();
     }
 
-    private void extractArguments() {
+    /**
+     * Extract arguments from message
+     */
+    private void extractArguments()
+    {
         String argument = "";
-        for (int i = this.offset; i < this.data.length(); ++i) {
-            if (!Character.isWhitespace(this.data.charAt(i))) {
-                if ((argument = argument + this.data.charAt(i)).length() == 1 && argument.equals(":")) {
-                    argument = this.data.substring(i + 1);
-                    this.arguments.add(argument);
+        for (int i = offset; i < data.length(); i++)
+        {
+            if (!Character.isWhitespace(data.charAt(i)))
+            {
+                argument += data.charAt(i);
+
+                //if argument.equals(":") then arg is everything till EOL
+                if (argument.length() == 1 && argument.equals(":"))
+                {
+                    argument = data.substring(i + 1);
+                    arguments.add(argument);
                     return;
                 }
-                ++this.offset;
-                continue;
+                offset++;
+            } else
+            {
+                if (argument.length() > 0)
+                {
+                    arguments.add(argument);
+                    argument = "";
+                }
+                offset++;
             }
-            if (argument.length() > 0) {
-                this.arguments.add(argument);
-                argument = "";
-            }
-            ++this.offset;
         }
-        if (argument.length() != 0) {
-            this.arguments.add(argument);
+
+        if (argument.length() != 0)
+        {
+            arguments.add(argument);
         }
     }
 
-    private void incTillChar() {
-        for (int i = this.offset; i < this.data.length(); ++i) {
-            if (!Character.isWhitespace(this.data.charAt(i))) {
+    /**
+     * Increment offset until a non-whitespace char is found
+     */
+    private void incTillChar()
+    {
+        for (int i = offset; i < data.length(); i++)
+        {
+            if (!Character.isWhitespace(data.charAt(i)))
+            {
                 return;
             }
-            ++this.offset;
+            offset++;
         }
     }
 
-    private void extractPrefix(String data) {
-        this.prefix = data.substring(1, data.indexOf(" "));
-        this.offset+=this.prefix.length() + 1;
+    /**
+     * Extract prefix part of messgae , inc offset
+     *
+     * @param data
+     */
+    private void extractPrefix(String data)
+    {
+        //set prefix - : is at 0
+        prefix = data.substring(1, data.indexOf(" "));
+
+        //increment offset , +1 is for : removed
+        offset += prefix.length() + 1;
     }
 
-    public String getHostName() {
-        int index = this.prefix.indexOf(64);
-        if (index != -1 && index + 1 < this.prefix.length()) {
-            return this.prefix.substring(index + 1);
-        }
-        return "";
-    }
-
-    public String getUserName() {
-        int sindex = this.prefix.indexOf(33);
-        int eindex = this.prefix.indexOf("@");
-        if (eindex == -1) {
-            eindex = this.prefix.length() - 1;
-        }
-        if (sindex != -1 && sindex + 1 < this.prefix.length()) {
-            return this.prefix.substring(sindex + 1, eindex);
-        }
-        return "";
-    }
-
-    public String getNick() {
-        if (this.prefix.indexOf("!") != -1) {
-            return this.prefix.substring(0, this.prefix.indexOf(33));
+    /**
+     * Gets hostname from message
+     *
+     * @return hostname or empty string if hostname could not be parsed
+     */
+    public String getHostName()
+    {
+        int index = prefix.indexOf('@');
+        if (index != -1 && index + 1 < prefix.length())
+        {
+            return prefix.substring(index + 1);
         }
         return "";
     }
 
-    public String prefix() {
-        return this.prefix;
+    /**
+     * Get username from message
+     *
+     * @return username or empty string is username could not be parsed.
+     */
+    public String getUserName()
+    {
+        int sindex = prefix.indexOf('!');
+        int eindex = prefix.indexOf("@");
+        if (eindex == -1)
+        {
+            eindex = prefix.length() - 1;
+        }
+        if (sindex != -1 && sindex + 1 < prefix.length())
+        {
+            return prefix.substring(sindex + 1, eindex);
+        }
+        return "";
     }
 
-    public String command() {
-        return this.command;
+    /**
+     * Get nick from message
+     *
+     * @return nick or empty string if could not be parsed
+     */
+    public String getNick()
+    {
+        if (prefix.indexOf("!") != -1)
+        {
+            return prefix.substring(0, prefix.indexOf('!'));
+        }
+        return "";
     }
 
-    public List<String> args() {
-        return this.arguments;
+    /**
+     * Gets message prefix if any
+     *
+     * @return returns prefix or empty string if no prefix
+     */
+    public String prefix()
+    {
+        return prefix;
     }
 
-    public String arg(int index) {
-        if (index < this.arguments.size()) {
-            return this.arguments.get(index);
+    /**
+     * Gets the command. This will return the same result as numeric() if the
+     * command is a numeric.
+     *
+     * @return the command
+     */
+    public String command()
+    {
+        return command;
+    }
+
+    /**
+     * Gets list of arguments
+     *
+     * @return list of arguments
+     */
+    public List<String> args()
+    {
+        return arguments;
+    }
+
+    /**
+     * Gets an argument
+     *
+     * @param index
+     * @return the argument or null if no argument at that index
+     */
+    public String arg(int index)
+    {
+        if (index < arguments.size())
+        {
+            return arguments.get(index);
         }
         return null;
     }
 
-    public String getRawEventData() {
-        return this.data;
+    /**
+     * Returns raw event data
+     *
+     * @return raw event data
+     */
+    public String getRawEventData()
+    {
+        return data;
     }
 
-    public int numeric() {
+    /**
+     * Get the numeric code of an event.
+     *
+     * @return numeric or -1 if command is not numeric
+     */
+    public int numeric()
+    {
         int i = -1;
-        try {
-            i = Integer.parseInt(this.command);
-        }
-        catch (NumberFormatException e) {
-            // empty catch block
+        try
+        {
+            i = Integer.parseInt(command);
+        } catch (NumberFormatException e)
+        {
         }
         return i;
     }
 
-    public String toString() {
-        return this.data;
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    public String toString()
+    {
+        return data;
     }
 }
-

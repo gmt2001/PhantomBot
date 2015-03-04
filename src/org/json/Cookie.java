@@ -1,23 +1,3 @@
-/* 
- * Copyright (C) 2015 www.phantombot.net
- *
- * Credits: mast3rplan, gmt2001, PhantomIndex, GloriousEggroll
- * gloriouseggroll@gmail.com, phantomindex@gmail.com
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
 package org.json;
 
 /*
@@ -48,7 +28,7 @@ SOFTWARE.
  * Convert a web browser cookie specification to a JSONObject and back.
  * JSON and Cookies are both notations for name/value pairs.
  * @author JSON.org
- * @version 2014-05-03
+ * @version 2010-12-24
  */
 public class Cookie {
 
@@ -65,10 +45,10 @@ public class Cookie {
      * @return       The escaped result.
      */
     public static String escape(String string) {
-        char            c;
-        String          s = string.trim();
-        int             length = s.length();
-        StringBuilder   sb = new StringBuilder(length);
+        char         c;
+        String       s = string.trim();
+        StringBuffer sb = new StringBuffer();
+        int          length = s.length();
         for (int i = 0; i < length; i += 1) {
             c = s.charAt(i);
             if (c < ' ' || c == '+' || c == '%' || c == '=' || c == ';') {
@@ -136,7 +116,7 @@ public class Cookie {
      * @throws JSONException
      */
     public static String toString(JSONObject jo) throws JSONException {
-        StringBuilder sb = new StringBuilder();
+        StringBuffer sb = new StringBuffer();
 
         sb.append(escape(jo.getString("name")));
         sb.append("=");
@@ -169,7 +149,7 @@ public class Cookie {
      */
     public static String unescape(String string) {
         int length = string.length();
-        StringBuilder sb = new StringBuilder(length);
+        StringBuffer sb = new StringBuffer();
         for (int i = 0; i < length; ++i) {
             char c = string.charAt(i);
             if (c == '+') {
