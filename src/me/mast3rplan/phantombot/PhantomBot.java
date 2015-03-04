@@ -41,7 +41,6 @@ import me.mast3rplan.phantombot.musicplayer.MusicWebSocketServer;
 import me.mast3rplan.phantombot.script.Script;
 import me.mast3rplan.phantombot.script.ScriptEventManager;
 import me.mast3rplan.phantombot.script.ScriptManager;
-import me.mast3rplan.phantombot.store.DataStore;
 import me.mast3rplan.phantombot.youtube.YoutubeAPI;
 import org.apache.commons.io.FileUtils;
 
@@ -241,7 +240,6 @@ public class PhantomBot implements Listener
         EventBus.instance().register(this);
         EventBus.instance().register(ScriptEventManager.instance());
 
-        Script.global.defineProperty("db", DataStore.instance(), 0);
         Script.global.defineProperty("inidb", IniStore.instance(), 0);
         Script.global.defineProperty("bancache", bancache, 0);
         Script.global.defineProperty("username", UsernameCache.instance(), 0);

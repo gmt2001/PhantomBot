@@ -2,8 +2,6 @@ var Objects = java.util.Objects;
 var System = java.lang.System;
 var out = Packages.com.gmt2001.Console.out;
 
-var enableRedis2IniConversion = false;
-
 var initscript = $script;
 
 $.tostring = Objects.toString;
@@ -410,11 +408,6 @@ $.loadScript('./util/patternDetector.js');
 $.loadScript('./util/fileSystem.js');
 
 $.logEvent("init.js", 410, "Initializing...");
-
-if (enableRedis2IniConversion && $.inidb.GetBoolean("init", "redis2ini", "converted") == false) {
-    $.logEvent("init.js", 413, "Converting redisdb to inidb...");
-    $.loadScript('./util/redis2inidb.js'); 
-}
 
 $.initialsettings_update = 1;
 if ($.inidb.GetBoolean("init", "initialsettings", "loaded") == false
