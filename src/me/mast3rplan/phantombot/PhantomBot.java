@@ -124,8 +124,8 @@ public class PhantomBot implements Listener
 
         rng = new SecureRandom();
         bancache = new BannedCache();
-        pollResults = new TreeMap();
-        voters = new TreeSet();
+        pollResults = new TreeMap<>();
+        voters = new TreeSet<>();
 
         if (hostname.isEmpty())
         {
