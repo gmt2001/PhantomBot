@@ -60,8 +60,8 @@ $.on('command', function (event) {
             if (points == null) points = 0;
             if (time == null) time = 0;
 
-            var minutes = int((time / 60) % 60);
-            var hours = int(time / 3600);
+            var minutes = parseInt((time / 60) % 60);
+            var hours = parseInt(time / 3600);
 
             timeString = " -- [";
             if (hours != 0) timeString += " " + hours + " Hrs";
@@ -69,7 +69,7 @@ $.on('command', function (event) {
             else timeString += " " + minutes + " Mins";
             timeString += " ]";
 
-            $.say($.username.resolve(points_user) + " has " + int(points) + " " + $.pointname + timeString);
+            $.say($.username.resolve(points_user) + " has " + parseInt(points) + " " + $.pointname + timeString);
         }
 
     }
@@ -112,7 +112,7 @@ $.on('command', function (event) {
 
             action = args[0];
             username = args[1].toLowerCase();
-            points = int(args[2]);
+            points = parseInt(args[2]);
 
             if (action.equalsIgnoreCase("give")) {
                 if ($var.perm_toggle == true) {

@@ -75,7 +75,7 @@ $.getUserGroupId = function(user) {
     user = $.username.resolve(user);
     var group = $.inidb.get('group', user.toLowerCase());
     if(group == null) group = 0;
-    else group = int(group);
+    else group = parseInt(group);
     return group;
 }
  

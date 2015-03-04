@@ -331,7 +331,7 @@ $.on('ircChannelMessage', function(event) {
             if (points == null) {
                 points = 0;
             } else {
-                points = int(points);
+                points = parseInt(points);
             }
            
             if ($var.raffle_price > points) {

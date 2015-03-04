@@ -1,7 +1,3 @@
-$.int = function(i) {
-    return java.lang.Integer(i);
-};
-
 $.say = function(s) {
     $.ssay(s);
 }; 

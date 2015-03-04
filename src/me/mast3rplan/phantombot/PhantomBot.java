@@ -175,6 +175,8 @@ public class PhantomBot implements Listener
                 pid_method.setAccessible(true);
 
                 int pid = (Integer) pid_method.invoke(mgmt);
+                
+                //int pid = Integer.parseInt( ( new File("/proc/self")).getCanonicalFile().getName() ); 
 
                 File f = new File("/var/run/PhantomBot." + this.username.toLowerCase() + ".pid");
 

@@ -338,7 +338,7 @@ $.on('command', function (event) {
             var points = $.inidb.get('points', sender);
 
             if (points == null) points = 0;
-            else points = int(points);
+            else points = parseInt(points);
 
             if ($.addsong_cost > points) {
                 $.say(sender + ", " + " You need " + $.addsong_cost + " " + $.pointname + " to add this song!");
@@ -495,7 +495,7 @@ $.on('command', function (event) {
         if (points == null) {
             points = 0; 
         } else {
-            points = int(points); 
+            points = parseInt(points); 
         }
         
         if ($.vetosong_cost > points) {
