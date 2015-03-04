@@ -20,14 +20,6 @@ $.on('command', function(event) {
             
             commandString = args[0].toLowerCase();
             message = argsString.substring(argsString.indexOf(args[0]) + $.strlen(args[0]) + 1);
-			if ( commandString.length() >= 20 ) {
-				$.say ("That command has too many characters!");
-				return;
-			}
-			if ( message.length() >= 300 ) {
-				$.say ("The message for that command has too many characters!");
-				return;
-			}
             
             if ($.commandExists(commandString) && !$.isCustomCommand(commandString)) {
                 $.say("You can not overwrite a built in command, " + username + "!");

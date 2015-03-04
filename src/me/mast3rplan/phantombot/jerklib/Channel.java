@@ -199,7 +199,7 @@ public class Channel {
       {
         int maxlen = 498 - this.name.length();
         int pos = 0;
-        for (int i = 0; i < Math.ceil(message.length() / (maxlen * 0.0D)); i++) {
+        for (int i = 0; pos < message.length(); i++) {
           if (pos + maxlen >= message.length())
           {
             this.prioritymessages.add(message.substring(pos));
@@ -207,8 +207,9 @@ public class Channel {
           else
           {
             this.prioritymessages.add(message.substring(pos, pos + maxlen));
-            pos += maxlen;
           }
+          
+          pos += maxlen;
         }
       }
     }
@@ -220,7 +221,7 @@ public class Channel {
     {
       int maxlen = 498 - this.name.length();
       int pos = 0;
-      for (int i = 0; i < Math.ceil(message.length() / (maxlen * 0.0D)); i++) {
+      for (int i = 0; pos < message.length(); i++) {
         if (pos + maxlen >= message.length())
         {
           this.messages.add(message.substring(pos));
@@ -228,8 +229,9 @@ public class Channel {
         else
         {
           this.messages.add(message.substring(pos, pos + maxlen));
-          pos += maxlen;
         }
+          
+        pos += maxlen;
       }
     }
   }
