@@ -86,7 +86,7 @@ public class PhantomBot implements Listener
     {
         return instance;
     }
-
+    
     public PhantomBot(String username, String oauth, String apioauth, String clientid, String channel, String owner,
             boolean useTwitch, int baseport, String hostname, int port, double msglimit30)
     {

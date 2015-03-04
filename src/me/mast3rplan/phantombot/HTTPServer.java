@@ -69,7 +69,7 @@ public class HTTPServer extends Thread
                 }
 
                 String[] request = scan.nextLine().split(" ");
-                TreeMap<String, String> args = new TreeMap();
+                TreeMap<String, String> args = new TreeMap<>();
 
                 while (scan.hasNextLine())
                 {

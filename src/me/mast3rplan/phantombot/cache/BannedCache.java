@@ -21,7 +21,7 @@ import java.util.TreeMap;
 public class BannedCache
 {
 
-    private TreeMap<String, Long> bannedUsers = new TreeMap();
+    private TreeMap<String, Long> bannedUsers = new TreeMap<>();
 
     public boolean userIsBanned(String user)
     {
@@ -30,7 +30,7 @@ public class BannedCache
 
     public String[] getReformedUsers()
     {
-        List<String> users = new LinkedList();
+        List<String> users = new LinkedList<>();
         long time = System.currentTimeMillis();
 
         for (String s : bannedUsers.navigableKeySet())
@@ -49,6 +49,7 @@ public class BannedCache
         bannedUsers.put(user, System.currentTimeMillis() + (seconds * 1000));
     }
 
+    @SuppressWarnings("unchecked") //suppress warning about unchecked TreeMap object. You can check if it's a treemap, but there's no way to check if its a <String,Long> Treemap
     public void loadFromFile(String file)
     {
         FileInputStream fis;

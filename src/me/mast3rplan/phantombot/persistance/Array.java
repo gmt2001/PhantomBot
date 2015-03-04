@@ -28,7 +28,7 @@ public class Array {
     
     public static Array create (String file) {
         Array array =  new Array ();
-        array.data = new ArrayList ();
+        array.data = new ArrayList<>();
         array.file = file;
         array.lock = new ReentrantLock ();
         array.readFile ();
