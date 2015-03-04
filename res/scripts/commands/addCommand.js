@@ -212,6 +212,9 @@ $.on('command', function(event) {
         while (messageCommand.indexOf('(#)') != -1) {
             messageCommand = messageCommand.replace('(#)', $.username.resolve(randomNum));
         }
+		while (messageCommand.indexOf('(points)') != -1) {
+            messageCommand = messageCommand.replace('(points)', $.pointname);
+		}
         
         $.say(messageCommand);
     }
