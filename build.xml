@@ -20,32 +20,53 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 -->
 
-<project name="PhantomBot" default="default" basedir=".">
-    <description>Builds, tests, and runs the project PhantomBot.</description>
-    <import file="nbproject/build-impl.xml"/>
-	
-	<target name="-pre-init">
-		<property name="project.name" value="PhantomBot" />
-		<property name="version.num" value="1.5.1" />
-		<property name="libs" value="build/libs"/>
-		<tstamp>
-			<format property="NOW" pattern="yyyy-MM-dd HH:mm:ss z" />
-		</tstamp>
-		<path id="classpath">
-            <fileset dir="lib" includes="*.jar"/>
-		</path>
-		<pathconvert property="mf.classpath" pathsep=" ">
-            <path refid="classpath"/>
-            <mapper>
+ <project basedir="." default="dist">
+
+     <property environment="env"/>
+     <property name="project.base.dir" value="."/>
+     <property name="name" value="PhantomBot"/>
+     <property name="java.class.path" value=""/>
+     <property name="src" value="${project.base.dir}/src"/>
+     <property name="reference" value="${project.base.dir}/lib"/>
+     <property name="build" value="${project.base.dir}/build"/>
+     <property name="classes" value="${build}/classes"/>
+     <property name="dist" value="${project.base.dir}/dist"/>
+
+     <path id="reference.class.path">
+         <fileset dir="${reference}">
+             <include name="*.jar" />
+         </fileset>
+     </path>
+
+   <target name="init">
+    	<mkdir dir="${build}"/>
+    	<mkdir dir="${classes}"/>
+    	<mkdir dir="${dist}"/>
+
+    	<pathconvert property="mf.classpath" pathsep=" ">
+  		<path refid="reference.class.path"/>
+            	<mapper>
                     <chainedmapper>
-                            <flattenmapper/>
-                            <globmapper from="*.jar" to="lib/*.jar"/>
+                    	<flattenmapper/>
+                        <globmapper from="*.jar" to="lib/*.jar"/>
                     </chainedmapper>
-            </mapper>
-		</pathconvert>
+            	</mapper>
+    	</pathconvert>
+     </target>
 
+     <target depends="init" name="pre.compile.test">
+     </target>
 
-		<manifest file="MANIFEST.MF">
+     <target depends="pre.compile.test" name="compile.src">
+         <javac target="1.7" source="1.7" debug="on" memoryMaximumSize="256m" memoryInitialSize="256m" fork="true" destdir="${classes}" srcdir="${src}" includeantruntime="false" >
+             <classpath refid="reference.class.path" />
+         </javac>
+     </target>
+
+     <target depends="compile.src" name="dist">
+	<jar destfile="${dist}/PhantomBot.jar">
+  		<fileset dir="${classes}"/>
+		<manifest>
 			<attribute name="Bundle-Name" value="${project.name}" />           
 			<attribute name="Bundle-Version" value="${version.num}" />
 			<attribute name="Bundle-Date" value="${NOW}" />
@@ -55,20 +76,22 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 			<attribute name="Class-Path" value="${mf.classpath}"/>
 			<attribute name="Main-Class" value="me.mast3rplan.phantombot.PhantomBot"/>
 		</manifest>
-	</target>
-<!-- to copy data & images folders' contents to dist folder on build. -->
-    <target name="-post-jar" description="Copying Images">
-        <property name="res.dir" value="${dist.dir}/" />
-        <property name="lib.dir" value="${dist.dir}/lib" />
-
+	</jar>
+        <property name="res.dir" value="${dist}" />
+        <property name="lib.dir" value="${dist}/lib" />
+	<mkdir dir="${lib.dir}"/>
         <copy todir="${lib.dir}">
             <fileset dir="./lib" />
         </copy>
         <echo level="info" message="lib folder content was copied."/>
-
         <copy todir="${res.dir}">
             <fileset dir="./res" />
         </copy>
         <echo level="info" message="res folder content was copied."/>
-    </target>
-</project>
+     </target>
+
+     <target name="clean">
+         <delete dir="${build}"/>
+     </target>
+
+ </project>
