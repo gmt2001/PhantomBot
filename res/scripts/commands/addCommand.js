@@ -141,13 +141,13 @@ $.on('command', function(event) {
         }
 		
 		if ($.inidb.exists("pricecom", command.toLowerCase())) {
-			if ($.inidb.get("points", sender) < $.inidb.get("pricecom", command.toLowerCase())) {
+			if ( parseInt($.inidb.get("points", sender)) < parseInt($.inidb.get("pricecom", command.toLowerCase()))) {
 				$.say("That command costs " + $.inidb.get("pricecom", command.toLowerCase()) + " " + $.pointname + ", which you don't have.");
 				return;
 			} else {
-				$.inidb.decr("points", sender, $.inidb.get("pricecom", command.toLowerCase()));
+				$.inidb.decr("points", sender, parseInt($.inidb.get("pricecom", command.toLowerCase())));
 			}
-		}		
+		}	
 	
         
         var messageCommand = $.inidb.get('command', command.toLowerCase());
