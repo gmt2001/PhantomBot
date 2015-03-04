@@ -41,7 +41,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class FollowersCache
-implements Runnable {
+        implements Runnable
+{
+
     private static final Map<String, FollowersCache> instances = Maps.newHashMap();
     private Map<String, JSONObject> cache = Maps.newHashMap();
     private String channel;
@@ -54,9 +56,11 @@ implements Runnable {
     private int numfail = 0;
     private boolean hasFail = false;
 
-    public static FollowersCache instance(String channel) {
+    public static FollowersCache instance(String channel)
+    {
         FollowersCache instance = instances.get(channel);
-        if (instance == null) {
+        if (instance == null)
+        {
             instance = new FollowersCache(channel);
             instances.put(channel, instance);
             return instance;
@@ -64,7 +68,8 @@ implements Runnable {
         return instance;
     }
 
-    public FollowersCache(String channel) {
+    public FollowersCache(String channel)
+    {
         this.channel = channel;
         this.updateThread = new Thread(this);
         Thread.setDefaultUncaughtExceptionHandler(UncaughtExceptionHandler.instance());
@@ -72,211 +77,236 @@ implements Runnable {
         this.updateThread.start();
     }
 
-  public int quickUpdate(String channel)
-    throws Exception
-  {
-    JSONObject j = TwitchAPIv3.instance().GetChannelFollows(channel, 100, 0, false);
-    if (j.getBoolean("_success"))
+    public int quickUpdate(String channel)
+            throws Exception
     {
-      if (j.getInt("_http") == 200)
-      {
-        int i = j.getInt("_total");
-        
-        Map<String, JSONObject> newCache = Maps.newHashMap();
-        JSONArray followers = j.getJSONArray("follows");
-        for (int b = 0; b < followers.length(); b++)
+        JSONObject j = TwitchAPIv3.instance().GetChannelFollows(channel, 100, 0, false);
+        if (j.getBoolean("_success"))
         {
-          JSONObject follower = followers.getJSONObject(b);
-          newCache.put(follower.getJSONObject("user").getString("name"), follower);
-        }
-        for (String key : newCache.keySet()) {
-          if ((this.cache == null) || (!this.cache.containsKey(key)))
-          {
-            this.cache.put(key, newCache.get(key));
-            EventBus.instance().post(new TwitchFollowEvent(key));
-          }
-        }
-        this.count = this.cache.size();
-        
-        return i;
-      }
-      throw new Exception("[HTTPErrorException] HTTP " + ". req=" + j.getString("_type") + " " + j.getString("_url") + " " + j.getString("_post"));
-    }
-    throw new Exception("[" + j.getString("_exception") + "] " + j.getString("_exceptionMessage"));
-  }
+            if (j.getInt("_http") == 200)
+            {
+                int i = j.getInt("_total");
 
-    public boolean is(String username) {
+                Map<String, JSONObject> newCache = Maps.newHashMap();
+                JSONArray followers = j.getJSONArray("follows");
+                for (int b = 0; b < followers.length(); b++)
+                {
+                    JSONObject follower = followers.getJSONObject(b);
+                    newCache.put(follower.getJSONObject("user").getString("name"), follower);
+                }
+                for (String key : newCache.keySet())
+                {
+                    if ((this.cache == null) || (!this.cache.containsKey(key)))
+                    {
+                        this.cache.put(key, newCache.get(key));
+                        EventBus.instance().post(new TwitchFollowEvent(key));
+                    }
+                }
+                this.count = this.cache.size();
+
+                return i;
+            }
+            throw new Exception("[HTTPErrorException] HTTP " + ". req=" + j.getString("_type") + " " + j.getString("_url") + " " + j.getString("_post"));
+        }
+        throw new Exception("[" + j.getString("_exception") + "] " + j.getString("_exceptionMessage"));
+    }
+
+    public boolean is(String username)
+    {
         return this.cache.containsKey(username);
     }
 
-    public JSONObject get(String username) {
+    public JSONObject get(String username)
+    {
         return this.cache.get(username);
     }
 
     @Override
-    public void run() {
-        try {
+    public void run()
+    {
+        try
+        {
             Thread.sleep(30000);
-        }
-        catch (InterruptedException e) {
+        } catch (InterruptedException e)
+        {
             out.println("FollowersCache.run>>Failed to initial sleep: [InterruptedException] " + e.getMessage());
         }
-        if (this.firstUpdate) {
-            this.firstUpdate = false;
-            EventBus.instance().post(new TwitchFollowsInitializedEvent());
-        }
-        do {
-            try {
-                if (new Date().after(this.timeoutExpire)) {
+        do
+        {
+            try
+            {
+                if (new Date().after(this.timeoutExpire))
+                {
                     int newCount = this.quickUpdate(this.channel);
+                    if (this.firstUpdate)
+                    {
+                        this.firstUpdate = false;
+                        EventBus.instance().post(new TwitchFollowsInitializedEvent());
+                    }
                 }
-            }
-            catch (Exception e) {
-                if (e.getMessage().startsWith("[SocketTimeoutException]") || e.getMessage().startsWith("[IOException]")) {
+            } catch (Exception e)
+            {
+                if (e.getMessage().startsWith("[SocketTimeoutException]") || e.getMessage().startsWith("[IOException]"))
+                {
                     Calendar c = Calendar.getInstance();
                     this.numfail = this.lastFail.after(new Date()) ? ++this.numfail : 1;
                     c.add(12, 1);
                     this.lastFail = c.getTime();
-                    if (this.numfail >= 5) {
+                    if (this.numfail >= 5)
+                    {
                         this.timeoutExpire = c.getTime();
                     }
                 }
                 out.println("FollowersCache.run>>Failed to update followers: " + e.getMessage());
             }
-            try {
+            try
+            {
                 Thread.sleep(30000);
-            }
-            catch (InterruptedException e) {
+            } catch (InterruptedException e)
+            {
                 out.println("FollowersCache.run>>Failed to sleep: [InterruptedException] " + e.getMessage());
             }
         } while (true);
     }
 
-private void updateCache(int newCount)
-    throws Exception
-  {
-    Map<String, JSONObject> newCache = Maps.newHashMap();
-    
-    final List<JSONObject> responses = Lists.newArrayList();
-    List<Thread> threads = Lists.newArrayList();
-    
-    this.hasFail = false;
-    
-    Calendar c = Calendar.getInstance();
-    
-    c.add(10, 1);
-    
-    this.nextFull = c.getTime();
-    for (int i = 0; i < Math.ceil(newCount / 100.0D); i++)
+    private void updateCache(int newCount)
+            throws Exception
     {
-      final int offset = i * 100;
-      Thread thread = new Thread()
-      {
-        public void run()
-        {
-          JSONObject j = TwitchAPIv3.instance().GetChannelFollows(FollowersCache.this.channel, 100, offset, true);
-          if (j.getBoolean("_success"))
-          {
-            if (j.getInt("_http") == 200) {
-              responses.add(j);
-            } else {
-              try
-              {
-                throw new Exception("[HTTPErrorException] HTTP " + j.getInt("status") + " " + j.getString("error") + ". req=" + j.getString("_type") + " " + j.getString("_url") + " " + j.getString("_post") + "   message=" + j.getString("message"));
-              }
-              catch (Exception e)
-              {
-                out.println("FollowersCache.updateCache>>Failed to update followers: " + e.getMessage());
-              }
-            }
-          }
-          else {
-            try
-            {
-              throw new Exception("[" + j.getString("_exception") + "] " + j.getString("_exceptionMessage"));
-            }
-            catch (Exception e)
-            {
-              if (((e.getMessage().startsWith("[SocketTimeoutException]")) || (e.getMessage().startsWith("[IOException]"))) && (!FollowersCache.this.hasFail))
-              {
-                FollowersCache.this.hasFail = true;
-                
-                Calendar c = Calendar.getInstance();
-                if (FollowersCache.this.lastFail.after(new Date())) {
-                  FollowersCache.this.numfail++;
-                } else {
-                  FollowersCache.this.numfail = 1;
-                }
-                c.add(12, 1);
-                
-                FollowersCache.this.lastFail = c.getTime();
-                if (FollowersCache.this.numfail >= 5) {
-                  FollowersCache.this.timeoutExpire = c.getTime();
-                }
-              }
-              out.println("FollowersCache.updateCache>>Failed to update followers: " + e.getMessage());
-            }
-          }
-        }
-      };
-      threads.add(thread);
-      thread.start();
-    }
-    for (Thread thread : threads) {
-      thread.join();
-    }
-    for (JSONObject response : responses)
-    {
-      JSONArray followers = response.getJSONArray("follows");
-      if (followers.length() == 0) {
-        break;
-      }
-      for (int j = 0; j < followers.length(); j++)
-      {
-        JSONObject follower = followers.getJSONObject(j);
-        newCache.put(follower.getJSONObject("user").getString("name"), follower);
-      }
-    }
-    List<String> followers = Lists.newArrayList();
-    List<String> unfollowers = Lists.newArrayList();
-    for (String key : newCache.keySet()) {
-      if ((this.cache == null) || (!this.cache.containsKey(key))) {
-        followers.add(key);
-      }
-    }
-    if (this.cache != null) {
-      for (String key : this.cache.keySet()) {
-        if (!newCache.containsKey(key)) {
-          unfollowers.add(key);
-        }
-      }
-    }
-    this.cache = newCache;
-    this.count = newCache.size();
-    for (String follower : followers) {
-      EventBus.instance().post(new TwitchFollowEvent(follower));
-    }
-    for (String follower : unfollowers) {
-      EventBus.instance().post(new TwitchUnfollowEvent(follower));
-    }
-    if (this.firstUpdate)
-    {
-      this.firstUpdate = false;
-      EventBus.instance().post(new TwitchFollowsInitializedEvent());
-    }
-  }
+        Map<String, JSONObject> newCache = Maps.newHashMap();
 
-    public void addFollower(String username) {
+        final List<JSONObject> responses = Lists.newArrayList();
+        List<Thread> threads = Lists.newArrayList();
+
+        this.hasFail = false;
+
+        Calendar c = Calendar.getInstance();
+
+        c.add(10, 1);
+
+        this.nextFull = c.getTime();
+        for (int i = 0; i < Math.ceil(newCount / 100.0D); i++)
+        {
+            final int offset = i * 100;
+            Thread thread = new Thread()
+            {
+                public void run()
+                {
+                    JSONObject j = TwitchAPIv3.instance().GetChannelFollows(FollowersCache.this.channel, 100, offset, true);
+                    if (j.getBoolean("_success"))
+                    {
+                        if (j.getInt("_http") == 200)
+                        {
+                            responses.add(j);
+                        } else
+                        {
+                            try
+                            {
+                                throw new Exception("[HTTPErrorException] HTTP " + j.getInt("status") + " " + j.getString("error") + ". req=" + j.getString("_type") + " " + j.getString("_url") + " " + j.getString("_post") + "   message=" + j.getString("message"));
+                            } catch (Exception e)
+                            {
+                                out.println("FollowersCache.updateCache>>Failed to update followers: " + e.getMessage());
+                            }
+                        }
+                    } else
+                    {
+                        try
+                        {
+                            throw new Exception("[" + j.getString("_exception") + "] " + j.getString("_exceptionMessage"));
+                        } catch (Exception e)
+                        {
+                            if (((e.getMessage().startsWith("[SocketTimeoutException]")) || (e.getMessage().startsWith("[IOException]"))) && (!FollowersCache.this.hasFail))
+                            {
+                                FollowersCache.this.hasFail = true;
+
+                                Calendar c = Calendar.getInstance();
+                                if (FollowersCache.this.lastFail.after(new Date()))
+                                {
+                                    FollowersCache.this.numfail++;
+                                } else
+                                {
+                                    FollowersCache.this.numfail = 1;
+                                }
+                                c.add(12, 1);
+
+                                FollowersCache.this.lastFail = c.getTime();
+                                if (FollowersCache.this.numfail >= 5)
+                                {
+                                    FollowersCache.this.timeoutExpire = c.getTime();
+                                }
+                            }
+                            out.println("FollowersCache.updateCache>>Failed to update followers: " + e.getMessage());
+                        }
+                    }
+                }
+            };
+            threads.add(thread);
+            thread.start();
+        }
+        for (Thread thread : threads)
+        {
+            thread.join();
+        }
+        for (JSONObject response : responses)
+        {
+            JSONArray followers = response.getJSONArray("follows");
+            if (followers.length() == 0)
+            {
+                break;
+            }
+            for (int j = 0; j < followers.length(); j++)
+            {
+                JSONObject follower = followers.getJSONObject(j);
+                newCache.put(follower.getJSONObject("user").getString("name"), follower);
+            }
+        }
+        List<String> followers = Lists.newArrayList();
+        List<String> unfollowers = Lists.newArrayList();
+        for (String key : newCache.keySet())
+        {
+            if ((this.cache == null) || (!this.cache.containsKey(key)))
+            {
+                followers.add(key);
+            }
+        }
+        if (this.cache != null)
+        {
+            for (String key : this.cache.keySet())
+            {
+                if (!newCache.containsKey(key))
+                {
+                    unfollowers.add(key);
+                }
+            }
+        }
+        this.cache = newCache;
+        this.count = newCache.size();
+        for (String follower : followers)
+        {
+            EventBus.instance().post(new TwitchFollowEvent(follower));
+        }
+        for (String follower : unfollowers)
+        {
+            EventBus.instance().post(new TwitchUnfollowEvent(follower));
+        }
+        if (this.firstUpdate)
+        {
+            this.firstUpdate = false;
+            EventBus.instance().post(new TwitchFollowsInitializedEvent());
+        }
+    }
+
+    public void addFollower(String username)
+    {
         this.cache.put(username, null);
     }
 
-    public void setCache(Map<String, JSONObject> cache) {
+    public void setCache(Map<String, JSONObject> cache)
+    {
         this.cache = cache;
     }
 
-    public Map<String, JSONObject> getCache() {
+    public Map<String, JSONObject> getCache()
+    {
         return this.cache;
     }
-
 }
-
