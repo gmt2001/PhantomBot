@@ -348,7 +348,7 @@ $.setInterval(function() {
         return;
     }
 
-	if (!$.twitch.isOnline($.channelName)) {
+	if (!$.isOnline($.channelName)) {
 		if ($.lastpointinterval + ($.offlineinterval * 60 * 1000) >= System.currentTimeMillis()) {
 			return;
 		}
