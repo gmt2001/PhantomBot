@@ -14,6 +14,10 @@ $.on('command', function(event) {
 		$.say("Stream is online!");
 	}
     }
+	
+	if (command.equalsIgnoreCase("viewers")) {
+		$.say("There are currently " + $.twitch.getViewers($.channelName) + " viewers!");
+    }
 
     if (command.equalsIgnoreCase("game")) {
         if (!isCaster(sender)) {
@@ -226,6 +230,7 @@ $.registerChatCommand("./commands/streamCommands.js", "game", "caster");
 $.registerChatCommand("./commands/streamCommands.js", "status", "caster");
 $.registerChatCommand("./commands/streamCommands.js", "commercial", "caster");
 $.registerChatCommand("./commands/streamCommands.js", "commercial help", "caster");
+$.registerChatCommand("./commands/streamCommands.js", "viewers", "caster");
 
 var lastCommercial = $.inidb.get("settings", "lastCommercial");
 

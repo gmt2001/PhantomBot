@@ -22,12 +22,10 @@
 
 
 package com.gmt2001;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
@@ -53,7 +51,6 @@ public class TwitchAPIv3
     private static final int timeout = 2 * 1000;
     private String clientid = "";
     private String oauth = "";
-    public static Gson gson = new Gson();
 
     private enum request_type
     {
@@ -550,64 +547,27 @@ public class TwitchAPIv3
         return GetData(request_type.GET, "https://chatdepot.twitch.tv/rooms/" + channel + "/hosts", false);
     }
     
-    public static boolean isOnline(String channelname) {
-        try {
-        String online = API.readJsonFromUrl("https://api.twitch.tv/kraken/streams/"+channelname);
-        JsonObject joonline = gson.fromJson(online, JsonObject.class);
-        if(joonline.get("stream").isJsonNull())
-        {
-            return false;
-        }
-        else
-        {
+    public boolean isOnline(String channel) {
+        if(!GetData(request_type.GET, "https://api.twitch.tv/kraken/streams/" + channel, false).isNull("stream")) {
             return true;
         }
-        }
-        catch (Exception error)
-        {
-            error.printStackTrace();
-            return false;
-        }
+        return false;
     }
     
-    public static String getGame(String channelname) {
-        try {
-        String game = API.readJsonFromUrl("https://api.twitch.tv/kraken/channels/"+channelname);
-        JsonObject jogame = gson.fromJson(game, JsonObject.class);
-        if(!jogame.get("game").isJsonNull())
-        {
-            return jogame.get("game").getAsString();
-        }
-        else
-        {
-            return null;
-        }
-        }
-        catch (Exception error)
-        {
-            error.printStackTrace();
-            return  null;
-        }
+    public String getGame(String channel) {
+        return GetData(request_type.GET, "https://api.twitch.tv/kraken/channels/" + channel, false).get("game").toString();
     }
-        
-    public static String getStatus(String channelname) {
-        try {
-        String status = API.readJsonFromUrl("https://api.twitch.tv/kraken/channels/"+channelname);
-        JsonObject jostatus = gson.fromJson(status, JsonObject.class);
-        if(!jostatus.get("status").isJsonNull())
-        {
-            return jostatus.get("status").getAsString();
-        }
-        else
-        {
-            return null;
-        }
-        }
-        catch (Exception error)
-        {
-            error.printStackTrace();
-            return  null;
-        }
+    
+    public String getStatus(String channel) {
+        return GetData(request_type.GET, "https://api.twitch.tv/kraken/channels/" + channel, false).get("status").toString();
     }
-
+    
+    public String getViewers(String channel) {
+        JSONArray streaminfo = GetData(request_type.GET, "https://api.twitch.tv/kraken/streams?channel=" + channel, false).getJSONArray("streams");
+        for (int i=0;i<streaminfo.length();i++)
+        {
+            return streaminfo.getJSONObject(i).get("viewers").toString();
+        }
+        return "0";
+    }
 }
