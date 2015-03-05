@@ -137,11 +137,14 @@ if (groups[8] == undefined || groups[8] == null) {
  
 $.getGroupNameById = function(id) {
     id = parseInt(id);
+    var id2str = id.toString();
     
     if (id < groups.length) {
+        if ($.inidb.get('groups', id2str)!=null && $.inidb.get('groups', id2str)!="") {
+            return $.inidb.get('groups', id2str);
+        }
         return groups[id];
-    }
-    
+    }   
     return groups[0];
 }
  
@@ -259,8 +262,7 @@ $.on('command', function(event) {
                     if (ranks.length > 0) {
                         ranks = ranks + " - ";
                     }
-                    
-                    ranks = ranks + i + " = " + groups[i];
+                    ranks = ranks + i + " = " + $.getGroupNameById(i);
                 }
                 
                 $.say("Groups: " + ranks);
@@ -285,7 +287,8 @@ $.on('command', function(event) {
                 }
                 
                 if (!allowed) {
-                    $.say("You cant change the name of the 'Administrator' group without first changing another group to 'Administrator'!");
+                    $.say("You cant change the name of the 'Administrators' group without first changing another group to 'Administrator'!");
+                    return;
                 }
             }
             
@@ -300,6 +303,7 @@ $.on('command', function(event) {
                 
                 if (!allowed) {
                     $.say("You cant change the name of the 'Moderator' group without first changing another group to 'Moderator'!");
+                    return;
                 }
             }
             
@@ -314,20 +318,35 @@ $.on('command', function(event) {
                 
                 if (!allowed) {
                     $.say("You cant change the name of the 'Caster' group without first changing another group to 'Caster'!");
+                    return;
                 }
             }
             
-            name = argsString.substring(argsString.indexOf(args[0]) + $.strlen(args[0]) + 1);
+
+            var groupid;
+            for (var i=0; i < groups.length ; i++) {
+                if (args[1].equalsIgnoreCase($.getGroupNameById(args[i]))) {
+                    groupid = $.getGroupIdByName(args[1]).toString();
+                } else {
+                    groupid = args[1];
+                }
+            }             
+
+                        
+            name = args[2]; 
             
             if ($.strlen(name) > 0 && allowed) {
-                $.inidb.set("groups", args[0], name);
+
+                $.inidb.set("groups", groupid, name);
                 
-                var oldname = groups[parseInt(args[0])];
-                groups[parseInt(args[0])] = name;
+                var oldname = groups[parseInt(groupid)];
+                groups[parseInt(groupid)] = name;
                 
                 $.logEvent("permissions.js", 282, username + " changed the name of the " + oldname + " group to " + name);
                 
-                $.say("Changed group '" + oldname + "' to '" + name + "'!")
+                $.say("Changed group '" + oldname + "' to '" + name + "'!");
+                return;
+
             }
         }
     }
