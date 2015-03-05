@@ -344,7 +344,10 @@ cal.set(java.util.Calendar.MILLISECOND, 0);
 
 var lastAnnounce = parseInt($.inidb.get('marathon', 'lastAnnounce'));
 
-if (lastAnnounce == undefined || lastAnnounce == null || lastAnnounce < 0) {
+if (lastAnnounce == undefined || lastAnnounce == null || isNaN(lastAnnounce) || lastAnnounce < 0) {
+    lastAnnounce = cal.getTime();
+} else {
+    cal.setTimeInMillis(lastAnnounce);
     lastAnnounce = cal.getTime();
 }
 
