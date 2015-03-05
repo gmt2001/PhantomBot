@@ -2,282 +2,226 @@ $.on('command', function(event) {
     var sender = event.getSender();
     var username = $.username.resolve(sender);
     var command = event.getCommand();
+    var num2 = $.channel.getNicks().size();
+    var rnd = $.rand(num2);
+    var randomPerson = $.channel.getNicks().get(rnd);
     var argsString = event.getArguments().trim();
+    var argsString2 = argsString.substring(argsString.indexOf(" ") + 1, argsString.length());
     var args = event.getArgs();
-    var res;
-
-    if (command.equalsIgnoreCase("online")) {
-        if (!$.twitch.isOnline($.channelName)) {
-		$.say("Stream is offline.");
-        }
-	else {
-		$.say("Stream is online!");
-	}
-    }
-	
-	if (command.equalsIgnoreCase("viewers")) {
-		$.say("There are currently " + $.twitch.getViewers($.channelName) + " viewers!");
-    }
-
-    if (command.equalsIgnoreCase("game")) {
-        if (!isCaster(sender)) {
-	        if ($.strlen(argsString) != 0) {
-			$.say("You must be a Caster to use that command!");
-        		return;
-        	}
-		else {
-			$.say("Current Game: " + $.twitch.getGame($.channelName));
-        		return;
-		}
-        }
-	else {
-	        if ($.strlen(argsString) == 0) {
-			$.say("Current Game: " + $.twitch.getGame($.channelName));
-        		return;
-        	}	
-	}
-        
-        res = $.twitch.UpdateChannel($.channelName, "", argsString);
-        
-        if (res.getBoolean("_success")) {
-            if (res.getInt("_http") == 200) {
-                $.say("Changed the game to '" + res.getString("game") + "'!");
-                $.logEvent("streamCommands.js", 25, username + " changed the current game to " + res.getString("game"));
-            } else {
-                $.say("Failed to change the game. TwitchAPI must be having issues");
-                println(res.getString("message"));
-                $.logError("streamCommands.js", 29, res.getString("message"));
-            }
+    var num_randoms = parseInt($.inidb.get("randoms", "num_randoms"));
+    var randomNum = $.randRange(1, 100);
+    var random;
+    var num;
+    
+    if(command.equalsIgnoreCase("random")) {
+         if (!$.isMod(sender)) {
+            num = $.rand(num_randoms);
         } else {
-            $.say("Failed to change the game. TwitchAPI must be having issues");
-            println(res.getString("_exception") + " " + res.getString("_exceptionMessage"));
-            $.logError("streamCommands.js", 34, res.getString("_exception") + " " + res.getString("_exceptionMessage"));
+            if (argsString.length() > 0) {
+                num = parseInt(argsString);
+        } else {
+                num = $.rand(num_randoms);
+            }
         }
+
+
+        if (isNaN(num_randoms) || num_randoms == 0) {
+            $.say("There are no random messages at this time");
+            return;
+        }
+
+        if ($.inidb.get("randoms", "random_" + num) == null) {
+            $.say("There are only " + num_randoms + " randoms right now! Remember that random messages are numbered from 0 to " + (num_randoms - 1) + "!");
+
+        } 
+        
     }
     
-
-    if (command.equalsIgnoreCase("status")) {
-        if (!isCaster(sender)) {
-	        if ($.strlen(argsString) != 0) {
-			$.say("You must be a Caster to use that command!");
-        		return;
-        	}
-		else {
-			$.say("Current Status: " + $.twitch.getStatus($.channelName));
-        		return;
-		}
-        }
-	else {
-	        if ($.strlen(argsString) == 0) {
-			$.say("Current Status: " + $.twitch.getStatus($.channelName));
-        		return;
-        	}	
-	}
-        
-        res = $.twitch.UpdateChannel($.channelName, argsString, "");
-        
-        if (res.getBoolean("_success")) {
-            if (res.getInt("_http") == 200) {
-                $.say("Changed the title to '" + res.getString("status") + "'!");
-                $.logEvent("streamCommands.js", 54, username + " changed the current status to " + res.getString("status"));
-            } else {
-                $.say("Failed to change the status. TwitchAPI must be having issues");
-                println(res.getString("message"));
-                $.logError("streamCommands.js", 58, res.getString("message"));
-            }
-        } else {
-            $.say("Failed to change the status. TwitchAPI must be having issues");
-            println(res.getString("_exception") + " " + res.getString("_exceptionMessage"));
-            $.logError("streamCommands.js", 63, res.getString("_exception") + " " + res.getString("_exceptionMessage"));
-        }
-    }
-    
-    if (command.equalsIgnoreCase("commercial")) {
-        if (!isCaster(sender)) {
-            $.say("You must be a Caster to use that command!");
+    if (command.equalsIgnoreCase("addrandom")) {
+        if (!$.isMod(sender)) {
+            $.say($.modmsg);
             return;
         }
         
-        if (args.length > 0) {
-            if (args[0].equalsIgnoreCase("disablecommand")) {
-                if (!isAdmin(sender)) {
-                    $.say("You must be a Administrator to use that command!");
-                    return;
-                }
-                
-                $.logEvent("streamCommands.js", 80, username + " disabled manual triggering of commercials");
-            
-                $.inidb.set("settings", "commercialcommandenabled", "0");
-                
-                $.say("Manual commercials disabled!");
-                return;
-            }
-        
-            if (args[0].equalsIgnoreCase("enablecommand")) {
-                if (!isAdmin(sender)) {
-                    $.say("You must be a Administrator to use that command!");
-                    return;
-                }
-            
-                $.logEvent("streamCommands.js", 94, username + " enabled manual triggering of commercials");
-            
-                $.inidb.set("settings", "commercialcommandenabled", "1");
-                
-                $.say("Manual commercials enabled!");
-                return;
-            }
-        
-            if (args[0].equalsIgnoreCase("autotimer")) {
-                if (!isAdmin(sender)) {
-                    $.say("You must be a Administrator to use that command!");
-                    return;
-                }
-                
-                if (args.length >= 2 && parseInt(args[1]) == 0) {
-                    $.logEvent("streamCommands.js", 109, username + " disabled the automatic commercial timer");
-                    
-                    $.inidb.set("settings", "commercialtimer", args[1]);
-                    
-                    $.say("Automatic commercial timer disabled!");
-                    return;
-                }
-                
-                if (args.length < 3 || isNaN(args[1]) || parseInt(args[1]) < 0
-                    || (!args[2].equalsIgnoreCase("30") && !args[2].equalsIgnoreCase("60") && !args[2].equalsIgnoreCase("90")
-                    && !args[2].equalsIgnoreCase("120") && !args[2].equalsIgnoreCase("150") && !args[2].equalsIgnoreCase("180"))) {
-                    if (args.length == 1) {
-                        if (!$.inidb.exists("settings", "commercialtimer") || $.inidb.get("settings", "commercialtimer").equalsIgnoreCase("0")) {
-                            $.say("Automatic commercials are disabled! To enable them, say '!commercial autotimer <interval in minutes (at least 9)> <commercial length 30, 60, 90, 120, 150, or 180> [optional message]'");
-                        } else {
-                            var a = $.inidb.get("settings", "commercialtimer");
-                            var b = $.inidb.get("settings", "commercialtimerlength");
-                            var c = $.inidb.get("settings", "commercialtimermessage");
-                            
-                            $.say("Automatic commercials are enabled! They are running " + b + " seconds of ads every " + a + " minutes. To disable, say '!commercial autotimer 0'");
-                            
-                            if (!c.isEmpty()) {
-                                $.say("The message sent with every automatic commercial is: " + c);
-                            }
-                        }
-                    } else {
-                        $.say("Usage: !commercial autotimer <interval in minutes (at least 9) or 0 to disable> <commercial length 30, 60, 90, 120, 150, or 180> [optional message]");
-                    }
-                    
-                    return;
-                }
-                
-                if (parseInt(args[1]) < 9) {
-                    args[1] = 9;
-                }
-            
-                $.inidb.set("settings", "commercialtimer", args[1]);
-                $.inidb.set("settings", "commercialtimerlength", args[2]);
-                
-                if (args.length > 2) {
-                    $.logEvent("streamCommands.js", 149, username + " set the auto commercial timer to interval " + args[1] + " minutes, length " + args[2] + " seconds, message " + argsString.substring(argsString.indexOf(args[2], argsString.indexOf(args[1]) + 1) + $.strlen(args[2]) + 1));
-                    $.inidb.set("settings", "commercialtimermessage", argsString.substring(argsString.indexOf(args[2], argsString.indexOf(args[1]) + 1) + $.strlen(args[2]) + 1));
-                } else {
-                    $.logEvent("streamCommands.js", 152, username + " set the auto commercial timer to interval " + args[1] + " minutes, length " + args[2] + " seconds, with no message");
-                    $.inidb.set("settings", "commercialtimermessage", "");
-                }
-                
-                $.say("Automatic commercial timer set!");
-                return;
-            }
-            
-            if (args[0].equalsIgnoreCase("help")) {
-                $.say("Usage: !commercial <commercial length 30, 60, 90, 120, 150, or 180>, !commercial enablecommand, !comemrcial disablecommand, !commercial autotimer");
-                return;
-            }
-        }
-        
-        if ($.inidb.exists("settings", "commercialcommandenabled")
-            && $.inidb.get("settings", "commercialcommandenabled").equalsIgnoreCase("0") && !isAdmin(sender)) {
-            $.say("Manual triggering of commercials is disabled!");
+        if (num_randoms == null || isNaN(num_randoms)) {
+            num_randoms = 0;
+        } 
+
+        if (argsString.isEmpty()) {
+            $.say("Usage: !addrandom <message>");
             return;
         }
         
-        if ($.strlen(argsString) == 0) {
-            argsString = "30";
+      
+        $.inidb.incr("randoms", "num_randoms", 1);
+        $.inidb.set("randoms", "random_" + num_randoms, argsString);
+
+        
+        $.say("Random message added! There are now " + (num_randoms + 1) + " random messages!");
+    }
+
+     if (command.equalsIgnoreCase("editrandom")) {
+        if (!$.isMod(sender)) {
+            $.say($.modmsg);
+            return;
         }
         
-        res = $.twitch.RunCommercial($.channelName, parseInt(argsString));
+        num = parseInt(args[0]);
+
+        if (num > num_randoms) {
+            $.say("There is no random message under that ID, " + sender + "!");
+            return;
+        }
+
+        if (argsString2.isEmpty() || argsString.isEmpty() || args[1] == null) {
+            $.say("Usage: !editrandom <ID> <message>");
+            return;
+        }
+
+
         
-        if (res.getBoolean("_success")) {
-            if (res.getInt("_http") == 204) {
-                $.say("Running a " + argsString + " second commercial!");
-                $.logEvent("streamCommands.js", 181, username + " ran a " + argsString + " second commercial");
-            } else if (res.getInt("_http") == 422) {
-                $.say("You must enter a valid commercial length, wait 8 minutes between commercials, and can only run commercials when the stream is online! Valid lengths are 30, 60, 90, 120, 150, and 180 seconds");
-                
-                if (!res.getString("message").equalsIgnoreCase("Commercials breaks are allowed every 8 min and only when you are online.")) {
-                    $.logError("streamCommands.js", 186, res.getString("message"));
+        $.inidb.set("randoms", "random_" + num, argsString2);
+        
+        $.say("Random message #" + num + " changed to: " + $.inidb.get("randoms", "random_" + num));
+        return;
+    }
+
+    if (command.equalsIgnoreCase("delrandom")) {
+        if (!$.isMod(sender)) {
+            $.say($.modmsg);
+            return;
+        }
+        
+        if (num_randoms == null || isNaN(num_randoms) || num_randoms == 0) {
+            $.say("There are no randoms at this time");
+            return;
+        }
+        
+        if (argsString.isEmpty()) {
+            $.say("Usage: !delrandom <id>");
+            return;
+        }
+        
+        if (num_randoms > 1) {
+            for (i = 0; i < num_randoms; i++) {
+                if (i > parseInt(argsString)) {
+                    $.inidb.set('randoms', 'random_' + (i - 1), $.inidb.get('randoms', 'random_' + i))
                 }
-            } else {
-                $.say("Failed to run a commercial. TwitchAPI must be having issues");
-                println(res.getString("_content"));
-                $.logError("streamCommands.js", 191, res.getString("_content"));
             }
-        } else {
-            $.say("Failed to run a commercial. TwitchAPI must be having issues");
-            println(res.getString("_exception") + " " + res.getString("_exceptionMessage"));
-            $.logError("streamCommands.js", 196, res.getString("_exception") + " " + res.getString("_exceptionMessage"));
         }
+
+        $.inidb.del('randoms', 'random_' + (num_randoms - 1));
+        
+        $.inidb.decr("randoms", "num_randoms", 1);
+        
+        $.say("random removed! There are now " + (num_randoms - 1) + " randoms!");
+    }
+    var commandCount = $.inidb.get('counter', 'random');
+    var messageCommand = $.inidb.get('randoms', 'random_' + num);
+    var a = 0;
+
+
+
+    if (messageCommand) {
+        for (var i = 0; i < args.length; i++) {
+            while (messageCommand.contains('(' + (i + 1) + ')')) {
+                messageCommand = messageCommand.replace('(' + (i + 1) + ')', args[i]);
+            }
+        }
+
+        while (messageCommand.contains('(sender)')) {
+            messageCommand = messageCommand.replace('(sender)', $.username.resolve(sender));
+        }
+
+        while (messageCommand.contains('(user)')) {
+            messageCommand = messageCommand.replace('(user)', $.username.resolve(sender));
+        }
+
+        while (messageCommand.indexOf('(count)') != -1) {
+            messageCommand = messageCommand.replace('(count)', $.inidb.get('counter', command));
+        }
+
+        while (messageCommand.indexOf('(random)') != -1) {
+            messageCommand = messageCommand.replace('(random)', $.username.resolve(randomPerson));
+        }
+        while (messageCommand.indexOf('(#)') != -1) {
+            messageCommand = messageCommand.replace('(#)', randomNum);
+        }
+
+        $.say(messageCommand);
     }
 });
-$.registerChatCommand("./commands/streamCommands.js", "online", "caster");
-$.registerChatCommand("./commands/streamCommands.js", "game", "caster");
-$.registerChatCommand("./commands/streamCommands.js", "status", "caster");
-$.registerChatCommand("./commands/streamCommands.js", "commercial", "caster");
-$.registerChatCommand("./commands/streamCommands.js", "commercial help", "caster");
-$.registerChatCommand("./commands/streamCommands.js", "viewers", "caster");
+    var ar = new Array(0);
+        ar.push("(sender) was welcomed to the JAM so now it's time for (sender) to get SLAMMED!");
+        ar.push("(sender) was thrown into a large pit of PJSalt.");
+        ar.push("Oh my, (sender) you make me just want to *SLURP SLURP SLURP*");
+        ar.push("(sender) was thrown into a pit of tentacle pleasure.");
+		ar.push("(target) was thrown into a pit of genetically modified super lions.");
+		ar.push("(target) was thrown into a pit of explosive prinnys.");
+        ar.push("I want you (sender).");
+        ar.push("/me threw (sender) into a pit of PJSalt!" );
+        ar.push("Dango, dango, dango, dango, big (sender) family~\u266B");
+        ar.push("What are we gonna do on the bed (sender)?");
+        ar.push("Your mother was a hamster and your father smelt of elderberries!");
+        ar.push("I would rather not acknowledge that (sender) typed '!random'");
+        ar.push("(sender) was standing in the park wondering why a Frisbee got bigger as it got closer. Then it hit 'em.");
+        ar.push("When life gives you lemons (sender), make orange juice and leave the world wondering how the hell you did it.");
+        ar.push("(sender) was violated by a tentacle monster on stream.");
+        ar.push("/me licked (sender). . .");
+        ar.push("THIS JUST IN! (sender)'s waifu is actually in a ahegao doujin!");
+        ar.push("This is the first time (sender) has noticed the scent of a woman.");
+        ar.push("(sender) you're a beautiful strong black woman.");
+        ar.push("/me licking intensifies!");
+        ar.push("༼ つ ◕_◕ ༽=ε̵͇̿̿'̿'̿ ̿ ̿̿  " + " I has a gun, Gimme yo money (sender)!");
+        ar.push("I hope (sender)-senpai notices me..");
+        ar.push("(sender) is so awesome because (sender) can trip over flat surfaces, fall up the stair and also fall up!!");
+        ar.push("(sender) looks good enough to dress like the grim reaper and go to a retirement home and tap on the windows!");
+        ar.push("Ok everyone shhhhh. The rice crispies are telling me what to do next.");
+        ar.push("(sender) made eye contact with (target) while eating a banana!");
+        ar.push("It's weird, (sender) just doesn't have enough sax appeal.");
+        ar.push("(target) mysteriously died.");
+		ar.push("(target) stopped existing.");
+	    ar.push("All 7 of the Dragon Balls have been gathered! Now to wish (target) to become a sloth!");
+		ar.push("The ocean is so salty because everyone pees in it.");
+		ar.push("Real men know when to run like a little bitch");
+		ar.push("If I get reincarnated…. I wanna become a clam.");
+		ar.push("Why don’t we drink to me and my reflection in your lovely eyes?");
+		ar.push("I can show you what color your brain is.");
+		ar.push("And while you’re waiting for us to kill you, we highly recommend p*ssing yourself, Followed by a course of praying to your impudent god. And cowarding in the corner and begging, always good. But if you act now, theres still time for an old-fashioned Suicide!! Thank you London! We love you! goodnight!!");
+		ar.push("If you die, don’t come crying to me about it.");
+		ar.push("From this point on, all you opinions will be rejected!");
+		ar.push("Kakarot! Is That A Vegetable?! I Hate Vegetables.");
+		ar.push("You have no effect on me because you are flast chested!");
+		ar.push("I see. (sender) is the type of person who is thinking positively to the extent of being stupid.");
+		ar.push("I know as much of games as hugs and puppies, and care for them even less.");
+		ar.push("I’m not just a pervert…I’M A SUPER PERVERT");
+		ar.push("When you meet with scary people, you must always protect your wallet and asshole!");
+		ar.push("Women’s minds and Autumn Winds Change Often.");
+		ar.push("I’m literally hemorrhage generosity.");
+		ar.push("They were traps? I thought they were attractions.");
+		ar.push("Okay, here’s the plan: We go in, start hitting people, and see where it takes us.");
+		ar.push("The key in turning people on is a girl with a lolita face and big breasts.");
+		ar.push("When a woman says something cute, a man just can’t trust it.");
+		ar.push("A life without gambling is like sushi without wasabi.");
+		ar.push("Stress makes you bald, but it’s stressful to avoid stress, so you end up stressed out anyway, so in the end there’s nothing you can do.");
+		ar.push("Do evil, get caught, then claim demons were brainwashing you. A common way that human politicians evade responsibility.");
+		ar.push("I have one last request. Please slap me in the face with that wad of cash.");
+		ar.push("Why do people have to work? I just want to eat and sleep. I should have been born as a panda at the zoo.");
+		ar.push("Right, I have something I have to apologize to (target) for. Sometimes, when we were playing, you’d suddenly start crying, and then you’d run home. You probably thought you’d fooled us, but everyone knew… that you had pooped your pants! Sorry.");
+		ar.push("What I want to do most? Let’s see… Just once, I really want to let loose and pee in my pants.");
+		ar.push("Dude! Christmas rocks! We know how to do it right, here! First, we X out the ‘Christ’ part to make it extreme! Then we shop and eat stuff ’til we’re sick! Wanna shovel down some X-Mas cake to get in the spirit?");
+		ar.push("My name is Duck. Yes, like the bird. Take it up with my parents. They never loved me!");
+		ar.push("Boobs that don’t shake, aren’t boobs at all.");
+		ar.push("(sender), during your last physical it was discovered you have Athletes Foot, and we now believe it is affecting your brain.");
+		ar.push("When you have a swimsuit tan. You could jump in the pool naked and no one would know you weren’t wearing anything.");
 
-var lastCommercial = $.inidb.get("settings", "lastCommercial");
 
-if (lastCommercial == undefined || lastCommercial == null || lastCommercial < 0) {
-    lastCommercial = System.currentTimeMillis() - (parseInt($.inidb.get("settings", "commercialtimer")) * 60 * 1000) + (2 * 60 * 1000);
-}
-
-$.timer.addTimer("./commands/streamCommands.js", "autocommercial", true, function() {
-    if (!$.moduleEnabled("./commands/streamCommands.js")) {
-        return;
-    }
-    
-    if (!$.inidb.exists("settings", "commercialtimer") || $.inidb.get("settings", "commercialtimer").equalsIgnoreCase("0")) {
-        return;
-    }
-    
-    var res;
-    
-    if (lastCommercial + (parseInt($.inidb.get("settings", "commercialtimer")) * 60 * 1000) < System.currentTimeMillis()){
-        res = $.twitch.RunCommercial($.channelName, parseInt($.inidb.get("settings", "commercialtimerlength")));
-        
-        if (res.getBoolean("_success")) {
-            if (res.getInt("_http") == 204) {
-                if ($.strlen($.inidb.get("settings", "commercialtimermessage")) > 0) {
-                    $.say($.inidb.get("settings", "commercialtimermessage"));
-                }
-                
-                $.logEvent("streamCommands.js", 228, "Ran a " + $.inidb.get("settings", "commercialtimerlength") + " second automatic commercial");
-            } else if (res.getInt("_http") == 422) {
-                println(res.getString("_content"));
-                
-                if (!res.getString("message").equalsIgnoreCase("Commercials breaks are allowed every 8 min and only when you are online.")) {
-                    $.say("Failed to run a commercial. " + res.getString("message"));
-                    $.logError("streamCommands.js", 234, res.getString("message"));
-                }
-            } else {
-                println(res.getString("_content"));
-                $.say("Failed to run a commercial. TwitchAPI must be having issues");
-                $.logError("streamCommands.js", 239, res.getString("message"));
-            }
-        } else {
-            $.say("Failed to run a commercial. TwitchAPI must be having issues");
-            println(res.getString("_exception") + " " + res.getString("_exceptionMessage"));
-            $.logError("streamCommands.js", 244, res.getString("_exception") + " " + res.getString("_exceptionMessage"));
+    if ($.inidb.get("randoms", "num_randoms") == null || $.inidb.get("randoms", "num_randoms") == 0 ) {
+		$.inidb.set("randoms", "num_randoms", ar.length);
+        for (var i=0; i< ar.length; ++i) {
+            $.inidb.set('randoms', 'random_' + i, ar[i]);
         }
-        
-        lastCommercial = System.currentTimeMillis();
-        $.inidb.set("settings", "lastCommercial", lastCommercial);
-    }
-}, 60 * 1000);
+	}
+
+
+$.registerChatCommand("./commands/randomCommand.js", "random");
