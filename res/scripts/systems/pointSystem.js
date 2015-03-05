@@ -1,5 +1,6 @@
 $.pointname = $.inidb.get('settings', 'pointname');
 $.pointgain = parseInt($.inidb.get('settings', 'pointgain'));
+$.offlinegain = parseInt($.inidb.get('settings', 'offlinegain'));
 $.pointbonus = parseInt($.inidb.get('settings', 'pointbonus'));
 $.pointinterval = parseInt($.inidb.get('settings', 'pointinterval'));
 $.offlineinterval = parseInt($.inidb.get('settings', 'offlineinterval'));
@@ -12,6 +13,10 @@ if ($.pointgain == undefined || $.pointgain == null || isNaN($.pointgain) || $.p
     $.pointgain = 1;
 }
 
+if ($.offlinegain == undefined || $.offlinegain == null || isNaN($.offlinegain) || $.offlinegain < 0) {
+    $.offlinegain = 1;
+}
+
 if ($.pointbonus == undefined || $.pointbonus == null || isNaN($.pointbonus) || $.pointbonus < 0) {
     $.pointbonus = 0.5;
 }
@@ -21,7 +26,7 @@ if ($.pointinterval == undefined || $.pointinterval == null || isNaN($.pointinte
 }
 
 if ($.offlineinterval == undefined || $.offlineinterval == null || isNaN($.offlineinterval) || $.offlineinterval < 0) {
-    $.offlineinterval = 30;
+    $.offlineinterval = 10;
 }
 
 
@@ -230,7 +235,23 @@ $.on('command', function (event) {
                     $.inidb.set('settings', 'pointgain', args[1]);
                     $.pointgain = parseInt(args[1]);
 
-                    $.say(username + " has set the current point earnings to " + $.pointgain + " " + $.pointname + " every " + $.pointinterval + " minute(s) while stream is online and every " + $.offlineinterval +" minute(s) while offline.");
+                    $.say(username + " has set the current point earnings to " + $.pointgain + " " + $.pointname + " every " + $.pointinterval + " minute(s) while stream is online.");
+                }
+            }
+            if (action.equalsIgnoreCase("offlinegain")) {
+                if (!$.isAdmin(sender)) {
+                    $.say("You must be an Administrator to use that command, " + username + "!");
+                    return;
+                }
+
+                if (args[1] < 0) {
+                    $.say("That'll cause people to lose " + $.pointname + ". Don't use negatives!");
+                    return;
+                } else {
+                    $.inidb.set('settings', 'offlinegain', args[1]);
+                    $.offlinegain = parseInt(args[1]);
+
+                    $.say(username + " has set the offline point earnings to " + $.offlinegain + " " + $.pointname + " every " + $.offlineinterval + " minute(s) while stream is offline.");
                 }
             }
 
@@ -330,7 +351,7 @@ $.on('command', function (event) {
         } else {
             actions = args[0];
             if (!argsString.isEmpty() && action == ("gain") || action == ("bonus") || action == ("interval") || action == ("offlineinterval") || action == ("name") || action == ("config")) {
-                $.say("[Point Settings] - [Name: " + $.pointname + "] - [Gain: " + $.pointgain + " " + $.pointname + "] - [Interval: " + $.pointinterval + " minutes] - [Offline interval: " + $.offlineinterval + " minutes] - [Bonus: " + $.pointbonus + " " + $.pointname + "]");
+                $.say("[Point Settings] - [Name: " + $.pointname + "] - [Gain: " + $.pointgain + " " + $.pointname + "] - [Interval: " + $.pointinterval + " minutes] - [Offline Gain: " + $.offlinegain + " " + $.pointname + "] - [Offline interval: " + $.offlineinterval + " minutes] - [Bonus: " + $.pointbonus + " " + $.pointname + "]");
             }
 
         }
@@ -339,6 +360,7 @@ $.on('command', function (event) {
 });
 
 $.setInterval(function() {
+	var amount;
     if (!$.moduleEnabled("./systems/pointSystem.js")) {
         return;
     }
@@ -349,10 +371,12 @@ $.setInterval(function() {
     }
 
 	if (!$.isOnline($.channelName)) {
+		amount = $.offlinegain;
 		if ($.lastpointinterval + ($.offlineinterval * 60 * 1000) >= System.currentTimeMillis()) {
 			return;
 		}
     } else {
+		amount = $.pointgain;
 		if ($.lastpointinterval + ($.pointinterval * 60 * 1000) >= System.currentTimeMillis()) {
 			return;
 		}
@@ -360,7 +384,6 @@ $.setInterval(function() {
 
     for (var i = 0; i < $.users.length; i++) {
         var nick = $.users[i][0].toLowerCase();
-        var amount = $.pointgain;
 
         amount = amount + ($.pointbonus * $.getUserGroupId(nick));
 
