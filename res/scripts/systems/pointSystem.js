@@ -2,6 +2,7 @@ $.pointname = $.inidb.get('settings', 'pointname');
 $.pointgain = parseInt($.inidb.get('settings', 'pointgain'));
 $.pointbonus = parseInt($.inidb.get('settings', 'pointbonus'));
 $.pointinterval = parseInt($.inidb.get('settings', 'pointinterval'));
+$.offlineinterval = parseInt($.inidb.get('settings', 'offlineinterval'));
 
 if ($.pointname == undefined || $.pointname == null || $.pointname.isEmpty()) {
     $.pointname = "Points";
@@ -17,6 +18,10 @@ if ($.pointbonus == undefined || $.pointbonus == null || isNaN($.pointbonus) || 
 
 if ($.pointinterval == undefined || $.pointinterval == null || isNaN($.pointinterval) || $.pointinterval < 0) {
     $.pointinterval = 10;
+}
+
+if ($.offlineinterval == undefined || $.offlineinterval == null || isNaN($.offlineinterval) || $.offlineinterval < 0) {
+    $.offlineinterval = 30;
 }
 
 
@@ -41,7 +46,7 @@ $.on('command', function (event) {
             action = args[0];
         if (action == ("all") || action == ("gift") || action == ("give") || 
             action == ("take") || action == ("set") || action == ("gain") || 
-            action == ("bonus") || action == ("interval") || action == ("name") || 
+            action == ("bonus") || action == ("interval") || action == ("offlineinterval") || action == ("name") || 
             action == ("help") || action == ("setting") || action == ("toggle") || action == ("config")) {
 
         } else { 
@@ -225,7 +230,7 @@ $.on('command', function (event) {
                     $.inidb.set('settings', 'pointgain', args[1]);
                     $.pointgain = parseInt(args[1]);
 
-                    $.say(username + " has set the current point earnings to " + $.pointgain + " " + $.pointname + " every " + $.pointinterval + " minutes.");
+                    $.say(username + " has set the current point earnings to " + $.pointgain + " " + $.pointname + " every " + $.pointinterval + " minute(s) while stream is online and every " + $.offlineinterval +" minute(s) while offline.");
                 }
             }
 
@@ -291,6 +296,24 @@ $.on('command', function (event) {
                 }
 
             }
+			
+			if (action.equalsIgnoreCase("offlineinterval")) {
+                if (!$.isAdmin(sender)) {
+                    $.say("You must be an Administrator to use that command, " + username + "!");
+                    return;
+                }
+
+                if (args[1] < 0) {
+                    $.say("Can't set the interval with negative minutes.");
+                    return;
+                } else {
+                    $.inidb.set('settings', 'offlineinterval', args[1]);
+                    $.offlineinterval = parseInt(args[1]);
+
+                    $.say(username + " has set the interval time for earning points to " + $.offlineinterval + " minutes while the stream is offline.");
+                }
+
+            }
 
             if (action.equalsIgnoreCase("name")) {
                 if (!$.isAdmin(sender)) {
@@ -306,8 +329,8 @@ $.on('command', function (event) {
 
         } else {
             actions = args[0];
-            if (!argsString.isEmpty() && action == ("gain") || action == ("bonus") || action == ("interval") || action == ("name") || action == ("config")) {
-                $.say("[Point Settings] - [Name: " + $.pointname + "] - [Gain: " + $.pointgain + " " + $.pointname + "] - [Interval: " + $.pointinterval + " minutes] - [Bonus: " + $.pointbonus + " " + $.pointname + "]");
+            if (!argsString.isEmpty() && action == ("gain") || action == ("bonus") || action == ("interval") || action == ("offlineinterval") || action == ("name") || action == ("config")) {
+                $.say("[Point Settings] - [Name: " + $.pointname + "] - [Gain: " + $.pointgain + " " + $.pointname + "] - [Interval: " + $.pointinterval + " minutes] - [Offline interval: " + $.offlineinterval + " minutes] - [Bonus: " + $.pointbonus + " " + $.pointname + "]");
             }
 
         }
@@ -325,9 +348,15 @@ $.setInterval(function() {
         return;
     }
 
-    if ($.lastpointinterval + ($.pointinterval * 60 * 1000) >= System.currentTimeMillis()) {
-        return;
-    }
+	if (!$.twitch.isOnline($.channelName)) {
+		if ($.lastpointinterval + ($.offlineinterval * 60 * 1000) >= System.currentTimeMillis()) {
+			return;
+		}
+    } else {
+		if ($.lastpointinterval + ($.pointinterval * 60 * 1000) >= System.currentTimeMillis()) {
+			return;
+		}
+	}
 
     for (var i = 0; i < $.users.length; i++) {
         var nick = $.users[i][0].toLowerCase();
