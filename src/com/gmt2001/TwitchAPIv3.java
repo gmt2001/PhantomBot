@@ -546,28 +546,4 @@ public class TwitchAPIv3
     {
         return GetData(request_type.GET, "https://chatdepot.twitch.tv/rooms/" + channel + "/hosts", false);
     }
-    
-    public boolean isOnline(String channel) {
-        if(!GetData(request_type.GET, "https://api.twitch.tv/kraken/streams/" + channel, false).isNull("stream")) {
-            return true;
-        }
-        return false;
-    }
-    
-    public String getGame(String channel) {
-        return GetData(request_type.GET, "https://api.twitch.tv/kraken/channels/" + channel, false).get("game").toString();
-    }
-    
-    public String getStatus(String channel) {
-        return GetData(request_type.GET, "https://api.twitch.tv/kraken/channels/" + channel, false).get("status").toString();
-    }
-    
-    public String getViewers(String channel) {
-        JSONArray streaminfo = GetData(request_type.GET, "https://api.twitch.tv/kraken/streams?channel=" + channel, false).getJSONArray("streams");
-        for (int i=0;i<streaminfo.length();i++)
-        {
-            return streaminfo.getJSONObject(i).get("viewers").toString();
-        }
-        return "0";
-    }
 }

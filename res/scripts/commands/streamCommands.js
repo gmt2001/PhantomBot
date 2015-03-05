@@ -1,3 +1,31 @@
+$.isOnline = function(channel) {
+    var stream = $.twitch.GetStream(channel);
+    
+    return !(stream == null);
+}
+
+$.getStatus = function(channel) {
+    var channelData = $.twitch.GetChannel(channel);
+    
+    return channelData.getString("status");
+}
+
+$.getGame = function(channel) {
+    var channelData = $.twitch.GetChannel(channel);
+    
+    return channelData.getString("game");
+}
+
+$.getViewers = function(channel) {
+    var stream = $.twitch.GetStream(channel);
+    
+    if (stream == null) {
+        return 0;
+    }
+    
+    return stream.getJSONObject("stream").getInt("viewers");
+}
+
 $.on('command', function(event) {
     var sender = event.getSender();
     var username = $.username.resolve(sender);
@@ -7,35 +35,27 @@ $.on('command', function(event) {
     var res;
 
     if (command.equalsIgnoreCase("online")) {
-        if (!$.twitch.isOnline($.channelName)) {
-		$.say("Stream is offline.");
+        if (!$.isOnline($.channelName)) {
+            $.say("Stream is offline.");
         }
-	else {
-		$.say("Stream is online!");
-	}
+        else {
+            $.say("Stream is online!");
+        }
     }
 	
-	if (command.equalsIgnoreCase("viewers")) {
-		$.say("There are currently " + $.twitch.getViewers($.channelName) + " viewers!");
+    if (command.equalsIgnoreCase("viewers")) {
+        $.say("There are currently " + $.getViewers($.channelName) + " viewers!");
     }
 
     if (command.equalsIgnoreCase("game")) {
-        if (!isCaster(sender)) {
-	        if ($.strlen(argsString) != 0) {
-			$.say("You must be a Caster to use that command!");
-        		return;
-        	}
-		else {
-			$.say("Current Game: " + $.twitch.getGame($.channelName));
-        		return;
-		}
+        if ($.strlen(argsString) == 0) {
+            $.say("Current Game: " + $.getGame($.channelName));
+            return;
         }
-	else {
-	        if ($.strlen(argsString) == 0) {
-			$.say("Current Game: " + $.twitch.getGame($.channelName));
-        		return;
-        	}	
-	}
+        else if (!isCaster(sender)) {
+            $.say("You must be a Caster to use that command!");
+            return;	
+        }
         
         res = $.twitch.UpdateChannel($.channelName, "", argsString);
         
@@ -57,22 +77,14 @@ $.on('command', function(event) {
     
 
     if (command.equalsIgnoreCase("status")) {
-        if (!isCaster(sender)) {
-	        if ($.strlen(argsString) != 0) {
-			$.say("You must be a Caster to use that command!");
-        		return;
-        	}
-		else {
-			$.say("Current Status: " + $.twitch.getStatus($.channelName));
-        		return;
-		}
+        if ($.strlen(argsString) == 0) {
+            $.say("Current Status: " + $.getStatus($.channelName));
+            return;
         }
-	else {
-	        if ($.strlen(argsString) == 0) {
-			$.say("Current Status: " + $.twitch.getStatus($.channelName));
-        		return;
-        	}	
-	}
+        else if (!isCaster(sender)) {
+            $.say("You must be a Caster to use that command!");
+            return;	
+        }
         
         res = $.twitch.UpdateChannel($.channelName, argsString, "");
         
@@ -144,7 +156,7 @@ $.on('command', function(event) {
                 
                 if (args.length < 3 || isNaN(args[1]) || parseInt(args[1]) < 0
                     || (!args[2].equalsIgnoreCase("30") && !args[2].equalsIgnoreCase("60") && !args[2].equalsIgnoreCase("90")
-                    && !args[2].equalsIgnoreCase("120") && !args[2].equalsIgnoreCase("150") && !args[2].equalsIgnoreCase("180"))) {
+                        && !args[2].equalsIgnoreCase("120") && !args[2].equalsIgnoreCase("150") && !args[2].equalsIgnoreCase("180"))) {
                     if (args.length == 1) {
                         if (!$.inidb.exists("settings", "commercialtimer") || $.inidb.get("settings", "commercialtimer").equalsIgnoreCase("0")) {
                             $.say("Automatic commercials are disabled! To enable them, say '!commercial autotimer <interval in minutes (at least 9)> <commercial length 30, 60, 90, 120, 150, or 180> [optional message]'");
@@ -225,12 +237,12 @@ $.on('command', function(event) {
         }
     }
 });
-$.registerChatCommand("./commands/streamCommands.js", "online", "caster");
-$.registerChatCommand("./commands/streamCommands.js", "game", "caster");
-$.registerChatCommand("./commands/streamCommands.js", "status", "caster");
+$.registerChatCommand("./commands/streamCommands.js", "online");
+$.registerChatCommand("./commands/streamCommands.js", "game");
+$.registerChatCommand("./commands/streamCommands.js", "status");
 $.registerChatCommand("./commands/streamCommands.js", "commercial", "caster");
 $.registerChatCommand("./commands/streamCommands.js", "commercial help", "caster");
-$.registerChatCommand("./commands/streamCommands.js", "viewers", "caster");
+$.registerChatCommand("./commands/streamCommands.js", "viewers");
 
 var lastCommercial = $.inidb.get("settings", "lastCommercial");
 
