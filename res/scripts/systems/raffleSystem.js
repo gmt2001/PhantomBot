@@ -18,6 +18,8 @@ $.on('command', function(event) {
         var winner;
         var followed;
         var i;
+        var userfollowschannel;
+        var rMode;
         
         if (args.length == 0) {
             if ($var.raffle_running) {
@@ -80,7 +82,7 @@ $.on('command', function(event) {
         if (action.equalsIgnoreCase("results") && !argsString.isEmpty()) {
             if ($var.raffle_running) {
 
-                var rMode = $var.raffle_mode;
+                rMode = $var.raffle_mode;
                 if (rMode == 1) {
 
                     rMode = "Normal";
@@ -93,7 +95,7 @@ $.on('command', function(event) {
             } else {
                 var rReward = $.inidb.get('raffles', 'reward');
                 var rPrice = $.inidb.get('raffles', 'price');
-                var rMode = $.inidb.get('raffles', 'mode');
+                rMode = $.inidb.get('raffles', 'mode');
                 var rKey = $.inidb.get('raffles', 'keyword');
                 var rWinner = $.inidb.get('raffles', 'winner');
                 var rEntries = $.inidb.get('raffles', 'entries');
@@ -240,6 +242,14 @@ $.on('command', function(event) {
                 winner = $.randElement($var.raffle_entrants);
                 followed = $.inidb.get('followed', winner.toLowerCase());
                 
+                if ($var.raffle_followers && (followed == null || followed == undefined || !followed.equalsIgnoreCase("1"))){
+                    userfollowschannel = $.twitch.GetUserFollowsChannel(winner.toLowerCase(), $.channelName);
+                    
+                    if (userfollowschannel.getInt("_http") == 200) {
+                        followed = "1";
+                    }
+                }
+                
                 i++;
             } while ($var.raffle_followers && (followed == null || followed == undefined || !followed.equalsIgnoreCase("1")));
             
@@ -289,6 +299,14 @@ $.on('command', function(event) {
                 
                 winner = $.randElement($var.raffle_entrants);
                 followed = $.inidb.get('followed', winner.toLowerCase());
+                
+                if ($var.raffle_followers && (followed == null || followed == undefined || !followed.equalsIgnoreCase("1"))){
+                    userfollowschannel = $.twitch.GetUserFollowsChannel(winner.toLowerCase(), $.channelName);
+                    
+                    if (userfollowschannel.getInt("_http") == 200) {
+                        followed = "1";
+                    }
+                }
                 
                 i++;
             } while ($var.raffle_followers && (followed == null || followed == undefined || !followed.equalsIgnoreCase("1")));
