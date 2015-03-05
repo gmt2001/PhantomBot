@@ -182,7 +182,9 @@ $.on('command', function(event) {
 			}
 		}	
 	
-        
+
+
+
         var messageCommand = $.inidb.get('command', command.toLowerCase());
         
         for (var i = 0; i < args.length; i++) {
@@ -215,7 +217,16 @@ $.on('command', function(event) {
 		while (messageCommand.indexOf('(points)') != -1) {
             messageCommand = messageCommand.replace('(points)', $.pointname);
 		}
-        
+		  if (messageCommand.contains('(code)')) {
+                var text = "";
+				var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+				for( var i=0; i < 8; i++ )
+					text += possible.charAt(Math.floor(Math.random() * possible.length));
+        }
+        while (messageCommand.indexOf('(code)') != -1) {
+            messageCommand = messageCommand.replace('(code)', text);
+		}
+   
         $.say(messageCommand);
     }
 	
