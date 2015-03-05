@@ -345,10 +345,9 @@ cal.set(java.util.Calendar.MILLISECOND, 0);
 var lastAnnounce = parseInt($.inidb.get('marathon', 'lastAnnounce'));
 
 if (lastAnnounce == undefined || lastAnnounce == null || isNaN(lastAnnounce) || lastAnnounce < 0) {
-    lastAnnounce = cal.getTime();
+    lastAnnounce = cal.getTimeInMillis();
 } else {
     cal.setTimeInMillis(lastAnnounce);
-    lastAnnounce = cal.getTime();
 }
 
 $.timer.addTimer("./commands/marathonCommand.js", "announce", true, function() {
@@ -361,8 +360,8 @@ $.timer.addTimer("./commands/marathonCommand.js", "announce", true, function() {
     cal.set(java.util.Calendar.MINUTE, 0);
     cal.set(java.util.Calendar.SECOND, 0);
     cal.set(java.util.Calendar.MILLISECOND, 0);
-    var nowH = cal.getTime();
-    cal.setTime(lastAnnounce);
+    var nowH = cal.getTimeInMillis();
+    cal.setTimeInMillis(lastAnnounce);
     cal.add(java.util.Calendar.HOUR, 1);
     var next = cal.getTime();
     
