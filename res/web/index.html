@@ -4,29 +4,42 @@
 <link rel="stylesheet" type="text/css" href="style.css">
 <div class="header">
 <img id="logo" src="logo.png"></img>
-  <h1>Youtube Player - Phantombot</h1>
+  <h1>YouTube Player - Phantombot</h1>
 </div>
 </head>
   <body>
+  <div class="container">
+    <div id="sidebar1">
+	<iframe frameborder="0" 
+        scrolling="no" 
+        id="chat_embed"
+        src="http://www.twitch.tv/phantomindex/chat" 
+        height="100%" 
+        width="350">
+</iframe>
+	
+	</div>
   <br />
-    <div id="player"></div>
 
-    <script type="text/javascript" src="app.js"></script> 
-		<select name="sometext" multiple="multiple" class="selectbox">
+<div id="main">
+    <div id="player"></div>
+	  		<select name="sometext" multiple="multiple" class="selectbox">
 		<option id="selected">Current Song</option>
 		<option value="">Next Song</option>
 		<option value="">Next Song</option>
 		<option value="">Next Song</option>
 	</select>
+	
 	<div id="panel"> 
 	<div id="next" class="button">Skip</div> 
 	<div id="steal" class="button">Steal</div>
 	<div id="remove" class="button">Remove</div>
 </div>
-	
-	<br />
-	<br />
+    <script type="text/javascript" src="app.js"></script> 
+
+</div>
   </body>
 
 </iframe>
+</div>
 </html>
