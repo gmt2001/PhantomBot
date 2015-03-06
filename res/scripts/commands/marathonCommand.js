@@ -10,12 +10,10 @@ var announceSchedule = function() {
     for (i = 0; i < keys.length; i++) {
         if (!keys[i].equalsIgnoreCase("name") && !keys[i].equalsIgnoreCase("link")) {
             hasitems = false;
-            if (!hasitems) {
-                $.say("There is currently no marathon schedule");
-                return;
-            }
+            return;
         }
     }
+    
     
     var cal = java.util.Calendar.getInstance(java.util.TimeZone.getTimeZone($.timezone));
     var now = cal.getTime();

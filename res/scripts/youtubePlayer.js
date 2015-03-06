@@ -140,9 +140,7 @@ function nextDefault() {
     }
 
     if ($var.defaultplaylist.length > 0) {
-        if ($var.storedisable=="false") {
-            parseList($var.defaultplaylist);
-        }
+
         s = new Song($var.defaultplaylist[$var.defaultplaylistpos]);
         s = new RequestedSong(s, "DJ " + $.username.resolve($.botname));
         $var.defaultplaylistpos++;
@@ -174,6 +172,9 @@ function nextDefault() {
         $.writeToFile(name, "currentsong.txt", false);
     } else {
         $.writeToFile(name + " requested by: " + user, "currentsong.txt", false);
+    }
+    if ($var.storedisable=="false") {
+        parseList($var.defaultplaylist);
     }
 }
 
