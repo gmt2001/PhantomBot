@@ -89,11 +89,16 @@ function RequestedSong(song, user) {
     }
 }
 function parseList(list) {
+    //prevsong, currsong, nextsong
+    //prevsong = "Prev <<" + prevsong.song.getName();
+    //currsong = "Playing :" + currsong.song.getName();
+    //nextsong = "Next >>" + nextsong.song.getName();
+    
     if(titles==1) {
-        $.writeToFile( "", $.storepath + "queue.php", true);
+        $.writeToFile( "", $.storepath + "queue.php", false);
     }
     if(titles==2) {
-        $.writeToFile( "", $.storepath + "queue.txt", true);
+        $.writeToFile( "", $.storepath + "queue.txt", false);
     }
     
     if(list.length > 0 ) {
