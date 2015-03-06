@@ -93,7 +93,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
             <fileset dir="./res" />
         </copy>
         <echo level="info" message="res folder content was copied."/>
-		<zip destfile="${dist}/${name}-${version}.zip" basedir="${dist}" update="true" />
+        <delete file="${dist}/${name}-${version}.zip"/>
+	<zip destfile="${dist}/${name}-${version}.zip" basedir="${dist}" update="false" />
      </target>
 
      <target name="clean">
