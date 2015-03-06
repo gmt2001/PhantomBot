@@ -92,12 +92,12 @@ function parseList(list) {
     if(list.length > 0 ) {
         for(var i=0; i< list.length; i++){
             var song = new Song(list[i]);
-            var url = '<a href="https://www.youtube.com/watch?v=' + song.getId() + '" target="new">'+ song.getName()+'</a><br/>';
+            var url = '<a href="https://www.youtube.com/watch?v=' + song.getId() + '" target="new">' + i.toString() + ". " + song.getName()+'</a><br/>';
             if ($.titles==1){
                 $.writeToFile( url, $.storepath + "queue.php", true);
             }
             else {
-                $.writeToFile( song.getName(), $.storepath + "queue.txt", true);
+                $.writeToFile(  i.toString() + ". " + song.getName(), $.storepath + "queue.txt", true);
             }
         }
     }
