@@ -2,7 +2,27 @@ $var.defaultplaylist = $.readFile("./playlist.txt");
 $var.defaultplaylistpos = 0;
 $var.songqueue = [];
 $var.requestusers = {};
+$var.store = $.inidb.get('settings','store');
+$var.storedisable = $.inidb.get('settings','storedisable');
+$var.titlesonly = $.inidb.get('settings','songtitlesonly');
 
+
+if($var.store==null || $var.store=="") {
+    $var.store = "web/";
+}
+
+if($var.storedisable==null || $var.storedisable=="") {
+    $var.store = "true";
+}
+
+
+if($var.titlesonly==null || $var.titlesonly=="") {
+    $var.titlesonly = "false";
+}
+
+if(isNaN($var.store.length - 1) || $var.store.substring($var.store.length - 1) != "/" || $var.store != "/") {
+    $var.store = $var.store + "/";
+}
 
 var musicplayer = $.musicplayer;
 
@@ -69,7 +89,20 @@ function RequestedSong(song, user) {
         $var.requestusers[user]--;
     }
 }
-
+function parseList(list) {
+    if(list.length > 0 ) {
+        for(var i=0; i< list.length; i++){
+            var song = new Song(list[i]);
+            var url = '<a href="https://www.youtube.com/watch?v=' + song.getId() + '" target="new">'+ song.getName()+'</a><br/>';
+            if (!$var.titlesonly){
+                $.writeToFile( url, $var.store + "queue.php", true);
+            }
+            else {
+                $.writeToFile( song.getName(), $var.store + "queue.txt", true);
+            }
+        }
+    }
+}
 
 function nextDefault() {
     var name = "";
@@ -107,6 +140,9 @@ function nextDefault() {
     }
 
     if ($var.defaultplaylist.length > 0) {
+        if ($var.storedisable=="false") {
+            parseList($var.defaultplaylist);
+        }
         s = new Song($var.defaultplaylist[$var.defaultplaylistpos]);
         s = new RequestedSong(s, "DJ " + $.username.resolve($.botname));
         $var.defaultplaylistpos++;
@@ -121,6 +157,7 @@ function nextDefault() {
 
         $var.prevSong = $.currSong;
         $var.currSong = s;
+        
     } else {
         $var.currSong = null;
     }
@@ -130,14 +167,14 @@ function nextDefault() {
     }
     if ($.song_toggle == 1) {
         $.say("Now Playing >> \u266B~" + name + "~\u266B requested by " + user);
-                $.writeToFile(name, "currentsong.txt", false);
-                $.writeToFile(name + " requested by: " + user, "currentsong2.txt", false);
     } else if ($.song_toggle == 2) {
         println("Now Playing >> \u266B~" + name + "~\u266B requested by " + user);
-                $.writeToFile(name, "currentsong.txt", false);
-                $.writeToFile(name + " requested by: " + user, "currentsong2.txt", false);
     }
-
+    if (user.equalsIgnoreCase("DJ " + $.username.resolve($.botname))) {
+        $.writeToFile(name, "currentsong.txt", false);
+    } else {
+        $.writeToFile(name + " requested by: " + user, "currentsong.txt", false);
+    }
 }
 
 function next() {
@@ -201,7 +238,7 @@ var musicPlayerConnected = false;
 
 $.on('musicPlayerConnect', function (event) {
     println("MusicClient connected!");
-	$.say("Song requests have been enabled!")
+    $.say("Song requests have been enabled!")
     musicPlayerConnected = true;
 });
 
@@ -283,6 +320,56 @@ $.on('command', function (event) {
             $.addsong_cost = parseInt(args[1]);
             $.say("Cost to add songs will now cost: " + parseInt(args[1]) + " " + $.pointname)
 
+        }
+        
+        if (action.equalsIgnoreCase("storedisable")) {
+            if (!$.isAdmin(sender)) {
+                $.say($.adminmsg);
+                return;
+            }
+            if (!args[1].equaleIgnoreCase("true") || !args[1].equaleIgnoreCase("false") || args[1]==null) {
+                $.say("Usage: !song storedisable <true/false>");
+                return;
+            }
+
+            if (args[1].equalsIgnoreCase("true")) {
+                $.say("Playlist web storage has been enabled");
+            }
+            if (args[1].equalsIgnoreCase("false")) {
+                $.say("Playlist storage has been disabled");
+            }
+            $.inidb.set('settings','storedisable', args[1]);
+        }
+        
+        if (action.equalsIgnoreCase("store")) {
+            if (!$.isAdmin(sender)) {
+                $.say($.adminmsg);
+                return;
+            }
+            if (args[1] == null) {
+                $.say("Usage: !song store <full file path>");
+                return;
+            }
+            $.inidb.set('settings','store', args[1]);
+        }
+        
+        if (action.equalsIgnoreCase("titlesonly")) {
+            if (!$.isAdmin(sender)) {
+                $.say($.adminmsg);
+                return;
+            }
+            if (!args[1].equaleIgnoreCase("true") || !args[1].equaleIgnoreCase("false") || args[1]==null) {
+                $.say("Usage: !song titlesonly <true/false>");
+                return;
+            }
+
+            if (args[1].equalsIgnoreCase("true")) {
+                $.say("Playlist storage has been set to export titles only");
+            }
+            if (args[1].equalsIgnoreCase("false")) {
+                $.say("Playlist storage has been set to export as video url links");
+            }
+            $.inidb.set('settings','songtitlesonly', args[1]);
         }
 
         if (action.equalsIgnoreCase("veto")) {
@@ -528,7 +615,7 @@ $.on('command', function (event) {
     }
 
     if (command.equalsIgnoreCase("stealsong") || command.equalsIgnoreCase("songsteal")) {
-		if (!$.isAdmin(sender)) {
+	if (!$.isAdmin(sender)) {
             $.say($.adminmsg);
             return;
         }
@@ -538,7 +625,7 @@ $.on('command', function (event) {
 			$var.defaultplaylist = $.readFile("./playlist.txt");
             $.say($var.currSong.song.getName() + "~\u266B requested by " + $var.currSong.user + " has been stolen and added to the default playlist!");
 			return;
-		}
+	}
     }
 
 
