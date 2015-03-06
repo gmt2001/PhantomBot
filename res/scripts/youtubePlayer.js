@@ -89,6 +89,7 @@ function RequestedSong(song, user) {
     }
 }
 function parseList(list) {
+    $.writeToFile( "", $.storepath + "queue.php", false);
     if(list.length > 0 ) {
         for(var i=0; i< list.length; i++){
             var song = new Song(list[i]);
