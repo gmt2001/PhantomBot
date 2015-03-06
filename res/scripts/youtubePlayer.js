@@ -89,6 +89,13 @@ function RequestedSong(song, user) {
     }
 }
 function parseList(list) {
+    if(titles==1) {
+        $.writeToFile( "", $.storepath + "queue.php", true);
+    }
+    if(titles==2) {
+        $.writeToFile( "", $.storepath + "queue.txt", true);
+    }
+    
     $.writeToFile( "", $.storepath + "queue.php", false);
     if(list.length > 0 ) {
         for(var i=0; i< list.length; i++){
