@@ -32,6 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
      <property name="build" value="${project.base.dir}/build"/>
      <property name="classes" value="${build}/classes"/>
      <property name="dist" value="${project.base.dir}/dist"/>
+     <property name="versionfolder" value="${dist}/${name}-${version}"/>
 
      <path id="reference.class.path">
          <fileset dir="${reference}">
@@ -43,6 +44,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     	<mkdir dir="${build}"/>
     	<mkdir dir="${classes}"/>
     	<mkdir dir="${dist}"/>
+    	<mkdir dir="${versionfolder}"/>
 
     	<pathconvert property="mf.classpath" pathsep=" ">
   		<path refid="reference.class.path"/>
@@ -67,7 +69,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
      </target>
 
      <target depends="compile.src" name="dist">
-	<jar destfile="${dist}/PhantomBot.jar">
+	<jar destfile="${versionfolder}/PhantomBot.jar">
   		<fileset dir="${classes}"/>
 		<manifest>
 			<attribute name="Bundle-Name" value="${project.name}" />           
@@ -80,8 +82,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 			<attribute name="Main-Class" value="me.mast3rplan.phantombot.PhantomBot"/>
 		</manifest>
 	</jar>
-        <property name="res.dir" value="${dist}" />
-        <property name="lib.dir" value="${dist}/lib" />
+        <property name="res.dir" value="${versionfolder}" />
+        <property name="lib.dir" value="${versionfolder}/lib" />
 	<mkdir dir="${lib.dir}"/>
         <copy todir="${lib.dir}">
             <fileset dir="./lib" />
