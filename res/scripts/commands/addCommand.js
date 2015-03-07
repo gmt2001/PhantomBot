@@ -194,7 +194,7 @@ $.on('command', function(event) {
         }
         
         while (messageCommand.contains('(sender)')) {
-            messageCommand = messageCommand.replace('(sender)', sender);
+            messageCommand = messageCommand.replace('(sender)', $.username.resolve(sender));
         }
         
         if (messageCommand.contains('(count)')) {

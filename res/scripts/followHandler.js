@@ -39,7 +39,7 @@ $.on('twitchFollow', function(event) {
                 }
                 
                 while (s.indexOf('(reward)') != -1) {
-                    s = s.replace('(reward)', p);
+                    s = s.replace('(reward)', p.toString());
                 }
             }
             

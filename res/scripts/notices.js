@@ -41,9 +41,13 @@ $.on('command', function (event) {
 
             if (action.equalsIgnoreCase("get")) {
                 if (args.length < 2) {
-                    $.say("There are " + num_messages + " notices. Say '!notice get <id>' to get a messages content. Message ids go from 0 to " + (num_messages - 1))
+                    $.say("There are " + num_messages + " notices. Say '!notice get <id>' to get a messages content. Message IDs go from 0 to " + (num_messages));
                 } else {
-                    $.say($.inidb.get('notices', 'message_' + message))
+					if ($.inidb.get('notices', 'message_' + message) == null) {
+					$.say("There are " + num_messages + " notices. Message IDs go from 0 to " + (num_messages) + " and " + args[1] + " isn't one of them");
+					} else {
+                    $.say($.inidb.get('notices', 'message_' + message));
+					}
                 }
             }
 

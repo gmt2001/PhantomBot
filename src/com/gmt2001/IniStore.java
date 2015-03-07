@@ -443,6 +443,7 @@ public class IniStore implements ActionListener
     public void set(String type, String key, String value)
     {
         SetString(type, "", key, value);
+        SaveFile(type, files.get(type));
     }
 
     public void del(String type, String key)

@@ -101,6 +101,9 @@ $.on('command', function (event) {
 			win.push("Why am I crying in french?!");
 			win.push("If there were many clumsy, perverted and fun people like you the world would be a better place.");
 			
+		if (points == null) {
+			points = 0;
+		}
 
         if (points < $.rollcost) {
             $.say(username + ", it costs " + $.rollcost + " " + $.pointname + " to roll and you only have " + points + " " + $.pointname + "!");
