@@ -2,10 +2,16 @@ $var.defaultplaylist = $.readFile("./playlist.txt");
 $var.defaultplaylistpos = 0;
 $var.songqueue = [];
 $var.requestusers = {};
+$.song_limit = parseInt($.inidb.get('settings','song_limit'));
 $.song_toggle = parseInt($.inidb.get('settings','song_toggle'));
 $.storepath = $.inidb.get('settings','song_storepath');
 $.storing = parseInt($.inidb.get('settings','song_storing'));
 $.titles = parseInt($.inidb.get('settings','song_titles'));
+
+if($.song_limit==null || $.song_limit=="") {
+    $.song_limit = 3;
+}
+
 if($.song_toggle==null || $.song_toggle=="") {
     $.song_toggle = 1;
 }
@@ -14,11 +20,11 @@ if($.storepath==null || $.storepath=="" || $.strlen($.storepath) == 0) {
     $.storepath = "web/";
 }
 
-if($.storing==null || !isNaN($.storing)) {
+if($.storing==null || $.storing=="") {
     $.storing = 1;
 }
 
-if($.titles==null || !isNaN($.titles)) {
+if($.titles==null || $.titles=="") {
     $.titles = 1;
 }
 
@@ -88,28 +94,65 @@ function RequestedSong(song, user) {
         $var.requestusers[user]--;
     }
 }
-function parseList(list) {
-    //prevsong, currsong, nextsong
-    //prevsong = "Prev <<" + prevsong.song.getName();
-    //currsong = "Playing :" + currsong.song.getName();
-    //nextsong = "Next >>" + nextsong.song.getName();
+function parseList(list, currsong, position) {
+    var currsongrequester = currsong.user;
+    if(currsongrequester.equalsIgnoreCase("DJ " + $.username.resolve($.botname))){
+        currsongrequester = null;
+    }
+    var i = position;
+    var song;
+    var songname;
+    var songid;
+    
+    var currsongurl = '<a href="https://www.youtube.com/watch?v=' + currsong.song.getId() + '" target="new">'+ currsong.song.getId() + " " + currsong.song.getName();
+    if(currsongrequester!=null) {
+    currsongurl = currsongurl + " " + currsongrequester;
+    }
+    currsongurl = currsongurl + "</a></br>";
+
+    var currsongprefix = currsong.song.getId() + " " + currsong.song.getName();
+    if(currsongrequester!=null) {
+    currsongprefix = currsongprefix + " " + currsongrequester;
+    }
     
     if(titles==1) {
-        $.writeToFile( "", $.storepath + "queue.php", false);
+        $.writeToFile( currsongurl, $.storepath + "queue.php", false);
     }
     if(titles==2) {
-        $.writeToFile( "", $.storepath + "queue.txt", false);
+        $.writeToFile(  currsongprefix, $.storepath + "queue.txt", false);
     }
     
     if(list.length > 0 ) {
-        for(var i=0; i< list.length; i++){
-            var song = new Song(list[i]);
-            var url = '<a href="https://www.youtube.com/watch?v=' + song.getId() + '" target="new">' + i.toString() + ". " + song.getName()+'</a><br/>';
+        for(i; i< list.length; i++){
+                var requester = list[i].user;
+                
+                if(requester==null) {
+                    song = new Song(list[i]);
+                    songname = song.getName();
+                    songid = song.getId();                
+                }
+                if(requester!=null) {
+                    songname = list[i].song.getName();
+                    songid = list[i].song.getId();
+                    requester = list[i].user;
+                }
+                
             if ($.titles==1){
+                var url = '<a href="https://www.youtube.com/watch?v=' + songid + '" target="new">' + songid + " " + songname;
+                if(requester!=null)
+                {
+                    url = url + " " + requester;
+                }
+                url = url + "</a></br>";
                 $.writeToFile( url, $.storepath + "queue.php", true);
             }
             else {
-                $.writeToFile(  i.toString() + ". " + song.getName(), $.storepath + "queue.txt", true);
+                var prefix = songid + " " + songname;
+                if(requester!=null)
+                {
+                    prefix = prefix + " " + requester;
+                }
+                $.writeToFile(  prefix, $.storepath + "queue.txt", true);
             }
         }
     }
@@ -166,6 +209,9 @@ function nextDefault() {
 
         $var.prevSong = $.currSong;
         $var.currSong = s;
+        if ($.storing==1) {
+            parseList($var.defaultplaylist, $var.currSong, $var.defaultplaylistpos);
+        }
         
     } else {
         $var.currSong = null;
@@ -174,6 +220,7 @@ function nextDefault() {
     if ($var.currSong == null) {
         return;
     }
+    
     if ($.song_toggle == 1) {
         $.say("Now Playing >> \u266B~" + name + "~\u266B requested by " + user);
     } else if ($.song_toggle == 2) {
@@ -184,12 +231,11 @@ function nextDefault() {
     } else if (!user.equalsIgnoreCase("DJ " + $.username.resolve($.botname))){
         $.writeToFile(name + " requested by: " + user, "currentsong.txt", false);
     }
-    
-    if ($.storing==1) {
-        parseList($var.defaultplaylist);
-    } 
 }
-
+function reloadPlaylist() {
+    $var.defaultplaylist = $.readFile("./playlist.txt");
+    $var.defaultplaylistpos = 0;
+}
 function next() {
     var name = "";
     var user = "";
@@ -203,6 +249,9 @@ function next() {
 
         $var.prevSong = $.currSong;
         $var.currSong = s;
+        if ($.storing==1) {
+            parseList($var.songqueue, $var.currSong, 0);
+        }
     } else {
         $var.currSong = null;
     }
@@ -223,10 +272,11 @@ function next() {
 
     var nextMsg = "The song request queue is empty! Request a new song with !addsong or !songrequest <youtube link>";
             
-        if ($var.songqueue.length > 0) {
+    if ($var.songqueue.length > 0) {
             nextMsg = "Next song >> \u266B~" + $var.songqueue[0].song.getName() + "~\u266B requested by " + $var.songqueue[0].user;
             println(nextMsg);
     }
+
 }
 
 $.on('musicPlayerState', function (event) {
@@ -312,9 +362,9 @@ $.on('command', function (event) {
                 return;
             }
 
-            $.inidb.set('settings', 'song_limit', parseInt(args[1]));
+            $.inidb.set('settings', 'song_limit', args[1]);
             $.song_limit = parseInt(args[1]);
-            $.say("Song request limit has been changed to: " + parseInt(args[1]) + " songs")
+            $.say("Song request limit has been changed to: " + args[1] + " songs")
         }
 
         if (action.equalsIgnoreCase("cost")) {
@@ -343,13 +393,13 @@ $.on('command', function (event) {
             if ($.storing == 2) {
 
                 $.storing = 1;
-                $.inidb.set('settings', 'song_storing', $var.storing.toString());
+                $.inidb.set('settings', 'song_storing', $.storing.toString());
                 $.defaultplaylist = $.readFile("./playlist.txt");
                 $.say("Playlists' positions and titles will now be exported to a readable file.");
 
             } else {
                 $.storing = 2;
-                $.inidb.set('settings', 'song_storing', $var.storing.toString());
+                $.inidb.set('settings', 'song_storing', $.storing.toString());
                 $.say("Playlist storage has been disabled.");
             }
         }
@@ -394,6 +444,16 @@ $.on('command', function (event) {
                 $.inidb.set('settings', 'song_titles', $.titles.toString());
                 $.say("Playlist storage has been set to export titles only.");
             }
+        }
+        
+        if (action.equalsIgnoreCase("reloadplaylist")) {
+            if (!$.isCaster(sender)) {
+                $.say($.adminmsg);
+                return;
+            }
+
+            reloadPlaylist();
+            $.say("Default playlist has been reloaded.");
         }
         
 
