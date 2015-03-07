@@ -4,7 +4,9 @@ $.on('command', function(event) {
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
     var args = event.getArgs();
-    var randomPerson = $.randElement($.users);
+    var num2 = $.channel.getNicks().size();
+    var rnd = $.rand(num2);
+    var randomPerson = $.channel.getNicks().get(rnd);
     var randomNum = $.randRange(1, 100);
     var points;
     var commandString;
@@ -209,7 +211,7 @@ $.on('command', function(event) {
             messageCommand = messageCommand.replace('(z_stroke)', java.lang.Character.toString(java.lang.Character.toChars(0x01B6)[0]));
         }
 		while (messageCommand.indexOf('(random)') != -1) {
-            messageCommand = messageCommand.replace('(random)', $.username.resolve(randomPerson[0]));
+            messageCommand = messageCommand.replace('(random)', $.username.resolve(randomPerson));
         }
         while (messageCommand.indexOf('(#)') != -1) {
             messageCommand = messageCommand.replace('(#)', $.username.resolve(randomNum));
