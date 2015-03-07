@@ -787,7 +787,7 @@ $.on('command', function(event) {
                         
                         symbolsallowed = val.equalsIgnoreCase("1");
                         
-                        if (spamallowed) {
+                        if (symbolsallowed) {
                             $.say("Symbol spam is now allowed!");
                         } else {
                             $.say("Symbol spam is now moderated!");
