@@ -7,6 +7,13 @@ $.song_toggle = parseInt($.inidb.get('settings','song_toggle'));
 $.storepath = $.inidb.get('settings','song_storepath');
 $.storing = parseInt($.inidb.get('settings','song_storing'));
 $.titles = parseInt($.inidb.get('settings','song_titles'));
+$.song = null;
+$.songrequester = null;
+$.songname = null;
+$.songid = null;
+$.songurl = null;
+$.songprefix = null;
+
 
 if($.song_limit==null || $.song_limit=="") {
     $.song_limit = 3;
@@ -94,64 +101,55 @@ function RequestedSong(song, user) {
         $var.requestusers[user]--;
     }
 }
-function parseRequest(list, currsong, position) {
-    var currsongrequester = currsong.user;
-    var i = position;
-      
+
+
+
+function parseDefault(list, currsong, position) {
+    $.songname = currsong.song.getName();
+    $.songid = currsong.song.getId();
+    
     if(list.length > 0 ) {
         if($.titles==1) {
-            var currsongurl = '<a href="https://www.youtube.com/watch?v=' + currsong.song.getId() + '" target="new">'+ currsong.song.getId() + " " + currsong.song.getName() + " " + currsongrequester + "</a></br>";
-            $.writeToFile( currsongurl, $.storepath + "queue.php", false);
+            $.songurl = '<a href="https://www.youtube.com/watch?v=' + $.songid + '" target="new">'+ $.songid + " " + $.songname + "</a></br>";
+            $.writeToFile( $.songurl, $.storepath + "queue.php", false);
         }
         if($.titles==2) {
-            var currsongprefix = currsong.song.getId() + " " + currsong.song.getName() + " " + currsongrequester;
-            $.writeToFile(  currsongprefix, $.storepath + "queue.txt", false);
-        }  
-        for(i; i< list.length; i++){
-                var requester = list[i].user;
-                var reqsongname = list[i].song.getName();
-                var reqsongid = list[i].song.getId();
+            $.songprefix = $.songid + " " + $.songname;
+            $.writeToFile(  $.songprefix, $.storepath + "queue.txt", false);
+        }
+        for(var i=position; i< list.length; i++){
+                $.song = new Song(list[i]);
+                $.songname = $.song.getName();
+                $.songid = $.song.getId();
                 
-            if ($.titles==1){
-                var url = '<a href="https://www.youtube.com/watch?v=' + reqsongid + '" target="new">' + reqsongid + " " + reqsongname + " " + requester + "</a></br>";
-                $.writeToFile( url, $.storepath + "queue.php", true);
-            }
-            else {
-                var prefix = reqsongid + " " + reqsongname + " " + requester;
-                $.writeToFile(  prefix, $.storepath + "queue.txt", true);
-            }
+                if ($.titles==1){
+                    $.songurl = '<a href="https://www.youtube.com/watch?v=' + $.songid + '" target="new">' + $.songid + " " + $.songname + "</a></br>";
+                    $.writeToFile($.songurl, $.storepath + "queue.php", true);
+                }
+                else {
+                    $.songprefix = $.songid + " " + $.songname;
+                    $.writeToFile($.songprefix, $.storepath + "queue.txt", true);
+                }
         }
     }
 }
 
-
-function parseDefault(list, currsong, position) {
-    var i = position;
-    
-    if(list.length > 0 ) {
-        if($.titles==1) {
-            var currsongurl = '<a href="https://www.youtube.com/watch?v=' + currsong.song.getId() + '" target="new">'+ currsong.song.getId() + " " + currsong.song.getName() + "</a></br>";
-            $.writeToFile( currsongurl, $.storepath + "queue.php", false);
-        }
-        if($.titles==2) {
-            var currsongprefix = currsong.song.getId() + " " + currsong.song.getName();
-            $.writeToFile(  currsongprefix, $.storepath + "queue.txt", false);
-        }
-        for(i; i< list.length; i++){
-                var defsong = new Song(list[i]);
-                var defsongname = defsong.getName();
-                var defsongid = defsong.getId();
+function parseSongQueue(list) {
+  
+        for(var i=0; i< list.length; i++){
+                $.songrequester = list[i].user;
+                $.songname = list[i].song.getName();
+                $.songid = list[i].song.getId();
                 
                 if ($.titles==1){
-                    var url = '<a href="https://www.youtube.com/watch?v=' + defsongid + '" target="new">' + defsongid + " " + defsongname + "</a></br>";
-                    $.writeToFile( url, $.storepath + "queue.php", true);
+                    $.songurl = '<a href="https://www.youtube.com/watch?v=' + $.songid + '" target="new">' + $.songid + " " + $.songname + " " + $.songrequester + "</a></br>";
+                    $.writeToFile($.songurl, $.storepath + "queue.php", true);
                 }
                 else {
-                    var prefix = defsongid + " " + defsongname;
-                    $.writeToFile(  prefix, $.storepath + "queue.txt", true);
+                    $.songprefix = $.songid + " " + $.songname + " " + $.songrequester;
+                    $.writeToFile($.songprefix, $.storepath + "queue.txt", true);
                 }
         }
-    }
 }
 
 function nextDefault() {
@@ -205,10 +203,9 @@ function nextDefault() {
 
         $var.prevSong = $.currSong;
         $var.currSong = s;
-        if ($.storing==1) {
-            parseDefault($var.defaultplaylist, $var.currSong, $var.defaultplaylistpos);
+        if ($.storing==1) {           
+            $api.setTimeout($script, parseDefault($var.defaultplaylist, $var.currSong, $var.defaultplaylistpos), 1);
         }
-        
     } else {
         $var.currSong = null;
     }
@@ -229,10 +226,6 @@ function nextDefault() {
     }
 }
 
-function reloadPlaylist() {
-    $var.defaultplaylist = $.readFile("./playlist.txt");
-    $var.defaultplaylistpos = 0;
-}
 function next() {
     var name = "";
     var user = "";
@@ -246,9 +239,24 @@ function next() {
 
         $var.prevSong = $.currSong;
         $var.currSong = s;
+        
         if ($.storing==1) {
-            parseRequest($var.songqueue, $var.currSong, 0);
+            $.songrequester = $var.currSong.user;
+            $.songname = $var.currSong.song.getName();
+            $.songid = $var.currSong.song.getId();
+            if($.titles==1) {
+                $.songurl = '<a href="https://www.youtube.com/watch?v=' + $.songid + '" target="new">'+ $.songid + " " + $.songname + " " + $.songrequester + "</a></br>";
+                $.writeToFile($.songurl, $.storepath + "queue.php", false);
+            }
+            if($.titles==2) {
+                $.songprefix = $.songid + " " + $.songname + " " + $.songrequester;
+                $.writeToFile(  $.songprefix, $.storepath + "queue.txt", false);
+            }
+            if($var.songqueue.length>=1) {
+                $api.setTimeout($script, parseSongQueue($var.songqueue), 1);
+            }
         }
+        
     } else {
         $var.currSong = null;
     }
