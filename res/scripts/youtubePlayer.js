@@ -228,6 +228,7 @@ function nextDefault() {
         $.writeToFile(name + " requested by: " + user, "currentsong.txt", false);
     }
 }
+
 function reloadPlaylist() {
     $var.defaultplaylist = $.readFile("./playlist.txt");
     $var.defaultplaylistpos = 0;
@@ -246,7 +247,7 @@ function next() {
         $var.prevSong = $.currSong;
         $var.currSong = s;
         if ($.storing==1) {
-            parseStoring($var.songqueue, $var.currSong, 0);
+            parseRequest($var.songqueue, $var.currSong, 0);
         }
     } else {
         $var.currSong = null;
