@@ -252,7 +252,7 @@ function next() {
                 $.songprefix = $.songid + " " + $.songname + " " + $.songrequester;
                 $.writeToFile(  $.songprefix, $.storepath + "queue.txt", false);
             }
-            if($var.songqueue.length>=1) {
+            if($var.songqueue.length>0) {
                 $api.setTimeout($script, parseSongQueue($var.songqueue), 1);
             }
         }
