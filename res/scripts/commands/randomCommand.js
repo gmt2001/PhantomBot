@@ -154,8 +154,8 @@ $.on('command', function(event) {
         ar.push("(sender) was thrown into a large pit of PJSalt.");
         ar.push("Oh my, (sender) you make me just want to *SLURP SLURP SLURP*");
         ar.push("(sender) was thrown into a pit of tentacle pleasure.");
-		ar.push("(target) was thrown into a pit of genetically modified super lions.");
-		ar.push("(target) was thrown into a pit of explosive prinnys.");
+	ar.push("(sender) was thrown into a pit of genetically modified super lions.");
+	ar.push("(sender) was thrown into a pit of explosive prinnys.");
         ar.push("I want you (sender).");
         ar.push("/me threw (sender) into a pit of PJSalt!" );
         ar.push("Dango, dango, dango, dango, big (sender) family~\u266B");
@@ -175,11 +175,11 @@ $.on('command', function(event) {
         ar.push("(sender) is so awesome because (sender) can trip over flat surfaces, fall up the stair and also fall up!!");
         ar.push("(sender) looks good enough to dress like the grim reaper and go to a retirement home and tap on the windows!");
         ar.push("Ok everyone shhhhh. The rice crispies are telling me what to do next.");
-        ar.push("(sender) made eye contact with (target) while eating a banana!");
+        ar.push("(sender) made eye contact with (random) while eating a banana!");
         ar.push("It's weird, (sender) just doesn't have enough sax appeal.");
-        ar.push("(target) mysteriously died.");
-		ar.push("(target) stopped existing.");
-	    ar.push("All 7 of the Dragon Balls have been gathered! Now to wish (target) to become a sloth!");
+        ar.push("(random) mysteriously died.");
+		ar.push("(random) stopped existing.");
+	    ar.push("All 7 of the Dragon Balls have been gathered! Now to wish (sender) to become a sloth!");
 		ar.push("The ocean is so salty because everyone pees in it.");
 		ar.push("Real men know when to run like a little bitch");
 		ar.push("If I get reincarnated…. I wanna become a clam.");
@@ -205,7 +205,7 @@ $.on('command', function(event) {
 		ar.push("Do evil, get caught, then claim demons were brainwashing you. A common way that human politicians evade responsibility.");
 		ar.push("I have one last request. Please slap me in the face with that wad of cash.");
 		ar.push("Why do people have to work? I just want to eat and sleep. I should have been born as a panda at the zoo.");
-		ar.push("Right, I have something I have to apologize to (target) for. Sometimes, when we were playing, you’d suddenly start crying, and then you’d run home. You probably thought you’d fooled us, but everyone knew… that you had pooped your pants! Sorry.");
+		ar.push("Right, I have something I have to apologize to (random) for. Sometimes, when we were playing, you’d suddenly start crying, and then you’d run home. You probably thought you’d fooled us, but everyone knew… that you had pooped your pants! Sorry.");
 		ar.push("What I want to do most? Let’s see… Just once, I really want to let loose and pee in my pants.");
 		ar.push("Dude! Christmas rocks! We know how to do it right, here! First, we X out the ‘Christ’ part to make it extreme! Then we shop and eat stuff ’til we’re sick! Wanna shovel down some X-Mas cake to get in the spirit?");
 		ar.push("My name is Duck. Yes, like the bird. Take it up with my parents. They never loved me!");
@@ -216,10 +216,10 @@ $.on('command', function(event) {
 
     if ($.inidb.get("randoms", "num_randoms") == null || $.inidb.get("randoms", "num_randoms") == 0 ) {
 		$.inidb.set("randoms", "num_randoms", ar.length);
-        for (var i=0; i< ar.length; ++i) {
-            $.inidb.set('randoms', 'random_' + i, ar[i]);
-        }
-	}
+                for (var i=0; i< ar.length; ++i) {
+                    $.inidb.set('randoms', 'random_' + i, ar[i]);
+                }
+    }
 
 
 $.registerChatCommand("./commands/randomCommand.js", "random");
