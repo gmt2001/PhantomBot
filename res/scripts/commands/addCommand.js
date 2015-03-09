@@ -4,14 +4,12 @@ $.on('command', function(event) {
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
     var args = event.getArgs();
-    var num2 = $.channel.getNicks().size();
+    var num2 = $.users.length;    
     var rnd = $.rand(num2);
-    var randomPerson = $.channel.getNicks().get(rnd);
+    var randomPerson = $.users[rnd][0];
     var randomNum = $.randRange(1, 100);
-    var points;
     var commandString;
     var message;
-    var cmd;
 
     if(args.length >= 2 && !command.equalsIgnoreCase("pricecom")) {
         if(command.equalsIgnoreCase("addcom") ) {
