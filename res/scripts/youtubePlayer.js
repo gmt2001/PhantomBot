@@ -63,6 +63,17 @@ function Song(name) {
     }
 }
 
+function youtubeParser(url){
+    var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?^\s]*).*/ ;
+    var match = url.match(regExp);
+    if (match&&match[7].length==11){
+        return match[7];
+    }else{
+        return url;
+    }
+}
+
+
 function RequestedSong(song, user) {
     this.song = song;
     this.user = user;
@@ -104,7 +115,10 @@ function RequestedSong(song, user) {
 
 
 
-function parseDefault(list, currsong, position) {
+function parseDefault() {
+    var list = $var.defaultplaylist;
+    var currsong = $var.currSong; 
+    var position = $var.defaultplaylistpos;
     $.songname = currsong.song.getName();
     $.songid = currsong.song.getId();
     
@@ -134,8 +148,9 @@ function parseDefault(list, currsong, position) {
     }
 }
 
-function parseSongQueue(list) {
+function parseSongQueue() {
   
+        var list = $var.songqueue;
         for(var i=0; i< list.length; i++){
                 $.songrequester = list[i].user;
                 $.songname = list[i].song.getName();
@@ -189,7 +204,7 @@ function nextDefault() {
 
     if ($var.defaultplaylist.length > 0) {
 
-        s = new Song($var.defaultplaylist[$var.defaultplaylistpos]);
+        s = new Song(youtubeParser($var.defaultplaylist[$var.defaultplaylistpos]));
         s = new RequestedSong(s, "DJ " + $.username.resolve($.botname));
         $var.defaultplaylistpos++;
 
@@ -204,7 +219,7 @@ function nextDefault() {
         $var.prevSong = $.currSong;
         $var.currSong = s;
         if ($.storing==1) {           
-            $api.setTimeout($script, parseDefault($var.defaultplaylist, $var.currSong, $var.defaultplaylistpos), 1);
+            $api.setTimeout($script, parseDefault, 1);
         }
     } else {
         $var.currSong = null;
@@ -253,7 +268,7 @@ function next() {
                 $.writeToFile(  $.songprefix, $.storepath + "queue.txt", false);
             }
             if($var.songqueue.length>0) {
-                $api.setTimeout($script, parseSongQueue($var.songqueue), 1);
+                $api.setTimeout($script, parseSongQueue, 1);
             }
         }
         
@@ -538,8 +553,10 @@ $.on('command', function (event) {
                 println("Music player disabled.");
                 return;
             }
+            
+            
 
-            var video = new Song(argsString);
+            var video = new Song(youtubeParser(argsString));
 
             if (video.id == null) {
                 $.say("Song doesn't exist or you typed something wrong.");

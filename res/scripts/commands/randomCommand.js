@@ -215,6 +215,7 @@ $.on('command', function(event) {
 
 
     if ($.inidb.get("randoms", "num_randoms") == null || $.inidb.get("randoms", "num_randoms") == 0 ) {
+        
 		$.inidb.set("randoms", "num_randoms", ar.length);
                 for (var i=0; i< ar.length; ++i) {
                     $.inidb.set('randoms', 'random_' + i, ar[i]);
