@@ -1,16 +1,14 @@
 $.on('command', function(event) {
     var sender = event.getSender();
-    var username = $.username.resolve(sender);
     var command = event.getCommand();
-    var num2 = $.channel.getNicks().size();
+    var num2 = $.users.length;    
     var rnd = $.rand(num2);
-    var randomPerson = $.channel.getNicks().get(rnd);
+    var randomPerson = $.users[rnd][0];
     var argsString = event.getArguments().trim();
     var argsString2 = argsString.substring(argsString.indexOf(" ") + 1, argsString.length());
     var args = event.getArgs();
     var num_randoms = parseInt($.inidb.get("randoms", "num_randoms"));
     var randomNum = $.randRange(1, 100);
-    var random;
     var num;
     
     if(command.equalsIgnoreCase("random")) {
