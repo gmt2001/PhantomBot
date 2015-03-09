@@ -19,9 +19,14 @@ $.on('command', function(event) {
                 $.say("You must be a Moderator to use that command!");
                 return;
             }
-            
+
             commandString = args[0].toLowerCase();
             message = argsString.substring(argsString.indexOf(args[0]) + $.strlen(args[0]) + 1);
+			
+			if (commandString.substring(0, 1) == '!') { 
+				commandString = commandString.substring(1);
+				}
+
             
             if ($.commandExists(commandString) && !$.isCustomCommand(commandString)) {
                 $.say("You can not overwrite a built in command, " + username + "!");
