@@ -179,7 +179,7 @@ $.registerChatCommand("/systems/timeSystem.js", "timelevel");
 
 
 $.setInterval(function() {
-    if (!$.moduleEnabled("./systems/timeSystem.js") || $.timelevel=="false") {
+    if (!$.moduleEnabled("./systems/timeSystem.js")) {
         return;
     }
     
@@ -187,10 +187,11 @@ $.setInterval(function() {
         var nick = $.users[i][0].toLowerCase();
         
         $.inidb.incr('time', nick, 60);
-        
-        if ($.getUserGroupId(nick) == 0 && parseInt($.inidb.get('time', nick)) >= 12600 * 10) {
-            $.setUserGroupById(nick, 1);
-            $.say($.username.resolve(nick) + " leveled up to a " + $.getGroupNameById(1) + "! Congratulations and thanks for staying with us!");
+        if ($.timelevel=="true") {
+            if ($.getUserGroupId(nick) == 0 && parseInt($.inidb.get('time', nick)) >= 12600 * 10) {
+                $.setUserGroupById(nick, 1);
+                $.say($.username.resolve(nick) + " leveled up to a " + $.getGroupNameById(1) + "! Congratulations and thanks for staying with us!");
+            }
         }
     }
 }, 60 * 1000);
