@@ -5,6 +5,10 @@ else {
 	$.inidb.set("timezone", "timezone", "America/New_York" );
 	$.timezone = $.inidb.get("timezone", "timezone");
 }
+$.timelevel = $.inidb.get('settings', 'timelevel');
+if($.timelevel == null) {
+    $.timelevel = "true";
+}
 
 $.say("");
 $.say("The current time zone is '" + $.timezone + "'! To change it use '!timezone <timezone>'.")
@@ -73,6 +77,24 @@ $.on('command', function(event) {
 		}
 		
 	}
+	if (command.equalsIgnoreCase("timelevel")) {
+            if (!$.isAdmin(sender)) {
+		$.say("You must be an admin to use this command.");
+                return;
+            }   else {
+                if ($.timelevel=="true") {
+                    $.timelevel = "false";
+                    $.inidb.set('settings','timelevel', "false");
+                    $.say("Earning higher group rank by spending time in chat has been disabled.");
+                    return;
+                } else {
+                    $.timelevel = "true";
+                    $.inidb.set('settings','timelevel', "true");
+                    $.say("Earning higher group rank by spending time in chat has been enabled.");
+                    return;
+                }
+            }  
+        }
 
     if(command.equalsIgnoreCase("time")) {
         if(args.length == 3) {
@@ -153,11 +175,11 @@ $.on('command', function(event) {
 $.registerChatCommand("./systems/timeSystem.js", "time");
 $.registerChatCommand("./systems/timeSystem.js", "time help");
 $.registerChatCommand("./systems/timeSystem.js", "timezone");
-
+$.registerChatCommand("/systems/timeSystem.js", "timelevel");
 
 
 $.setInterval(function() {
-    if (!$.moduleEnabled("./systems/timeSystem.js")) {
+    if (!$.moduleEnabled("./systems/timeSystem.js") || $.timelevel=="false") {
         return;
     }
     
