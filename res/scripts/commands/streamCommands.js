@@ -1,7 +1,13 @@
 $.isOnline = function(channel) {
     var stream = $.twitch.GetStream(channel);
-    
-    return !(stream == null);
+
+    try {
+        stream.getJSONObject("stream");
+    } catch(e) {
+        return false;
+    }
+
+    return true;
 }
 
 $.getStatus = function(channel) {
