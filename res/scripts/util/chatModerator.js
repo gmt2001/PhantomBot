@@ -1161,6 +1161,24 @@ $.on('ircChannelMessage', function(event) {
         $.say(username + " -> " + capsmessage + " [Purged]");
         
         $.logEvent("chatModerator.js", 1163, "Automatic caps punishment triggered by " + username + ". Message Length: " + $.strlen(message) + "    Caps Ratio: " + capsRatio + "    Message: " + omessage);
+    } else if (!symbolsallowed && !$.isMod(sender) && (numsymbols > symbolslimit || rptsymbols > symbolsrepeatlimit)) {
+        timeoutUser(sender, 1);
+        
+        $.say(username + " -> " + symbolsmessage + " [Purged]");
+        
+        $.logEvent("chatModerator.js", 1193, "Automatic symbols punishment triggered by " + username + ". Longest symbol sequence: " + rptsymbols + ". Total symbols: " + numsymbols + ". Message: " + omessage);
+    } else if (!repeatallowed && !$.isMod(sender) && (numrepeat > repeatlimit || rptrepeat > repeatlimit) && rptrepeat > 6) {
+        timeoutUser(sender, 1);
+        
+        $.say(username + " -> " + repeatmessage + " [Purged]");
+        
+        $.logEvent("chatModerator.js", 1199, "Automatic repeat punishment triggered by " + username + ". Longest repeat sequence: " + rptrepeat + ". Total repeat sequences: " + numrepeat + ". Message: " + omessage);
+    } else if (!graphemeallowed && !$.isMod(sender) && grapheme > graphemelimit) {
+        timeoutUser(sender, 1);
+        
+        $.say(username + " -> " + graphememessage + " [Purged]");
+        
+        $.logEvent("chatModerator.js", 1205, "Automatic grapheme punishment triggered by " + username + ". Longest grapheme sequence: " + grapheme + ". Message: " + omessage);
     } else if (!spamallowed && !$.isMod(sender)) {
         var idx = -1;
         
@@ -1185,24 +1203,6 @@ $.on('ircChannelMessage', function(event) {
             
             $.logEvent("chatModerator.js", 1186, "Automatic spam punishment triggered by " + username + ". Messages in the last 30 seconds: " + $.spamtracker[idx][1]);
         }
-    } else if (!symbolsallowed && !$.isMod(sender) && (numsymbols > symbolslimit || rptsymbols > symbolsrepeatlimit)) {
-        timeoutUser(sender, 1);
-        
-        $.say(username + " -> " + symbolsmessage + " [Purged]");
-        
-        $.logEvent("chatModerator.js", 1193, "Automatic symbols punishment triggered by " + username + ". Longest symbol sequence: " + rptsymbols + ". Total symbols: " + numsymbols + ". Message: " + omessage);
-    } else if (!repeatallowed && !$.isMod(sender) && (numrepeat > repeatlimit || rptrepeat > repeatlimit) && rptrepeat > 6) {
-        timeoutUser(sender, 1);
-        
-        $.say(username + " -> " + repeatmessage + " [Purged]");
-        
-        $.logEvent("chatModerator.js", 1199, "Automatic repeat punishment triggered by " + username + ". Longest repeat sequence: " + rptrepeat + ". Total repeat sequences: " + numrepeat + ". Message: " + omessage);
-    } else if (!graphemeallowed && !$.isMod(sender) && grapheme > graphemelimit) {
-        timeoutUser(sender, 1);
-        
-        $.say(username + " -> " + graphememessage + " [Purged]");
-        
-        $.logEvent("chatModerator.js", 1205, "Automatic grapheme punishment triggered by " + username + ". Longest grapheme sequence: " + grapheme + ". Message: " + omessage);
     }
 });
 

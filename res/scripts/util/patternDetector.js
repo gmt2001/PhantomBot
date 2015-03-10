@@ -307,26 +307,14 @@ $.getNumberOfRepeatSequences = function (event) {
 $.getLongestUnicodeGraphemeCluster = function(event) {
     var message = event.getMessage();
     
-    var m = Pattern.compile("(\\P{M}\\p{M}*)").matcher(message);
+    var m = Pattern.compile("(?>\\P{M}\\p{M}*)+").matcher(message);
     var s1;
-    var s2;
     var ret = 0;
     
     while (m.find() == true) {
         s1 = m.group(0);
-        s2 = m.group(1);
         
-        if ($.strlen(s1) > 0 && $.strlen(s2) > 0) {
-            if ($.strlen(s1) > $.strlen(s2)) {
-                if (($.strlen(s1) / $.strlen(s2)) > 1) {
-                    ret = Math.max(ret, ($.strlen(s1) / $.strlen(s2)));
-                }
-            } else {
-                if (($.strlen(s2) / $.strlen(s1)) > 1) {
-                    ret = Math.max(ret, ($.strlen(s2) / $.strlen(s1)));
-                }
-            }
-        }
+        ret = Math.max(ret, $.strlen(s1));
     }
 
     return ret;
