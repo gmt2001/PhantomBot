@@ -296,6 +296,11 @@ function next() {
             nextMsg = "Next song >> \u266B~" + $var.songqueue[0].song.getName() + "~\u266B requested by " + $var.songqueue[0].user;
             println(nextMsg);
     }
+    if (user.equalsIgnoreCase("DJ " + $.username.resolve($.botname))) {
+        $.writeToFile(name, "currentsong.txt", false);
+    } else if (!user.equalsIgnoreCase("DJ " + $.username.resolve($.botname))){
+        $.writeToFile(name + " requested by: " + user, "currentsong.txt", false);
+    }
 
 }
 
