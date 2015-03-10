@@ -63,6 +63,8 @@ $.on('command', function (event) {
                 user.push(sender + " licked " + username + " until " + sender + " was squishy, yeah.. squishy.");
                 user.push(sender + " catapulted a huge load of rusty spoons on to " + username + ". " + username + " died.");
                 user.push(sender + " ran out of rusty spoons and unicorn horns to kill " + username + " with and so instead used a rusty hanger.");
+                user.push(sender + " came in like a mystical being of awesomeness and destroyed " + username + "!");
+
             }
  
             do {
@@ -79,7 +81,6 @@ $.on('command', function (event) {
  
             self.push(sender + " has somehow managed to kill himself.");
             self.push(sender + " died from unknown causes.");
-            self.push("PhantomIndex came in like a mystical being of awesomeness and destroyed " + sender + "!")
             self.push(sender + " was sliced in half by Boulder (or something along those lines).");
             self.push(sender + " exploded.");
             self.push(sender + " forgot how to breathe.");
