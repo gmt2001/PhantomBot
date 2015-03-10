@@ -24,12 +24,12 @@ $.getGame = function(channel) {
 
 $.getViewers = function(channel) {
     var stream = $.twitch.GetStream(channel);
-    
-    if (stream == null) {
+
+    try {
+        return stream.getJSONObject("stream").getInt("viewers");
+    } catch(e) {
         return 0;
     }
-    
-    return stream.getJSONObject("stream").getInt("viewers");
 }
 
 $.on('command', function(event) {

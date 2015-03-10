@@ -307,7 +307,7 @@ $.getNumberOfRepeatSequences = function (event) {
 $.getLongestUnicodeGraphemeCluster = function(event) {
     var message = event.getMessage();
     
-    var m = Pattern.compile("(?>\\P{M}\\p{M}*)+").matcher(message);
+    var m = Pattern.compile("(?>\\P{M}\\p{M}+)+").matcher(message);
     var s1;
     var ret = 0;
     
