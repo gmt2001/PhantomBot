@@ -113,7 +113,7 @@ public class PhantomBot implements Listener
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
         
         com.gmt2001.Console.out.println();
-        com.gmt2001.Console.out.println("PhantomBot Core 1.5.3 3/07/2015 02:12 AM EST");
+        com.gmt2001.Console.out.println("PhantomBot Core 1.5.3 3/09/2015 04:21 PM EST");
         com.gmt2001.Console.out.println("Creator: mast3rplan");
         com.gmt2001.Console.out.println("Developers: gmt2001, PhantomIndex, GloriousEggroll");
         com.gmt2001.Console.out.println("www.phantombot.net");
@@ -149,17 +149,9 @@ public class PhantomBot implements Listener
 
         if (hostname.isEmpty())
         {
-            if (!useTwitch)
-            {
-                this.hostname = "tmi6.justin.tv";
-                this.port = 443;
-            } else
-            {
-                this.hostname = "irc.twitch.tv";
-                this.port = 6667;
-            }
-        } else
-        {
+            this.hostname = "irc.twitch.tv";
+            this.port = 6667;
+        } else {
             this.hostname = hostname;
             this.port = port;
         }

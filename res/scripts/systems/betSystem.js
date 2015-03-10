@@ -47,7 +47,7 @@ $.on('command', function (event) {
 
             if ($var.bet_running) {
                 if ( pot == 0 && entries == 0) {
-                    $.say("/me Nothing at the moment. '!bet < amount > < 1p / 2p >' to wager your " + $.pointname + " on one of the following options: " + $var.bet_optionsString);
+                    $.say("/me Nothing at the moment. '!bet < amount > < option >' to wager your " + $.pointname + " on one of the following options: " + $var.bet_optionsString);
                     return;
                 } else {
                     $.say("[Current Results] Pot: " + pot + " " + $.pointname + ", Bets: " + entries +", Options: " + rOptions + ".");
@@ -111,7 +111,7 @@ $.on('command', function (event) {
                 $var.bet_options = [];
 
                 var boptions = args.slice(1);
-                    if (boptions.length == 1 ){
+                    if (boptions.length <= 1 ){
                         boptions[0] = "1p";
                         boptions[1] = "2p";
                     }
@@ -130,7 +130,7 @@ $.on('command', function (event) {
 
                 $var.bet_table = {};
                 $var.bet_running = true;
-                $.say("/me Betting is now open for: " + optionString + " >> You have " + (betlength / 1000) + " seconds to wager your " + $.pointname + " with '!bet < amount > < 1p / 2p >'");
+                $.say("/me Betting is now open for: " + optionString + " >> You have " + (betlength / 1000) + " seconds to wager your " + $.pointname + " with '!bet < amount > < option >'");
                 $var.bet_optionsString = optionString;
                 $.inidb.set('bets', 'date', date);
                 $.inidb.set('bets', 'options', optionString); //
@@ -158,11 +158,11 @@ $.on('command', function (event) {
                 if (parseInt(args[1]) >= 60) {
                     betlength = parseInt(args[1]) * 1000;
 
-                    $.say("The betting time is now set to " + args[1] + " seconds!")
+                    $.say("The bet time limit is now set to " + args[1] + " seconds!")
                 } else if (args[1] == "0") {
-                    $.say("The betting time is set to " + betlength + " seconds!")
+                    $.say("The bet time limit is currently set to " + betlength + " seconds!")
                 } else {
-                    $.say("The minimum time is 60 seconds!")
+                    $.say("The minimum bet time limit is 60 seconds!")
                 }
 
 
@@ -171,7 +171,7 @@ $.on('command', function (event) {
                 if (sender == betstarter || $.isMod(sender)) {
                     
                 } else {
-                    $.say($.username.resolve(betstarter) + " opened this bet and is the only that can close it.");
+                    $.say("@" + $.username.resolve(betstarter) + " opened this bet and is the only that can close it with '!bet win <option>'");
                     return;
                 }
 
@@ -224,14 +224,14 @@ $.on('command', function (event) {
                     }
                 } else {
                     if (pot == 0) {
-                        $.say("/me Everyone wagered on the same winning option. Deducted " + $.pointname + " have been sent back!");
+                        $.say("/me Everyone wagered on the same winning option. Deducted " + $.pointname + " has been returned!");
 
                         for (user in $var.bet_table) {
                             bet = $var.bet_table[user];
                             $.inidb.incr('points', user, (bet.amount));
                         }
                     } else if (totalwin == 0) {
-                        $.say("/me Everyone lost!");
+                        $.say("/me Everyone lost the bet!");
                     } else {
                         for (user in $var.bet_table) {
                             bet = $var.bet_table[user];
@@ -242,7 +242,7 @@ $.on('command', function (event) {
                             }
                         }
 
-                        $.say("/me The results are in! " + winning + " has won! [Winning Pot: " + pot + " " + $.pointname + "] Pot will be sent to the following viewers: " + winners);
+                        $.say("/me [DADADA] The results are in! " + winning + " has won! [Winning Pot: " + pot + " " + $.pointname + "] Pot will be sent to the following viewers: " + winners);
                                 $.inidb.set('bets', 'winner', (winners)); //
                                 $.inidb.set('bets', 'winning_option', pot); //
                                  pot = 0;
@@ -362,7 +362,7 @@ $.on('command', function (event) {
                 } else {
 
                     var betmessage = "";
-                        betmessage = ", the options are: " + $var.bet_optionsString + "! Type '!bet < amount > < 1p / 2p >' to enter!";
+                        betmessage = ", the options are: " + $var.bet_optionsString + "! Type '!bet < amount > < option >' to enter!";
 
                     if (argsString.isEmpty()) {
                         $.say("/me [Current Pot] >> " + pot + " " + $.pointname + " << " + username + " " + betmessage);
@@ -371,7 +371,7 @@ $.on('command', function (event) {
 
             } else {
                 if (argsString.isEmpty()) {
-                    $.say("Usage: '!bet open' - '!bet open < option1 / option2 >' - '!bet time < seconds >' - '!bet results' - '!bet win < option >' - '!bet < amount > < option1 / option 2 >'");
+                    $.say("Usage: '!bet open' - '!bet open < options >' - '!bet time < seconds >' - '!bet results' - '!bet win < option >' - '!bet < amount > < option >'");
 
                 }
 

@@ -4,14 +4,12 @@ $.on('command', function(event) {
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
     var args = event.getArgs();
-    var num2 = $.channel.getNicks().size();
+    var num2 = $.users.length;    
     var rnd = $.rand(num2);
-    var randomPerson = $.channel.getNicks().get(rnd);
+    var randomPerson = $.users[rnd][0];
     var randomNum = $.randRange(1, 100);
-    var points;
     var commandString;
     var message;
-    var cmd;
 
     if(args.length >= 2 && !command.equalsIgnoreCase("pricecom")) {
         if(command.equalsIgnoreCase("addcom") ) {
@@ -19,9 +17,14 @@ $.on('command', function(event) {
                 $.say("You must be a Moderator to use that command!");
                 return;
             }
-            
+
             commandString = args[0].toLowerCase();
             message = argsString.substring(argsString.indexOf(args[0]) + $.strlen(args[0]) + 1);
+			
+			if (commandString.substring(0, 1) == '!') { 
+				commandString = commandString.substring(1);
+				}
+
             
             if ($.commandExists(commandString) && !$.isCustomCommand(commandString)) {
                 $.say("You can not overwrite a built in command, " + username + "!");

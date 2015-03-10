@@ -166,7 +166,7 @@ public class Channel
      * is in the nick prefix map received in numeric 005. If no numeric is
      * passed o,v,h are used by default.
      * <p/>
-     * So basically modes that do not change the apperance of a nick with a
+     * So basically modes that do not change the appearance of a nick with a
      * prefix are not tracked if the mode applies to a user. Example: q and b
      * are not tracked.
      * <p/>
@@ -506,7 +506,7 @@ public class Channel
     }
 
     /**
-     * Gets a list of nicks for Channel. The list returned has a case insenstive
+     * Gets a list of nicks for Channel. The list returned has a case insensitive
      * indexOf() and contains()
      *
      * @return List of nicks
