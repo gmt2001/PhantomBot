@@ -1,10 +1,10 @@
 $.on('ircChannelJoin', function(event) {
     var sender = event.getUser().toLowerCase();
     var username = $.username.resolve(sender);
+    var s = $.inidb.get("greeting", sender);
     
     if ($.inidb.get("greeting", sender + "_enabled") == "1") {
-        var s = $.inidb.get("greeting", sender);
-        
+
         if (s == null || s == undefined || s.isEmpty()) {
             s = $.inidb.get("greeting", "_default");
             
@@ -14,9 +14,38 @@ $.on('ircChannelJoin', function(event) {
         }
         
         $.say(s.replace("<name>", username));
-    }	
+        
+    } else if ($.inidb.get("greeting", "autogreet") == "true") {
+        if (s == null || s == undefined || s.isEmpty()) {
+            s = $.inidb.get("greeting", "_default");
+            
+            if (s == null || s == undefined || s.isEmpty()) {
+                s = "<name> has entered the channel!";
+            }
+        }
+        
+        $.say(s.replace("<name>", username));
+           
+    } else if ($.inidb.get("greeting", "autogreet") == null || $.inidb.get("greeting", "autogreet") == "false") {
+           if (s == null || s == undefined || s.isEmpty()) {
+            s = $.inidb.get("greeting", "_default");
+            
+            if (s == null || s == undefined || s.isEmpty()) {
+                s = "<name> has entered the channel.";
+            }
+        }
+        if ($.inidb.get("greeting", sender + "_enabled") == "0" ) {
+                println(s.replace("<name>", username));
+        }
+    } 
 });
 
+$.on('ircChannelLeave', function(event) {
+    var sender = event.getUser().toLowerCase();
+    var username = $.username.resolve(sender);
+    
+    println(username + " has left the channel.");
+});
 
 $.on('command', function(event) {
     var sender = event.getSender().toLowerCase();
@@ -38,11 +67,25 @@ $.on('command', function(event) {
         if (args.length > 1) {
             message = argsString.substring(argsString.indexOf(subCommand) + $.strlen(subCommand) + 1);
         }
-    
+        
+        if (subCommand.equalsIgnoreCase("toggle")) {
+                if (!$.isMod(sender)) {
+                        $.say("You need to be a Moderator to use that command, " + username + "!");
+                        return;
+                    }
+            if ($.inidb.get("greeting", "autogreet")== null || $.inidb.get("greeting", "autogreet")== "false") {
+            $.inidb.set("greeting", "autogreet", "true");
+            $.say ("Auto Greeting enabled! " + $.username.resolve($.botname) + " will greet everyone from now on.");
+            } else if ($.inidb.get("greeting", "autogreet")== "true") {
+            $.inidb.set("greeting", "autogreet", "false");
+            $.say ("Auto Greeting disabled! " + $.username.resolve($.botname) + " will no longer greet viewers.");
+            }
+        }
+
         if (subCommand.equalsIgnoreCase("enable")) {
             $.inidb.set("greeting", sender + "_enabled", "1");
-            
-            $.say ("Greeting enabled! " + $.botname + " will greet you from now on " + username + ".");
+         
+            $.say ("Greeting enabled! " + $.username.resolve($.botname) + " will greet you from now on " + username + ".");
         } else if (subCommand.equalsIgnoreCase("disable")) {
             $.inidb.set("greeting", sender + "_enabled", "0");
             
@@ -77,7 +120,7 @@ $.on('command', function(event) {
             $.inidb.set("greeting", "_default", message);
             
             $.say("Default greeting changed");
-        } else {
+        } else if (args[0].isEmpty()){
             $.say('Usage: !greeting enable, !greeting disable, !greeting set <message>, !greeting setdefault <message>');
         }
     }

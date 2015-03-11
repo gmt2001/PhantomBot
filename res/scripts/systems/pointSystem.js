@@ -127,7 +127,7 @@ $.on('command', function (event) {
             if (action.equalsIgnoreCase("give")) {
                 if ($var.perm_toggle == true) {
                     if (!$.isMod(sender)) {
-                        $.say($.modmsg);
+                        $.say("You need to be a Moderator to use that command, " + username + "!");
                         return;
                     }
                 } else {
