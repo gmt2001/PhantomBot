@@ -1,3 +1,6 @@
+$.peninterval = parseInt($.inidb.get('settings', 'pointinterval'));
+$.penofflineinterval = parseInt($.inidb.get('settings', 'offlineinterval'));
+
 $.on('command', function(event) {
     var sender = event.getSender().toLowerCase();
     var username = $.username.resolve(sender);
@@ -8,8 +11,7 @@ $.on('command', function(event) {
     if (command.equalsIgnoreCase("penalty")) {
 
      if ($.isMod(sender)) {
-       threshold = parseInt($.inidb.get('penalty', args[0] + "_threshold")); 
-       amount = parseInt($.inidb.get('penalty', args[0] + "_points")); 
+       var amount = parseInt($.inidb.get('penalty', args[0] + "_points")); 
        
         if (!args.length > 0) {
             $.say("Usage: !penalty <name>, !penalty <name> <amount>");
@@ -49,11 +51,11 @@ $.on('command', function(event) {
                 if ($.inidb.get('penalty', args[0]) == null || $.inidb.get('penalty', args[0]) == "false") {
                 $.say( $.username.resolve(args[0]) + " hasn't been penalized for anything.");
             } else {
-                penaltypoints = $.inidb.get('penalty', args[0] + "_threshold");
-                if (penaltypoints == null) {
-                    penaltypoints = 0;
+                var penaltythreshold = $.inidb.get('penalty', args[0] + "_threshold");
+                if (penaltythreshold == null) {
+                    penaltythreshold = 0;
                 }
-                $.say ($.username.resolve(args[0]) + " was penalized for: " + penaltypoints + " " + $.pointname + ".");  
+                $.say ($.username.resolve(args[0]) + " was penalized for: " + penaltythreshold + " " + $.pointname + ".");  
             }
           
         }
@@ -67,19 +69,19 @@ $.setInterval(function() {
         return;
     }
 
-    if ($.lastpointinterval == null || $.lastpointinterval == undefined) {
-        $.lastpointinterval = System.currentTimeMillis();
+    if ($.penlastpointinterval == null || $.penlastpointinterval == undefined) {
+        $.penlastpointinterval = System.currentTimeMillis();
         return;
     }
 
 	if (!$.isOnline($.channelName)) {
 		amount = $.offlinegain;
-		if ($.lastpointinterval + ($.offlineinterval * 60 * 1000) >= System.currentTimeMillis()) {
+		if ($.penlastpointinterval + ($.penofflineinterval * 60 * 1000) >= System.currentTimeMillis()) {
 			return;
 		}
     } else {
 		amount = $.pointgain;
-		if ($.lastpointinterval + ($.pointinterval * 60 * 1000) >= System.currentTimeMillis()) {
+		if ($.penlastpointinterval + ($.peninterval * 60 * 1000) >= System.currentTimeMillis()) {
 			return;
 		}
 	}
@@ -90,10 +92,10 @@ $.setInterval(function() {
             $.inidb.decr('points', nick, parseInt(amount));
             $.inidb.incr('penalty', nick + "_points", parseInt(amount));
         }
-        penaltypoints = parseInt($.inidb.get('penalty', nick + "_points"));
-        threshold = parseInt($.inidb.get('penalty', nick + "_threshold"));
+        var penaltypoints = parseInt($.inidb.get('penalty', nick + "_points"));
+        var penaltythreshold = parseInt($.inidb.get('penalty', nick + "_threshold"));
         
-        if (penaltypoints >= threshold && $.inidb.get('penalty', nick) == "true") {
+        if (penaltypoints >= penaltythreshold && $.inidb.get('penalty', nick) == "true") {
                 $.say($.username.resolve(nick) + "'s penalty has been lifted thus returning " + penaltypoints + " " + $.pointname + ".");
                     $.inidb.set('penalty', nick, "false");
                     $.inidb.incr('points', nick, parseInt(penaltypoints));
@@ -101,7 +103,7 @@ $.setInterval(function() {
         }
     }
 
-    $.lastpointinterval = System.currentTimeMillis();
+    $.penlastpointinterval = System.currentTimeMillis();
 }, 1000);
 
 $.registerChatCommand("./systems/penaltySystem.js", "penalty");
