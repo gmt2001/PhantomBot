@@ -2,51 +2,67 @@ $.on('command', function(event) {
     var sender = event.getSender().toLowerCase();
     var username = $.username.resolve(sender);
     var command = event.getCommand();
-    var argsString = event.getArguments().trim();
     var args = event.getArgs();
 
-    if (argsString.isEmpty()) {
-        args = [];
-    } else {
-        args = argsString.split(" ");
-    }
 	
     if (command.equalsIgnoreCase("penalty")) {
-        args[0] = $.username.resolve(args[0]);
-        var penalty = parseInt($.inidb.get('penalty', args[0] + "_points"));
-    	var m = "";
-	if (!isNaN(parseInt(args[1]))) {
-		m = args[0] + " has been penalized by " + username + " for " + args[1] + " " + $.pointname + "!";
-	} else {
-		m = args[0] + " has been penalized by " + username + " until further notice!";
-	}
-		
-        if (args.length < 0) {
-            $.say("Usage: !penalty <name> or !penalty <name> <amount>- Penalizes a viewer.");
-            return;
-        } else {
+
+     if ($.isMod(sender)) {
+       threshold = parseInt($.inidb.get('penalty', args[0] + "_threshold")); 
+       amount = parseInt($.inidb.get('penalty', args[0] + "_points")); 
+       
+        if (!args.length > 0) {
+            $.say("Usage: !penalty <name>, !penalty <name> <amount>");
+        } else if (args.length == 1) {
             if ($.inidb.get('penalty', args[0]) == null || $.inidb.get('penalty', args[0]) == "false") {
-                $.inidb.set('penalty', args[0], "true");
-		$.inidb.set('penalty', args[0] + "_threshold", args[1]);
-                $.say(m);
-
-            } else if ($.inidb.get('penalty', args[0]) == "true") {
-
-            $.say(username + " has been un-penalized by " + username + "!");
-            $.inidb.set('penalty', args[0], "false");
-            $.inidb.incr('points', args[0], penalty);
-	    if (!$.inidb.get('penalty', args[0] + "_points") <= 0) {
-		$.inidb.decr('penalty', args[0] + "_points", penalty);
+                $.say($.username.resolve(args[0]) + " has been penalized by " + username);
+                    $.inidb.set('penalty', args[0], "true");
+                    $.inidb.set('penalty', args[0] + "_points", 0);
+            } else {
+                $.say(username + " has lifted the penalty on " + $.username.resolve(args[0]) + " thus returning " + amount + " " + $.pointname + ".");
+                    $.inidb.set('penalty', args[0], "false");
+                    $.inidb.incr('points', args[0], parseInt(amount));
+                    $.inidb.set('penalty', args[0] + "_threshold", 0);
             } 
-
+        }
+        
+    if (args.length > 1) {
+        
+         if ($.inidb.get('penalty', args[0]) == null || $.inidb.get('penalty', args[0]) == "false") {
+                $.say($.username.resolve(args[0]) + " has been penalized by " + username + " for " + args[1] + " " + $.pointname + ".");
+                    $.inidb.set('penalty', args[0], "true");
+                    $.inidb.set('penalty', args[0] + "_points", 0);
+                    $.inidb.set('penalty', args[0] + "_threshold", args[1]);
+            } else {
+                $.say(username + " has lifted the penalty on " + $.username.resolve(args[0]) + " thus returning " + amount + " " + $.pointname + ".");
+                    $.inidb.set('penalty', args[0], "false");
+                    $.inidb.incr('points', args[0], parseInt(amount));
+                    $.inidb.set('penalty', args[0] + "_threshold", 0);
+            } 
+    }
+    /* Viewer else statement */
+        } else {
+            
+        if (!args.length > 0) {
+            $.say("Usage: !penalty <name>, !penalty <name> <amount>");
+        } else if (args.length == 1) {
+                if ($.inidb.get('penalty', args[0]) == null || $.inidb.get('penalty', args[0]) == "false") {
+                $.say( $.username.resolve(args[0]) + " hasn't been penalized for anything.");
+            } else {
+                penaltypoints = $.inidb.get('penalty', args[0] + "_threshold");
+                if (penaltypoints == null) {
+                    penaltypoints = 0;
+                }
+                $.say ($.username.resolve(args[0]) + " was penalized for: " + penaltypoints + " " + $.pointname + ".");  
+            }
+          
         }
     }
-}
-
+    }
 });
 
 $.setInterval(function() {
-    var amount;
+	var amount;
     if (!$.moduleEnabled("./systems/pointSystem.js")) {
         return;
     }
@@ -56,38 +72,35 @@ $.setInterval(function() {
         return;
     }
 
-    if (!$.isOnline($.channelName)) {
-        amount = $.offlinegain;
-        if ($.lastpointinterval + ($.offlineinterval * 60 * 1000) >= System.currentTimeMillis()) {
-            return;
-        }
+	if (!$.isOnline($.channelName)) {
+		amount = $.offlinegain;
+		if ($.lastpointinterval + ($.offlineinterval * 60 * 1000) >= System.currentTimeMillis()) {
+			return;
+		}
     } else {
-        amount = $.pointgain;
-        if ($.lastpointinterval + ($.pointinterval * 60 * 1000) >= System.currentTimeMillis()) {
-            return;
-        }
-    }
+		amount = $.pointgain;
+		if ($.lastpointinterval + ($.pointinterval * 60 * 1000) >= System.currentTimeMillis()) {
+			return;
+		}
+	}
 
     for (var i = 0; i < $.users.length; i++) {
-        var nick = $.username.resolve($.users[i][0]);
-        amount = amount + ($.pointbonus * $.getUserGroupId(nick));
+        var nick = $.users[i][0].toLowerCase();
         if ($.inidb.get('penalty', nick) == "true") {
-            $.inidb.incr('penalty', nick + "_points", amount);
-            $.inidb.decr('points', nick, amount);
-
+            $.inidb.decr('points', nick, parseInt(amount));
+            $.inidb.incr('penalty', nick + "_points", parseInt(amount));
         }
-		
-	var points = parseInt($.inidb.get('points', nick));
-        var penalty = parseInt($.inidb.get('penalty', nick + "_points"));
-	
-	if ($.inidb.get('penalty', nick + "_points") == $.inidb.get('penalty', nick + "_threshold")) {
-            //$.say(nick + " has reached his penalty sentence! All points that were been penalized have been returned.");
-            $.inidb.set('penalty', nick, "false");
-            $.inidb.incr('points', nick, penalty);
-            $.inidb.set('penalty', nick + "_points", 0);
-	}
-		
+        penaltypoints = parseInt($.inidb.get('penalty', nick + "_points"));
+        threshold = parseInt($.inidb.get('penalty', nick + "_threshold"));
+        
+        if (penaltypoints >= threshold && $.inidb.get('penalty', nick) == "true") {
+                $.say($.username.resolve(nick) + "'s penalty has been lifted thus returning " + penaltypoints + " " + $.pointname + ".");
+                    $.inidb.set('penalty', nick, "false");
+                    $.inidb.incr('points', nick, parseInt(penaltypoints));
+                    $.inidb.set('penalty', nick + "_threshold", 0);
+        }
     }
+
     $.lastpointinterval = System.currentTimeMillis();
 }, 1000);
 
