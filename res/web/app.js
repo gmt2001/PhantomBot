@@ -13,7 +13,7 @@ function onYouTubeIframeAPIReady() {
         videoId: '',
         playerVars: {
             iv_load_policy: 3,
-            controls: 0,
+            //controls: 0,
             showinfo: 0,
             showsearch: 0,
             modestbranding: 1,
