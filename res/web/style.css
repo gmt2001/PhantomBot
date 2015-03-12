@@ -32,9 +32,36 @@ h1 {
 	font-family: arial;
 		display: inline-block;
 }
+#container {
+    width: 100%;
+}
+
+
+#main {
+    display: inline;
+    float: left;
+    overflow: hidden;
+    width: 1100px;
+    padding-top: 5px;
+}
 
 #player {
+display: inline;
+vertical-align: top;
+    width: 720px;
+    float: left;
+}
+#rightcontain {
+    display: inline;
+    width: 350px;
+    float: left;
+    vertical-align: top;
+    padding-left: 5px;
+}
 
+#panel {
+    display: inline;
+    float: left;
 }
 .selectbox {
     background-color: rgb(34, 34, 34);
@@ -47,7 +74,6 @@ h1 {
 	border-style: solid;
     border-width: 1px;
 	display: inline-block;
-	margin-top: 30px;
 }
 
 option:hover {
@@ -87,7 +113,7 @@ box-shadow:         0px 3px 5px #000;
 background-color: #b31217;
 }
 #copyright {
-display: inline-block;
+display: block;
 padding-top: 10px;
 padding-bottom: 2px;
 bottom: 0;
@@ -95,6 +121,7 @@ height: 3%;
 width: 100%;
 background-color: rgb(34, 34, 34);
 position: fixed;
+text-align: center;
 }
 
 #copyright_text {
