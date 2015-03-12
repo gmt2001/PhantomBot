@@ -1,4 +1,4 @@
-﻿var arrRollLimiter = new Array();
+var arrRollLimiter = new Array();
 $var.lastRandomWin = "";
 $var.lastRandomLost = "";
 
@@ -6,15 +6,15 @@ $.rollbonus = parseInt($.inidb.get('settings', 'roll_bonus'));
 $.rolltimer = parseInt($.inidb.get('settings', 'roll_timer'));
 $.rollcost = parseInt($.inidb.get('settings', 'roll_cost'));
 
-if ($.rollbonus == undefined || $.rollbonus == null || isNaN($.rollbonus) || $.rollbonus < 0) {
+if ($.rollbonus === undefined || $.rollbonus === null || isNaN($.rollbonus) || $.rollbonus < 0) {
     $.rollbonus = 2;
 }
 
-if ($.rolltimer == undefined || $.rolltimer == null || isNaN($.rolltimer) || $.rolltimer < 0) {
+if ($.rolltimer === undefined || $.rolltimer === null || isNaN($.rolltimer) || $.rolltimer < 0) {
     $.rolltimer = 30;
 }
 
-if ($.rollcost == undefined || $.rollcost == null || isNaN($.rollcost) || $.rollcost < 0) {
+if ($.rollcost === undefined || $.rollcost === null || isNaN($.rollcost) || $.rollcost < 0) {
     $.rollcost = 0;
 }
 
@@ -52,17 +52,17 @@ $.on('command', function (event) {
         }
 
 
-        if (found == false) {
+        if (found === false) {
             arrRollLimiter.push(new Array(username, System.currentTimeMillis() + ($.rolltimer * 1000)));
         }
 }
-        if (args.length == 0 && $.moduleEnabled("./systems/pointSystem.js")) {
+        if (args.length === 0 && $.moduleEnabled("./systems/pointSystem.js")) {
             var d1 = $.randRange(1, 6);
             var d2 = $.randRange(1, 6);
             var die1 = d1;
             var die2 = d2;
 
-            var lost = new Array(0)
+            var lost = new Array(0);
             lost.push("Better luck next time!");
             lost.push("Man you suck at this!");
             lost.push("Dreamin', don't give it up " + sender );
@@ -84,7 +84,7 @@ $.on('command', function (event) {
             lost.push("So tell me, what’s it like living in a constant haze of losses?");
 			
 			
-            var win = new Array(0)
+            var win = new Array(0);
             win.push("Congratulations!");
             win.push("Damn you won..");
             win.push("YATZEE!");
@@ -101,7 +101,7 @@ $.on('command', function (event) {
 			win.push("Why am I crying in french?!");
 			win.push("If there were many clumsy, perverted and fun people like you the world would be a better place.");
 			
-		if (points == null) {
+		if (points === null) {
 			points = 0;
 		}
 
@@ -200,7 +200,6 @@ if ((args.length == 1 && action.equalsIgnoreCase("help")) || !$.moduleEnabled(".
             var Matcher = java.util.regex.Matcher;
             var p = Pattern.compile("[0-9]*d{1}(4|6|8|10|12|20|100){1}");
             var m;
-            var s;
             var pos;
             var valid = true;
 
@@ -220,7 +219,7 @@ if ((args.length == 1 && action.equalsIgnoreCase("help")) || !$.moduleEnabled(".
 
                 m = p.matcher(args[i]);
 
-                if (m.matches() == true && lookd) {
+                if (m.matches() === true && lookd) {
                     lookd = false;
 
                     s = args[i].substring(m.start(), m.end());
