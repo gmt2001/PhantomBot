@@ -4,6 +4,7 @@ $.offlinegain = parseInt($.inidb.get('settings', 'offlinegain'));
 $.pointbonus = parseInt($.inidb.get('settings', 'pointbonus'));
 $.pointinterval = parseInt($.inidb.get('settings', 'pointinterval'));
 $.offlineinterval = parseInt($.inidb.get('settings', 'offlineinterval'));
+$.mingift = parseInt($.inidb.get('settings', 'mingift'));
 
 if ($.pointname == undefined || $.pointname == null || $.pointname.isEmpty()) {
     $.pointname = "Points";
@@ -29,6 +30,9 @@ if ($.offlineinterval == undefined || $.offlineinterval == null || isNaN($.offli
     $.offlineinterval = 10;
 }
 
+if ($.mingift == undefined || $.mingift == null || isNaN($.mingift) || $.mingift < 0) {
+    $.mingift = 10;
+}
 
 $.on('command', function (event) {
     var sender = event.getSender().toLowerCase();
@@ -123,8 +127,8 @@ $.on('command', function (event) {
             action = args[0];
             username = args[1].toLowerCase();
             points = parseInt(args[2]);
-
-            if (action.equalsIgnoreCase("give")) {
+            
+              if (action.equalsIgnoreCase("give")) {
                 if ($var.perm_toggle == true) {
                     if (!$.isMod(sender)) {
                         $.say("You need to be a Moderator to use that command, " + username + "!");
@@ -136,19 +140,21 @@ $.on('command', function (event) {
                         return;
                     }
                 }
-                if (points < 0) {
-                    $.say($.username.resolve(sender) + " seems like you want to TAKE " + $.username.resolve(username) + "'s " + $.pointname + " instead of giving them. NO NEGATIVES DAMNIT!");
+                if (args[2] < $.mingift) {
+                    $.say($.username.resolve(sender) + ", you can't gift " + $.pointname + " that's lower than the minimum amount! Minimum: " + $.mingift + " " + $.pointname + ".");
+                    return;
+                } else if (points < 0){
+                    $.say($.username.resolve(sender) + ", you can't gift " + $.pointname + " in the negative.");
                     return;
                 } else {
                     $.inidb.incr('points', username, points);
                     $.say(points + " " + $.pointname + " was sent to " + $.username.resolve(username) + ".");
                 }
 
-
             } else if (action.equalsIgnoreCase("take")) {
                 if ($var.perm_toggle == true) {
                     if (!$.isMod(sender)) {
-                        $.say($.modmsg);
+                       $.say("You must be an Moderator to use that command, " + username + "!");
                         return;
                     }
                 } else {
@@ -195,10 +201,13 @@ $.on('command', function (event) {
                     return;
 
                 } else {
-                    if (points < 0) {
-                        $.say($.username.resolve(sender) + ", seems like you want to take " + $.username.resolve(username) + "'s " + $.pointname + " instead of giving them. NO NEGATIVES DAMNIT!");
-                        return;
-                    } else {
+                if (args[2] < $.mingift) {
+                    $.say($.username.resolve(sender) + ", you can't gift " + $.pointname + " that's lower than the minimum amount! Minimum: " + $.mingift + " " + $.pointname + ".");
+                    return;
+                } else if (points < 0){
+                    $.say($.username.resolve(sender) + ", you can't gift " + $.pointname + " in the negative.");
+                    return;
+                } else {
                         $.inidb.decr('points', sender, points);
                         $.inidb.incr('points', username, points);
                         $.say(points + " " + $.pointname + " was gifted to " + $.username.resolve(username) + " by " + $.username.resolve(sender) + ".");
