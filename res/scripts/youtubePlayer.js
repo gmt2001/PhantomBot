@@ -124,7 +124,7 @@ function parseDefault() {
     
     if(list.length > 0 ) {
         if($.titles==1) {
-            $.songurl = '<a href="https://www.youtube.com/watch?v=' + $.songid + '" target="new">'+ $.songid + " " + $.songname + "</a></br>";
+            $.songurl = '<a href="https://www.youtube.com/watch?v=' + $.songid + '" target="new">' + $.songid + "</a> " + $.songname + "</br>";
             $.writeToFile( $.songurl, $.storepath + "queue.php", false);
         }
         if($.titles==2) {
@@ -137,7 +137,7 @@ function parseDefault() {
                 $.songid = $.song.getId();
                 
                 if ($.titles==1){
-                    $.songurl = '<a href="https://www.youtube.com/watch?v=' + $.songid + '" target="new">' + $.songid + " " + $.songname + "</a></br>";
+                    $.songurl = '<a href="https://www.youtube.com/watch?v=' + $.songid + '" target="new">' + $.songid + "</a> " + $.songname + "</br>";
                     $.writeToFile($.songurl, $.storepath + "queue.php", true);
                 }
                 else {
@@ -157,11 +157,11 @@ function parseSongQueue() {
                 $.songid = list[i].song.getId();
                 
                 if ($.titles==1){
-                    $.songurl = '<a href="https://www.youtube.com/watch?v=' + $.songid + '" target="new">' + $.songid + " " + $.songname + " " + $.songrequester + "</a></br>";
+                    $.songurl = '<a href="https://www.youtube.com/watch?v=' + $.songid + '" target="new">' + $.songid + "</a> " + $.songname + " - " + $.songrequester + "</br>";
                     $.writeToFile($.songurl, $.storepath + "queue.php", true);
                 }
                 else {
-                    $.songprefix = $.songid + " " + $.songname + " " + $.songrequester;
+                    $.songprefix = $.songid + " " + $.songname + " - " + $.songrequester;
                     $.writeToFile($.songprefix, $.storepath + "queue.txt", true);
                 }
         }
