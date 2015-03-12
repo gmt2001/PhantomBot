@@ -113,7 +113,7 @@ public class PhantomBot implements Listener
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
         
         com.gmt2001.Console.out.println();
-        com.gmt2001.Console.out.println("PhantomBot Core 1.5.3 3/09/2015 04:21 PM EST");
+        com.gmt2001.Console.out.println("PhantomBot Core 1.5.3 3/12/2015 01:04 PM EST");
         com.gmt2001.Console.out.println("Creator: mast3rplan");
         com.gmt2001.Console.out.println("Developers: gmt2001, PhantomIndex, GloriousEggroll");
         com.gmt2001.Console.out.println("www.phantombot.net");
