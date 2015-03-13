@@ -1,10 +1,11 @@
 $.hostreward = parseInt($.inidb.get('settings', 'hostreward'));
+$.hosttimeout = parseInt($.inidb.get('settings', 'hosttimeout') * 60 * 1000);
 
 if ($.hostlist == null || $.hostlist == undefined) {
     $.hostlist = new Array();
 }
 
-if ($.hosttimeout == null || $.hosttimeout == undefined) {
+if ($.hosttimeout == null || $.hosttimeout == undefined || isNaN($.hosttimeout)) {
     $.hosttimeout = {};
 }
 
@@ -12,7 +13,7 @@ if ($.hostreward == null || $.hostreward == undefined) {
     $.hostreward = 0;
 }
 
-var hosttimeout = 60 * 60 * 1000;
+
 
 $.on('twitchHosted', function(event) {
     var username = $.username.resolve(event.getHoster());
@@ -67,6 +68,7 @@ $.on('command', function(event) {
     var username = $.username.resolve(sender);
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
+    var args = event.getArgs();
     
     if (command.equalsIgnoreCase("hostmessage")) {
         if (!$.isAdmin(sender)) {
@@ -118,6 +120,23 @@ $.on('command', function(event) {
         $.say("This channel is currently being hosted by " + $.hostlist.length + " channels!");
     }
     
+    if (command.equalsIgnoreCase("hosttime")) {
+        if (args.length < 1) {
+        $.say("Host timeout duration is currently set to: " + parseInt($.inidb.get('settings', 'hosttimeout')) + " minutes!");
+    }   else if (args.length >= 1){
+           if (!$.isAdmin(sender)) {
+                $.say("You must be an Administrator to use that command, " + username + "!");
+                    return;
+            }
+            if (parseInt(args[0]) < 30) {
+                $.say("Host timeout duration can't be less than 30 minutes!");
+                return;
+            } else {
+        $.inidb.set('settings', 'hosttimeout', parseInt(args[0]));
+        $.say("Host timeout duration is now set to: " + parseInt(args[0]) + " minutes!");
+           }
+        }
+    }
     if (command.equalsIgnoreCase("hostlist")) {
         var m = "";
         
