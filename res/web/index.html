@@ -1,51 +1,46 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="style.css">
-<div class="header">
-<img id="logo" src="logo.png"></img>
-  <h1>YouTube Player</h1>
-</div>
+    <title>Phantombot Youtube Player</title>
+    <script type="text/javascript" src="jquery-1.11.2.min.js"></script>
+    <script type="text/javascript" src="webcontrols.js"></script>
+    <script type="text/javascript" src="app.js"></script>
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
-  <body>
-  <div class="container">
-   
-  <br />
 
-<div id="main">
-    <div id="player"></div>
+<body>
 
-	
-	<div id="panel"> 
-	<a href="#">
-	<div id="next" class="button">Skip</div> 
-	</a>
-	<a href="#">
-	<div id="steal" class="button">Steal</div>
-	</a>
-	<a href="#">
-	<div id="remove" class="button">Remove</div>
-	</a>
-</div>
+    <div class="header">
+        <img id="logo" src="logo.png"/>
+        <h1>YouTube Player</h1>
+    </div>
+    <div class="container">
+        <div id="main">
+            <div id="player"></div>
+            <div id="songlist">
 
-	  		<select name="sometext" multiple="multiple" class="selectbox">
-		<option id="selected">Current Song</option>
-		<option value="">Next Song</option>
-		<option value="">Next Song</option>
-		<option value="">Next Song</option>
-	</select>
+            </div>
 
-    <script type="text/javascript" src="app.js"></script> 
+            <div id="panel">
+                <form>
+                <button id="skip" class="button" onclick="nextSong()">Skip</button>
+                <button id="steal" class="button" onclick="stealSong()">Steal</button>
+                <button id="remove" class="button">Remove(Not working yet)</button>
+                </form>
+            </div>
+			        <div id="rightcontain">
+        </div>
+        </div>
 
-</div>
 
-  </body>
-
-</div>
-
-<div id="copyright">
- <center id="copyright_text">YouTube Player by: 
+    </div>
+    <div id="copyright">
+      YouTube Player by: 
       <a href="http://www.phantombot.net">www.phantombot.net</a>
-	  </center>
-	  </div>
+    </div>
+
+</body>
 </html>

@@ -18,19 +18,19 @@ auxiliary.show.customizer.message=<message>
                 <source-folder>
                     <label>PhantomBot</label>
                     <location>.</location>
-                    <encoding>UTF-8</encoding>
+                    <encoding>windows-1252</encoding>
                 </source-folder>
                 <source-folder>
                     <label>src</label>
                     <type>java</type>
                     <location>src</location>
-                    <encoding>UTF-8</encoding>
+                    <encoding>windows-1252</encoding>
                 </source-folder>
                 <source-folder>
                     <label>res</label>
                     <type>java</type>
                     <location>res</location>
-                    <encoding>UTF-8</encoding>
+                    <encoding>windows-1252</encoding>
                 </source-folder>
             </folders>
             <ide-actions>
@@ -71,15 +71,15 @@ auxiliary.show.customizer.message=<message>
             </view>
             <subprojects/>
         </general-data>
-        <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/4">
+        <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/3">
             <compilation-unit>
                 <package-root>src</package-root>
-                <classpath mode="compile">lib/commons-io-2.4.jar;lib/commons-lang3-3.3.2.jar;lib/commons-pool2-2.0.jar;lib/guava-16.0.1.jar;lib/java_websocket.jar;lib/javax.mail.jar;lib/jcurses.jar;lib/jedis-2.4.2.jar;lib/js.jar;lib/json.jar;lib/core-1.47.1.jar</classpath>
-                <source-level>1.8</source-level>
+                <classpath mode="compile">lib/commons-io-2.4.jar;lib/commons-lang3-3.3.2.jar;lib/commons-pool2-2.0.jar;lib/core-1.47.1.jar;lib/guava-16.0.1.jar;lib/java_websocket.jar;lib/javax.mail.jar;lib/js.jar;lib/json.jar</classpath>
+                <source-level>1.7</source-level>
             </compilation-unit>
             <compilation-unit>
                 <package-root>res</package-root>
-                <source-level>1.8</source-level>
+                <source-level>1.7</source-level>
             </compilation-unit>
         </java-data>
     </configuration>
