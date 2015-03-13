@@ -163,5 +163,6 @@ $.on('command', function(event) {
 
 $.registerChatCommand("./hostHandler.js", "hostmessage", "admin");
 $.registerChatCommand("./hostHandler.js", "hostreward");
+$.registerChatCommand("./hostHandler.js", "hosttime");
 $.registerChatCommand("./hostHandler.js", "hostcount");
 $.registerChatCommand("./hostHandler.js", "hostlist");
