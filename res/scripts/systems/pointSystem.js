@@ -56,7 +56,7 @@ $.on('command', function (event) {
         if (action == ("all") || action == ("gift") || action == ("give") || 
             action == ("take") || action == ("set") || action == ("gain") || 
             action == ("bonus") || action == ("interval") || action == ("offlineinterval") || action == ("name") || 
-            action == ("help") || action == ("setting") || action == ("toggle") || action == ("config")) {
+            action == ("help") || action == ("setting") || action == ("toggle") || action == ("config") || action == ("mingift")) {
 
         } else { 
 
@@ -191,7 +191,6 @@ $.on('command', function (event) {
                 }
 
             } else if (action.equalsIgnoreCase("gift")) {
-                if (username == sender) {
                     $.say("Why would you need to gift yourself DansGame?!");
                     return;
                 }
@@ -327,7 +326,7 @@ $.on('command', function (event) {
 
             }
 			
-			if (action.equalsIgnoreCase("offlineinterval")) {
+            if (action.equalsIgnoreCase("offlineinterval")) {
                 if (!$.isAdmin(sender)) {
                     $.say("You must be an Administrator to use that command, " + username + "!");
                     return;
@@ -344,7 +343,24 @@ $.on('command', function (event) {
                 }
 
             }
+            
+            if (action.equalsIgnoreCase("mingift")) {
+                if (!$.isAdmin(sender)) {
+                    $.say("You must be an Administrator to use that command, " + username + "!");
+                    return;
+                }
 
+                if (args[1] < 0) {
+                    $.say("Can't set the minimum gift amount to negatives.");
+                    return;
+                } else {
+                    $.inidb.set('settings', 'mingift', args[1]);
+                    $.mingift = parseInt(args[1]);
+
+                    $.say(username + " has set the minimum amount of " + $.pointname + " that can be gifted to: " + args[1] + " " + $.pointname + ".");
+                }
+
+            }
             if (action.equalsIgnoreCase("name")) {
                 if (!$.isAdmin(sender)) {
                     $.say("You must be an Administrator to use that command, " + username + "!");
@@ -359,13 +375,40 @@ $.on('command', function (event) {
 
         } else {
             actions = args[0];
-            if (!argsString.isEmpty() && action == ("gain") || action == ("bonus") || action == ("interval") || action == ("offlineinterval") || action == ("name") || action == ("config")) {
-                $.say("[Point Settings] - [Name: " + $.pointname + "] - [Gain: " + $.pointgain + " " + $.pointname + "] - [Interval: " + $.pointinterval + " minutes] - [Offline Gain: " + $.offlinegain + " " + $.pointname + "] - [Offline interval: " + $.offlineinterval + " minutes] - [Bonus: " + $.pointbonus + " " + $.pointname + "]");
+            if (!argsString.isEmpty() && action == ("gain") || action == ("bonus") || action == ("interval") || action == ("offlineinterval") || action == ("name") || action == ("config") || action == ("mingift")) {
+                $.say("[Point Settings] - [Name: " + $.pointname + "] - [Gain: " + $.pointgain + " " + $.pointname + "] - [Interval: " + $.pointinterval + " minutes] - [Offline Gain: " + $.offlinegain + " " + $.pointname + "] - [Offline interval: " + $.offlineinterval + " minutes] - [Bonus: " + $.pointbonus + " " + $.pointname + "] - [Gifting Minimum: " + $.mingift + "]");
             }
 
         }
-    }
+ 
+          if (command.equalsIgnoreCase("gift")) {
+                username = args[0].toLowerCase();
+                if (username == sender) {
+                    $.say("Why would you need to gift yourself DansGame?!");
+                    return;
+                }
 
+                if (points > $.inidb.get('points', sender)) {
+                    $.say($.username.resolve(sender) + ", you don't have that much points to gift to " + $.username.resolve(username) + "!");
+                    return;
+
+                } else {
+                if (args[1] < $.mingift) {
+                    $.say($.username.resolve(sender) + ", you can't gift " + $.pointname + " that's lower than the minimum amount! Minimum: " + $.mingift + " " + $.pointname + ".");
+                    return;
+                } else if (points < 0){
+                    $.say($.username.resolve(sender) + ", you can't gift " + $.pointname + " in the negative.");
+                    return;
+                } else {
+                        $.inidb.decr('points', sender, points);
+                        $.inidb.incr('points', username, points);
+                        $.say(points + " " + $.pointname + " was gifted to " + $.username.resolve(username) + " by " + $.username.resolve(sender) + ".");
+                    }
+
+                }
+
+            }
+         
 });
 
 $.setInterval(function() {
