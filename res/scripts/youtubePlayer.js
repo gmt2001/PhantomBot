@@ -230,9 +230,9 @@ function nextDefault() {
     }
     
     if ($.song_toggle == 1) {
-        $.say("[\u266B] Now Playing >> - " + name + " - requested by " + user);
+        $.say("[\u266B] Now Playing -- " + name + " -- requested by @" + user);
     } else if ($.song_toggle == 2) {
-        println("[\u266B] Now Playing >> - " + name + " - requested by " + user);
+        println("[\u266B] Now Playing -- " + name + " - requested by @" + user);
     }
     if (user.equalsIgnoreCase("DJ " + $.username.resolve($.botname))) {
         $.writeToFile(name, "currentsong.txt", false);
@@ -283,10 +283,10 @@ function next() {
     }
 
     if ($.song_toggle == 1) {
-        $.say("[\u266B] Now Playing >> - " + name + " - requested by " + user);
+        $.say("[\u266B] Now Playing -- " + name + " -- requested by @" + user);
 
     } else if ($.song_toggle == 2) {
-        println("[\u266B] Now Playing >> - " + name + " - requested by " + user);
+        println("[\u266B] Now Playing -- " + name + " -- requested by @" + user);
     }
 
 
@@ -326,13 +326,13 @@ var musicPlayerConnected = false;
 
 $.on('musicPlayerConnect', function (event) {
     println("MusicClient connected!");
-    $.say("Song requests have been enabled!")
+    $.say("[\u266B] Song requests have been enabled!")
     musicPlayerConnected = true;
 });
 
 $.on('musicPlayerDisconnect', function (event) {
     println("MusicClient disconnected!");
-    $.say("Song requests have been disabled.")
+    $.say("[\u266B] Song requests have been disabled.")
     musicPlayerConnected = false;
 });
 
@@ -367,12 +367,12 @@ $.on('command', function (event) {
 
                 $.song_toggle = 1;
                 $.inidb.set('settings', 'song_toggle', $.song_toggle.toString());
-                $.say("Song messages have been turned on!");
+                $.say("[\u266B] Song messages have been turned on!");
 
             } else {
                 $.song_toggle = 2;
                 $.inidb.set('settings', 'song_toggle', $.song_toggle.toString());
-                $.say("Song messages have been turned off!");
+                $.say("[\u266B] Song messages have been turned off!");
             }
         }
 
@@ -523,7 +523,7 @@ $.on('command', function (event) {
 				var songurl = "https://www.youtube.com/watch?v=" + $var.currSong.song.getId();
 				$.musicplayer.stealSong(songurl);
 				$var.defaultplaylist = $.readFile("./playlist.txt");
-				$.say($var.currSong.song.getName() + "~\u266B requested by " + $var.currSong.user + " has been stolen and added to the default playlist!");
+				$.say("[\u266B]" + $var.currSong.song.getName() + " -- requested by @" + $var.currSong.user + " has been stolen and added to the default playlist!");
 				return;
 			}
 		}
@@ -594,7 +594,7 @@ $.on('command', function (event) {
                 return;
             }
 
-            $.say("[\u266B] Song >> " + video.name + " was added to the queue by " + username + ".");
+            $.say("[\u266B] Song -- " + video.name + " was added to the queue by @" + username + ".");
             song.request();
 
             if ($var.currSong == null) {
@@ -617,7 +617,7 @@ $.on('command', function (event) {
             for (i in $var.songqueue) {
                 if (id + "" === $var.songqueue[i].song.id + "") {
                     if ($var.songqueue[i].user === username || $.isMod(sender)) {
-                        $.say("[\u266B] Song >> " + $var.songqueue[i].song.getName() + " has been removed from the queue!");
+                        $.say("[\u266B] Song -- " + $var.songqueue[i].song.getName() + " has been removed from the queue!");
                         $var.songqueue.splice(i, 1);
                         return;
                     } else {
@@ -715,7 +715,7 @@ $.on('command', function (event) {
             return;
         }
 
-        $.say("Currently playing >> \u266B~" + $var.currSong.song.getName() + "~\u266B requested by " + $var.currSong.user);
+        $.say("[\u266B] Currently playing -- " + $var.currSong.song.getName() + " -- requested by @" + $var.currSong.user);
     }
 
     if (command.equalsIgnoreCase("nextsong")) {
