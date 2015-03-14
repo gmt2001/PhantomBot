@@ -485,6 +485,11 @@ public class PhantomBot implements Listener
             IniStore.instance().SaveAll(true);
         }
 
+        if (message.equals("quicksave"))
+        {
+            IniStore.instance().SaveChangedNow();
+        }
+
         if (message.equals("exit"))
         {
             System.exit(0);

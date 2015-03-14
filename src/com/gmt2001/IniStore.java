@@ -161,6 +161,13 @@ public class IniStore implements ActionListener
         protected HashMap<String, HashMap<String, String>> data = new HashMap<>();
     }
 
+    public void SaveChangedNow()
+    {
+        nextSave.setTime(new Date().getTime() - 1);
+        
+        SaveAll(false);
+    }
+
     public void SaveAll(boolean force)
     {
         if (!nextSave.after(new Date()) || force)
