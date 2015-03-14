@@ -325,13 +325,13 @@ $.on('musicPlayerState', function (event) {
 var musicPlayerConnected = false;
 
 $.on('musicPlayerConnect', function (event) {
-    println("MusicClient connected!");
+    println("[\u266B] MusicClient connected!");
     $.say("[\u266B] Song requests have been enabled!")
     musicPlayerConnected = true;
 });
 
 $.on('musicPlayerDisconnect', function (event) {
-    println("MusicClient disconnected!");
+    println("[\u266B] MusicClient disconnected!");
     $.say("[\u266B] Song requests have been disabled.")
     musicPlayerConnected = false;
 });
@@ -754,5 +754,5 @@ $.registerChatCommand("stealsong");
 $.registerChatCommand("songsteal");
 
 $.on('musicPlayerCurrentVolume', function (event) {
-    $.say("Music volume is currently: " + parseInt(event.getVolume()) + "%");
+    $.say("[\u266B] Music volume is currently: " + parseInt(event.getVolume()) + "%");
 });
