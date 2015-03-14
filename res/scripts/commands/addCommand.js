@@ -53,10 +53,14 @@ $.on('command', function(event) {
             $.logEvent("addCommand.js", 69, username + " deleted the command !" + commandString);
             
             commandString = args[0].toLowerCase();
+            if (commandString.substring(0, 1) == '!') { 
+		commandString = commandString.substring(1);
+            }
             $.inidb.del('command', commandString);
             $.inidb.del('commandperm', commandString);
             $.inidb.del('commandcount', commandString);
-            
+            $.inidb.del('commandcount', commandString);
+            $.inidb.del('aliases', commandString);
             $.unregisterCustomChatCommand(commandString);
             
             $.say($.username.resolve(sender) + ", the command !" + commandString + " was successfully removed!");
@@ -65,7 +69,35 @@ $.on('command', function(event) {
 		$.say("Usage: !delcom <command>");
 		return;
     }
-	
+	if (command.equalsIgnoreCase("aliascom")) {
+		if(args.length >= 1) {
+			if (!$.isMod(sender)) {
+				$.say("You must be a Moderator to use that command!");
+				return;
+			}
+			
+            commandString = args[0].toLowerCase();
+            message = argsString.substring(argsString.indexOf(args[0]) + $.strlen(args[0]) + 1);
+            var alias = args[1];
+            
+                        if (commandString.substring(0, 1) == '!') { 
+				commandString = commandString.substring(1);
+				}
+                                
+                  if (args.length > 1) {
+                      if ($.inidb.exists("command", args[1].toLowerCase())) {
+                          $.say("That alias can't be used because a command already uses it!");
+                          return;
+                      } else {
+                      $.inidb.set('aliases', commandString, alias);
+                      $.say("You have set the command !" + commandString + " to use the alias !" + alias + ".");
+                    }
+                  } else {
+                     $.say("Usage: !aliascom <command> <alias>");
+                     return;
+                  }             
+            }
+        }
 	if (command.equalsIgnoreCase("editcom")) {
 		if(args.length >= 1) {
 			if (!$.isMod(sender)) {
@@ -75,6 +107,10 @@ $.on('command', function(event) {
 			
             commandString = args[0].toLowerCase();
 			message = argsString.substring(argsString.indexOf(args[0]) + $.strlen(args[0]) + 1);
+       
+                        if (commandString.substring(0, 1) == '!') { 
+				commandString = commandString.substring(1);
+				}
 
 
 			if ($.inidb.get('command', commandString) == null) {
@@ -86,8 +122,7 @@ $.on('command', function(event) {
 				$.say("Usage: !editcom <command> <message>");
 				return;
 			}
-	
-        
+
 			$.inidb.set('command', commandString, message);
 			$.say("Command !" + commandString + " has been modified!");
 			return;
@@ -109,6 +144,9 @@ $.on('command', function(event) {
         }
         
         if (args.length == 1) {
+            if (args[0].substring(0, 1) == '!') { 
+				args[0] = args[0].substring(1);
+		}
             if (!$.inidb.exists("command", args[0].toLowerCase())) {
                 $.say("The command !" + args[0] + " does not exist!");
                 return;
@@ -126,6 +164,9 @@ $.on('command', function(event) {
         }
         
         if (args.length >= 2) {
+                if (args[0].substring(0, 1) == '!') { 
+				args[0] = args[0].substring(1);
+		}
             if (!$.inidb.exists("command", args[0].toLowerCase())) {
                 $.say("The command !" + args[0] + " does not exist!");
                 return;
@@ -166,8 +207,14 @@ $.on('command', function(event) {
         
         $.say("Additional special tags: '(count)' will add the number of times the command was used (including the current usage)");
     }
-    
-    if ($.inidb.exists('command', command.toLowerCase())) {
+/*  
+if ($.inidb.get('aliases', command.toLowerCase()) ) {
+    command = $.inidb.get('aliases', command.toLowerCase()); //<--- wtf this makes no sense
+} 
+*/
+
+if ($.inidb.exists('command', command.toLowerCase())) {
+
         if ($.inidb.exists("commandperm", command.toLowerCase())) {
             if ($.inidb.get("commandperm", command.toLowerCase()).equalsIgnoreCase("caster") && !isCaster(sender)) {
                 return;
@@ -186,9 +233,6 @@ $.on('command', function(event) {
 				$.inidb.decr("points", sender, parseInt($.inidb.get("pricecom", command.toLowerCase())));
 			}
 		}	
-	
-
-
 
         var messageCommand = $.inidb.get('command', command.toLowerCase());
         
@@ -234,13 +278,14 @@ $.on('command', function(event) {
    
         $.say(messageCommand);
     }
-	
+
 	if (command.equalsIgnoreCase("pricecom")) {
 		if (!isAdmin(sender)) {
 				$.say("You must be an Administrator to use that command!");
 				return;
 			}
-        
+
+                                
         if (args.length == 0) {
             $.say("Usage: !pricecom <command name> <price>. Set's a cost for use the custom command");
             return;
@@ -249,7 +294,7 @@ $.on('command', function(event) {
 		if (args.length == 1) {
 			
 			var commandname = args[0].toLowerCase();
-			
+
             if (!$.inidb.exists("command", commandname)) {
                 $.say("The command !" + commandname + " does not exist!");
                 return;
@@ -273,7 +318,11 @@ $.on('command', function(event) {
 					$.say(commandprice + " is less than 0. Price must be more than 0.")
 					return;
 				} else {
+                             if (commandname.substring(0, 1) == '!') { 
+				commandname = commandname.substring(1);
+				}
 					$.inidb.set("pricecom", commandname, commandprice);
+
 					$.say("The price for !" + commandname + " has been set to " + commandprice + " " + $.pointname + ".");
 				}
 		}		
@@ -283,13 +332,15 @@ $.on('command', function(event) {
 
 $.registerChatCommand("./commands/addCommand.js", "addcom", "mod");
 $.registerChatCommand("./commands/addCommand.js", "editcom", "mod");
+$.registerChatCommand("./commands/addCommand.js", "pricecom", "mod");
+$.registerChatCommand("./commands/addCommand.js", "aliascom", "mod");
 $.registerChatCommand("./commands/addCommand.js", "delcom", "mod");
 $.registerChatCommand("./commands/addCommand.js", "permcom", "admin");
 $.registerChatCommand("./commands/addCommand.js", "helpcom", "mod");
 
 var commands = $.inidb.GetKeyList("command", "");
 
-if ($.array.contains(commands, "commands")) {
+if ($.array.contains(commands, "commands" )) {
     $.inidb.del("command", "commands");
     commands = $.inidb.GetKeyList("command", "");
 }
