@@ -72,6 +72,11 @@ $.on('command', function(event) {
                 return;
             }
             
+            if ($.commandExists(message) && (!$.isCustomCommand(message) || !$.inidb.exists('aliases', message))) {
+                $.say("You can only overwrite an alias!");
+                return;
+            }
+            
             $.logEvent("addCommand.js", 59, username + " aliased the command !" + commandString + " to !" + message);
             
             $.inidb.set('aliases', message, commandString);
