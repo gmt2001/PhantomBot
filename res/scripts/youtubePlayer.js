@@ -530,7 +530,8 @@ $.on('command', function (event) {
 			
     }
 
-    if (command.equalsIgnoreCase("addsong") || command.equalsIgnoreCase("songrequest") ) {
+    if (command.equalsIgnoreCase("addsong") || command.equalsIgnoreCase("songrequest")) {
+        
         if (!$.isMod(sender)) {
             var points = $.inidb.get('points', sender);
 
@@ -687,7 +688,8 @@ $.on('command', function (event) {
             $.say("A poll to skip a song is already open and running! " + username);
         }
     }
-
+    
+    
     if (command.equalsIgnoreCase("vetosong")) {
         var points = $.inidb.get('points', sender);
 
@@ -708,7 +710,6 @@ $.on('command', function (event) {
 
         next();
     }
-
     if (command.equalsIgnoreCase("currentsong")) {
         if ($var.currSong == null) {
             $.say("There is no song playing! Request one with !addsong or !songrequest <youtube link>");

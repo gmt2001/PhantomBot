@@ -375,7 +375,7 @@ $.on('command', function (event) {
 
         } else {
             actions = args[0];
-            if (!argsString.isEmpty() && action == ("gain") || action == ("bonus") || action == ("interval") || action == ("offlineinterval") || action == ("name") || action == ("config") || action == ("mingift")) {
+            if (action.equalsIgnoreCase("gain") || action.equalsIgnoreCase("bonus") || action.equalsIgnoreCase("interval") || action.equalsIgnoreCase("offlineinterval") || action.equalsIgnoreCase("name") || action.equalsIgnoreCase("config") ||  action.equalsIgnoreCase("mingift")) {
                 $.say("[Point Settings] - [Name: " + $.pointname + "] - [Gain: " + $.pointgain + " " + $.pointname + "] - [Interval: " + $.pointinterval + " minutes] - [Offline Gain: " + $.offlinegain + " " + $.pointname + "] - [Offline interval: " + $.offlineinterval + " minutes] - [Bonus: " + $.pointbonus + " " + $.pointname + "] - [Gifting Minimum: " + $.mingift + "]");
             }
 
