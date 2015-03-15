@@ -106,7 +106,7 @@ $.on('command', function (event) {
 
 
             if (action.equalsIgnoreCase("open") && !$var.bet_running || action.equalsIgnoreCase("start") && !$var.bet_running) {
-				betstarter = sender;
+		betstarter = sender;
 
                 $var.bet_options = [];
 
@@ -202,7 +202,7 @@ $.on('command', function (event) {
                     bet = $var.bet_table[user];
                     if (bet.option.equalsIgnoreCase(winning)) {
                         moneyWon = parseInt((bet.amount / totalwin) * pot );
-                        println("(bet.amount: " + bet.amount + " / totalwin: " + totalwin + ") * pot: " + pot);
+                        println("[Bet Pot Amount] " + bet.amount + " / totalwin: " + totalwin + ") * pot: " + pot);
 
                         if (moneyWon > 0) {
                             if (winners.length > 0) {
@@ -242,7 +242,7 @@ $.on('command', function (event) {
                             }
                         }
 
-                        $.say("/me [DADADA] The results are in! " + winning + " has won! [Winning Pot: " + pot + " " + $.pointname + "] Pot will be sent to the following viewers: " + winners);
+                        $.say("/me [DA-DA-DAA!] The results are in! " + winning + " has won! [Winning Pot: " + pot + " " + $.pointname + "] Pot will be sent to the following viewers: " + winners);
                                 $.inidb.set('bets', 'winner', (winners)); //
                                 $.inidb.set('bets', 'winning_option', pot); //
                                  pot = 0;
@@ -250,9 +250,7 @@ $.on('command', function (event) {
                 }
                 $var.bet_running = false;
             } else {
-				if (args.length > 2) {
-					return;
-				} else {
+		if (args[1] == "1p" && !$var.bet_running || args[1] == "2p" && !$var.bet_running) {
 					
 				betstarter = sender;
 
@@ -274,7 +272,7 @@ $.on('command', function (event) {
                     }
 
                     optionString = optionString + "'" + boptions[i].trim().toUpperCase() + "'";
-                }
+                } 
 
                 $var.bet_table = {};
                 $var.bet_running = true;
@@ -295,7 +293,8 @@ $.on('command', function (event) {
 
                     $.say("/me Betting is now closed! [Pot: " + pot + " " + $.pointname + "] please wait for the results!")
                 }, betlength);
-				}
+                } 
+                
                 if (!$var.bet_running) return;
                 var amount = parseInt(args[0]);
                 var option = args.slice(1).join(" ").trim().toLowerCase();

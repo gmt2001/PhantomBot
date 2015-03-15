@@ -77,7 +77,7 @@ $.on('command', function (event) {
                 }
             }
 
-            if (action.equalsIgnoreCase("timer")) {
+            if (action.equalsIgnoreCase("timer") || action.equalsIgnoreCase("interval")) {
                 if (args.length < 2) {
                     $.say("The current interval is " + $.noticeinterval + " minutes. Set it with !notice timer <minutes> (Minimum is 2 minutes)");
                 } else {
@@ -144,7 +144,7 @@ $.on('command', function (event) {
 
             } else {
                 
-                if (!args[0] == ("timer") || !args[0] == ("insert") || !args[0] == ("get") || !args[0] == ("toggle") || argsString.isEmpty()) {
+                if (!args[0] == ("timer") ||!args[0] == ("interval") || !args[0] == ("insert") || !args[0] == ("get") || !args[0] == ("toggle") || argsString.isEmpty()) {
                     $.say("Usage: !addnotice <message>, !delnotice <id>, !notice insert <id> <message>, !notice get [id], !notice timer <minutes>, !notice req <amount>, !notice config")
                 }
 

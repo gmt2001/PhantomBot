@@ -128,7 +128,7 @@ $.on('command', function (event) {
             username = args[1].toLowerCase();
             points = parseInt(args[2]);
             
-              if (action.equalsIgnoreCase("give")) {
+              if (action.equalsIgnoreCase("give") || action.equalsIgnoreCase("send")) {
                 if ($var.perm_toggle == true) {
                     if (!$.isMod(sender)) {
                         $.say("You need to be a Moderator to use that command, " + username + "!");
@@ -140,10 +140,7 @@ $.on('command', function (event) {
                         return;
                     }
                 }
-                if (args[2] < $.mingift) {
-                    $.say($.username.resolve(sender) + ", you can't gift " + $.pointname + " that's lower than the minimum amount! Minimum: " + $.mingift + " " + $.pointname + ".");
-                    return;
-                } else if (points < 0){
+                if (points < 0){
                     $.say($.username.resolve(sender) + ", you can't gift " + $.pointname + " in the negative.");
                     return;
                 } else {
@@ -151,7 +148,7 @@ $.on('command', function (event) {
                     $.say(points + " " + $.pointname + " was sent to " + $.username.resolve(username) + ".");
                 }
 
-            } else if (action.equalsIgnoreCase("take")) {
+            } else if (action.equalsIgnoreCase("take") || action.equalsIgnoreCase("withdraw")) {
                 if ($var.perm_toggle == true) {
                     if (!$.isMod(sender)) {
                        $.say("You must be an Moderator to use that command, " + username + "!");
@@ -189,28 +186,6 @@ $.on('command', function (event) {
                     $.inidb.set('points', username, points);
                     $.say($.username.resolve(username) + "'s " + $.pointname + " was set to " + points + " " + $.pointname + ".");
                 }
-
-            } else if (action.equalsIgnoreCase("gift")) {
-                    $.say("Why would you need to gift yourself DansGame?!");
-                    return;
-                }
-
-                if (points > $.inidb.get('points', sender)) {
-                    $.say($.username.resolve(sender) + ", you don't have that much points to gift to " + $.username.resolve(username) + "!");
-                    return;
-
-                } else {
-                if (args[2] < $.mingift) {
-                    $.say($.username.resolve(sender) + ", you can't gift " + $.pointname + " that's lower than the minimum amount! Minimum: " + $.mingift + " " + $.pointname + ".");
-                    return;
-                } else if (points < 0){
-                    $.say($.username.resolve(sender) + ", you can't gift " + $.pointname + " in the negative.");
-                    return;
-                } else {
-                        $.inidb.decr('points', sender, points);
-                        $.inidb.incr('points', username, points);
-                        $.say(points + " " + $.pointname + " was gifted to " + $.username.resolve(username) + " by " + $.username.resolve(sender) + ".");
-                    }
 
                 }
 
@@ -375,7 +350,7 @@ $.on('command', function (event) {
 
         } else {
             actions = args[0];
-            if (!argsString.isEmpty() && action == ("gain") || action == ("bonus") || action == ("interval") || action == ("offlineinterval") || action == ("name") || action == ("config") || action == ("mingift")) {
+            if (action.equalsIgnoreCase("gain") || action.equalsIgnoreCase("bonus") || action.equalsIgnoreCase("interval") || action.equalsIgnoreCase("offlineinterval") || action.equalsIgnoreCase("name") || action.equalsIgnoreCase("config") ||  action.equalsIgnoreCase("mingift")) {
                 $.say("[Point Settings] - [Name: " + $.pointname + "] - [Gain: " + $.pointgain + " " + $.pointname + "] - [Interval: " + $.pointinterval + " minutes] - [Offline Gain: " + $.offlinegain + " " + $.pointname + "] - [Offline interval: " + $.offlineinterval + " minutes] - [Bonus: " + $.pointbonus + " " + $.pointname + "] - [Gifting Minimum: " + $.mingift + "]");
             }
 
