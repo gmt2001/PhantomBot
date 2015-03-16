@@ -35,7 +35,7 @@ $.on('ircChannelJoin', function(event) {
             }
         }
         if ($.inidb.get("greeting", sender + "_enabled") == "0" ) {
-                println(s.replace("<name>", username));
+                println(s.replace("[Join] <name>", username));
         }
     } 
 });
@@ -44,7 +44,7 @@ $.on('ircChannelLeave', function(event) {
     var sender = event.getUser().toLowerCase();
     var username = $.username.resolve(sender);
     
-    println(username + " has left the channel.");
+    println("[Leave] " + username + " has left the channel.");
 });
 
 $.on('command', function(event) {

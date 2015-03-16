@@ -602,7 +602,7 @@ $.on('command', function (event) {
                 next();
             }
         }
-
+        }
         if (command.equalsIgnoreCase("delsong") || command.equalsIgnoreCase("deletesong") || command.equalsIgnoreCase("removesong")) {
             if (!musicPlayerConnected) {
                 $.say("Songrequests is currently disabled!");
@@ -629,7 +629,7 @@ $.on('command', function (event) {
             }
 
             $.say(sender + ", that song isn't in the list.");
-        }
+        
     }
 
     if (command.equalsIgnoreCase("volume")) {
