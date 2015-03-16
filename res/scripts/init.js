@@ -9,6 +9,10 @@ $.println = function(o) {
     out.println(tostring(o));
 };
 
+function isNumeric(num){
+  return !isNaN(num);
+}
+
 var blackList = ["getClass", "equals", "notify", "class", "hashCode", "toString", "wait", "notifyAll"];
 function isJavaProperty(property) {
     for(var i in blackList) {
