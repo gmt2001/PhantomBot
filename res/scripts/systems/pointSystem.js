@@ -328,8 +328,8 @@ $.on('command', function (event) {
             if (args[1] < $.mingift) {
                 $.say($.username.resolve(sender) + ", you can't gift " + $.pointname + " that's lower than the minimum amount! Minimum: " + $.mingift + " " + $.pointname + ".");
                 return;
-            } else if (points < 0){
-                $.say($.username.resolve(sender) + ", you can't gift " + $.pointname + " in the negative.");
+            } else if (points < args[1]){
+                $.say($.username.resolve(sender) + ", you can't gift " + $.pointname + " what you don't have.");
                 return;
             } else {
                 $.inidb.decr('points', sender, points);

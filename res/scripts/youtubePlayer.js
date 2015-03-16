@@ -375,7 +375,27 @@ $.on('command', function (event) {
                 $.say("[\u266B] Song messages have been turned off!");
             }
         }
-
+        
+        if (action.equalsIgnoreCase("deny")) {
+            if (!$.isAdmin(sender)) {
+                $.say($.adminmsg);
+                return;
+            }
+                    $.inidb.set('blacklist', args[1].toLowerCase(), "true");
+                    $.say(username + " has denied " + $.username.resolve(args[1].toLowerCase()) + " access to song request features.");
+                    return;
+            } 
+            
+        if (action.equalsIgnoreCase("allow")) {
+            if (!$.isAdmin(sender)) {
+                $.say($.adminmsg);
+                return;
+            }
+                    $.inidb.del('blacklist', args[1].toLowerCase());
+                    $.say(username + " released " + $.username.resolve(args[1]) + " from the blacklist for song request features.");
+                    return;   
+            } 
+            
         if (action.equalsIgnoreCase("limit")) {
             if (!$.isAdmin(sender)) {
                 $.say($.adminmsg);
@@ -481,7 +501,6 @@ $.on('command', function (event) {
             $.say("Default playlist has been reloaded.");
         }
         
-
         if (action.equalsIgnoreCase("veto")) {
             if (!$.isAdmin(sender)) {
                 $.say($.adminmsg);
@@ -531,7 +550,10 @@ $.on('command', function (event) {
     }
 
     if (command.equalsIgnoreCase("addsong") || command.equalsIgnoreCase("songrequest")) {
-        
+       if ($.inidb.get('blacklist', sender) == "true") {
+                $.say("You are denied access to song request features!");
+                return;
+            }
         if (!$.isMod(sender)) {
             var points = $.inidb.get('points', sender);
 
@@ -545,9 +567,9 @@ $.on('command', function (event) {
             if ($.addsong_cost > 0) {
                 $.inidb.decr('points', sender, $.addsong_cost);
             }
-
+            
         }
-
+        
 
         if (args.length == 0) {
             $.say("Type >> '!addsong or !songrequest <youtube link>' to add a song to the playlist.")
