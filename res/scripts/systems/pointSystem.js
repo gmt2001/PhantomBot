@@ -34,6 +34,29 @@ if ($.mingift == undefined || $.mingift == null || isNaN($.mingift) || $.mingift
     $.mingift = 10;
 }
 
+$.getPoints = function (user) {
+            var points = $.inidb.get('points', user);
+
+            var timeString = "";
+
+            var time = $.inidb.get('time', user);
+
+            if (points == null) points = 0;
+            if (time == null) time = 0;
+
+            var minutes = parseInt((time / 60) % 60);
+            var hours = parseInt(time / 3600);
+
+            timeString = " -- [";
+            if (hours != 0) timeString += " " + hours + " Hrs";
+            else if (minutes != 0) timeString += " " + minutes + " Mins";
+            else timeString += " " + minutes + " Mins";
+            timeString += " ]";
+
+            $.say($.username.resolve(user) + " has " + points.toString() + " " + $.pointname + timeString);
+}
+
+
 $.on('command', function (event) {
     var sender = event.getSender().toLowerCase();
     var username = $.username.resolve(sender);
@@ -54,7 +77,9 @@ $.on('command', function (event) {
 
 
     if (command.equalsIgnoreCase("points") || command.equalsIgnoreCase($.pointname) || command.equalsIgnoreCase("bank")) {
-        action = args[0];
+    if (args.length >=1) {
+        var action = args[0];
+
 
         $var.perm_toggle = false;
         if ($.inidb.get('settings', 'perm_toggle') == 1) {
@@ -131,7 +156,7 @@ $.on('command', function (event) {
                 $.say($.username.resolve(sender) + ", you know very well you can't set someone's " + $.pointname + " to a negative number.");
             } else {
                 $.inidb.set('points', username, points);
-                $.say($.username.resolve(username) + "'s " + $.pointname + " was set to " + points + " " + $.pointname + ".");
+                $.say($.username.resolve(username) + "'s " + $.pointname + " were set to " + points + " " + $.pointname + ".");
             }
 
         } else if (action.equalsIgnoreCase("gain")) {
@@ -286,30 +311,13 @@ $.on('command', function (event) {
         } else if (action.equalsIgnoreCase("help")) {
             $.say("Usage: '!points give <name> <amount>' -- '!points take <name> <amount>' -- '!points set <name> <amount>' -- '!points gift <name> <amount>' -- '!points gain <amount>' -- '!points bonus <amount>' -- '!points name <amount>'");
             return;
-        } else { 
-            if (args.length == 1) {
+        } else {
                 points_user = args[0].toLowerCase();
-            }
-
-            points = $.inidb.get('points', points_user);
-
-            var timeString = "";
-
-            var time = $.inidb.get('time', points_user);
-
-            if (points == null) points = 0;
-            if (time == null) time = 0;
-
-            var minutes = parseInt((time / 60) % 60);
-            var hours = parseInt(time / 3600);
-
-            timeString = " -- [";
-            if (hours != 0) timeString += " " + hours + " Hrs";
-            else if (minutes != 0) timeString += " " + minutes + " Mins";
-            else timeString += " " + minutes + " Mins";
-            timeString += " ]";
-
-            $.say($.username.resolve(points_user) + " has " + parseInt(points) + " " + $.pointname + timeString);
+                $.getPoints(points_user);
+        }
+    }
+    else {
+            $.getPoints(points_user);
         }
     }
  
@@ -368,8 +376,7 @@ $.setInterval(function() {
     for (var i = 0; i < $.users.length; i++) {
         var nick = $.users[i][0].toLowerCase();
 
-        amount = amount + ($.pointbonus * $.getUserGroupId(nick));
-
+        amount = amount + ($.pointbonus * $.getGroupPointMultiplier(nick));
         $.inidb.incr('points', nick, amount);
     }
 
