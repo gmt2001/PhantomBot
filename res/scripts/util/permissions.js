@@ -102,56 +102,83 @@ for (var i = 0 ; i < keys.length; i++) {
 if ($.usergroups[0] == undefined || $.usergroups[0] == null || $.usergroups[0]!= "Caster") {
     $.usergroups[0] = "Caster";
     $.inidb.set("grouppoints","Caster", "8");
-    $.inidb.set("groups", "8", "Caster");    
+    $.inidb.set("groups", "0", "Caster");
+    if ($.inidb.FileExists("group")) {
+            $.inidb.RemoveFile("group");
+    }
 }
 
 if ($.usergroups[1] == undefined || $.usergroups[1] == null || $.usergroups[1]!= "Administrator") {
     $.usergroups[1] = "Administrator";
     $.inidb.set("grouppoints","Administrator", "7");
-    $.inidb.set("groups", "7", "Administrator");
+    $.inidb.set("groups", "1", "Administrator");
+    if ($.inidb.FileExists("group")) {
+            $.inidb.RemoveFile("group");
+    }
 }
 
 if ($.usergroups[2] == undefined || $.usergroups[2] == null || $.usergroups[2]!= "Moderator") {
     $.usergroups[2] = "Moderator";
     $.inidb.set("grouppoints","Moderator", "6");
-    $.inidb.set("groups", "6", "Moderator");
+    $.inidb.set("groups", "2", "Moderator");
+    if ($.inidb.FileExists("group")) {
+            $.inidb.RemoveFile("group");
+    }
 }
 
 if ($.usergroups[3] == undefined || $.usergroups[3] == null || $.usergroups[3]!= "Subscriber") {
     $.usergroups[3] = "Subscriber";
     $.inidb.set("grouppoints","Subscriber", "5");
-    $.inidb.set("groups", "5", "Subscriber");
+    $.inidb.set("groups", "3", "Subscriber");
+    if ($.inidb.FileExists("group")) {
+            $.inidb.RemoveFile("group");
+    }
 }
 
 if ($.usergroups[4] == undefined || $.usergroups[4] == null || $.usergroups[4]!= "Donator") {
     $.usergroups[4] = "Donator";
     $.inidb.set("grouppoints","Donator", "4");
     $.inidb.set("groups", "4", "Donator");
+    if ($.inidb.FileExists("group")) {
+            $.inidb.RemoveFile("group");
+    }
 }
 
 if ($.usergroups[5] == undefined || $.usergroups[5] == null || $.usergroups[5]!= "Hoster") {
     $.usergroups[5] = "Hoster";
     $.inidb.set("grouppoints","Hoster", "3");
-    $.inidb.set("groups", "3", "Hoster");
+    $.inidb.set("groups", "5", "Hoster");
+    if ($.inidb.FileExists("group")) {
+            $.inidb.RemoveFile("group");
+    }
 }
 
 if ($.usergroups[6] == undefined || $.usergroups[6] == null || $.usergroups[6]!= "Awesome") {
     $.usergroups[6] = "Awesome";
     $.inidb.set("grouppoints","Subscriber", "2");
-    $.inidb.set("groups", "2", "Subscriber");
+    $.inidb.set("groups", "6", "Subscriber");
+    if ($.inidb.FileExists("group")) {
+            $.inidb.RemoveFile("group");
+    }
 }
 
 if ($.usergroups[7] == undefined || $.usergroups[7] == null || $.usergroups[7]!= "Regular") {
     $.usergroups[7] = "Regular";
     $.inidb.set("grouppoints","Regular", "1");
-    $.inidb.set("groups", "1", "Regular");
+    $.inidb.set("groups", "7", "Regular");
+    if ($.inidb.FileExists("group")) {
+            $.inidb.RemoveFile("group");
+    }
 
 }
 
 if ($.usergroups[8] == undefined || $.usergroups[8] == null || $.usergroups[8]!= "Viewer") {
     $.usergroups[8] = "Viewer";
     $.inidb.set("grouppoints","Viewer", "0");
-    $.inidb.set("groups", "0", "Viewer");
+    $.inidb.set("groups", "8", "Viewer");
+    if ($.inidb.FileExists("group")) {
+            $.inidb.RemoveFile("group");
+    }
 }
 
 
@@ -199,7 +226,7 @@ $.on('command', function(event) {
     var i;
     var s;
     var allowed = true;
-	if (argsString.isEmpty()) {
+    if (argsString.isEmpty()) {
         args = [];
     } else {
         args = argsString.split(" ");
@@ -321,53 +348,58 @@ $.on('command', function(event) {
 			}
         } 
         if (args.length >= 2 && action.equalsIgnoreCase("name")) {
-            if (parseInt(args[0]) >= $.usergroups.length || parseInt(args[0]) < 0) {
-                args[0] = 0;
+            if (parseInt(args[1]) >= $.usergroups.length || parseInt(args[1]) < 0) {
+                args[1] = $.usergroups.length -1;
             }
             
-            if ($.getGroupNameById(parseInt(args[0])).equals("Administrators")) {
+            if ($.getGroupNameById(parseInt(args[1])).equals("Administrator")) {
                 allowed = false;
                 
                 for (i = 0; i < $.usergroups.length; i++) {
-                    if ($.usergroups[i].equals("Administrators") && i != parseInt(args[0])) {
+                    if ($.usergroups[i].equals("Administrator") && i != parseInt(args[1])) {
                         allowed = true;
                     }
                 }
                 
                 if (!allowed) {
-                    $.say("You cant change the name of the 'Administrators' group without first changing another group to 'Administrator'!");
+                    $.say("Default group names cannot be changed!");
                     return;
                 }
             }
             
-            if ($.getGroupNameById(parseInt(args[0])).equals("Moderators")) {
+            if ($.getGroupNameById(parseInt(args[1])).equals("Moderator")) {
                 allowed = false;
                 
                 for (i = 0; i < $.usergroups.length; i++) {
-                    if ($.usergroups[i].equals("Moderators") && i != parseInt(args[0])) {
+                    if ($.usergroups[i].equals("Moderator") && i != parseInt(args[1])) {
                         allowed = true;
                     }
                 }
                 
                 if (!allowed) {
-                    $.say("You cant change the name of the 'Moderator' group without first changing another group to 'Moderator'!");
+                    $.say("Default group names cannot be changed!");
                     return;
                 }
             }
             
-            if ($.getGroupNameById(parseInt(args[0])).equals("Casters")) {
+            if ($.getGroupNameById(parseInt(args[1])).equals("Caster")) {
                 allowed = false;
                 
                 for (i = 0; i < $.usergroups.length; i++) {
-                    if ($.usergroups[i].equals("Casters") && i != parseInt(args[0])) {
+                    if ($.usergroups[i].equals("Caster") && i != parseInt(args[1])) {
                         allowed = true;
                     }
                 }
                 
                 if (!allowed) {
-                    $.say("You cant change the name of the 'Caster' group without first changing another group to 'Caster'!");
+                    $.say("Default group names cannot be changed!");
                     return;
                 }
+            }
+            
+            if (parseInt(args[1])<=8) {
+                $.say("Default group names cannot be changed!");
+                return;
             }
             
 
