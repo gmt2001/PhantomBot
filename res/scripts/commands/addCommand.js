@@ -224,7 +224,7 @@ $.on('command', function(event) {
     }
     
     if (command.equalsIgnoreCase("helpcom")) {
-        $.say("Usage: !addcom <command name> <message to say>, !delcom <command name>, !modcom, !permcom <command name> [user, caster, mod, admin]");
+        $.say("Usage: !addcom <command name> <message to say>, !delcom <command name>, !permcom <command name> <group>");
         
         $.say("When using !addcom, you can put the text '(sender)' to have the name of any user who says the new command inserted into it. ex. '!addcom hello Hello there (sender)!'");
         
@@ -235,6 +235,10 @@ $.on('command', function(event) {
     
     if ($.inidb.exists('aliases', command.toLowerCase())) {
         command = $.inidb.get('aliases', command.toLowerCase());
+    }
+    if ($.inidb.exists('blacklist', command.toLowerCase())) {
+        $.say(username + ", you have been denied access to that command!");
+        return;
     }
     
     if ($.inidb.exists('command', command.toLowerCase())) {

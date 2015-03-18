@@ -663,9 +663,9 @@ $.setInterval(function() {
         $.inidb.incr('time', nick, 60);
 
         if ($.rankup_time > 0) {
-            if ($.hasGroupById(nick, 0) && parseInt($.inidb.get('time', nick) && $.inidb.get('followed', nick) == 1) == $.rankup_time * 3600) {
-                $.setUserGroupById(nick, 1);
-                $.say($.username.resolve(nick) + " has been promoted to a " + $.getGroupNameById(1) + "! Congratulations!");
+            if ($.hasGroupById(nick, 8) && parseInt($.inidb.get('time', nick) && $.inidb.get('followed', nick) == 8) == $.rankup_time * 3600) {
+                $.setUserGroupById(nick, 7);
+                $.say($.username.resolve(nick) + " has been promoted to a " + $.getGroupNameById(7) + "! Congratulations!");
             }
         }
 

@@ -7,7 +7,7 @@ $.on('command', function(event) {
 
 	if(command.equalsIgnoreCase("bid")) {
 
-		$var.bid_highest_amount;
+		$var.bid_highest_amount = 0;
 		$var.bid_highest_username = username;
 		if (args.length == 0){ // Check for command arguments being 0;
 			if($var.bid_running){ // Check if bid is started!\
