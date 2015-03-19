@@ -7,7 +7,7 @@ else {
 }
 $.timelevel = $.inidb.get('settings', 'timelevel');
 if($.timelevel == null) {
-    $.timelevel = "true";
+    $.timelevel = "false";
 }
 
 $.say("");
