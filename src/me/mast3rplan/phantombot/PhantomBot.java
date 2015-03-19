@@ -108,7 +108,7 @@ public class PhantomBot implements Listener
     }
     
     public PhantomBot(String username, String oauth, String apioauth, String clientid, String channel, String owner,
-            boolean useTwitch, int baseport, String hostname, int port, double msglimit30)
+            int baseport, String hostname, int port, double msglimit30)
     {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
         
@@ -150,7 +150,7 @@ public class PhantomBot implements Listener
         if (hostname.isEmpty())
         {
             this.hostname = "irc.twitch.tv";
-            this.port = 6667;
+            this.port = 443;
         } else {
             this.hostname = hostname;
             this.port = port;
@@ -530,7 +530,6 @@ public class PhantomBot implements Listener
         String channel = "";
         String owner = "";
         String hostname = "";
-        boolean useTwitch = false;
         int baseport = 25000;
         int port = 0;
         double msglimit30 = 0;
@@ -642,11 +641,6 @@ public class PhantomBot implements Listener
                     com.gmt2001.Console.out.println("msglimit30='" + msglimit30 + "'");
                 }
 
-                if (args[i].equalsIgnoreCase("usetwitch"))
-                {
-                    useTwitch = true;
-                }
-
                 if (args[i].toLowerCase().startsWith("user=") && args[i].length() > 8)
                 {
                     if (!user.equals(args[i].substring(5)))
@@ -739,7 +733,7 @@ public class PhantomBot implements Listener
 
                 if (args[i].equalsIgnoreCase("help") || args[i].equalsIgnoreCase("--help") || args[i].equalsIgnoreCase("-h"))
                 {
-                    com.gmt2001.Console.out.println("Usage: java -Dfile.encoding=UTF-8 -jar PhantomBot.jar [printlogin] [usetwitch] [user=<bot username>] "
+                    com.gmt2001.Console.out.println("Usage: java -Dfile.encoding=UTF-8 -jar PhantomBot.jar [printlogin] [user=<bot username>] "
                             + "[oauth=<bot irc oauth>] [apioauth=<editor oauth>] [clientid=<oauth clientid>] [channel=<channel to join>] "
                             + "[owner=<bot owner username>] [baseport=<bot webserver port, music server will be +1>] [hostname=<custom irc server>] "
                             + "[port=<custom irc port>] [msglimit30=<message limit per 30 seconds>]");
@@ -765,7 +759,7 @@ public class PhantomBot implements Listener
             FileUtils.writeStringToFile(new File("./botlogin.txt"), data);
         }
 
-        PhantomBot.instance = new PhantomBot(user, oauth, apioauth, clientid, channel, owner, useTwitch, baseport, hostname, port, msglimit30);
+        PhantomBot.instance = new PhantomBot(user, oauth, apioauth, clientid, channel, owner, baseport, hostname, port, msglimit30);
     }
 
     public static boolean isLink(String message)
