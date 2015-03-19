@@ -338,11 +338,6 @@ $.on('ircChannelMessage', function(event) {
             return;
         }
         
-        if ($.array.contains($var.raffle_entrants, sender)) {
-            $.say(username + ", you have already entered the raffle!");
-            return;
-        }
-        
         if ($var.raffle_price > 0) {
             var points = $.inidb.get('points', sender);
             
@@ -360,7 +355,7 @@ $.on('ircChannelMessage', function(event) {
             $.inidb.decr('points', sender, $var.raffle_price);
         }
  
-        $var.raffle_entrants.push(username);
+        $var.raffle_entrants.push(sender);
         if ($var.raffle_toggle == false) {
             println(username + " entered the raffle!");
         } else {
