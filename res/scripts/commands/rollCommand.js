@@ -200,6 +200,7 @@ if ((args.length == 1 && action.equalsIgnoreCase("help")) || !$.moduleEnabled(".
             var Matcher = java.util.regex.Matcher;
             var p = Pattern.compile("[0-9]*d{1}(4|6|8|10|12|20|100){1}");
             var m;
+			var mes = "";
             var pos;
             var valid = true;
 
@@ -263,9 +264,15 @@ if ((args.length == 1 && action.equalsIgnoreCase("help")) || !$.moduleEnabled(".
                     valid = false;
                 }
             }
-
+			if (dtotal == 20) {
+				mes = " for a MASSIVE hit!!";
+			}
+			if (dtotal == 1) {
+				mes = " FAILURE.";
+			}
             if (valid) {
-                $.say(username + " rolled " + result + " = " + dtotal);
+	
+                $.say(username + " rolled " + result + " = " + dtotal + mes);
             } 
         } else {
             $.say("Dont spam rolls, " + username + "!");
