@@ -664,7 +664,7 @@ $.setInterval(function() {
         $.inidb.incr('time', nick, 60);
 
         if ($.rankup_time > 0) {
-            if (parseInt($.getUserGroupId(nick))> 6 && parseInt($.inidb.get('time', nick) && $.inidb.get('followed', nick) == 1) == $.rankup_time * 3600) {
+            if ( (parseInt($.getUserGroupId(nick))> 6) && ($.inidb.get('followed', nick) == 1) && (parseInt($.inidb.get('time', nick)) == $.rankup_time * 3600)) {
                 var levelup = parseInt($.getUserGroupId(nick)) -1;
                 
                 $.setUserGroupById(nick, levelup);
