@@ -671,25 +671,3 @@ $.registerChatCommand("./util/permissions.js", "users");
 $.registerChatCommand("./util/permissions.js", "mods");
 $.registerChatCommand("./util/permissions.js", "admins");
 $.registerChatCommand("./util/permissions.js", "getid");
-
-$.setInterval(function() {
-    if (!$.moduleEnabled("./systems/timeSystem.js")) {
-        return;
-    }
-
-    for (var i = 0; i < $.users.length; i++) {
-        var nick = $.users[i][0].toLowerCase();
-
-        $.inidb.incr('time', nick, 60);
-
-        if ($.rankup_time > 0) {
-            if ( (parseInt($.getUserGroupId(nick))> 5) && ($.inidb.get('followed', nick) == 1) && (parseInt($.inidb.get('time', nick)) == $.rankup_time * 3600) ) {
-                var levelup = parseInt($.getUserGroupId(nick)) -1;
-                
-                $.setUserGroupById(nick, levelup);
-                $.say($.username.resolve(nick) + " has been promoted to a " + $.getGroupNameById(levelup) + "! Congratulations!");
-            }
-        }
-
-    }
-}, 1000 * 60);
