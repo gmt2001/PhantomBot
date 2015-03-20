@@ -188,7 +188,8 @@ $.setInterval(function() {
         
         $.inidb.incr('time', nick, 60);
         if ($.timelevel=="true") {
-            if ((parseInt($.getUserGroupId(nick))> 5) && ($.inidb.get('followed', nick) == 1) && (parseInt($.inidb.get('time', nick)) >= 12600 * 10)) {
+            //this promotes viewers to regulars if they spend more than 36 hours in the stream
+            if ((parseInt($.getUserGroupId(nick))> 6) && ($.inidb.get('followed', nick) == 1) && (parseInt($.inidb.get('time', nick)) >= 12960 * 10)) {
                 var levelup = parseInt($.getUserGroupId(nick)) -1;
                 
                 $.setUserGroupById(nick, levelup);
