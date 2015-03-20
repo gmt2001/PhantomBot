@@ -336,10 +336,6 @@ $.on('command', function(event) {
         }
     }
     
-    if (command.equalsIgnoreCase("getid")) {
-        $.say($.getUserGroupId(username));
-    }
-    
     if (command.equalsIgnoreCase("group") && !argsString.isEmpty()) {
         if (!$.isAdmin(sender)) {
             $.say(username + ", " + $.getUserGroupName(username) + "s aren't allowed access to this command! Administrators only.");
@@ -670,4 +666,3 @@ $.registerChatCommand("./util/permissions.js", "group");
 $.registerChatCommand("./util/permissions.js", "users");
 $.registerChatCommand("./util/permissions.js", "mods");
 $.registerChatCommand("./util/permissions.js", "admins");
-$.registerChatCommand("./util/permissions.js", "getid");
