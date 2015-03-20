@@ -189,8 +189,10 @@ $.setInterval(function() {
         $.inidb.incr('time', nick, 60);
         if ($.timelevel=="true") {
             if ((parseInt($.getUserGroupId(nick))> 5) && ($.inidb.get('followed', nick) == 1) && (parseInt($.inidb.get('time', nick)) >= 12600 * 10)) {
-                $.setUserGroupById(nick, 1);
-                $.say($.username.resolve(nick) + " leveled up to a " + $.getGroupNameById(1) + "! Congratulations and thanks for staying with us!");
+                var levelup = parseInt($.getUserGroupId(nick)) -1;
+                
+                $.setUserGroupById(nick, levelup);
+                $.say($.username.resolve(nick) + " has been promoted to a " + $.getGroupNameById(levelup) + "! Congratulations!");
             }
         }
     }
