@@ -74,7 +74,7 @@ $.hasGroupByName = function(user, name) {
 $.getUserGroupId = function(user) {
     user = $.username.resolve(user);
     var group = $.inidb.get('group', user.toLowerCase());
-    if(group == null) group = 0;
+    if(group == null) group = 7;
     else group = parseInt(group);
     return group;
 }
@@ -102,83 +102,97 @@ for (var i = 0 ; i < keys.length; i++) {
 
 if ($.usergroups[0] == undefined || $.usergroups[0] == null || $.usergroups[0]!= "Caster") {
     $.usergroups[0] = "Caster";
-    $.inidb.set("grouppoints","Caster", "8");
+    $.inidb.set("grouppoints","Caster", "7");
     $.inidb.set("groups", "0", "Caster");
     if ($.inidb.FileExists("group")) {
             $.inidb.RemoveFile("group");
+    }
+    if ($.inidb.FileExists("groups")) {
+            $.inidb.RemoveFile("groups");
     }
 }
 
 if ($.usergroups[1] == undefined || $.usergroups[1] == null || $.usergroups[1]!= "Administrator") {
     $.usergroups[1] = "Administrator";
-    $.inidb.set("grouppoints","Administrator", "7");
+    $.inidb.set("grouppoints","Administrator", "6");
     $.inidb.set("groups", "1", "Administrator");
     if ($.inidb.FileExists("group")) {
             $.inidb.RemoveFile("group");
+    }
+    if ($.inidb.FileExists("groups")) {
+            $.inidb.RemoveFile("groups");
     }
 }
 
 if ($.usergroups[2] == undefined || $.usergroups[2] == null || $.usergroups[2]!= "Moderator") {
     $.usergroups[2] = "Moderator";
-    $.inidb.set("grouppoints","Moderator", "6");
+    $.inidb.set("grouppoints","Moderator", "5");
     $.inidb.set("groups", "2", "Moderator");
     if ($.inidb.FileExists("group")) {
             $.inidb.RemoveFile("group");
+    }
+    if ($.inidb.FileExists("groups")) {
+            $.inidb.RemoveFile("groups");
     }
 }
 
 if ($.usergroups[3] == undefined || $.usergroups[3] == null || $.usergroups[3]!= "Subscriber") {
     $.usergroups[3] = "Subscriber";
-    $.inidb.set("grouppoints","Subscriber", "5");
+    $.inidb.set("grouppoints","Subscriber", "4");
     $.inidb.set("groups", "3", "Subscriber");
     if ($.inidb.FileExists("group")) {
             $.inidb.RemoveFile("group");
+    }
+    if ($.inidb.FileExists("groups")) {
+            $.inidb.RemoveFile("groups");
     }
 }
 
 if ($.usergroups[4] == undefined || $.usergroups[4] == null || $.usergroups[4]!= "Donator") {
     $.usergroups[4] = "Donator";
-    $.inidb.set("grouppoints","Donator", "4");
+    $.inidb.set("grouppoints","Donator", "3");
     $.inidb.set("groups", "4", "Donator");
     if ($.inidb.FileExists("group")) {
             $.inidb.RemoveFile("group");
+    }
+    if ($.inidb.FileExists("groups")) {
+            $.inidb.RemoveFile("groups");
     }
 }
 
 if ($.usergroups[5] == undefined || $.usergroups[5] == null || $.usergroups[5]!= "Hoster") {
     $.usergroups[5] = "Hoster";
-    $.inidb.set("grouppoints","Hoster", "3");
+    $.inidb.set("grouppoints","Hoster", "2");
     $.inidb.set("groups", "5", "Hoster");
     if ($.inidb.FileExists("group")) {
             $.inidb.RemoveFile("group");
     }
-}
-
-if ($.usergroups[6] == undefined || $.usergroups[6] == null || $.usergroups[6]!= "Awesome") {
-    $.usergroups[6] = "Awesome";
-    $.inidb.set("grouppoints","Subscriber", "2");
-    $.inidb.set("groups", "6", "Subscriber");
-    if ($.inidb.FileExists("group")) {
-            $.inidb.RemoveFile("group");
+    if ($.inidb.FileExists("groups")) {
+            $.inidb.RemoveFile("groups");
     }
 }
 
-if ($.usergroups[7] == undefined || $.usergroups[7] == null || $.usergroups[7]!= "Regular") {
-    $.usergroups[7] = "Regular";
+if ($.usergroups[6] == undefined || $.usergroups[6] == null || $.usergroups[6]!= "Regular") {
+    $.usergroups[6] = "Regular";
     $.inidb.set("grouppoints","Regular", "1");
-    $.inidb.set("groups", "7", "Regular");
+    $.inidb.set("groups", "6", "Regular");
     if ($.inidb.FileExists("group")) {
             $.inidb.RemoveFile("group");
     }
-
+    if ($.inidb.FileExists("groups")) {
+            $.inidb.RemoveFile("groups");
+    }
 }
 
-if ($.usergroups[8] == undefined || $.usergroups[8] == null || $.usergroups[8]!= "Viewer") {
-    $.usergroups[8] = "Viewer";
+if ($.usergroups[7] == undefined || $.usergroups[7] == null || $.usergroups[7]!= "Viewer") {
+    $.usergroups[7] = "Viewer";
     $.inidb.set("grouppoints","Viewer", "0");
-    $.inidb.set("groups", "8", "Viewer");
+    $.inidb.set("groups", "7", "Viewer");
     if ($.inidb.FileExists("group")) {
             $.inidb.RemoveFile("group");
+    }
+    if ($.inidb.FileExists("groups")) {
+            $.inidb.RemoveFile("groups");
     }
 }
 
@@ -190,7 +204,7 @@ $.getGroupNameById = function(id) {
         if ($.inidb.get('groups', id2str)!=null && $.inidb.get('groups', id2str)!="") {
             return $.inidb.get('groups', id2str);
         }  
-    return $.usergroups[8];
+    return $.usergroups[7];
 }
  
 $.getGroupIdByName = function(name) {
@@ -201,7 +215,7 @@ $.getGroupIdByName = function(name) {
         }
     }
     
-    return 8;
+    return 7;
 }
 
 $.reloadGroups = function() {
@@ -322,6 +336,10 @@ $.on('command', function(event) {
         }
     }
     
+    if (command.equalsIgnoreCase("getid")) {
+        $.say($.getUserGroupId(username));
+    }
+    
     if (command.equalsIgnoreCase("group") && !argsString.isEmpty()) {
         if (!$.isAdmin(sender)) {
             $.say(username + ", " + $.getUserGroupName(username) + "s aren't allowed access to this command! Administrators only.");
@@ -398,7 +416,7 @@ $.on('command', function(event) {
                 }
             }
             
-            if (parseInt(args[1])<=8) {
+            if (parseInt(args[1])<=7) {
                 $.say("Default group names cannot be changed!");
                 return;
             }
@@ -572,12 +590,12 @@ $.on('ircChannelUserMode', function(event) {
             if (!$.array.contains($.modeOUsers, event.getUser().toLowerCase())) {
                 $.modeOUsers.push(event.getUser().toLowerCase());
                 if ($.array.contains($.modeOUsers, event.getUser().toLowerCase())) {
-                    $.inidb.set('group', event.getUser().toLowerCase(), 6);
+                    $.inidb.set('group', event.getUser().toLowerCase(), 2);
                     println("Moderator: " + event.getUser().toLowerCase());
                 }
 
                 if ($.array.contains($.modeOUsers, $.botowner.toLowerCase())) {
-                    $.inidb.set('group', $.botowner.toLowerCase(), 8);
+                    $.inidb.set('group', $.botowner.toLowerCase(), 0);
                 }
             }
         } else {
@@ -652,6 +670,7 @@ $.registerChatCommand("./util/permissions.js", "group");
 $.registerChatCommand("./util/permissions.js", "users");
 $.registerChatCommand("./util/permissions.js", "mods");
 $.registerChatCommand("./util/permissions.js", "admins");
+$.registerChatCommand("./util/permissions.js", "getid");
 
 $.setInterval(function() {
     if (!$.moduleEnabled("./systems/timeSystem.js")) {
@@ -664,7 +683,7 @@ $.setInterval(function() {
         $.inidb.incr('time', nick, 60);
 
         if ($.rankup_time > 0) {
-            if ( (parseInt($.getUserGroupId(nick))> 6) && ($.inidb.get('followed', nick) == 1) && (parseInt($.inidb.get('time', nick)) == $.rankup_time * 3600) ) {
+            if ( (parseInt($.getUserGroupId(nick))> 5) && ($.inidb.get('followed', nick) == 1) && (parseInt($.inidb.get('time', nick)) == $.rankup_time * 3600) ) {
                 var levelup = parseInt($.getUserGroupId(nick)) -1;
                 
                 $.setUserGroupById(nick, levelup);
