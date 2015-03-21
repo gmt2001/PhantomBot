@@ -31,31 +31,15 @@ $.isOwner = function (user) {
 }
 
 $.isCaster = function (user) {
-    //return $.hasGroupByName(user, "Caster") || $.isMod(user);
     return $.getUserGroupId(user) == 0;
 }
 
 $.isAdmin = function (user) {
-    //return $.hasGroupByName(user, "Administrator") || $.isOwner(user) || $.isBot(user);
     return $.getUserGroupId(user) <= 1;
 }
 
 $.isMod = function (user) {
-    //return $.hasGroupByName(user, "Moderator") || $.hasModeO(user) || $.hasModList(user) || $.isAdmin(user);
     return $.getUserGroupId(user) <= 2;
-}
-
-$.isReg = function (user) {
-    //return $.hasGroupByName(user, "Regular");
-    return $.getUserGroupId(user) <= 6;
-}
-
-$.hasModeO = function (user) {
-    return $.array.contains($.modeOUsers, user.toLowerCase());
-}
-
-$.hasModList = function (user) {
-    return $.array.contains($.modListUsers, user.toLowerCase());
 }
 
 $.isSub = function (user) {
@@ -66,6 +50,26 @@ $.isSub = function (user) {
     }
     
     return false;
+}
+
+$.isDonator = function (user) {
+    return $.getUserGroupId(user) == 4;
+}
+
+$.isHoster = function (user) {
+    return $.getUserGroupId(user) == 5;
+}
+
+$.isReg = function (user) {
+    return $.getUserGroupId(user) <= 6;
+}
+
+$.hasModeO = function (user) {
+    return $.array.contains($.modeOUsers, user.toLowerCase());
+}
+
+$.hasModList = function (user) {
+    return $.array.contains($.modListUsers, user.toLowerCase());
 }
 
 $.hasGroupById = function(user, id) {
