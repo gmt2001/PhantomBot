@@ -30,17 +30,26 @@ $.isOwner = function (user) {
     return user.equalsIgnoreCase($.botowner);
 }
 
+$.isCaster = function (user) {
+    //return $.hasGroupByName(user, "Caster") || $.isMod(user);
+    return $.getUserGroupId(user) == 0;
+}
+
 $.isAdmin = function (user) {
-    return $.hasGroupByName(user, "Administrator") || $.isOwner(user) || $.isBot(user);
+    //return $.hasGroupByName(user, "Administrator") || $.isOwner(user) || $.isBot(user);
+    return $.getUserGroupId(user) <= 1;
 }
 
 $.isMod = function (user) {
-    return $.hasGroupByName(user, "Moderator") || $.hasModeO(user) || $.hasModList(user) || $.isAdmin(user);
+    //return $.hasGroupByName(user, "Moderator") || $.hasModeO(user) || $.hasModList(user) || $.isAdmin(user);
+    return $.getUserGroupId(user) <= 2;
 }
 
 $.isReg = function (user) {
-    return $.hasGroupByName(user, "Regular");
+    //return $.hasGroupByName(user, "Regular");
+    return $.getUserGroupId(user) <= 6;
 }
+
 $.hasModeO = function (user) {
     return $.array.contains($.modeOUsers, user.toLowerCase());
 }
@@ -57,10 +66,6 @@ $.isSub = function (user) {
     }
     
     return false;
-}
-
-$.isCaster = function (user) {
-    return $.hasGroupByName(user, "Caster") || $.isMod(user);
 }
 
 $.hasGroupById = function(user, id) {
