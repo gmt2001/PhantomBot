@@ -671,7 +671,7 @@ $.on('command', function (event) {
     if (command.equalsIgnoreCase("skipsong")) {
         song = $.musicplayer.currentId();
 
-        if (isMod(sender)) {
+        if ($.isMod(sender)) {
             next();
             return;
         }
