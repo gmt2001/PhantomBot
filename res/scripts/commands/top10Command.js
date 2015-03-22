@@ -61,7 +61,7 @@ $.on('command', function(event) {
         var b;
         var k;
         var times;
-        var s = "Top10 Time >>> ";
+        var s = "Top10 Time >> ";
         
         for (i = 0; i < keys.length; i++) {
             if (!keys[i].equalsIgnoreCase($.botname) && !keys[i].equalsIgnoreCase($.botowner)) {
@@ -85,7 +85,7 @@ $.on('command', function(event) {
                 s += "  -  ";
             }
             
-            s += (i + 1) + ". " + top10time[i][0] + " [approx. " + Math.round(top10time[i][1] / 3600)+ " Hrs]";
+            s += (i + 1) + ". " + top10time[i][0] + " [ " + Math.round(top10time[i][1] / 3600)+ " Hrs]";
         }
         
         $.say(s);
