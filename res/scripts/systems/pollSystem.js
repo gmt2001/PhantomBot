@@ -103,8 +103,9 @@ $.on('command', function (event) {
         }
         if ($.pollVoters.contains(sender)) {
             $.say(username + ", you have already voted.");
+            return;
         }
-        if (!makeVote(args[0])) {
+        if (!makeVote(args[0].toLowerCase())) {
             $.say("'" + args[0] + "' is not a valid option!");
         } else {
             $.pollVoters.add(sender);
@@ -120,7 +121,7 @@ $.on('command', function (event) {
 
     } else if (command.equalsIgnoreCase("poll")) {
         if (!argsString.isEmpty()) {
-            action = args[0];
+            action = args[0].toLowerCase();
         }
 
 
