@@ -108,7 +108,7 @@ $.on('command', function(event) {
             
             $.inidb.set('settings', 'subscribemessage', argsString);
             
-            $.say("New subscriber message set!");
+            $.say("New subscriber message set to!");
         }
     }
     
@@ -125,7 +125,7 @@ $.on('command', function(event) {
                 $.say("The current new subscriber reward is 100 points! To change it use '!subscribereward <reward>'");
             }
         } else {
-            if (!isNaN(argsString) || parseInt(argsString) < 0) {
+            if (parseInt(argsString) < 0) {
                 $.say("Please put a valid reward greater than or equal to 0!");
                 return;
             }
@@ -134,7 +134,7 @@ $.on('command', function(event) {
             
             $.inidb.set('settings', 'subscribereward', argsString);
             
-            $.say("New subscriber reward set!");
+            $.say("New subscriber reward set to " + argsString + " " + $.pointsname + "!");
         }
     }
     
