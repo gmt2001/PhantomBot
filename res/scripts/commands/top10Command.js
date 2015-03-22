@@ -85,7 +85,7 @@ $.on('command', function(event) {
                 s += "  -  ";
             }
             
-            s += (i + 1) + ". " + top10time[i][0] + " [ " + Math.round(top10time[i][1] / 3600)+ " Hrs]";
+            s += (i + 1) + ". " + top10time[i][0] + " [" + Math.round(top10time[i][1] / 3600)+ " Hrs]";
         }
         
         $.say(s);
