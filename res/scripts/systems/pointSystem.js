@@ -91,12 +91,12 @@ $.on('command', function (event) {
         if (action.equalsIgnoreCase("give") || action.equalsIgnoreCase("send")) {
             if ($var.perm_toggle == true) {
                 if (!$.isMod(sender)) {
-                    $.say("You need to be a Moderator to use that command, " + username + "!");
+                    $.say($.modmsg);
                     return;
                 }
             } else {
                 if (!$.isAdmin(sender)) {
-                    $.say("You must be an Administrator to use that command, " + username + "!");
+                    $.say($.adminmsg);
                     return;
                 }
             }
@@ -115,12 +115,12 @@ $.on('command', function (event) {
         } else if (action.equalsIgnoreCase("take") || action.equalsIgnoreCase("withdraw")) {
             if ($var.perm_toggle == true) {
                 if (!$.isMod(sender)) {
-                    $.say("You must be an Moderator to use that command, " + username + "!");
+                    $.say($.modmsg);
                     return;
                 }
             } else {
                 if (!$.isAdmin(sender)) {
-                    $.say("You must be an Administrator to use that command, " + username + "!");
+                    $.say($.adminmsg);
                     return;
                 }
             }
@@ -144,7 +144,7 @@ $.on('command', function (event) {
                 }
             } else {
                 if (!$.isAdmin(sender)) {
-                    $.say("You must be an Administrator to use that command, " + username + "!");
+                    $.say($.adminmsg);
                     return;
                 }
             }
@@ -161,7 +161,7 @@ $.on('command', function (event) {
 
         } else if (action.equalsIgnoreCase("gain")) {
             if (!$.isAdmin(sender)) {
-                $.say("You must be an Administrator to use that command, " + username + "!");
+                $.say($.adminmsg);
                 return;
             }
 
@@ -176,7 +176,7 @@ $.on('command', function (event) {
             }
         } else if (action.equalsIgnoreCase("offlinegain")) {
             if (!$.isAdmin(sender)) {
-                $.say("You must be an Administrator to use that command, " + username + "!");
+                $.say($.adminmsg);
                 return;
             }
 
@@ -192,12 +192,12 @@ $.on('command', function (event) {
         } else if (action.equalsIgnoreCase("all")) {
             if ($var.perm_toggle == true) {
                 if (!$.isMod(sender)) {
-                    $.say("You must be an Moderator to use that command, " + username + "!");
+                    $.say($.modmsg);
                     return;
                 }
             } else {
                 if (!$.isAdmin(sender)) {
-                    $.say("You must be an Administrator to use that command, " + username + "!");
+                    $.say($.adminmsg);
                     return;
                 }
             }
@@ -216,7 +216,7 @@ $.on('command', function (event) {
             }
         } else if (action.equalsIgnoreCase("bonus")) {
             if (!$.isAdmin(sender)) {
-                $.say("You must be an Administrator to use that command, " + username + "!");
+                $.say($.adminmsg);
                 return;
             }
 
@@ -232,7 +232,7 @@ $.on('command', function (event) {
 
         } else if (action.equalsIgnoreCase("interval")) {
             if (!$.isAdmin(sender)) {
-                $.say("You must be an Administrator to use that command, " + username + "!");
+                $.say($.adminmsg);
                 return;
             }
 
@@ -248,7 +248,7 @@ $.on('command', function (event) {
 
         } else if (action.equalsIgnoreCase("offlineinterval")) {
             if (!$.isAdmin(sender)) {
-                $.say("You must be an Administrator to use that command, " + username + "!");
+                $.say($.adminmsg);
                 return;
             }
 
@@ -264,7 +264,7 @@ $.on('command', function (event) {
 
         } else if (action.equalsIgnoreCase("mingift")) {
             if (!$.isAdmin(sender)) {
-                $.say("You must be an Administrator to use that command, " + username + "!");
+                $.say($.adminmsg);
                 return;
             }
 
@@ -280,7 +280,7 @@ $.on('command', function (event) {
 
         } else if (action.equalsIgnoreCase("name")) {
             if (!$.isAdmin(sender)) {
-                $.say("You must be an Administrator to use that command, " + username + "!");
+                $.say($.adminmsg);
                 return;
             }
 
@@ -290,7 +290,7 @@ $.on('command', function (event) {
             $.pointname = argsString2;
         } else if (action.equalsIgnoreCase("toggle") && !argsString.isEmpty()) {
             if (!$.isAdmin(sender)) {
-                $.say("You must be an Administrator to use that command, " + username + "!");
+                $.say($.adminmsg);
                 return;
             }
 

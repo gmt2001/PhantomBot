@@ -406,6 +406,10 @@ $api.on($script, 'musicPlayerState', function(event) {
 $.botname = $.botName;
 $.botowner = $.ownerName;
 
+$.castermsg = "Only a Caster has access to that command!";
+$.adminmsg = "Only a Administrator has access to that command!";
+$.modmsg = "Only a Moderator has access to that command!";
+
 $.loadScript('./util/misc.js');
 $.loadScript('./util/commandList.js');
 $.loadScript('./util/patternDetector.js');

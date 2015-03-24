@@ -14,7 +14,7 @@ $.on('command', function(event) {
     if(args.length >= 2 && !command.equalsIgnoreCase("pricecom")) {
         if(command.equalsIgnoreCase("addcom") ) {
             if (!$.isMod(sender)) {
-                $.say("You must be a Moderator to use that command!");
+                $.say($.modmsg);
                 return;
             }
 
@@ -44,7 +44,7 @@ $.on('command', function(event) {
     
     if (command.equalsIgnoreCase("aliascom")) {
         if (!$.isMod(sender)) {
-            $.say("You must be a Moderator to use that command!");
+            $.say($.modmsg);
             return;
         }
         
@@ -95,7 +95,7 @@ $.on('command', function(event) {
     if(command.equalsIgnoreCase("delcom")) {
         if(args.length >= 1) {
             if (!$.isMod(sender)) {
-                $.say("You must be a Moderator to use that command!");
+                $.say($.modmsg);
                 return;
             }
             
@@ -132,7 +132,7 @@ $.on('command', function(event) {
     if (command.equalsIgnoreCase("editcom")) {
         if(args.length >= 1) {
             if (!$.isMod(sender)) {
-                $.say("You must be a Moderator to use that command!");
+                $.say($.modmsg);
                 return;
             }
 			
@@ -165,7 +165,7 @@ $.on('command', function(event) {
     
     if (command.equalsIgnoreCase("permcom")) {
         if (!isAdmin(sender)) {
-            $.say("You must be an Administrator to use that command!");
+            $.say($.adminmsg);
             return;
         }
         
@@ -308,7 +308,7 @@ $.on('command', function(event) {
 	
     if (command.equalsIgnoreCase("pricecom")) {
         if (!isAdmin(sender)) {
-            $.say("You must be an Administrator to use that command!");
+            $.say($.adminmsg);
             return;
         }
         

@@ -261,7 +261,7 @@ $.on('command', function(event) {
             var action = args[0];
 			
             if (!$.isAdmin(sender)) {
-                $.say(username + ", " + $.getUserGroupName(username) + "s aren't allowed access to this command! Administrators only.");
+                $.say($.adminmsg);
 				return;
             }
 			
@@ -289,7 +289,7 @@ $.on('command', function(event) {
 			var groupname = $.getGroupNameById(groupid);
 			
             if (!$.isAdmin(sender)) {
-                $.say(username + ", " + $.getUserGroupName(username) + "s aren't allowed access to this command! Administrators only.");
+                $.say($.adminmsg);
                 return;                
             }
 
@@ -347,7 +347,7 @@ $.on('command', function(event) {
     
     if (command.equalsIgnoreCase("group") && !argsString.isEmpty()) {
         if (!$.isAdmin(sender)) {
-            $.say(username + ", " + $.getUserGroupName(username) + "s aren't allowed access to this command! Administrators only.");
+            $.say($.adminmsg);
             return;
 
 

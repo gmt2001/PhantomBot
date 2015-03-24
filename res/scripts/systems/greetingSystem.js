@@ -70,7 +70,7 @@ $.on('command', function(event) {
         
         if (subCommand.equalsIgnoreCase("toggle")) {
                 if (!$.isMod(sender)) {
-                        $.say("You need to be a Moderator to use that command, " + username + "!");
+                        $.say($.modmsg);
                         return;
                     }
             if ($.inidb.get("greeting", "autogreet")== null || $.inidb.get("greeting", "autogreet")== "false") {
@@ -106,7 +106,7 @@ $.on('command', function(event) {
             $.say("Greeting changed");
         } else if (subCommand.equalsIgnoreCase("setdefault")) {
             if (!$.isMod(sender)) {
-                $.say("Only a Moderator can use this command!");
+                $.say($modmsg);
                 return;
             }
             

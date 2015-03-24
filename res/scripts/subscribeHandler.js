@@ -89,7 +89,7 @@ $.on('command', function(event) {
     
     if (command.equalsIgnoreCase("subscribemessage")) {
         if (!$.isAdmin(sender)) {
-            $.say("You must be an Administrator to use that command, " + username + "!");
+            $.say($.adminmsg);
             return;
         }
         
@@ -114,7 +114,7 @@ $.on('command', function(event) {
     
     if (command.equalsIgnoreCase("subscribereward")) {
         if (!$.isAdmin(sender)) {
-            $.say("You must be an Administrator to use that command, " + username + "!");
+            $.say($.adminmsg);
             return;
         }
         
@@ -153,7 +153,7 @@ $.on('command', function(event) {
     
     if (command.equalsIgnoreCase("subscribemode")) {
         if (!$.isAdmin(sender)) {
-            $.say("You must be an Administrator to use that command, " + username + "!");
+            $.say($.adminmsg);
             return;
         }
         

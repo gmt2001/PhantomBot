@@ -7,7 +7,7 @@ $.on('command', function(event) {
     
     if (command.equalsIgnoreCase("raider")) {
         if (!$.isMod(sender)) {
-            $.say("You must be a Moderator to use that command!");
+            $.say($.modmsg);
             return;
         }
         

@@ -267,7 +267,7 @@ $.on('command', function(event) {
             
             $.say("There will now be " + args[0] + " commands per page when using !commands");
         } else if (!$.isAdmin(sender)) {
-            $.say("You must be an Administrator to use that command!");
+            $.say($.adminmsg);
         } else {
             $.say("Usage: !commandsperpage <number no less than 10>");
         }

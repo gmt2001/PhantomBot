@@ -139,7 +139,7 @@ $.on('command', function(event) {
 			announceSchedule();
         } else {
             if (!isMod(sender)) {
-                $.say("You must be a Moderator to use this command, " + $.username.resolve(sender));
+                $.say($.modmsg);
                 return;
             }
             

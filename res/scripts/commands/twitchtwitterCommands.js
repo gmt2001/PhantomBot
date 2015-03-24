@@ -15,24 +15,24 @@ $.on('command', function(event) {
         
         if ($.inidb.get("twitchtwitter", "perm").equalsIgnoreCase("mod")) {
             if (!$.isMod(sender)) {
-                $.say("Only Moderators are allowed to use that command, " + username + "!");
+                $.say($.modmsg);
                 return;
             }
         } else if ($.inidb.get("twitchtwitter", "perm").equalsIgnoreCase("caster")) {
             if (!$.isCaster(sender)) {
-                $.say("Only Caster are allowed to use that command, " + username + "!");
+                $.say($.castermsg);
                 return;
             }
         } else if ($.inidb.get("twitchtwitter", "perm").equalsIgnoreCase("list")) {
             list = $.inidb.get("twitchtwitter", "list").split("&");
             
             if (!$.isAdmin(sender) && !$.array.contains(list, sender)) {
-                $.say("Only Administrators and permitted users are allowed to use that command, " + username + "!");
+                $.say($.adminmsg);
                 return;
             }
         } else {
             if (!$.isAdmin(sender)) {
-                $.say("Only Administrators are allowed to use that command, " + username + "!");
+                $.say($.adminmsg);
                 return;
             }
         }

@@ -277,7 +277,7 @@ $.on('command', function (event) {
             }
 
             if (!$.endPoll()) {
-                $.say("There is no poll running");
+                $.say("There is no poll running.");
             }
         
 

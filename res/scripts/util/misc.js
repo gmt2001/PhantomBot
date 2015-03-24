@@ -236,7 +236,7 @@ $.on('command', function(event) {
     
     if (command.equalsIgnoreCase("log")) {
         if (!$.isAdmin(sender)) {
-            $.say("You must be an Administrator to use this command, " + username + "!");
+            $.say($.adminmsg);
             
             return;
         }
@@ -296,7 +296,7 @@ $.on('command', function(event) {
     
     if (command.equalsIgnoreCase("response")) {
         if (!$.isAdmin(sender)) {
-            $.say("You must be an Administrator to use this command, " + username + "!");
+            $.say($.adminmsg);
             
             return;
         }

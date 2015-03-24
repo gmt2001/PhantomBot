@@ -72,7 +72,7 @@ $.on('command', function(event) {
     
     if (command.equalsIgnoreCase("hostmessage")) {
         if (!$.isAdmin(sender)) {
-            $.say("You must be an Administrator to use that command, " + username + "!");
+            $.say($.adminmsg);
             return;
         }
         
@@ -92,7 +92,7 @@ $.on('command', function(event) {
     }
     if (command.equalsIgnoreCase("hostreward")) {
         if (!$.isAdmin(sender)) {
-            $.say("You must be an Administrator to use that command, " + username + "!");
+            $.say($.adminmsg);
             return;
         }
         
@@ -125,7 +125,7 @@ $.on('command', function(event) {
         $.say("Host timeout duration is currently set to: " + parseInt($.inidb.get('settings', 'hosttimeout')) + " minutes!");
     }   else if (args.length >= 1){
            if (!$.isAdmin(sender)) {
-                $.say("You must be an Administrator to use that command, " + username + "!");
+                $.say($.adminmsg);
                     return;
             }
             if (parseInt(args[0]) < 30) {

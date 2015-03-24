@@ -69,7 +69,7 @@ $.on('command', function(event) {
 			timezone = args[0];
 
 			if (!$.isAdmin(sender)) {
-				$.say("You must be a Administrator to use this command " + username + ".");
+				$.say($.adminmsg);
                 return;
             }
 			$.setTimeZone(timezone);
@@ -99,7 +99,7 @@ $.on('command', function(event) {
     if(command.equalsIgnoreCase("time")) {
         if(args.length == 3) {
             if (!$.isAdmin(sender)) {
-                $.say("You must be a Administrator to use this command " + username + ".");
+                $.say($.adminmsg);
 
                 return;
             }

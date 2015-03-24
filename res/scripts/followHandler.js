@@ -96,7 +96,7 @@ $.on('command', function(event) {
 	
     if (command.equalsIgnoreCase("followmessage")) {
         if (!$.isAdmin(sender)) {
-            $.say("You must be an Administrator to use that command, " + username + "!");
+            $.say($.adminmsg);
             return;
         }
         
@@ -121,7 +121,7 @@ $.on('command', function(event) {
     
     if (command.equalsIgnoreCase("followreward")) {
         if (!$.isAdmin(sender)) {
-            $.say("You must be an Administrator to use that command, " + username + "!");
+            $.say($.adminmsg);
             return;
         }
         

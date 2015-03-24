@@ -229,7 +229,7 @@ $.on('command', function(event) {
                 $.say ("You must specify a user to purge")
             }
         } else {
-            $.say ("Only a Moderator can use this command! " + username);
+            $.say ($.modmsg);
         }		
     } else if (command.equalsIgnoreCase("forgive")) {
         if ($.isAdmin(sender)) {
@@ -265,7 +265,7 @@ $.on('command', function(event) {
                 $.say ("You must specify a user to forgive");
             }
         } else {
-            $.say ("Only an Administrator can use this command! " + username);
+            $.say ($.adminmsg);
         }
     } else if (command.equalsIgnoreCase("increase")) {
         if ($.isAdmin(sender)) {
@@ -306,7 +306,7 @@ $.on('command', function(event) {
                 $.say ("You must specify a user to increase");
             }
         } else {
-            $.say ("Only an Administrator can use this command! " + username);
+            $.say ($.adminmsg);
         }
     } else if (command.equalsIgnoreCase("autopurge")) {
         if ($.isMod(sender)) {
@@ -318,7 +318,7 @@ $.on('command', function(event) {
                 $.say ("You must specify a user to autopurge");
             }
         } else {
-            $.say ("Only a Moderator can use this command! " + username);
+            $.say ($.adminmsg);
         }
     } else if (command.equalsIgnoreCase("timeout")) {
         if ($.isMod(sender)) {
@@ -334,7 +334,7 @@ $.on('command', function(event) {
                 $.say ("You must specify a user to timeout")
             }
         } else {
-            $.say ("Only a Moderator can use this command! " + username);
+            $.say ($.adminmsg);
         }
     } else if (command.equalsIgnoreCase("permit")) {
         if ($.isMod(sender)) {
@@ -346,7 +346,7 @@ $.on('command', function(event) {
                 $.say (argsString + " is permitted to post a link during the next " + permittime + " seconds!");
             }
         } else {
-            $.say ("Only a Moderator can use this command! " + username);
+            $.say ($.modmsg);
         }	
     } else if (command.equalsIgnoreCase("ban")) {
         if ($.isMod(sender)) {
@@ -374,7 +374,7 @@ $.on('command', function(event) {
                 $.say (args[0] + " banned indefinitely");
             }
         } else {
-            $.say ("Only a Moderator can use this command! " + username);
+            $.say ($.modmsg);
         }
     } else if (command.equalsIgnoreCase("unban")) {
         if ($.isMod(sender)) {
@@ -384,7 +384,7 @@ $.on('command', function(event) {
             
             $.say (args[0] + " is no longer banned");
         } else {
-            $.say ("Only a Moderator can use this command! " + username);
+            $.say ($.modmsg);
         }
     } else if (command.equalsIgnoreCase("clear")) {
         if ($.isMod(sender)) {
@@ -417,7 +417,7 @@ $.on('command', function(event) {
                 $.say("Added a phrase to the autoban list! This can only be undone manually!");
             }
         } else {
-            $.say ("Only a Moderator can use this command! " + username);
+            $.say ($.modmsg);
         }	
     } else if (command.equalsIgnoreCase("chatmod")) {
         if ($.isMod(sender)) {
@@ -1083,7 +1083,7 @@ $.on('command', function(event) {
                 }
             }
         } else {
-            $.say ("Only a Moderator can use this command! " + username);
+            $.say ($.modmsg);
         }	
     }
 });

@@ -57,7 +57,7 @@ $.on('command', function(event) {
             return;
         }
         else if (!isCaster(sender)) {
-            $.say("You must be a Caster to use that command!");
+            $.say($.castermsg);
             return;	
         }
         
@@ -86,7 +86,7 @@ $.on('command', function(event) {
             return;
         }
         else if (!isCaster(sender)) {
-            $.say("You must be a Caster to use that command!");
+            $.say($.castermsg);
             return;	
         }
         
@@ -110,14 +110,14 @@ $.on('command', function(event) {
     
     if (command.equalsIgnoreCase("commercial")) {
         if (!isCaster(sender)) {
-            $.say("You must be a Caster to use that command!");
+            $.say($.castermsg);
             return;
         }
         
         if (args.length > 0) {
             if (args[0].equalsIgnoreCase("disablecommand")) {
                 if (!isAdmin(sender)) {
-                    $.say("You must be a Administrator to use that command!");
+                    $.say($.adminmsg);
                     return;
                 }
                 
@@ -131,7 +131,7 @@ $.on('command', function(event) {
         
             if (args[0].equalsIgnoreCase("enablecommand")) {
                 if (!isAdmin(sender)) {
-                    $.say("You must be a Administrator to use that command!");
+                    $.say($.adminmsg);
                     return;
                 }
             
@@ -145,7 +145,7 @@ $.on('command', function(event) {
         
             if (args[0].equalsIgnoreCase("autotimer")) {
                 if (!isAdmin(sender)) {
-                    $.say("You must be a Administrator to use that command!");
+                    $.say($.adminmsg);
                     return;
                 }
                 
