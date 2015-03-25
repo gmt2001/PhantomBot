@@ -1,12 +1,14 @@
 $.hostreward = parseInt($.inidb.get('settings', 'hostreward'));
-$.hosttimeout = parseInt($.inidb.get('settings', 'hosttimeout') * 60 * 1000);
+$.hosttimeout = parseInt($.inidb.get('settings', 'hosttimeout'));
 
 if ($.hostlist == null || $.hostlist == undefined) {
     $.hostlist = new Array();
 }
 
 if ($.hosttimeout == null || $.hosttimeout == undefined || isNaN($.hosttimeout)) {
-    $.hosttimeout = {};
+    $.hosttimeout =  60 * 60 * 1000;
+} else {
+    $.hosttimeout =  $.hosttimeout * 60 * 1000;
 }
 
 if ($.hostreward == null || $.hostreward == undefined) {
@@ -19,17 +21,17 @@ $.on('twitchHosted', function(event) {
     var username = $.username.resolve(event.getHoster());
     
     if ($.announceHosts && $.moduleEnabled("./hostHandler.js")
-        && ($.hosttimeout[event.getHoster()] == null || $.hosttimeout[event.getHoster()] == undefined
-            || $.hosttimeout[event.getHoster()] < System.currentTimeMillis())) {
+        && ($.hostlist[event.getHoster()] == null || $.hostlist[event.getHoster()] == undefined
+            || $.hostlist[event.getHoster()] < System.currentTimeMillis())) {
         var s = $.inidb.get('settings', 'hostmessage');
             
         if (s == null || s == undefined || $.strlen(s) == 0) {
-			if ($.hostreward < 1) {
-            s = "Thanks for the host (name)!";
-			} else if ($.hostreward > 0) {
-			s = "Thanks for the host (name)! you're rewarded " + $.hostreward + " " + $.pointname + ".";
-			$.inidb.incr('points', username, $.hostreward);
-			}
+            if ($.hostreward < 1) {
+                s = "Thanks for the host (name)!";
+            } else if ($.hostreward > 0) {
+                s = "Thanks for the host (name)! you're rewarded " + $.hostreward + " " + $.pointname + ".";
+                $.inidb.incr('points', username, $.hostreward);
+            }
         }
             
         while (s.indexOf('(name)') != -1) {
@@ -39,7 +41,7 @@ $.on('twitchHosted', function(event) {
         $.say(s);
     }
     
-    $.hosttimeout[event.getHoster()] = System.currentTimeMillis() + hosttimeout;
+    $.hostlist[event.getHoster()] = System.currentTimeMillis() + $.hosttimeout;
     
     $.hostlist.push(username);
 });
@@ -47,7 +49,7 @@ $.on('twitchHosted', function(event) {
 $.on('twitchUnhosted', function(event) {
     var username = $.username.resolve(event.getHoster());
     
-    $.hosttimeout[event.getHoster()] = System.currentTimeMillis() + hosttimeout;
+    $.hostlist[event.getHoster()] = System.currentTimeMillis() + $.hosttimeout;
     
     for (var i = 0; i < $.hostlist.length; i++) {
         if ($.hostlist[i].equalsIgnoreCase(username)) {
@@ -111,7 +113,7 @@ $.on('command', function(event) {
             $.logEvent("hostHandler.js", 134, username + " changed the host points reward to: " + argsString);
             
             $.inidb.set('settings', 'hostreward', argsString);
-            
+            $.hostreward = parseInt(argsString);
             $.say("New host reward set!");
         }
     }
@@ -122,19 +124,20 @@ $.on('command', function(event) {
     
     if (command.equalsIgnoreCase("hosttime")) {
         if (args.length < 1) {
-        $.say("Host timeout duration is currently set to: " + parseInt($.inidb.get('settings', 'hosttimeout')) + " minutes!");
-    }   else if (args.length >= 1){
-           if (!$.isAdmin(sender)) {
+            $.say("Host timeout duration is currently set to: " + parseInt($.inidb.get('settings', 'hosttimeout')) + " minutes!");
+        } else if (args.length >= 1){
+            if (!$.isAdmin(sender)) {
                 $.say($.adminmsg);
-                    return;
+                return;
             }
             if (parseInt(args[0]) < 30) {
                 $.say("Host timeout duration can't be less than 30 minutes!");
                 return;
             } else {
-        $.inidb.set('settings', 'hosttimeout', parseInt(args[0]));
-        $.say("Host timeout duration is now set to: " + parseInt(args[0]) + " minutes!");
-           }
+                $.inidb.set('settings', 'hosttimeout', parseInt(args[0]));
+                $.hosttimeout = parseInt(args[0]);
+                $.say("Host timeout duration is now set to: " + parseInt(args[0]) + " minutes!");
+            }
         }
     }
     if (command.equalsIgnoreCase("hostlist")) {
