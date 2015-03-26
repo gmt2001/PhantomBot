@@ -323,16 +323,15 @@ $.getLongestUnicodeGraphemeCluster = function(event) {
 $.getNumberOfNonLetters = function(event) {
     var message = event.getMessage();
     
-    var m = Pattern.compile("(\\p{S}|(?![\\p{L}\\s])|\\p{C})").matcher(message);
+    var m = Pattern.compile("(\\p{InPhonetic_Extensions}|\\p{InLetterlikeSymbols}|\\p{InDingbats}|\\p{InBoxDrawing}|\\p{InBlockElements}|\\p{InGeometricShapes}|\\p{InHalfwidth_and_Fullwidth_Forms}|[!-/:-@\\[-`{-~])").matcher(message);
     var s1;
     var s2;
     var ret = 0;
     
     while (m.find() == true) {
         s1 = m.group(0);
-        s2 = m.group(1);
         
-        if ($.strlen(s1) > 0 || $.strlen(s2) > 0) {
+        if ($.strlen(s1) > 0) {
             ret++;
         }
     }
@@ -343,25 +342,18 @@ $.getNumberOfNonLetters = function(event) {
 $.getLongestNonLetterSequence = function(event) {
     var message = event.getMessage();
     
-    var m = Pattern.compile("(\\p{S}|(?![\\p{L}\\s])|\\p{C})*").matcher(message);
+    var m = Pattern.compile("(\\p{InPhonetic_Extensions}|\\p{InLetterlikeSymbols}|\\p{InDingbats}|\\p{InBoxDrawing}|\\p{InBlockElements}|\\p{InGeometricShapes}|\\p{InHalfwidth_and_Fullwidth_Forms}|[!-/:-@\\[-`{-~])*").matcher(message);
     var s1;
     var s2;
     var ret = 0;
     
     while (m.find() == true) {
         s1 = m.group(0);
-        s2 = m.group(1);
         
-        if ($.strlen(s1) > 0 && $.strlen(s2) > 0) {
-            if ($.strlen(s1) > $.strlen(s2)) {
-                if (($.strlen(s1) / $.strlen(s2)) > 1) {
-                    ret = Math.max(ret, ($.strlen(s1) / $.strlen(s2)));
-                }
-            } else {
-                if (($.strlen(s2) / $.strlen(s1)) > 1) {
-                    ret = Math.max(ret, ($.strlen(s2) / $.strlen(s1)));
-                }
-            }
+        while (m.find() == true) {
+            s1 = m.group(0);
+        
+            ret = Math.max(ret, $.strlen(s1));
         }
     }
 
