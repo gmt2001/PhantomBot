@@ -21,7 +21,7 @@ $.on('command', function(event) {
         }
 
         if ($.inidb.get("quotes", "quote_" + num) == null) {
-            $.say("There are only " + num_quotes + " quotes right now! Remember that quotes are numbered from 0 to " + num_quotes + "!");
+            $.say("There are only " + num_quotes + " quotes right now! Remember that quotes are numbered from 0 to " + (num_quotes - 1 )+ "!");
 
         } else {
             $.say("#" + num + ": " + $.inidb.get("quotes", "quote_" + num));
