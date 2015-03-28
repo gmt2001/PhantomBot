@@ -284,16 +284,17 @@ $.on('command', function(event) {
     if(args.length >= 3) {
         if(command.equalsIgnoreCase("group")) {
             var action = args[0];
-            name = args[2];
-            var groupid = $.getGroupIdByName(name);
-            var groupname = $.getGroupNameById(groupid);
 			
             if (!$.isAdmin(sender)) {
                 $.say($.adminmsg);
                 return;                
             }
 
-            if (action.equalsIgnoreCase("set") || action.equalsIgnoreCase("add") || action.equalsIgnoreCase("change")) {                				
+            if (action.equalsIgnoreCase("set") || action.equalsIgnoreCase("add") || action.equalsIgnoreCase("change")) {  
+                name = args[2];
+                var groupid = $.getGroupIdByName(name);
+                var groupname = $.getGroupNameById(groupid);
+            
                 if( name.toLowerCase() != groupname.toLowerCase() ) {
                     $.say("That group does not exist! To view a list of groups, use !group list.");
                 }
@@ -303,7 +304,11 @@ $.on('command', function(event) {
                     $.logEvent("permissions.js", 200, username + " changed " + args[1] + "'s group to " + $.getUserGroupName($.username.resolve(args[1])));                
                 }
             }
-            if (action.equalsIgnoreCase("points")) {                				
+            if (action.equalsIgnoreCase("points")) {   
+                name = args[1];
+                var groupid = $.getGroupIdByName(name);
+                var groupname = $.getGroupNameById(groupid);
+            
                 if( name.toLowerCase() != groupname.toLowerCase() ) {
                     $.say("That group does not exist! To view a list of groups, use !group list.");
                     return;
@@ -316,6 +321,10 @@ $.on('command', function(event) {
                     $.say(groupname + " point multiplier set to " + args[2].toString() + "!");
                 }
             } else if (action.equalsIgnoreCase("qset")) {
+                name = args[2];
+                var groupid = $.getGroupIdByName(name);
+                var groupname = $.getGroupNameById(groupid);
+            
                 if( name.toLowerCase() != groupname.toLowerCase() ) {
                     $.say("That group does not exist! To view a list of groups, use !group list.");
                     return;
