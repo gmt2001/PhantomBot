@@ -18,20 +18,18 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib;
 
 /**
- * WriteRequest - this is sent to a Connection whenever a 'write' needs
- * to happen. There are 3 types of WriteRequests. PRIV_MSG , DIRECT_MSG ,
- * RAW_MSG (from the Type enum). RAW_MSG is used when you need direct access to
- * the IRC stream , else PRIV_MSG or DIRECT_MSG should be used.
+ * WriteRequest - this is sent to a Connection whenever a 'write' needs to
+ * happen. There are 3 types of WriteRequests. PRIV_MSG , DIRECT_MSG , RAW_MSG
+ * (from the Type enum). RAW_MSG is used when you need direct access to the IRC
+ * stream , else PRIV_MSG or DIRECT_MSG should be used.
  *
  * @author mohadib
  */
-public class WriteRequest {
+public class WriteRequest
+{
 
     private final Type type;
     private final String message, nick;
@@ -39,16 +37,16 @@ public class WriteRequest {
     private final Session session;
 
     /**
-     * Type enum is used to determine type. It is returned from getType() PRIV_MSG
-     * is a standard msg to an IRC channel. DIRECT_MSG is msg sent directly to
-     * another user (not in a channel). RAW_MSG when direct access to the IRC
-     * stream is needed.
+     * Type enum is used to determine type. It is returned from getType()
+     * PRIV_MSG is a standard msg to an IRC channel. DIRECT_MSG is msg sent
+     * directly to another user (not in a channel). RAW_MSG when direct access
+     * to the IRC stream is needed.
      */
-    public enum Type {
-        CHANNEL_MSG, PRIVATE_MSG, RAW_MSG
-    }
+    public enum Type
+    {
 
-    ;
+        CHANNEL_MSG, PRIVATE_MSG, RAW_MSG
+    };
 
     /**
      * Create a request that will be written as a private message.
@@ -57,7 +55,8 @@ public class WriteRequest {
      * @param con
      * @param nick
      */
-    WriteRequest(String message, Session session, String nick) {
+    WriteRequest(String message, Session session, String nick)
+    {
         this.type = Type.PRIVATE_MSG;
         this.message = message;
         this.session = session;
@@ -72,7 +71,8 @@ public class WriteRequest {
      * @param channel
      * @param con
      */
-    WriteRequest(String message, Channel channel, Session session) {
+    WriteRequest(String message, Channel channel, Session session)
+    {
         this.type = Type.CHANNEL_MSG;
         this.message = message;
         this.channel = channel;
@@ -80,14 +80,14 @@ public class WriteRequest {
         this.nick = null;
     }
 
-
     /**
      * Create a request that will be written as raw text.
      *
      * @param message
      * @param con
      */
-    WriteRequest(String message, Session session) {
+    WriteRequest(String message, Session session)
+    {
         this.type = Type.RAW_MSG;
         this.message = message;
         this.session = session;
@@ -100,7 +100,8 @@ public class WriteRequest {
      *
      * @return type
      */
-    public Type getType() {
+    public Type getType()
+    {
         return type;
     }
 
@@ -109,16 +110,19 @@ public class WriteRequest {
      *
      * @return message
      */
-    public String getMessage() {
+    public String getMessage()
+    {
         return message;
     }
 
     /**
-     * Get Channel associated with the request. If no channel null will be returned;
+     * Get Channel associated with the request. If no channel null will be
+     * returned;
      *
      * @return channel or null if no channel for request
      */
-    public Channel getChannel() {
+    public Channel getChannel()
+    {
         return channel;
     }
 
@@ -127,7 +131,8 @@ public class WriteRequest {
      *
      * @return nick
      */
-    public String getNick() {
+    public String getNick()
+    {
         return nick;
     }
 
@@ -136,7 +141,8 @@ public class WriteRequest {
      *
      * @return Session
      */
-    public Session getSession() {
+    public Session getSession()
+    {
         return session;
     }
 
@@ -145,9 +151,8 @@ public class WriteRequest {
      *
      * @return the connection
      */
-    Connection getConnection() {
+    Connection getConnection()
+    {
         return session.getConnection();
     }
-
-
 }

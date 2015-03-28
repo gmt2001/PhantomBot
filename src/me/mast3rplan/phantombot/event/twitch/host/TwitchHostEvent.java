@@ -18,32 +18,36 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.event.twitch.host;
 
 import me.mast3rplan.phantombot.event.twitch.TwitchEvent;
 
-public abstract class TwitchHostEvent extends TwitchEvent {
+public abstract class TwitchHostEvent extends TwitchEvent
+{
+
     private String hoster;
     private Type type;
 
-    enum Type {
+    enum Type
+    {
+
         HOST,
         UNHOST;
     }
 
-    protected TwitchHostEvent(String hoster, Type type) {
+    protected TwitchHostEvent(String hoster, Type type)
+    {
         this.hoster = hoster;
         this.type = type;
     }
 
-    public String getHoster() {
+    public String getHoster()
+    {
         return hoster;
     }
 
-    public Type getType() {
+    public Type getType()
+    {
         return type;
     }
 }

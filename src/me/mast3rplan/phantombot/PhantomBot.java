@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot;
 
 import com.gmt2001.IniStore;
@@ -106,12 +103,12 @@ public class PhantomBot implements Listener
     {
         return instance;
     }
-    
+
     public PhantomBot(String username, String oauth, String apioauth, String clientid, String channel, String owner,
             int baseport, String hostname, int port, double msglimit30)
     {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
-        
+
         com.gmt2001.Console.out.println();
         com.gmt2001.Console.out.println("PhantomBot Core 1.5.4 3/20/2015 11:27 AM EST");
         com.gmt2001.Console.out.println("Creator: mast3rplan");
@@ -151,7 +148,8 @@ public class PhantomBot implements Listener
         {
             this.hostname = "irc.twitch.tv";
             this.port = 443;
-        } else {
+        } else
+        {
             this.hostname = hostname;
             this.port = port;
         }
@@ -165,7 +163,7 @@ public class PhantomBot implements Listener
         }
 
         this.init();
-        
+
         try
         {
             Thread.sleep(1000);
@@ -187,7 +185,7 @@ public class PhantomBot implements Listener
                 pid_method.setAccessible(true);
 
                 int pid = (Integer) pid_method.invoke(mgmt);
-                
+
                 //int pid = Integer.parseInt( ( new File("/proc/self")).getCanonicalFile().getName() ); 
 
                 File f = new File("/var/run/PhantomBot." + this.username.toLowerCase() + ".pid");

@@ -132,39 +132,39 @@ function parseDefault() {
             $.writeToFile(  $.songprefix, $.storepath + "queue.txt", false);
         }
         for(var i=position; i< list.length; i++){
-                $.song = new Song(list[i]);
-                $.songname = $.song.getName();
-                $.songid = $.song.getId();
+            $.song = new Song(list[i]);
+            $.songname = $.song.getName();
+            $.songid = $.song.getId();
                 
-                if ($.titles==1){
-                    $.songurl = '<a href="https://www.youtube.com/watch?v=' + $.songid + '" target="new">' + $.songid + "</a> " + $.songname + "</br>";
-                    $.writeToFile($.songurl, $.storepath + "queue.php", true);
-                }
-                else {
-                    $.songprefix = $.songid + " " + $.songname;
-                    $.writeToFile($.songprefix, $.storepath + "queue.txt", true);
-                }
+            if ($.titles==1){
+                $.songurl = '<a href="https://www.youtube.com/watch?v=' + $.songid + '" target="new">' + $.songid + "</a> " + $.songname + "</br>";
+                $.writeToFile($.songurl, $.storepath + "queue.php", true);
+            }
+            else {
+                $.songprefix = $.songid + " " + $.songname;
+                $.writeToFile($.songprefix, $.storepath + "queue.txt", true);
+            }
         }
     }
 }
 
 function parseSongQueue() {
   
-        var list = $var.songqueue;
-        for(var i=0; i< list.length; i++){
-                $.songrequester = list[i].user;
-                $.songname = list[i].song.getName();
-                $.songid = list[i].song.getId();
+    var list = $var.songqueue;
+    for(var i=0; i< list.length; i++){
+        $.songrequester = list[i].user;
+        $.songname = list[i].song.getName();
+        $.songid = list[i].song.getId();
                 
-                if ($.titles==1){
-                    $.songurl = '<a href="https://www.youtube.com/watch?v=' + $.songid + '" target="new">' + $.songid + "</a> " + $.songname + " - " + $.songrequester + "</br>";
-                    $.writeToFile($.songurl, $.storepath + "queue.php", true);
-                }
-                else {
-                    $.songprefix = $.songid + " " + $.songname + " - " + $.songrequester;
-                    $.writeToFile($.songprefix, $.storepath + "queue.txt", true);
-                }
+        if ($.titles==1){
+            $.songurl = '<a href="https://www.youtube.com/watch?v=' + $.songid + '" target="new">' + $.songid + "</a> " + $.songname + " - " + $.songrequester + "</br>";
+            $.writeToFile($.songurl, $.storepath + "queue.php", true);
         }
+        else {
+            $.songprefix = $.songid + " " + $.songname + " - " + $.songrequester;
+            $.writeToFile($.songprefix, $.storepath + "queue.txt", true);
+        }
+    }
 }
 
 function nextDefault() {
@@ -293,8 +293,8 @@ function next() {
     var nextMsg = "The song request queue is empty! Request a new song with !addsong or !songrequest <youtube link>";
             
     if ($var.songqueue.length > 0) {
-            nextMsg = "[\u266B] Next song >> " + $var.songqueue[0].song.getName() + " requested by " + $var.songqueue[0].user;
-            println(nextMsg);
+        nextMsg = "[\u266B] Next song >> " + $var.songqueue[0].song.getName() + " requested by " + $var.songqueue[0].user;
+        println(nextMsg);
     }
     if (user.equalsIgnoreCase("DJ " + $.username.resolve($.botname))) {
         $.writeToFile(name, "currentsong.txt", false);
@@ -381,20 +381,20 @@ $.on('command', function (event) {
                 $.say($.adminmsg);
                 return;
             }
-                    $.inidb.set('blacklist', args[1].toLowerCase(), "true");
-                    $.say(username + " has denied " + $.username.resolve(args[1].toLowerCase()) + " access to song request features.");
-                    return;
-            } 
+            $.inidb.set('blacklist', args[1].toLowerCase(), "true");
+            $.say(username + " has denied " + $.username.resolve(args[1].toLowerCase()) + " access to song request features.");
+            return;
+        } 
             
         if (action.equalsIgnoreCase("allow")) {
             if (!$.isAdmin(sender)) {
                 $.say($.adminmsg);
                 return;
             }
-                    $.inidb.del('blacklist', args[1].toLowerCase());
-                    $.say(username + " released " + $.username.resolve(args[1]) + " from the blacklist for song request features.");
-                    return;   
-            } 
+            $.inidb.del('blacklist', args[1].toLowerCase());
+            $.say(username + " released " + $.username.resolve(args[1]) + " from the blacklist for song request features.");
+            return;   
+        } 
             
         if (action.equalsIgnoreCase("limit")) {
             if (!$.isAdmin(sender)) {
@@ -533,27 +533,27 @@ $.on('command', function (event) {
 
             $.say("[Music Settings] - [Limit: " + $.song_limit + " songs] - [Cost: " + $.addsong_cost + " " + $.pointname + "] - [Veto: " + $.vetosong_cost + " " + $.pointname + " " + "] - [Msgs: " + $.song_t + "] - [Music Player: " + $.song_status + "]")
         }
-		if (action.equalsIgnoreCase("steal")) {
-			if (!$.isAdmin(sender)) {
+        if (action.equalsIgnoreCase("steal")) {
+            if (!$.isAdmin(sender)) {
                 $.say($.adminmsg);
                 return;
             }
-			if ($var.currSong != null) {
-				var songurl = "https://www.youtube.com/watch?v=" + $var.currSong.song.getId();
-				$.musicplayer.stealSong(songurl);
-				$var.defaultplaylist = $.readFile("./playlist.txt");
-				$.say("[\u266B]" + $var.currSong.song.getName() + " -- requested by @" + $var.currSong.user + " has been stolen and added to the default playlist!");
-				return;
-			}
-		}
+            if ($var.currSong != null) {
+                var songurl = "https://www.youtube.com/watch?v=" + $var.currSong.song.getId();
+                $.musicplayer.stealSong(songurl);
+                $var.defaultplaylist = $.readFile("./playlist.txt");
+                $.say("[\u266B]" + $var.currSong.song.getName() + " -- requested by @" + $var.currSong.user + " has been stolen and added to the default playlist!");
+                return;
+            }
+        }
 			
     }
 
     if (command.equalsIgnoreCase("addsong") || command.equalsIgnoreCase("songrequest")) {
-       if ($.inidb.get('blacklist', sender) == "true") {
-                $.say("You are denied access to song request features!");
-                return;
-            }
+        if ($.inidb.get('blacklist', sender) == "true") {
+            $.say("You are denied access to song request features!");
+            return;
+        }
         if (!$.isMod(sender)) {
             var points = $.inidb.get('points', sender);
 
@@ -624,33 +624,33 @@ $.on('command', function (event) {
                 next();
             }
         }
+    }
+    if (command.equalsIgnoreCase("delsong") || command.equalsIgnoreCase("deletesong") || command.equalsIgnoreCase("removesong")) {
+        if (!musicPlayerConnected) {
+            $.say("Songrequests is currently disabled!");
+            return;
         }
-        if (command.equalsIgnoreCase("delsong") || command.equalsIgnoreCase("deletesong") || command.equalsIgnoreCase("removesong")) {
-            if (!musicPlayerConnected) {
-                $.say("Songrequests is currently disabled!");
-                return;
-            }
 
-            id = $.youtube.searchVideo(argsString, "none");
-            if (id == null) {
-                $.say("Song doesn't exist or you typed something wrong.");
-                return;
-            }
+        id = $.youtube.searchVideo(argsString, "none");
+        if (id == null) {
+            $.say("Song doesn't exist or you typed something wrong.");
+            return;
+        }
 
-            for (i in $var.songqueue) {
-                if (id + "" === $var.songqueue[i].song.id + "") {
-                    if ($var.songqueue[i].user === username || $.isMod(sender)) {
-                        $.say("[\u266B] Song -- " + $var.songqueue[i].song.getName() + " has been removed from the queue!");
-                        $var.songqueue.splice(i, 1);
-                        return;
-                    } else {
-                        $.say($.modmsg);
-                        return;
-                    }
+        for (i in $var.songqueue) {
+            if (id + "" === $var.songqueue[i].song.id + "") {
+                if ($var.songqueue[i].user === username || $.isMod(sender)) {
+                    $.say("[\u266B] Song -- " + $var.songqueue[i].song.getName() + " has been removed from the queue!");
+                    $var.songqueue.splice(i, 1);
+                    return;
+                } else {
+                    $.say($.modmsg);
+                    return;
                 }
             }
+        }
 
-            $.say(sender + ", that song isn't in the list.");
+        $.say(sender + ", that song isn't in the list.");
         
     }
 
@@ -750,17 +750,17 @@ $.on('command', function (event) {
     }
 
     if (command.equalsIgnoreCase("stealsong") || command.equalsIgnoreCase("songsteal")) {
-	if (!$.isAdmin(sender)) {
+        if (!$.isAdmin(sender)) {
             $.say($.adminmsg);
             return;
         }
         if ($var.currSong != null) {
-			var songurl = "https://www.youtube.com/watch?v=" + $var.currSong.song.getId();
-			$.musicplayer.stealSong(songurl);
-			$var.defaultplaylist = $.readFile("./playlist.txt");
-                        $.say($var.currSong.song.getName() + "~\u266B requested by " + $var.currSong.user + " has been stolen and added to the default playlist!");
-			return;
-	}
+            var songurl = "https://www.youtube.com/watch?v=" + $var.currSong.song.getId();
+            $.musicplayer.stealSong(songurl);
+            $var.defaultplaylist = $.readFile("./playlist.txt");
+            $.say($var.currSong.song.getName() + "~\u266B requested by " + $var.currSong.user + " has been stolen and added to the default playlist!");
+            return;
+        }
     }
 
 

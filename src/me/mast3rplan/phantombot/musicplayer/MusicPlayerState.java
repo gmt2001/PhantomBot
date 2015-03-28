@@ -18,12 +18,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.musicplayer;
 
-public enum MusicPlayerState {
+public enum MusicPlayerState
+{
+
     NEW(-2),
     UNSTARTED(-1),
     ENDED(0),
@@ -33,13 +32,19 @@ public enum MusicPlayerState {
     CUED(5);
     public int i;
 
-    private MusicPlayerState(int i) {
+    private MusicPlayerState(int i)
+    {
         this.i = i;
     }
 
-    public static MusicPlayerState getStateFromId(int i) {
-        for (MusicPlayerState mps : MusicPlayerState.values()) {
-            if (mps.i == i) return mps;
+    public static MusicPlayerState getStateFromId(int i)
+    {
+        for (MusicPlayerState mps : MusicPlayerState.values())
+        {
+            if (mps.i == i)
+            {
+                return mps;
+            }
         }
         return null;
     }

@@ -18,24 +18,27 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.console;
 
 import me.mast3rplan.phantombot.event.EventBus;
 import me.mast3rplan.phantombot.event.console.ConsoleInputEvent;
 
-public class ConsoleInputListener extends Thread {
+public class ConsoleInputListener extends Thread
+{
 
     @Override
-    public void run() {
-        while (true) {
-            try {
+    public void run()
+    {
+        while (true)
+        {
+            try
+            {
                 String msg = com.gmt2001.Console.in.readLine();
                 EventBus.instance().post(new ConsoleInputEvent(msg));
                 Thread.sleep(10);
-            } catch (Exception e) {}
+            } catch (Exception e)
+            {
+            }
         }
     }
 }

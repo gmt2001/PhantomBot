@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package com.gmt2001.Console;
 
 import java.io.FileNotFoundException;
@@ -40,13 +37,14 @@ import java.util.TimeZone;
  */
 public class err
 {
+
     private static final err instance = new err();
-    
+
     public static err instance()
     {
         return instance;
     }
-    
+
     private err()
     {
     }
@@ -54,7 +52,7 @@ public class err
     public static void print(Object o)
     {
         System.err.print(o);
-        
+
         try
         {
             FileOutputStream fos = new FileOutputStream("stderr.txt", true);
@@ -62,11 +60,11 @@ public class err
 
             SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss");
             datefmt.setTimeZone(TimeZone.getTimeZone("GMT"));
-            
+
             String timestamp = datefmt.format(new Date());
-            
+
             ps.println(">>" + timestamp + "Z " + o.toString());
-            
+
             fos.close();
         } catch (FileNotFoundException ex)
         {
@@ -76,16 +74,16 @@ public class err
             ex.printStackTrace(System.err);
         }
     }
-    
+
     public static void println()
     {
         System.err.println();
     }
-    
+
     public static void println(Object o)
     {
         System.err.println(o);
-        
+
         try
         {
             FileOutputStream fos = new FileOutputStream("stderr.txt", true);
@@ -93,12 +91,12 @@ public class err
 
             SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss");
             datefmt.setTimeZone(TimeZone.getTimeZone("GMT"));
-            
+
             String timestamp = datefmt.format(new Date());
-            
+
             ps.println(timestamp + "Z " + o.toString());
             ps.println();
-            
+
             fos.close();
         } catch (FileNotFoundException ex)
         {
@@ -108,11 +106,11 @@ public class err
             ex.printStackTrace(System.err);
         }
     }
-    
+
     public static void printStackTrace(Throwable e)
     {
         e.printStackTrace(System.err);
-        
+
         Writer trace = new StringWriter();
         PrintWriter ptrace = new PrintWriter(trace);
 
@@ -125,12 +123,12 @@ public class err
 
             SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss");
             datefmt.setTimeZone(TimeZone.getTimeZone("GMT"));
-            
+
             String timestamp = datefmt.format(new Date());
-            
+
             ps.println(timestamp + "Z " + trace.toString());
             ps.println();
-            
+
             fos.close();
         } catch (FileNotFoundException ex)
         {

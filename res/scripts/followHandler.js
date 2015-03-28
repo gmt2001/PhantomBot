@@ -91,8 +91,8 @@ $.on('command', function(event) {
     var argsString = event.getArguments().trim();
 	
     if (command.equalsIgnoreCase("follow")) {
-		$.say("!followmessage <message>, !followreward <amount>");
-	}
+        $.say("!followmessage <message>, !followreward <amount>");
+    }
 	
     if (command.equalsIgnoreCase("followmessage")) {
         if (!$.isAdmin(sender)) {

@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.events;
 
 import me.mast3rplan.phantombot.jerklib.Session;
@@ -30,10 +27,13 @@ import me.mast3rplan.phantombot.jerklib.Session;
  *
  * @author Mohadib
  */
-public class NumericErrorEvent extends ErrorEvent {
+public class NumericErrorEvent extends ErrorEvent
+{
+
     private final String errMsg;
 
-    public NumericErrorEvent(String errMsg, String rawEventData, Session session) {
+    public NumericErrorEvent(String errMsg, String rawEventData, Session session)
+    {
         super(rawEventData, session, ErrorType.NUMERIC_ERROR);
         this.errMsg = errMsg;
     }
@@ -41,8 +41,8 @@ public class NumericErrorEvent extends ErrorEvent {
     /* (non-Javadoc)
      * @see me.mast3rplan.phantombot.jerklib.events.NumericErrorEvent#getErrorMsg()
      */
-    public String getErrorMsg() {
+    public String getErrorMsg()
+    {
         return errMsg;
     }
-
 }

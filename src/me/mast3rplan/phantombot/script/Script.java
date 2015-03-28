@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.script;
 
 import com.google.common.collect.Lists;
@@ -32,33 +29,37 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.ScriptableObject;
 
-public class Script {
-    public static final NativeObject global = new NativeObject();
+public class Script
+{
 
+    public static final NativeObject global = new NativeObject();
     private List<ScriptDestroyable> destroyables = Lists.newArrayList();
     private NativeObject vars = new NativeObject();
-
     private ScriptFileWatcher fileWatcher;
     private File file;
 
-    public Script(File file) {
+    public Script(File file)
+    {
         this.fileWatcher = new ScriptFileWatcher(this);
         this.file = file;
-        
+
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
         new Thread(fileWatcher).start();
     }
 
-    public void reload() throws IOException {
-        for(ScriptDestroyable destroyable : destroyables) {
+    public void reload() throws IOException
+    {
+        for (ScriptDestroyable destroyable : destroyables)
+        {
             destroyable.destroy();
         }
         destroyables.clear();
         load();
     }
 
-    public void load() throws IOException {
+    public void load() throws IOException
+    {
         Context context = Context.enter();
         ScriptableObject scope = context.initStandardObjects(global, false);
         scope.defineProperty("$", global, 0);
@@ -69,15 +70,18 @@ public class Script {
         context.evaluateString(scope, FileUtils.readFileToString(file), file.getName(), 1, null);
     }
 
-    public List<ScriptDestroyable> destroyables() {
+    public List<ScriptDestroyable> destroyables()
+    {
         return destroyables;
     }
 
-    public File getFile() {
+    public File getFile()
+    {
         return file;
     }
-    
-    public String getPath() {
+
+    public String getPath()
+    {
         return file.toPath().toString();
     }
 }

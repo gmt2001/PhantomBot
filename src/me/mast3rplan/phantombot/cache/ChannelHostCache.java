@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.cache;
 
 import com.gmt2001.TwitchAPIv3;
@@ -68,10 +65,10 @@ public class ChannelHostCache implements Runnable
     {
         this.channel = channel;
         this.updateThread = new Thread(this);
-        
+
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
         this.updateThread.setUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
-        
+
         updateThread.start();
     }
 

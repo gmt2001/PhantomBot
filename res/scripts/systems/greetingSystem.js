@@ -27,7 +27,7 @@ $.on('ircChannelJoin', function(event) {
         $.say(s.replace("<name>", username));
            
     } else if ($.inidb.get("greeting", "autogreet") == null || $.inidb.get("greeting", "autogreet") == "false") {
-           if (s == null || s == undefined || s.isEmpty()) {
+        if (s == null || s == undefined || s.isEmpty()) {
             s = $.inidb.get("greeting", "_default");
             
             if (s == null || s == undefined || s.isEmpty()) {
@@ -35,7 +35,7 @@ $.on('ircChannelJoin', function(event) {
             }
         }
         if ($.inidb.get("greeting", sender + "_enabled") == "0" ) {
-                println(s.replace("[Join] <name>", username));
+            println(s.replace("[Join] <name>", username));
         }
     } 
 });
@@ -69,16 +69,16 @@ $.on('command', function(event) {
         }
         
         if (subCommand.equalsIgnoreCase("toggle")) {
-                if (!$.isMod(sender)) {
-                        $.say($.modmsg);
-                        return;
-                    }
+            if (!$.isMod(sender)) {
+                $.say($.modmsg);
+                return;
+            }
             if ($.inidb.get("greeting", "autogreet")== null || $.inidb.get("greeting", "autogreet")== "false") {
-            $.inidb.set("greeting", "autogreet", "true");
-            $.say ("Auto Greeting enabled! " + $.username.resolve($.botname) + " will greet everyone from now on.");
+                $.inidb.set("greeting", "autogreet", "true");
+                $.say ("Auto Greeting enabled! " + $.username.resolve($.botname) + " will greet everyone from now on.");
             } else if ($.inidb.get("greeting", "autogreet")== "true") {
-            $.inidb.set("greeting", "autogreet", "false");
-            $.say ("Auto Greeting disabled! " + $.username.resolve($.botname) + " will no longer greet viewers.");
+                $.inidb.set("greeting", "autogreet", "false");
+                $.say ("Auto Greeting disabled! " + $.username.resolve($.botname) + " will no longer greet viewers.");
             }
         }
 

@@ -18,19 +18,18 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib;
 
 /**
- * A class for writing Session level events.
- * By that I mean not Channel level stuff , though
- * some methods can be passed a Channel or channel name as a target.
+ * A class for writing Session level events. By that I mean not Channel level
+ * stuff , though some methods can be passed a Channel or channel name as a
+ * target.
  *
  * @author mohadib
  */
-class RequestGenerator {
+class RequestGenerator
+{
+
     private Session session;
 
     /**
@@ -38,7 +37,8 @@ class RequestGenerator {
      *
      * @param session
      */
-    void setSession(Session session) {
+    void setSession(Session session)
+    {
         this.session = session;
     }
 
@@ -47,7 +47,8 @@ class RequestGenerator {
      *
      * @param who
      */
-    public void who(String who) {
+    public void who(String who)
+    {
         write(new WriteRequest("WHO " + who, session));
     }
 
@@ -56,7 +57,8 @@ class RequestGenerator {
      *
      * @param nick - target of whois
      */
-    public void whois(String nick) {
+    public void whois(String nick)
+    {
         write(new WriteRequest("WHOIS " + nick, session));
     }
 
@@ -65,7 +67,8 @@ class RequestGenerator {
      *
      * @param nick
      */
-    public void whoWas(String nick) {
+    public void whoWas(String nick)
+    {
         write(new WriteRequest("WHOWAS " + nick, session));
     }
 
@@ -75,24 +78,26 @@ class RequestGenerator {
      * @param nick
      * @param chan
      */
-    public void invite(String nick, Channel chan) {
+    public void invite(String nick, Channel chan)
+    {
         write(new WriteRequest("INVITE " + nick + " " + chan.getName(), session));
     }
 
     /**
      * Get a List of Channels from server.
      */
-    public void chanList() {
+    public void chanList()
+    {
         write(new WriteRequest("LIST", session));
     }
-
 
     /**
      * Get information on a secific channel
      *
      * @param channel
      */
-    public void chanList(String channel) {
+    public void chanList(String channel)
+    {
         write(new WriteRequest("LIST " + channel, session));
     }
 
@@ -101,7 +106,8 @@ class RequestGenerator {
      *
      * @param channel
      */
-    public void join(String channel) {
+    public void join(String channel)
+    {
         write(new WriteRequest("JOIN " + channel, session));
     }
 
@@ -111,7 +117,8 @@ class RequestGenerator {
      * @param channel
      * @param pass
      */
-    public void join(String channel, String pass) {
+    public void join(String channel, String pass)
+    {
         write(new WriteRequest("JOIN " + channel + " " + pass, session));
     }
 
@@ -121,10 +128,10 @@ class RequestGenerator {
      * @param target
      * @param request
      */
-    public void ctcp(String target, String request) {
+    public void ctcp(String target, String request)
+    {
         write(new WriteRequest("\001" + request.toUpperCase() + "\001", session, target));
     }
-
 
     /**
      * Send a notice
@@ -132,7 +139,8 @@ class RequestGenerator {
      * @param target
      * @param msg
      */
-    public void notice(String target, String msg) {
+    public void notice(String target, String msg)
+    {
         write(new WriteRequest("NOTICE " + target + " :" + msg, session));
     }
 
@@ -141,21 +149,24 @@ class RequestGenerator {
      *
      * @param message
      */
-    public void setAway(String message) {
+    public void setAway(String message)
+    {
         write(new WriteRequest("AWAY :" + message, session));
     }
 
     /**
      * Unset away
      */
-    public void unSetAway() {
+    public void unSetAway()
+    {
         write(new WriteRequest("AWAY", session));
     }
 
     /**
      * Send server version query
      */
-    public void getServerVersion() {
+    public void getServerVersion()
+    {
         write(new WriteRequest("VERSION " + session.getConnection().getHostName(), session));
     }
 
@@ -164,7 +175,8 @@ class RequestGenerator {
      *
      * @param hostPattern
      */
-    public void getServerVersion(String hostPattern) {
+    public void getServerVersion(String hostPattern)
+    {
         write(new WriteRequest("VERSION " + hostPattern, session));
     }
 
@@ -173,7 +185,8 @@ class RequestGenerator {
      *
      * @param nick
      */
-    public void changeNick(String nick) {
+    public void changeNick(String nick)
+    {
         write(new WriteRequest("NICK " + nick, session));
     }
 
@@ -183,7 +196,8 @@ class RequestGenerator {
      * @param target
      * @param mode
      */
-    public void mode(String target, String mode) {
+    public void mode(String target, String mode)
+    {
         write(new WriteRequest("MODE " + target + " " + mode, session));
     }
 
@@ -193,7 +207,8 @@ class RequestGenerator {
      * @param target
      * @param actionText
      */
-    public void action(String target, String actionText) {
+    public void action(String target, String actionText)
+    {
         ctcp(target, actionText);
     }
 
@@ -204,7 +219,8 @@ class RequestGenerator {
      * @param channel
      * @see me.mast3rplan.phantombot.jerklib.Channel#say(String)
      */
-    public void sayChannel(String msg, Channel channel) {
+    public void sayChannel(String msg, Channel channel)
+    {
         write(new WriteRequest(msg, channel, session));
     }
 
@@ -214,7 +230,8 @@ class RequestGenerator {
      * @param nick
      * @param msg
      */
-    public void sayPrivate(String nick, String msg) {
+    public void sayPrivate(String nick, String msg)
+    {
         write(new WriteRequest(msg, session, nick));
     }
 
@@ -223,13 +240,16 @@ class RequestGenerator {
      *
      * @param data
      */
-    public void sayRaw(String data) {
+    public void sayRaw(String data)
+    {
         write(new WriteRequest(data, session));
     }
 
-    private void write(WriteRequest req) {
+    private void write(WriteRequest req)
+    {
         Connection con = session.getConnection();
-        if (con != null) {
+        if (con != null)
+        {
             con.addWriteRequest(req);
         }
     }

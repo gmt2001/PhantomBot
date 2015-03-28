@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.events;
 
 import java.util.List;
@@ -32,22 +29,22 @@ import me.mast3rplan.phantombot.jerklib.Session;
  * @author mohadib
  * @see me.mast3rplan.phantombot.jerklib.events.ModeEvent
  */
-public class ModeEvent extends IRCEvent {
+public class ModeEvent extends IRCEvent
+{
 
     private final ModeType modeType;
     private final String setBy;
     private final Channel channel;
     private final List<ModeAdjustment> modeAdjustments;
 
-    public ModeEvent
-            (
-                    ModeType type,
-                    String rawEventData,
-                    Session session,
-                    List<ModeAdjustment> modeAdjustments,
-                    String setBy,
-                    Channel channel
-            ) {
+    public ModeEvent(
+            ModeType type,
+            String rawEventData,
+            Session session,
+            List<ModeAdjustment> modeAdjustments,
+            String setBy,
+            Channel channel)
+    {
         super(rawEventData, session, Type.MODE_EVENT);
         modeType = type;
         this.modeAdjustments = modeAdjustments;
@@ -55,19 +52,22 @@ public class ModeEvent extends IRCEvent {
         this.channel = channel;
     }
 
-    public enum ModeType {
+    public enum ModeType
+    {
+
         USER,
         CHANNEL
     }
 
     /**
-     * If mode event adjusted a Channel mode
-     * then the Channel effected will be returned
+     * If mode event adjusted a Channel mode then the Channel effected will be
+     * returned
      *
      * @return Channel
      * @see Channel
      */
-    public Channel getChannel() {
+    public Channel getChannel()
+    {
         return channel;
     }
 
@@ -76,7 +76,8 @@ public class ModeEvent extends IRCEvent {
      *
      * @return List of mode adjustments
      */
-    public List<ModeAdjustment> getModeAdjustments() {
+    public List<ModeAdjustment> getModeAdjustments()
+    {
         return modeAdjustments;
     }
 
@@ -85,7 +86,8 @@ public class ModeEvent extends IRCEvent {
      *
      * @return who set the mode
      */
-    public String setBy() {
+    public String setBy()
+    {
         return setBy;
     }
 
@@ -94,7 +96,8 @@ public class ModeEvent extends IRCEvent {
      *
      * @return the ModeType
      */
-    public ModeType getModeType() {
+    public ModeType getModeType()
+    {
         return modeType;
     }
 }

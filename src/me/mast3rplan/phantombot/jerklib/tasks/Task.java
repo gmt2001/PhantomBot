@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.tasks;
 
 import me.mast3rplan.phantombot.jerklib.Session;
@@ -28,20 +25,22 @@ import me.mast3rplan.phantombot.jerklib.events.IRCEvent.Type;
 import me.mast3rplan.phantombot.jerklib.listeners.IRCEventListener;
 
 /**
- * Task is a job that can be ran by the Session when
- * certain types of events are received. This class is
- * very much like IRCEventListener , but it can be
- * associated with Types of events. See Session's onEvent
- * methods for details.
+ * Task is a job that can be ran by the Session when certain types of events are
+ * received. This class is very much like IRCEventListener , but it can be
+ * associated with Types of events. See Session's onEvent methods for details.
  * <p/>
- * <a href="http://me.mast3rplan.phantombot.jerklib.wikia.com/wiki/Tasks">Task Tutorial</a>
+ * <a href="http://me.mast3rplan.phantombot.jerklib.wikia.com/wiki/Tasks">Task
+ * Tutorial</a>
  *
  * @author mohadib
  * @see Session#onEvent(me.mast3rplan.phantombot.jerklib.tasks.Task)
- * @see Session#onEvent(Task, me.mast3rplan.phantombot.jerklib.events.IRCEvent.Type...)
+ * @see Session#onEvent(Task,
+ * me.mast3rplan.phantombot.jerklib.events.IRCEvent.Type...)
  * @see Type
  */
-public interface Task extends IRCEventListener {
+public interface Task extends IRCEventListener
+{
+
     /**
      * Gets the name of a task
      *
@@ -50,8 +49,8 @@ public interface Task extends IRCEventListener {
     public String getName();
 
     /**
-     * Cancel a task. This task will not run again. If the task is currently running
-     * it will finish then not run again.
+     * Cancel a task. This task will not run again. If the task is currently
+     * running it will finish then not run again.
      */
     public void cancel();
 

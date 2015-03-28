@@ -18,14 +18,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.events;
 
 import me.mast3rplan.phantombot.jerklib.Channel;
 import me.mast3rplan.phantombot.jerklib.Session;
-
 
 /**
  * Event fired when someone is kicked from a channel
@@ -33,20 +29,20 @@ import me.mast3rplan.phantombot.jerklib.Session;
  * @author mohadib
  * @see Channel#kick(String, String)
  */
-public class KickEvent extends IRCEvent {
+public class KickEvent extends IRCEvent
+{
 
     private final String byWho, who, message;
     private final Channel channel;
 
-    public KickEvent
-            (
-                    String rawEventData,
-                    Session session,
-                    String byWho,
-                    String who,
-                    String message,
-                    Channel channel
-            ) {
+    public KickEvent(
+            String rawEventData,
+            Session session,
+            String byWho,
+            String who,
+            String message,
+            Channel channel)
+    {
         super(rawEventData, session, Type.KICK_EVENT);
         this.byWho = byWho;
         this.who = who;
@@ -55,12 +51,12 @@ public class KickEvent extends IRCEvent {
     }
 
     /**
-     * Gets the nick of the user who
-     * did the kicking
+     * Gets the nick of the user who did the kicking
      *
      * @return nick
      */
-    public String byWho() {
+    public String byWho()
+    {
         return byWho;
     }
 
@@ -69,7 +65,8 @@ public class KickEvent extends IRCEvent {
      *
      * @return who was kicked
      */
-    public String getWho() {
+    public String getWho()
+    {
         return who;
     }
 
@@ -78,7 +75,8 @@ public class KickEvent extends IRCEvent {
      *
      * @return message
      */
-    public String getMessage() {
+    public String getMessage()
+    {
         return message;
     }
 
@@ -87,7 +85,8 @@ public class KickEvent extends IRCEvent {
      *
      * @return The Channel
      */
-    public Channel getChannel() {
+    public Channel getChannel()
+    {
         return channel;
     }
 }

@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.parsers;
 
 import me.mast3rplan.phantombot.jerklib.Channel;
@@ -31,24 +28,26 @@ import me.mast3rplan.phantombot.jerklib.events.KickEvent;
 /**
  * @author mohadib
  */
-public class KickParser implements CommandParser {
-    public IRCEvent createEvent(IRCEvent event) {
+public class KickParser implements CommandParser
+{
+
+    public IRCEvent createEvent(IRCEvent event)
+    {
         Session session = event.getSession();
         Channel channel = session.getChannel(event.arg(0));
 
         String msg = "";
-        if (event.args().size() == 3) {
+        if (event.args().size() == 3)
+        {
             msg = event.arg(2);
         }
 
-        return new KickEvent
-                (
-                        event.getRawEventData(),
-                        session,
-                        event.getNick(), // byWho
-                        event.arg(1), // victim
-                        msg, // message
-                        channel
-                );
+        return new KickEvent(
+                event.getRawEventData(),
+                session,
+                event.getNick(), // byWho
+                event.arg(1), // victim
+                msg, // message
+                channel);
     }
 }

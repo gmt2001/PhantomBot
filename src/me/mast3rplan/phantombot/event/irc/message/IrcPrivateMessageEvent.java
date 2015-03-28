@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.event.irc.message;
 
 import me.mast3rplan.phantombot.jerklib.Session;
@@ -31,7 +28,9 @@ import me.mast3rplan.phantombot.jerklib.Session;
  */
 public class IrcPrivateMessageEvent extends IrcMessageEvent
 {
-    public IrcPrivateMessageEvent(Session session, String sender, String message) {
+
+    public IrcPrivateMessageEvent(Session session, String sender, String message)
+    {
         super(session, sender, message);
     }
 }

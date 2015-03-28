@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib;
 
 import java.util.*;
@@ -67,7 +64,7 @@ public class Channel
         {
             super();
             chan = c;
-            
+
             Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
         }
 
@@ -150,7 +147,7 @@ public class Channel
         this.session = session;
 
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
-        
+
         sayTimer.schedule(new MessageTask(this), 300, 100);
     }
 
@@ -413,7 +410,7 @@ public class Channel
                     {
                         prioritymessages.add(message.substring(pos, pos + maxlen));
                     }
-                    
+
                     pos += maxlen;
                 }
             }
@@ -436,7 +433,7 @@ public class Channel
                     {
                         messages.add(message.substring(pos, pos + maxlen));
                     }
-                    
+
                     pos += maxlen;
                 }
             }
@@ -506,8 +503,8 @@ public class Channel
     }
 
     /**
-     * Gets a list of nicks for Channel. The list returned has a case insensitive
-     * indexOf() and contains()
+     * Gets a list of nicks for Channel. The list returned has a case
+     * insensitive indexOf() and contains()
      *
      * @return List of nicks
      */
@@ -687,7 +684,7 @@ public class Channel
     {
         return "[Channel: name=" + name + "]";
     }
-    
+
     public void setMsgInterval(long msginterval)
     {
         this.msginterval = msginterval;

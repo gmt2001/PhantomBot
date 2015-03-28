@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.cache;
 
 import com.gmt2001.TwitchAPIv3;
@@ -43,7 +40,7 @@ public class UsernameCache
     private Date timeoutExpire = new Date();
     private Date lastFail = new Date();
     private int numfail = 0;
-    
+
     private UsernameCache()
     {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());

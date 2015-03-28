@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.youtube;
 
 import com.google.gdata.client.youtube.YouTubeQuery;
@@ -39,7 +36,7 @@ public class YoutubeAPI
     public YoutubeAPI(String clientID, String developer_key)
     {
         service = new YouTubeService(clientID, developer_key);
-        
+
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 
@@ -121,9 +118,9 @@ public class YoutubeAPI
             {
                 return null;
             }
-            
+
             keywords = keywords.trim();
-            
+
             YouTubeQuery query = new YouTubeQuery(new URL("http://gdata.youtube.com/feeds/api/videos"));
             query.setOrderBy(YouTubeQuery.OrderBy.RELEVANCE);
             query.setFullTextQuery(keywords);
@@ -136,7 +133,7 @@ public class YoutubeAPI
                 String[] id = entry.getId().split(":");
                 videoInfo.id = id[id.length - 1];
                 videoInfo.length = entry.getMediaGroup().getDuration() / 60.0;
-                
+
                 return videoInfo;
             }
         } catch (Exception e)

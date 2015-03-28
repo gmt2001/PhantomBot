@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.events;
 
 import me.mast3rplan.phantombot.jerklib.Session;
@@ -30,15 +27,19 @@ import me.mast3rplan.phantombot.jerklib.Session;
  *
  * @author mohadib
  */
-public class ConnectionLostEvent extends IRCEvent {
+public class ConnectionLostEvent extends IRCEvent
+{
+
     private Exception e;
 
-    public ConnectionLostEvent(String data, Session session, Exception e) {
+    public ConnectionLostEvent(String data, Session session, Exception e)
+    {
         super(data, session, Type.CONNECTION_LOST);
         this.e = e;
     }
 
-    public Exception getException() {
+    public Exception getException()
+    {
         return e;
     }
 }

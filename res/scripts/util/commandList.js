@@ -165,9 +165,9 @@ $.on('command', function(event) {
             } else {
                 if ($.moduleEnabled($.customCommandList[i - $.commandList.length][0])
                     && (($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("admin") && $.isAdmin(sender))
-                    || ($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("mod") && $.isMod(sender))
-                    || ($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("caster") && $.isCaster(sender))
-                    || $.customCommandList[i - $.commandList.length][2].equalsIgnoreCase(""))) {
+                        || ($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("mod") && $.isMod(sender))
+                        || ($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("caster") && $.isCaster(sender))
+                        || $.customCommandList[i - $.commandList.length][2].equalsIgnoreCase(""))) {
                     length++;
                 }
             }
@@ -213,9 +213,9 @@ $.on('command', function(event) {
             } else {
                 if (!$.moduleEnabled($.customCommandList[i - $.commandList.length][0])
                     || !(($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("admin") && $.isAdmin(sender))
-                    || ($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("mod") && $.isMod(sender))
-                    || ($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("caster") && $.isCaster(sender))
-                    || $.customCommandList[i - $.commandList.length][2].equalsIgnoreCase(""))) {
+                        || ($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("mod") && $.isMod(sender))
+                        || ($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("caster") && $.isCaster(sender))
+                        || $.customCommandList[i - $.commandList.length][2].equalsIgnoreCase(""))) {
                     start++;
                 }
             }
@@ -231,9 +231,9 @@ $.on('command', function(event) {
             } else {
                 if (!$.moduleEnabled($.customCommandList[i - $.commandList.length][0])
                     || !(($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("admin") && $.isAdmin(sender))
-                    || ($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("mod") && $.isMod(sender))
-                    || ($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("caster") && $.isCaster(sender))
-                    || $.customCommandList[i - $.commandList.length][2].equalsIgnoreCase(""))) {
+                        || ($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("mod") && $.isMod(sender))
+                        || ($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("caster") && $.isCaster(sender))
+                        || $.customCommandList[i - $.commandList.length][2].equalsIgnoreCase(""))) {
                     continue;
                 }
             }

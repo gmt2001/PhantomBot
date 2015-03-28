@@ -18,19 +18,20 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.script;
 
-public abstract class ScriptDestroyable<T> {
+public abstract class ScriptDestroyable<T>
+{
+
     private T object;
 
-    protected ScriptDestroyable(T object) {
+    protected ScriptDestroyable(T object)
+    {
         this.object = object;
     }
 
-    public void destroy() {
+    public void destroy()
+    {
         this.destroy(object);
     }
 

@@ -18,13 +18,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.event.twitch.follower;
 
-public class TwitchUnfollowEvent extends TwitchFollowerEvent {
-    public TwitchUnfollowEvent(String follower) {
+public class TwitchUnfollowEvent extends TwitchFollowerEvent
+{
+
+    public TwitchUnfollowEvent(String follower)
+    {
         super(follower, Type.UNFOLLOW);
     }
 }

@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package com.gmt2001;
 
 import java.awt.event.ActionEvent;
@@ -59,7 +56,7 @@ public class IniStore implements ActionListener
     {
         t = new Timer((int) saveInterval, this);
         t2 = new Timer(1, this);
-        
+
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
         t.start();
@@ -164,7 +161,7 @@ public class IniStore implements ActionListener
     public void SaveChangedNow()
     {
         nextSave.setTime(new Date().getTime() - 1);
-        
+
         SaveAll(false);
     }
 
@@ -178,7 +175,7 @@ public class IniStore implements ActionListener
             {
                 n = files.keySet().toArray();
             }
-            
+
             com.gmt2001.Console.out.println(">>>Saving " + n.length + " files");
 
             for (int i = 0; i < n.length; i++)

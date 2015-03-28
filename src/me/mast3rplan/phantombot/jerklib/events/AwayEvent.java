@@ -18,53 +18,49 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.events;
 
 import me.mast3rplan.phantombot.jerklib.Session;
 
 /**
- * <p>
- * This is an event that is fired under three conditions:
- * <ul>
- * <li>Sending a message to a user who is marked as away.</li>
- * <li>User of the lib marks self as away.</li>
- * <li>User of the lib returns from away.</li>
- * </ul>
- * You can determine under which circumstance the event was fired by looking at
- * the {@link me.mast3rplan.phantombot.jerklib.events.AwayEvent.EventType}.</p>
+ * <p> This is an event that is fired under three conditions: <ul> <li>Sending a
+ * message to a user who is marked as away.</li> <li>User of the lib marks self
+ * as away.</li> <li>User of the lib returns from away.</li> </ul> You can
+ * determine under which circumstance the event was fired by looking at the
+ * {@link me.mast3rplan.phantombot.jerklib.events.AwayEvent.EventType}.</p>
  *
  * @author <a href="mailto:robby.oconnor@gmail.com">Robert O'Connor<a/>
  */
-public class AwayEvent extends IRCEvent {
+public class AwayEvent extends IRCEvent
+{
+
     private final boolean isAway, isYou;
     private final String awayMessage, nick;
     private EventType eventType;
 
     /**
-     * An enum to determine the type of event that was fired.
-     * <br>WENT_AWAY is when user of the lib goes away.<br>
-     * RETURNED_FROM_AWAY is when user of the lib returns from an away state.<br>
-     * USER_IS_AWAY is when some other user goes away<br>
+     * An enum to determine the type of event that was fired. <br>WENT_AWAY is
+     * when user of the lib goes away.<br> RETURNED_FROM_AWAY is when user of
+     * the lib returns from an away state.<br> USER_IS_AWAY is when some other
+     * user goes away<br>
      */
-    public enum EventType {
+    public enum EventType
+    {
+
         WENT_AWAY,
         RETURNED_FROM_AWAY,
         USER_IS_AWAY
     }
 
-    public AwayEvent
-            (
-                    String awayMessage,
-                    EventType eventType,
-                    boolean away,
-                    boolean you,
-                    String nick,
-                    String rawEventData,
-                    Session session
-            ) {
+    public AwayEvent(
+            String awayMessage,
+            EventType eventType,
+            boolean away,
+            boolean you,
+            String nick,
+            String rawEventData,
+            Session session)
+    {
         super(rawEventData, session, Type.AWAY_EVENT);
         this.awayMessage = awayMessage;
         this.eventType = eventType;
@@ -73,13 +69,14 @@ public class AwayEvent extends IRCEvent {
         this.nick = nick;
     }
 
-
     /**
-     * Returns the away message or an empty String if it was user of lib who caused the event to fire.
+     * Returns the away message or an empty String if it was user of lib who
+     * caused the event to fire.
      *
      * @return the away message
      */
-    public String getAwayMessage() {
+    public String getAwayMessage()
+    {
         return awayMessage;
     }
 
@@ -88,7 +85,8 @@ public class AwayEvent extends IRCEvent {
      *
      * @return if we're away or not.
      */
-    public boolean isAway() {
+    public boolean isAway()
+    {
         return isAway;
     }
 
@@ -97,7 +95,8 @@ public class AwayEvent extends IRCEvent {
      *
      * @return if it was us or not.
      */
-    public boolean isYou() {
+    public boolean isYou()
+    {
         return isYou;
     }
 
@@ -106,7 +105,8 @@ public class AwayEvent extends IRCEvent {
      *
      * @return the nick of the user who caused the event to fire.
      */
-    public String getNick() {
+    public String getNick()
+    {
         return nick;
     }
 
@@ -116,7 +116,8 @@ public class AwayEvent extends IRCEvent {
      * @return the type of event that was fired.
      * @see me.mast3rplan.phantombot.jerklib.events.AwayEvent.EventType
      */
-    public EventType getEventType() {
+    public EventType getEventType()
+    {
         return eventType;
     }
 }

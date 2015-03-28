@@ -18,31 +18,34 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.parsers;
 
 import me.mast3rplan.phantombot.jerklib.events.AwayEvent;
 import me.mast3rplan.phantombot.jerklib.events.AwayEvent.EventType;
 import me.mast3rplan.phantombot.jerklib.events.IRCEvent;
 
-public class AwayParser implements CommandParser {
-    public IRCEvent createEvent(IRCEvent event) {
+public class AwayParser implements CommandParser
+{
 
-		/*
+    public IRCEvent createEvent(IRCEvent event)
+    {
+
+        /*
          * :swiftco.wa.us.dal.net 306 mohadib__ :You have been marked as being away
-		 * :swiftco.wa.us.dal.net 305 mohadib__ :You are no longer marked as being away 
-		 * :card.freenode.net 301 r0bby_ r0bby :foo
-		 * :calvino.freenode.net 301 jetirc1 jetirc :gone 
-		 * :jetirc!jetirc@745d63.host 301 jetirc1 :gone for now
-		 */
+         * :swiftco.wa.us.dal.net 305 mohadib__ :You are no longer marked as being away 
+         * :card.freenode.net 301 r0bby_ r0bby :foo
+         * :calvino.freenode.net 301 jetirc1 jetirc :gone 
+         * :jetirc!jetirc@745d63.host 301 jetirc1 :gone for now
+         */
 
-        switch (event.numeric()) {
-            case 305: {
+        switch (event.numeric())
+        {
+            case 305:
+            {
                 return new AwayEvent("", EventType.RETURNED_FROM_AWAY, false, true, event.arg(0), event.getRawEventData(), event.getSession());
             }
-            case 306: {
+            case 306:
+            {
                 return new AwayEvent("", EventType.WENT_AWAY, true, true, event.arg(0), event.getRawEventData(), event.getSession());
             }
             default:

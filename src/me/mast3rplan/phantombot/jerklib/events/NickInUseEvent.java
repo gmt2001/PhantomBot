@@ -18,24 +18,23 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.events;
 
 import me.mast3rplan.phantombot.jerklib.Session;
 
 /**
- * NickInUseEvent is fired when me.mast3rplan.phantombot.jerklib is trying to use a nick
- * that is in use on a given server.
+ * NickInUseEvent is fired when me.mast3rplan.phantombot.jerklib is trying to
+ * use a nick that is in use on a given server.
  *
  * @author mohadib
  */
-public class NickInUseEvent extends IRCEvent {
+public class NickInUseEvent extends IRCEvent
+{
 
     private final String inUseNick;
 
-    public NickInUseEvent(String inUseNick, String rawEventData, Session session) {
+    public NickInUseEvent(String inUseNick, String rawEventData, Session session)
+    {
         super(rawEventData, session, Type.NICK_IN_USE);
         this.inUseNick = inUseNick;
     }
@@ -45,7 +44,8 @@ public class NickInUseEvent extends IRCEvent {
      *
      * @return nick that is in use.
      */
-    public String getInUseNick() {
+    public String getInUseNick()
+    {
         return inUseNick;
     }
 }

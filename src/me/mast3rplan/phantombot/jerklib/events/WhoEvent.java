@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.events;
 
 import me.mast3rplan.phantombot.jerklib.Session;
@@ -31,25 +28,26 @@ import me.mast3rplan.phantombot.jerklib.Session;
  * @author <a href="mailto:robby.oconnor@gmail.com">Robert O'Connor</a>
  * @see me.mast3rplan.phantombot.jerklib.events.WhoEvent
  */
-public class WhoEvent extends IRCEvent {
+public class WhoEvent extends IRCEvent
+{
+
     private final String nick, userName, realName, hostName, channel;
     private final String serverName;
     private final boolean isAway;
     private final int hopCount;
 
-    public WhoEvent
-            (
-                    String channel,
-                    int hopCount,
-                    String hostName,
-                    boolean away,
-                    String nick,
-                    String rawEventData,
-                    String realName,
-                    String serverName,
-                    Session session,
-                    String userName
-            ) {
+    public WhoEvent(
+            String channel,
+            int hopCount,
+            String hostName,
+            boolean away,
+            String nick,
+            String rawEventData,
+            String realName,
+            String serverName,
+            Session session,
+            String userName)
+    {
         super(rawEventData, session, Type.WHO_EVENT);
         this.channel = channel;
         this.hopCount = hopCount;
@@ -66,7 +64,8 @@ public class WhoEvent extends IRCEvent {
      *
      * @return the nick of the user.
      */
-    public String getNick() {
+    public String getNick()
+    {
         return nick;
     }
 
@@ -75,7 +74,8 @@ public class WhoEvent extends IRCEvent {
      *
      * @return the username
      */
-    public String getUserName() {
+    public String getUserName()
+    {
         return userName;
     }
 
@@ -84,7 +84,8 @@ public class WhoEvent extends IRCEvent {
      *
      * @return the hostname
      */
-    public String getHostName() {
+    public String getHostName()
+    {
         return hostName;
     }
 
@@ -93,7 +94,8 @@ public class WhoEvent extends IRCEvent {
      *
      * @return the real name
      */
-    public String getRealName() {
+    public String getRealName()
+    {
         return realName;
     }
 
@@ -102,7 +104,8 @@ public class WhoEvent extends IRCEvent {
      *
      * @return the channel or an empty String
      */
-    public String getChannel() {
+    public String getChannel()
+    {
         return channel.equals("*") ? "" : channel;
     }
 
@@ -111,27 +114,28 @@ public class WhoEvent extends IRCEvent {
      *
      * @return whether or not the user is away.
      */
-    public boolean isAway() {
+    public boolean isAway()
+    {
         return isAway;
     }
-
 
     /**
      * Returns the number of hops between you and the user.
      *
      * @return the hop count
      */
-    public int getHopCount() {
+    public int getHopCount()
+    {
         return hopCount;
     }
-
 
     /**
      * Get the server the user is on.
      *
      * @return the server.
      */
-    public String getServerName() {
+    public String getServerName()
+    {
         return serverName;
     }
 }

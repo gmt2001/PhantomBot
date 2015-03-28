@@ -18,13 +18,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.event.twitch.host;
 
-public class TwitchUnhostedEvent extends TwitchHostEvent {
-    public TwitchUnhostedEvent(String hoster) {
+public class TwitchUnhostedEvent extends TwitchHostEvent
+{
+
+    public TwitchUnhostedEvent(String hoster)
+    {
         super(hoster, Type.UNHOST);
     }
 }

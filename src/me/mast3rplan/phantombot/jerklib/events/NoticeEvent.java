@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.events;
 
 import me.mast3rplan.phantombot.jerklib.Channel;
@@ -31,12 +28,14 @@ import me.mast3rplan.phantombot.jerklib.Session;
  *
  * @author mohadib
  */
-public class NoticeEvent extends IRCEvent {
+public class NoticeEvent extends IRCEvent
+{
 
     private final String message, toWho, byWho;
     private final Channel channel;
 
-    public NoticeEvent(String rawEventData, Session session, String message, String toWho, String byWho, Channel channel) {
+    public NoticeEvent(String rawEventData, Session session, String message, String toWho, String byWho, Channel channel)
+    {
         super(rawEventData, session, Type.NOTICE);
         this.message = message;
         this.toWho = toWho;
@@ -49,7 +48,8 @@ public class NoticeEvent extends IRCEvent {
      *
      * @return notice message
      */
-    public String getNoticeMessage() {
+    public String getNoticeMessage()
+    {
         return message;
     }
 
@@ -58,7 +58,8 @@ public class NoticeEvent extends IRCEvent {
      *
      * @return who
      */
-    public String byWho() {
+    public String byWho()
+    {
         return byWho;
     }
 
@@ -68,7 +69,8 @@ public class NoticeEvent extends IRCEvent {
      * @return Channel
      * @see Channel
      */
-    public Channel getChannel() {
+    public Channel getChannel()
+    {
         return channel;
     }
 
@@ -77,8 +79,8 @@ public class NoticeEvent extends IRCEvent {
      *
      * @return who
      */
-    public String toWho() {
+    public String toWho()
+    {
         return toWho;
     }
-
 }

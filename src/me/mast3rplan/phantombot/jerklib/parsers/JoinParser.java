@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.parsers;
 
 import me.mast3rplan.phantombot.jerklib.Channel;
@@ -32,15 +29,17 @@ import me.mast3rplan.phantombot.jerklib.events.JoinEvent;
 /**
  * @author mohadib
  */
-public class JoinParser implements CommandParser {
+public class JoinParser implements CommandParser
+{
 
     // :r0bby!n=wakawaka@guifications/user/r0bby JOIN :#me.mast3rplan.phantombot.jerklib
     // :mohadib_!~mohadib@68.35.11.181 JOIN &test
-
-    public IRCEvent createEvent(IRCEvent event) {
+    public IRCEvent createEvent(IRCEvent event)
+    {
         Session session = event.getSession();
 
-        if (!event.getNick().equalsIgnoreCase(event.getSession().getNick())) {
+        if (!event.getNick().equalsIgnoreCase(event.getSession().getNick()))
+        {
             //someone else joined a channel we are in
             return new JoinEvent(event.getRawEventData(), session, session.getChannel(event.arg(0)));
         }

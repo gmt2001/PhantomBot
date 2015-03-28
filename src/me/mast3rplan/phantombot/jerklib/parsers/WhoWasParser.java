@@ -18,27 +18,24 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.parsers;
 
 import me.mast3rplan.phantombot.jerklib.events.IRCEvent;
 import me.mast3rplan.phantombot.jerklib.events.WhowasEvent;
 
-public class WhoWasParser implements CommandParser {
+public class WhoWasParser implements CommandParser
+{
 
     /* :kubrick.freenode.net 314 scripy1 ty n=ty 71.237.206.180 * :ty
      "<nick> <user> <host> * :<real name>" */
-    public IRCEvent createEvent(IRCEvent event) {
-        return new WhowasEvent
-                (
-                        event.arg(3),
-                        event.arg(2),
-                        event.arg(1),
-                        event.arg(5),
-                        event.getRawEventData(),
-                        event.getSession()
-                );
+    public IRCEvent createEvent(IRCEvent event)
+    {
+        return new WhowasEvent(
+                event.arg(3),
+                event.arg(2),
+                event.arg(1),
+                event.arg(5),
+                event.getRawEventData(),
+                event.getSession());
     }
 }

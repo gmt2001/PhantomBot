@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.util;
 
 import java.net.InetAddress;
@@ -31,20 +28,25 @@ import java.net.UnknownHostException;
  *
  * @author Andres N. Kievsky
  */
-public class InetAddressUtils {
+public class InetAddressUtils
+{
     /*
      * Do not allow instantiation
      */
-    private InetAddressUtils() {
+
+    private InetAddressUtils()
+    {
     }
 
     /**
      * Given an ip in a numeric, string format, return the InetAddress.
      *
      * @param ip the ip address in string format (such as 3232235780)
-     * @return the InetAddress object (such as the object representing 192.168.1.4)
+     * @return the InetAddress object (such as the object representing
+     * 192.168.1.4)
      */
-    public static InetAddress parseNumericIp(String ip) {
+    public static InetAddress parseNumericIp(String ip)
+    {
         return parseNumericIp(Long.parseLong(ip));
     }
 
@@ -52,12 +54,16 @@ public class InetAddressUtils {
      * Given an ip in numeric format, return the InetAddress.
      *
      * @param ip the ip address in long (such as 3232235780)
-     * @return the InetAddress object (such as the object representing 192.168.1.4)
+     * @return the InetAddress object (such as the object representing
+     * 192.168.1.4)
      */
-    public static InetAddress parseNumericIp(long ip) {
-        try {
+    public static InetAddress parseNumericIp(long ip)
+    {
+        try
+        {
             return InetAddress.getByAddress(numericIpToByteArray(ip));
-        } catch (UnknownHostException e) {
+        } catch (UnknownHostException e)
+        {
             return null;
         }
     }
@@ -69,7 +75,8 @@ public class InetAddressUtils {
      * @param ip the ip address in long (such as 3232235780)
      * @return the byte array.
      */
-    public static byte[] numericIpToByteArray(long ip) {
+    public static byte[] numericIpToByteArray(long ip)
+    {
         byte[] ipArray = new byte[4];
         ipArray[3] = (byte) (ip & 0xff);
         ipArray[2] = (byte) ((ip >> 8) & 0xff);
@@ -77,5 +84,4 @@ public class InetAddressUtils {
         ipArray[0] = (byte) ((ip >> 24) & 0xff);
         return ipArray;
     }
-
 }

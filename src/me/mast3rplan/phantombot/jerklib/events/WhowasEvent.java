@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.events;
 
 import me.mast3rplan.phantombot.jerklib.Session;
@@ -30,18 +27,19 @@ import me.mast3rplan.phantombot.jerklib.Session;
  *
  * @author mohadib
  */
-public class WhowasEvent extends IRCEvent {
+public class WhowasEvent extends IRCEvent
+{
+
     private final String hostName, userName, nick, realName;
 
-    public WhowasEvent
-            (
-                    String hostName,
-                    String userName,
-                    String nick,
-                    String realName,
-                    String rawEventData,
-                    Session session
-            ) {
+    public WhowasEvent(
+            String hostName,
+            String userName,
+            String nick,
+            String realName,
+            String rawEventData,
+            Session session)
+    {
         super(rawEventData, session, Type.WHOWAS_EVENT);
         this.hostName = hostName;
         this.userName = userName;
@@ -54,7 +52,8 @@ public class WhowasEvent extends IRCEvent {
      *
      * @return hostname
      */
-    public String getHostName() {
+    public String getHostName()
+    {
         return hostName;
     }
 
@@ -63,7 +62,8 @@ public class WhowasEvent extends IRCEvent {
      *
      * @return nick who was event is about
      */
-    public String getNick() {
+    public String getNick()
+    {
         return nick;
     }
 
@@ -72,7 +72,8 @@ public class WhowasEvent extends IRCEvent {
      *
      * @return realname
      */
-    public String getRealName() {
+    public String getRealName()
+    {
         return realName;
     }
 
@@ -81,7 +82,8 @@ public class WhowasEvent extends IRCEvent {
      *
      * @return username
      */
-    public String getUserName() {
+    public String getUserName()
+    {
         return userName;
     }
 }

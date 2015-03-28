@@ -18,20 +18,20 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.event.musicplayer;
 
-public class MusicPlayerCurrentVolumeEvent extends MusicPlayerEvent {
+public class MusicPlayerCurrentVolumeEvent extends MusicPlayerEvent
+{
 
     private double volume;
 
-    public MusicPlayerCurrentVolumeEvent(double volume) {
+    public MusicPlayerCurrentVolumeEvent(double volume)
+    {
         this.volume = volume;
     }
 
-    public double getVolume() {
+    public double getVolume()
+    {
         return volume;
     }
 }

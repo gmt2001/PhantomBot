@@ -18,10 +18,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package com.gmt2001;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -61,7 +59,7 @@ public class TwitchAPIv3
     {
         return instance;
     }
-    
+
     private TwitchAPIv3()
     {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
@@ -545,7 +543,7 @@ public class TwitchAPIv3
     {
         return GetData(request_type.GET, "https://chatdepot.twitch.tv/rooms/" + channel + "/hosts", false);
     }
-    
+
     /**
      * Checks if a user is following a channel
      *

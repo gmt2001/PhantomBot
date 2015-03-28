@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.events;
 
 import me.mast3rplan.phantombot.jerklib.Channel;
@@ -31,12 +28,14 @@ import me.mast3rplan.phantombot.jerklib.Session;
  *
  * @author mohadib
  */
-public class PartEvent extends IRCEvent {
+public class PartEvent extends IRCEvent
+{
 
     private final String who, partMessage;
     private final Channel channel;
 
-    public PartEvent(String rawEventData, Session session, String who, Channel channel, String partMessage) {
+    public PartEvent(String rawEventData, Session session, String who, Channel channel, String partMessage)
+    {
         super(rawEventData, session, Type.PART);
         this.channel = channel;
         this.who = who;
@@ -48,7 +47,8 @@ public class PartEvent extends IRCEvent {
      *
      * @return nick of parted
      */
-    public final String getNick() {
+    public final String getNick()
+    {
         return who;
     }
 
@@ -57,7 +57,8 @@ public class PartEvent extends IRCEvent {
      *
      * @return name of channel parted
      */
-    public final String getChannelName() {
+    public final String getChannelName()
+    {
         return channel.getName();
     }
 
@@ -67,7 +68,8 @@ public class PartEvent extends IRCEvent {
      * @return Channel object parted
      * @see Channel
      */
-    public final Channel getChannel() {
+    public final Channel getChannel()
+    {
         return channel;
     }
 
@@ -76,8 +78,8 @@ public class PartEvent extends IRCEvent {
      *
      * @return part message
      */
-    public final String getPartMessage() {
+    public final String getPartMessage()
+    {
         return this.partMessage;
     }
-
 }

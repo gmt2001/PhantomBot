@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib;
 
 import java.io.IOException;
@@ -83,7 +80,7 @@ class Connection
         this.manager = manager;
         this.socChannel = socChannel;
         this.session = session;
-        
+
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 

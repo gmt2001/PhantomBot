@@ -24,10 +24,10 @@ $.on('command', function (event) {
                 username = $.username.resolve(username);
                 sender = $.username.resolve(sender);
                 
-               self.push(sender + " has somehow managed to kill himself.");
-               self.push(sender + " exploded.");
-               self.push(sender + " imploded.");
-               self.push(sender + " figured out how to divide by 0!");
+                self.push(sender + " has somehow managed to kill himself.");
+                self.push(sender + " exploded.");
+                self.push(sender + " imploded.");
+                self.push(sender + " figured out how to divide by 0!");
             }
  
             if (username.equalsIgnoreCase($.botname)) {

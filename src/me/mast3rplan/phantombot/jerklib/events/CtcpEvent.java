@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.events;
 
 import me.mast3rplan.phantombot.jerklib.Channel;
@@ -31,19 +28,19 @@ import me.mast3rplan.phantombot.jerklib.Session;
  *
  * @author mohadib
  */
-public class CtcpEvent extends MessageEvent {
+public class CtcpEvent extends MessageEvent
+{
 
     private String ctcpString, message;
     private Channel channel;
 
-    public CtcpEvent
-            (
-                    String ctcpString,
-                    String message,
-                    String rawEventData,
-                    Channel channel,
-                    Session session
-            ) {
+    public CtcpEvent(
+            String ctcpString,
+            String message,
+            String rawEventData,
+            Channel channel,
+            Session session)
+    {
         super(channel, message, rawEventData, session, Type.CTCP_EVENT);
         this.ctcpString = ctcpString;
         this.message = message;
@@ -55,14 +52,16 @@ public class CtcpEvent extends MessageEvent {
      *
      * @return ctcp query
      */
-    public String getCtcpString() {
+    public String getCtcpString()
+    {
         return ctcpString;
     }
 
     /* (non-Javadoc)
      * @see me.mast3rplan.phantombot.jerklib.events.IrcMessageEvent#getChannel()
      */
-    public Channel getChannel() {
+    public Channel getChannel()
+    {
         return channel;
     }
 
@@ -70,7 +69,8 @@ public class CtcpEvent extends MessageEvent {
     /* (non-Javadoc)
      * @see me.mast3rplan.phantombot.jerklib.events.IrcMessageEvent#getMessage()
      */
-    public String getMessage() {
+    public String getMessage()
+    {
         return message;
     }
 }

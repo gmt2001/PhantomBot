@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.parsers;
 
 import me.mast3rplan.phantombot.jerklib.Channel;
@@ -30,17 +27,18 @@ import me.mast3rplan.phantombot.jerklib.events.QuitEvent;
 
 import java.util.List;
 
-public class QuitParser implements CommandParser {
-    public QuitEvent createEvent(IRCEvent event) {
+public class QuitParser implements CommandParser
+{
+
+    public QuitEvent createEvent(IRCEvent event)
+    {
         Session session = event.getSession();
         String nick = event.getNick();
         List<Channel> chanList = event.getSession().removeNickFromAllChannels(nick);
-        return new QuitEvent
-                (
-                        event.getRawEventData(),
-                        session,
-                        event.arg(0), // message
-                        chanList
-                );
+        return new QuitEvent(
+                event.getRawEventData(),
+                session,
+                event.arg(0), // message
+                chanList);
     }
 }

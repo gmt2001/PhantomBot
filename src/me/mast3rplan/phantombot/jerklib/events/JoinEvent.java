@@ -18,30 +18,28 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.events;
 
 import me.mast3rplan.phantombot.jerklib.Channel;
 import me.mast3rplan.phantombot.jerklib.Session;
 
 /**
- * JoinIRCEvent is the event that will be dispatched when someone joins a channel
+ * JoinIRCEvent is the event that will be dispatched when someone joins a
+ * channel
  *
  * @author mohadib
  */
-public class JoinEvent extends IRCEvent {
+public class JoinEvent extends IRCEvent
+{
 
     private final String channelName;
     private final Channel chan;
 
-    public JoinEvent
-            (
-                    String rawEventData,
-                    Session session,
-                    Channel chan
-            ) {
+    public JoinEvent(
+            String rawEventData,
+            Session session,
+            Channel chan)
+    {
         super(rawEventData, session, Type.JOIN);
         this.channelName = chan.getName();
         this.chan = chan;
@@ -52,7 +50,8 @@ public class JoinEvent extends IRCEvent {
      *
      * @return Name of channel
      */
-    public final String getChannelName() {
+    public final String getChannelName()
+    {
         return channelName;
     }
 
@@ -62,7 +61,8 @@ public class JoinEvent extends IRCEvent {
      * @return The Channel object
      * @see Channel
      */
-    public final Channel getChannel() {
+    public final Channel getChannel()
+    {
         return chan;
     }
 }

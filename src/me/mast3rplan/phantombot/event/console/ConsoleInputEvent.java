@@ -18,20 +18,20 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.event.console;
 
-public class ConsoleInputEvent extends ConsoleEvent {
+public class ConsoleInputEvent extends ConsoleEvent
+{
 
     String msg;
 
-    public ConsoleInputEvent(String msg) {
+    public ConsoleInputEvent(String msg)
+    {
         this.msg = msg;
     }
 
-    public String getMsg() {
+    public String getMsg()
+    {
         return msg;
     }
 }

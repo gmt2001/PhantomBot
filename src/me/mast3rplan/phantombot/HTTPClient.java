@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot;
 
 import java.io.IOException;
@@ -31,13 +28,14 @@ import java.net.URL;
  *
  * @author jesse
  */
-public class HTTPClient {
-    
+public class HTTPClient
+{
+
     final static String version = "http/1.1";
-    
-    static HTTPResponse getResource (String resource) throws MalformedURLException, IOException {
-        URL url = new URL (resource);
-        return new HTTPResponse (url.getHost (), "GET " + url.getPath () + " " + version + "\nHost: " + url.getHost () + "\n\n");
+
+    static HTTPResponse getResource(String resource) throws MalformedURLException, IOException
+    {
+        URL url = new URL(resource);
+        return new HTTPResponse(url.getHost(), "GET " + url.getPath() + " " + version + "\nHost: " + url.getHost() + "\n\n");
     }
-    
 }

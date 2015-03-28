@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.util;
 
 import me.mast3rplan.phantombot.jerklib.ModeAdjustment;
@@ -36,12 +33,13 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * A Task to identify with NickServ and then join a list of channels names.
- * Once the Task has succsessfully identifed with NickServ
- * TaskCompletion Listeners will be notified with a true Boolean object.
+ * A Task to identify with NickServ and then join a list of channels names. Once
+ * the Task has succsessfully identifed with NickServ TaskCompletion Listeners
+ * will be notified with a true Boolean object.
  * <p/>
  * If 40 seconds passes and the mode event to indicate ident success has not
- * been received, TaskCompletion Listeners will be notified with a false Boolean object.
+ * been received, TaskCompletion Listeners will be notified with a false Boolean
+ * object.
  * <p/>
  * This plugin assumes Nickserv responds to the following syntax
  * <p/>
@@ -51,7 +49,8 @@ import java.util.TimerTask;
  * <p/>
  * Example Code:
  * <p/>
- * <pre>
+ * <
+ * pre>
  * final NickServAuthPlugin auth = new NickServAuthPlugin
  * (
  * "letmein", //password
@@ -78,10 +77,13 @@ import java.util.TimerTask;
  * </pre>
  *
  * @author mohadib
- * @see Session#onEvent(me.mast3rplan.phantombot.jerklib.tasks.Task, me.mast3rplan.phantombot.jerklib.events.IRCEvent.Type...)
+ * @see Session#onEvent(me.mast3rplan.phantombot.jerklib.tasks.Task,
+ * me.mast3rplan.phantombot.jerklib.events.IRCEvent.Type...)
  * @see Type
  */
-public class NickServAuthPlugin extends TaskImpl {
+public class NickServAuthPlugin extends TaskImpl
+{
+
     private final Session session;
     private final String pass;
     private final char identMode;
@@ -89,18 +91,17 @@ public class NickServAuthPlugin extends TaskImpl {
     private boolean authed;
 
     /**
-     * @param pass      - nickserv password
+     * @param pass - nickserv password
      * @param identMode - mode that indicates ident success
-     * @param session   - Session this Task is attatched to
-     * @param channels  - A list of channel names to join on ident success
+     * @param session - Session this Task is attatched to
+     * @param channels - A list of channel names to join on ident success
      */
-    public NickServAuthPlugin
-    (
+    public NickServAuthPlugin(
             String pass,
             char identMode,
             Session session,
-            List<String> channels
-    ) {
+            List<String> channels)
+    {
         super("NickServAuth");
         this.pass = pass;
         this.identMode = identMode;
@@ -113,16 +114,26 @@ public class NickServAuthPlugin extends TaskImpl {
     /* (non-Javadoc)
      * @see me.mast3rplan.phantombot.jerklib.listeners.IRCEventListener#receiveEvent(me.mast3rplan.phantombot.jerklib.events.IrcEvent)
      */
-    public void receiveEvent(IRCEvent e) {
-        if (e.getType() == Type.CONNECT_COMPLETE) connectionComplete(e);
-        else if (e.getType() == Type.MODE_EVENT) mode(e);
+    public void receiveEvent(IRCEvent e)
+    {
+        if (e.getType() == Type.CONNECT_COMPLETE)
+        {
+            connectionComplete(e);
+        } else if (e.getType() == Type.MODE_EVENT)
+        {
+            mode(e);
+        }
     }
 
-    private void mode(IRCEvent e) {
+    private void mode(IRCEvent e)
+    {
         ModeEvent me = (ModeEvent) e;
-        if (me.getModeType() == ModeEvent.ModeType.USER) {
-            for (ModeAdjustment ma : me.getModeAdjustments()) {
-                if (ma.getMode() == identMode && ma.getAction() == Action.PLUS) {
+        if (me.getModeType() == ModeEvent.ModeType.USER)
+        {
+            for (ModeAdjustment ma : me.getModeAdjustments())
+            {
+                if (ma.getMode() == identMode && ma.getAction() == Action.PLUS)
+                {
                     authed = true;
                     joinChannels();
                     taskComplete(new Boolean(true));
@@ -131,13 +142,17 @@ public class NickServAuthPlugin extends TaskImpl {
         }
     }
 
-    private void connectionComplete(IRCEvent e) {
+    private void connectionComplete(IRCEvent e)
+    {
         authed = false;
         e.getSession().sayPrivate("nickserv", "identify " + pass);
         final Timer t = new Timer();
-        t.schedule(new TimerTask() {
-            public void run() {
-                if (!authed) {
+        t.schedule(new TimerTask()
+        {
+            public void run()
+            {
+                if (!authed)
+                {
                     taskComplete(new Boolean(false));
                 }
                 this.cancel();
@@ -146,10 +161,11 @@ public class NickServAuthPlugin extends TaskImpl {
         }, 40000);
     }
 
-    private void joinChannels() {
-        for (String name : channels) {
+    private void joinChannels()
+    {
+        for (String name : channels)
+        {
             session.join(name);
         }
     }
-
 }

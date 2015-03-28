@@ -18,13 +18,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.script;
 
 import me.mast3rplan.phantombot.event.Event;
 
-public interface ScriptEventHandler {
+public interface ScriptEventHandler
+{
+
     public void handle(Event event);
 }

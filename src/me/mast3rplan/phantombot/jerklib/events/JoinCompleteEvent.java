@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.events;
 
 import me.mast3rplan.phantombot.jerklib.Channel;
@@ -31,10 +28,13 @@ import me.mast3rplan.phantombot.jerklib.Session;
  *
  * @author mohadib
  */
-public class JoinCompleteEvent extends IRCEvent {
+public class JoinCompleteEvent extends IRCEvent
+{
+
     private final Channel channel;
 
-    public JoinCompleteEvent(String rawEventData, Session session, Channel channel) {
+    public JoinCompleteEvent(String rawEventData, Session session, Channel channel)
+    {
         super(rawEventData, session, Type.JOIN_COMPLETE);
         this.channel = channel;
     }
@@ -45,8 +45,8 @@ public class JoinCompleteEvent extends IRCEvent {
      * @return <code>Channel</code>
      * @see Channel
      */
-    public final Channel getChannel() {
+    public final Channel getChannel()
+    {
         return channel;
     }
-
 }

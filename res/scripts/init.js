@@ -10,7 +10,7 @@ $.println = function(o) {
 };
 
 function isNumeric(num){
-  return !isNaN(num);
+    return !isNaN(num);
 }
 
 var blackList = ["getClass", "equals", "notify", "class", "hashCode", "toString", "wait", "notifyAll"];
