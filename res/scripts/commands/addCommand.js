@@ -265,7 +265,7 @@ $.on('command', function(event) {
         
         for (var i = 0; i < args.length; i++) {
             while (messageCommand.contains('(' + (i + 1) + ')')) {
-                messageCommand = messageCommand.replace('(' + (i + 1) + ')', args[i]);
+                messageCommand = messageCommand.replace('(' + (i + 1) + ')', $.username.resolve(args[i]));
             }
         }
         
