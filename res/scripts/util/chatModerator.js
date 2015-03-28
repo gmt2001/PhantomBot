@@ -10,6 +10,7 @@ var capstriggerratio = parseFloat($.inidb.get("settings", "capstriggerratio"));
 var capstriggerlength = parseInt($.inidb.get("settings", "capstriggerlength"));
 var capsmessage = $.inidb.get("settings", "capsmessage");
 var linksallowed = $.inidb.get("settings", "linksallowed").equalsIgnoreCase("1");
+var aggressivelinks = $.inidb.get("settings", "aggressivelinks") != null && $.inidb.get("settings", "aggressivelinks").equalsIgnoreCase("1");
 var permittime = parseInt($.inidb.get("settings", "permittime"));
 var youtubeallowed = $.inidb.get("settings", "youtubeallowed").equalsIgnoreCase("1");
 var casterallowed = $.inidb.get("settings", "casterallowed").equalsIgnoreCase("1");
@@ -424,7 +425,8 @@ $.on('command', function(event) {
             if (args.length < 1 || args[0].equalsIgnoreCase("help")) {
                 $.say("Usage: !chatmod <option> [new value]");
                 $.say("-Options: warningcountresettime, timeouttype, autopurgemessage, capsallowed, capstriggerratio, capstriggerlength, "
-                    + "capsmessage, linksallowed, permittime, youtubeallowed, casterallowed, subsallowed, linksmessage, spamallowed, spamlimit, spammessage");
+                    + "capsmessage, linksallowed, aggressivelinks, permittime, youtubeallowed, casterallowed, subsallowed, linksmessage, spamallowed, "
+                    + "spamlimit, spammessage");
                 $.say(">>symbolsallowed, symbolslimit, symbolsrepeatlimit, symbolsmessage, repeatallowed, repeatlimit, repeatmessage, graphemeallowed, "
                     + "graphemelimit, graphememessage, "
                     + "warning1type, warning2type, warning3type, warning1message, warning2message, warning3message");
@@ -590,6 +592,35 @@ $.on('command', function(event) {
                             $.say("Links are now allowed!");
                         } else {
                             $.say("Links are now moderated!");
+                        }
+                    }
+                } else if (args[0].equalsIgnoreCase("aggressivelinks")) {
+                    val = argsString;
+                    
+                    if (args.length == 1 || (!val.equalsIgnoreCase("false") && !val.equalsIgnoreCase("true"))) {
+                        if (aggressivelinks) {
+                            val = "enabled";
+                        } else {
+                            val = "disabled";
+                        }
+                        
+                        $.say("Agressive link detection is currently " + val + ". To change it use: !chatmod aggressivelinks <'true' or 'false'>");
+                    } else {
+                        if (val.equalsIgnoreCase("true")) {
+                            val = "1";
+                        }
+                        else {
+                            val = "0";
+                        }
+                        
+                        $.inidb.set("settings", "aggressivelinks", val);
+                        
+                        aggressivelinks = val.equalsIgnoreCase("1");
+                        
+                        if (aggressivelinks) {
+                            $.say("Agressive link detection is now enabled!");
+                        } else {
+                            $.say("Agressive link detection is now disabled!");
                         }
                     }
                 } else if (args[0].equalsIgnoreCase("permittime")) {
@@ -1129,8 +1160,7 @@ $.on('ircChannelMessage', function(event) {
         }
     }
 	
-    if (linksallowed == false && $.hasLinks(event, false) && !$.isMod(sender) && (!$.isCaster(sender) || !casterallowed) && (!$.isSub(sender) || !subsallowed)) {
-        //Change the second parameter to true to fallback to the Java version instead
+    if (linksallowed == false && $.hasLinks(event, aggressivelinks) && !$.isMod(sender) && (!$.isCaster(sender) || !casterallowed) && (!$.isSub(sender) || !subsallowed)) {
         var permitted = false;
             
         for (i = 0; i < permitList.length; i++) {
