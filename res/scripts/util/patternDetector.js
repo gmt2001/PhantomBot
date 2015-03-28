@@ -35,12 +35,12 @@ tldPattern += "x(xx|yz)|";
 tldPattern += "y(e|t)|";
 tldPattern += "z(a|m|one|w)";
 tldPattern += otherTlds + ")";
-var linkPattern = "(http://|https://|ftp://)?(www\\.)?([\\w\\-]+\\.)+" + tldPattern + "(\\.[\\w\\-]{1,4})?(:[0-9]{1,5})?((/|\\?)|(?![\\x21-\\x7E]))[\\x21-\\x7E]*";
-var emailPattern = "(mailto:)?[\\w\\-\\.]+\\x40([\\w\\-]+\\.)+" + tldPattern + "((\\.[\\w\\-]{1,4})?(?![\\x21-\\x7E]))";
-var otherPattern = "(magnet:|mailto:|ed2k://|irc://|ircs://|skype:|ymsgr:|xfire:|steam:|aim:|spotify:)[\\x21-\\x7E]*";
-var specialTldPattern = "((h|\\|-\\|)(t|7){2}p(s|5|$)?://|(m|\\|\\\\/\\|)(a|@|/-\\\\)(i|1)(l|1)(t|7)(o|0|\\(\\)):)?[\\x21-\\x7E]*";
+var linkPattern = ".*(http://|https://|ftp://)?(www\\.)?([\\w\\-]+\\.)+" + tldPattern + "(\\.[\\w\\-]{1,4})?(:[0-9]{1,5})?((/|\\?)|(?![\\x21-\\x7E])).*";
+var emailPattern = ".*(mailto:)?[\\w\\-\\.]+\\x40([\\w\\-]+\\.)+" + tldPattern + "((\\.[\\w\\-]{1,4})?(?![\\x21-\\x7E])).*";
+var otherPattern = ".*(magnet:|mailto:|ed2k://|irc://|ircs://|skype:|ymsgr:|xfire:|steam:|aim:|spotify:).*";
+var specialTldPattern = ".*((h|\\|-\\|)(t|7){2}p(s|5|$)?://|(m|\\|\\\\/\\|)(a|@|/-\\\\)(i|1)(l|1)(t|7)(o|0|\\(\\)):)?[\\x21-\\x7E]*";
 specialTldPattern += "(\\.|\\,)(\\s)*((c|\\()(o|0|\\(\\))(m|\\|\\\\/\\|)|(n|\\|/\\||\\|\\\\\\|)(e|3)(t|7)|(o|0|\\(\\))rg|(i|1)(n|\\|/\\||\\|\\\\\\|)f";
-specialTldPattern += "(o|0|\\(\\))|r(u|\\|_\\|))";
+specialTldPattern += "(o|0|\\(\\))|r(u|\\|_\\|)).*";
 var lastlink = "";
 
 $.hasLinks = function(event, fallback) {
