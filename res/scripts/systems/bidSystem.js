@@ -18,7 +18,7 @@ $.on('command', function(event) {
                 $.say("Current highest bidder is: " + $var.bid_highest_username + " with " + $var.bid_highest_amount + " of " + $.pointname);
                 return;
             }else{
-                $.say(username + "No bids are currently running!");
+                $.say(username + ", no bids are currently running!");
                 return;
             }
         }
