@@ -35,11 +35,11 @@ $.isCaster = function (user) {
 }
 
 $.isAdmin = function (user) {
-    return $.getUserGroupId(user) <= 1;
+    return $.getUserGroupId(user) <= 1 || $.isOwner(user) || $.isBot(user);
 }
 
 $.isMod = function (user) {
-    return $.getUserGroupId(user) <= 2;
+    return $.getUserGroupId(user) <= 2 || $.hasModeO(user) || $.hasModList(user) || $.isAdmin(user);
 }
 
 $.isSub = function (user) {
@@ -114,10 +114,10 @@ if ($.usergroups[0] == undefined || $.usergroups[0] == null || $.usergroups[0]!=
     $.inidb.set("grouppoints","Caster", "7");
     $.inidb.set("groups", "0", "Caster");
     if ($.inidb.FileExists("group")) {
-            $.inidb.RemoveFile("group");
+        $.inidb.RemoveFile("group");
     }
     if ($.inidb.FileExists("groups")) {
-            $.inidb.RemoveFile("groups");
+        $.inidb.RemoveFile("groups");
     }
 }
 
@@ -126,10 +126,10 @@ if ($.usergroups[1] == undefined || $.usergroups[1] == null || $.usergroups[1]!=
     $.inidb.set("grouppoints","Administrator", "6");
     $.inidb.set("groups", "1", "Administrator");
     if ($.inidb.FileExists("group")) {
-            $.inidb.RemoveFile("group");
+        $.inidb.RemoveFile("group");
     }
     if ($.inidb.FileExists("groups")) {
-            $.inidb.RemoveFile("groups");
+        $.inidb.RemoveFile("groups");
     }
 }
 
@@ -138,10 +138,10 @@ if ($.usergroups[2] == undefined || $.usergroups[2] == null || $.usergroups[2]!=
     $.inidb.set("grouppoints","Moderator", "5");
     $.inidb.set("groups", "2", "Moderator");
     if ($.inidb.FileExists("group")) {
-            $.inidb.RemoveFile("group");
+        $.inidb.RemoveFile("group");
     }
     if ($.inidb.FileExists("groups")) {
-            $.inidb.RemoveFile("groups");
+        $.inidb.RemoveFile("groups");
     }
 }
 
@@ -150,10 +150,10 @@ if ($.usergroups[3] == undefined || $.usergroups[3] == null || $.usergroups[3]!=
     $.inidb.set("grouppoints","Subscriber", "4");
     $.inidb.set("groups", "3", "Subscriber");
     if ($.inidb.FileExists("group")) {
-            $.inidb.RemoveFile("group");
+        $.inidb.RemoveFile("group");
     }
     if ($.inidb.FileExists("groups")) {
-            $.inidb.RemoveFile("groups");
+        $.inidb.RemoveFile("groups");
     }
 }
 
@@ -162,10 +162,10 @@ if ($.usergroups[4] == undefined || $.usergroups[4] == null || $.usergroups[4]!=
     $.inidb.set("grouppoints","Donator", "3");
     $.inidb.set("groups", "4", "Donator");
     if ($.inidb.FileExists("group")) {
-            $.inidb.RemoveFile("group");
+        $.inidb.RemoveFile("group");
     }
     if ($.inidb.FileExists("groups")) {
-            $.inidb.RemoveFile("groups");
+        $.inidb.RemoveFile("groups");
     }
 }
 
@@ -174,10 +174,10 @@ if ($.usergroups[5] == undefined || $.usergroups[5] == null || $.usergroups[5]!=
     $.inidb.set("grouppoints","Hoster", "2");
     $.inidb.set("groups", "5", "Hoster");
     if ($.inidb.FileExists("group")) {
-            $.inidb.RemoveFile("group");
+        $.inidb.RemoveFile("group");
     }
     if ($.inidb.FileExists("groups")) {
-            $.inidb.RemoveFile("groups");
+        $.inidb.RemoveFile("groups");
     }
 }
 
@@ -186,10 +186,10 @@ if ($.usergroups[6] == undefined || $.usergroups[6] == null || $.usergroups[6]!=
     $.inidb.set("grouppoints","Regular", "1");
     $.inidb.set("groups", "6", "Regular");
     if ($.inidb.FileExists("group")) {
-            $.inidb.RemoveFile("group");
+        $.inidb.RemoveFile("group");
     }
     if ($.inidb.FileExists("groups")) {
-            $.inidb.RemoveFile("groups");
+        $.inidb.RemoveFile("groups");
     }
 }
 
@@ -198,10 +198,10 @@ if ($.usergroups[7] == undefined || $.usergroups[7] == null || $.usergroups[7]!=
     $.inidb.set("grouppoints","Viewer", "0");
     $.inidb.set("groups", "7", "Viewer");
     if ($.inidb.FileExists("group")) {
-            $.inidb.RemoveFile("group");
+        $.inidb.RemoveFile("group");
     }
     if ($.inidb.FileExists("groups")) {
-            $.inidb.RemoveFile("groups");
+        $.inidb.RemoveFile("groups");
     }
 }
 
@@ -210,9 +210,9 @@ $.getGroupNameById = function(id) {
     id = parseInt(id);
     var id2str = id.toString();
     
-        if ($.inidb.get('groups', id2str)!=null && $.inidb.get('groups', id2str)!="") {
-            return $.inidb.get('groups', id2str);
-        }  
+    if ($.inidb.get('groups', id2str)!=null && $.inidb.get('groups', id2str)!="") {
+        return $.inidb.get('groups', id2str);
+    }  
     return $.usergroups[7];
 }
  
@@ -231,7 +231,7 @@ $.reloadGroups = function() {
     $.usergroups = new Array();
     keys = $.inidb.GetKeyList("groups", "");
     for (var i = 0 ; i < keys.length; i++) {
-    $.usergroups[parseInt(keys[i])] = $.inidb.get("groups", keys[i]);
+        $.usergroups[parseInt(keys[i])] = $.inidb.get("groups", keys[i]);
     }
 }
 
@@ -256,37 +256,37 @@ $.on('command', function(event) {
         args = argsString.split(" ");
     }
 	
-	if(args.length >=2) {
-		if(command.equalsIgnoreCase("group")) {
+    if(args.length >=2) {
+        if(command.equalsIgnoreCase("group")) {
             var action = args[0];
 			
             if (!$.isAdmin(sender)) {
                 $.say($.adminmsg);
-				return;
+                return;
             }
 			
-			if (action.equalsIgnoreCase("remove") || action.equalsIgnoreCase("delete") || action.equalsIgnoreCase("reset")) {
-				$.setUserGroupById(args[1], $.getGroupIdByName("Viewers"));
-				$.say("Group for " + $.username.resolve(args[1]) + " reset to " + $.getUserGroupName($.username.resolve(args[1])) + "!");
-				$.logEvent("permissions.js", 183, username + " reset " + args[1] + "'s group to " + $.getUserGroupName($.username.resolve(args[1])));
-				return;
-			}
-			if (action.equalsIgnoreCase("create")) {
-				$.inidb.set("groups",$.usergroups.length.toString(),args[1].toString());
-                                $.inidb.set("grouppoints", args[1].toString(), "0");
-                                $.reloadGroups();
-				$.say("Group " + args[1].toString() + " created!");
-				return;
-			}
-		}
-	}
+            if (action.equalsIgnoreCase("remove") || action.equalsIgnoreCase("delete") || action.equalsIgnoreCase("reset")) {
+                $.setUserGroupById(args[1], $.getGroupIdByName("Viewers"));
+                $.say("Group for " + $.username.resolve(args[1]) + " reset to " + $.getUserGroupName($.username.resolve(args[1])) + "!");
+                $.logEvent("permissions.js", 183, username + " reset " + args[1] + "'s group to " + $.getUserGroupName($.username.resolve(args[1])));
+                return;
+            }
+            if (action.equalsIgnoreCase("create")) {
+                $.inidb.set("groups",$.usergroups.length.toString(),args[1].toString());
+                $.inidb.set("grouppoints", args[1].toString(), "0");
+                $.reloadGroups();
+                $.say("Group " + args[1].toString() + " created!");
+                return;
+            }
+        }
+    }
 	
     if(args.length >= 3) {
         if(command.equalsIgnoreCase("group")) {
             var action = args[0];
-			name = args[2];
-			var groupid = $.getGroupIdByName(name);
-			var groupname = $.getGroupNameById(groupid);
+            name = args[2];
+            var groupid = $.getGroupIdByName(name);
+            var groupname = $.getGroupNameById(groupid);
 			
             if (!$.isAdmin(sender)) {
                 $.say($.adminmsg);
@@ -295,41 +295,41 @@ $.on('command', function(event) {
 
             if (action.equalsIgnoreCase("set") || action.equalsIgnoreCase("add") || action.equalsIgnoreCase("change")) {                				
                 if( name.toLowerCase() != groupname.toLowerCase() ) {
-					 $.say("That group does not exist! To view a list of groups, use !group list.");
-				}
-				else {
-                $.setUserGroupByName(args[1], name);
-                $.say("Group for " + $.username.resolve(args[1]) + " changed to " + $.getUserGroupName($.username.resolve(args[1])) + "!");
-                $.logEvent("permissions.js", 200, username + " changed " + args[1] + "'s group to " + $.getUserGroupName($.username.resolve(args[1])));                
-				}
+                    $.say("That group does not exist! To view a list of groups, use !group list.");
+                }
+                else {
+                    $.setUserGroupByName(args[1], name);
+                    $.say("Group for " + $.username.resolve(args[1]) + " changed to " + $.getUserGroupName($.username.resolve(args[1])) + "!");
+                    $.logEvent("permissions.js", 200, username + " changed " + args[1] + "'s group to " + $.getUserGroupName($.username.resolve(args[1])));                
+                }
             }
             if (action.equalsIgnoreCase("points")) {                				
                 if( name.toLowerCase() != groupname.toLowerCase() ) {
-			$.say("That group does not exist! To view a list of groups, use !group list.");
-                        return;
-		}
+                    $.say("That group does not exist! To view a list of groups, use !group list.");
+                    return;
+                }
                 if(!parseInt(args[2]) || parseInt(args[2]<0)) {
-                        $.say("Group point multiplier must be a number greater than 0!");
-                        return;
+                    $.say("Group point multiplier must be a number greater than 0!");
+                    return;
                 } else {
-                $.inidb.set("grouppoints", groupname, args[2].toString());
-                $.say(groupname + " point multiplier set to " + args[2].toString() + "!");
-		}
+                    $.inidb.set("grouppoints", groupname, args[2].toString());
+                    $.say(groupname + " point multiplier set to " + args[2].toString() + "!");
+                }
             } else if (action.equalsIgnoreCase("qset")) {
-				if( name.toLowerCase() != groupname.toLowerCase() ) {
-					 $.say("That group does not exist! To view a list of groups, use !group list.");
-                                         return;
-				}
-				else {               
-                $.setUserGroupByName(args[1], name);
-                $.logEvent("permissions.js", 200, username + " silently changed " + args[1] + "'s group to " + $.getUserGroupName($.username.resolve(args[1])));
-				}
+                if( name.toLowerCase() != groupname.toLowerCase() ) {
+                    $.say("That group does not exist! To view a list of groups, use !group list.");
+                    return;
+                }
+                else {               
+                    $.setUserGroupByName(args[1], name);
+                    $.logEvent("permissions.js", 200, username + " silently changed " + args[1] + "'s group to " + $.getUserGroupName($.username.resolve(args[1])));
+                }
             }
         }
     }
     
     if (command.equalsIgnoreCase("group")) {
-		var action = args[0];
+        var action = args[0];
         if (args.length >= 1) {
             username = args[0];
 
@@ -369,7 +369,7 @@ $.on('command', function(event) {
                 if (!argsString.isEmpty() && action.equalsIgnoreCase("list")) {
                     $.say("Usage: !group, !group <name>, !group set <name> <group>, !group list, !group name <id> <new name>");
                 }
-			}
+            }
         } 
         if (args.length >= 2 && action.equalsIgnoreCase("name")) {
             if (parseInt(args[1]) >= $.usergroups.length || parseInt(args[1]) < 0) {
@@ -594,14 +594,6 @@ $.on('ircChannelUserMode', function(event) {
         if (event.getAdd()) {
             if (!$.array.contains($.modeOUsers, event.getUser().toLowerCase())) {
                 $.modeOUsers.push(event.getUser().toLowerCase());
-                if ($.array.contains($.modeOUsers, event.getUser().toLowerCase())) {
-                    $.inidb.set('group', event.getUser().toLowerCase(), 2);
-                    println("Moderator: " + event.getUser().toLowerCase());
-                }
-
-                if ($.array.contains($.modeOUsers, $.botowner.toLowerCase())) {
-                    $.inidb.set('group', $.botowner.toLowerCase(), 0);
-                }
             }
         } else {
             for (var i = 0; i < $.modeOUsers.length; i++) {
@@ -640,7 +632,7 @@ $.on('ircPrivateMessage', function(event) {
                         return;
                     }
                 }
-                $.saveArray(spl, "mods.txt", false);
+                
                 $.subUsers.push(new Array(spl[1], System.currentTimeMillis() + 10000));
             }
         }
