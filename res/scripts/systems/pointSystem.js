@@ -64,17 +64,10 @@ $.on('command', function (event) {
     var argsString = event.getArguments().trim();
     var argsString2 = argsString.substring(argsString.indexOf(" ") + 1, argsString.length());
     var points_user = sender;
-    var args;
+    var args = event.getArgs();
     var points;
     
     points = $.inidb.get('points', points_user);
-
-    if (argsString.isEmpty()) {
-        args = [];
-    } else {
-        args = argsString.split(" ");
-    }
-
 
     if (command.equalsIgnoreCase("points") || command.equalsIgnoreCase($.pointname) || command.equalsIgnoreCase("bank")) {
         if (args.length >=1) {
@@ -327,24 +320,27 @@ $.on('command', function (event) {
             $.say("Why would you need to gift yourself DansGame?!");
             return;
         }
+        
+        if (isNan(parseInt(args[1]))) {
+            return;
+        }
 
-        if (points > $.inidb.get('points', sender)) {
+        if (parseInt(args[1]) > $.inidb.get('points', sender)) {
             $.say($.username.resolve(sender) + ", you don't have that much points to gift to " + $.username.resolve(username) + "!");
             return;
 
         } else {
-            if (args[1] < $.mingift) {
+            if (parseInt(args[1]) < $.mingift) {
                 $.say($.username.resolve(sender) + ", you can't gift " + $.pointname + " that's lower than the minimum amount! Minimum: " + $.mingift + " " + $.pointname + ".");
                 return;
-            } else if (points < args[1]){
-                $.say($.username.resolve(sender) + ", you can't gift " + $.pointname + " what you don't have.");
+            } else if (points < parseInt(args[1])){
+                $.say($.username.resolve(sender) + ", you can't gift " + $.pointname + " that you don't have.");
                 return;
             } else {
-                $.inidb.decr('points', sender, points);
-                $.inidb.incr('points', username, points);
-                $.say(points + " " + $.pointname + " was gifted to " + $.username.resolve(username) + " by " + $.username.resolve(sender) + ".");
+                $.inidb.decr('points', sender, parseInt(args[1]));
+                $.inidb.incr('points', username, parseInt(args[1]));
+                $.say(parseInt(args[1]) + " " + $.pointname + " was gifted to " + $.username.resolve(username) + " by " + $.username.resolve(sender) + ".");
             }
-
         }
     }
          
