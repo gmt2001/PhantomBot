@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package com.gmt2001.Console;
 
 import java.io.BufferedReader;
@@ -32,9 +29,10 @@ import java.io.InputStreamReader;
  */
 public class in
 {
+
     private static final in instance = new in();
     private static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    
+
     public static in instance()
     {
         return instance;

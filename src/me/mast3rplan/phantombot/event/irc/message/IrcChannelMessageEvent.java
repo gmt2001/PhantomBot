@@ -18,23 +18,24 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.event.irc.message;
 
 import me.mast3rplan.phantombot.jerklib.Channel;
 import me.mast3rplan.phantombot.jerklib.Session;
 
-public class IrcChannelMessageEvent extends IrcMessageEvent {
+public class IrcChannelMessageEvent extends IrcMessageEvent
+{
+
     private Channel channel;
 
-    public IrcChannelMessageEvent(Session session, String sender, String message, Channel channel) {
+    public IrcChannelMessageEvent(Session session, String sender, String message, Channel channel)
+    {
         super(session, sender, message);
         this.channel = channel;
     }
 
-    public Channel getChannel() {
+    public Channel getChannel()
+    {
         return channel;
     }
 }

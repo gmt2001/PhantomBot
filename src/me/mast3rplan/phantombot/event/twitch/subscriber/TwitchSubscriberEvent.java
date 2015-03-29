@@ -18,32 +18,36 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.event.twitch.subscriber;
 
 import me.mast3rplan.phantombot.event.twitch.TwitchEvent;
 
-public abstract class TwitchSubscriberEvent extends TwitchEvent {
+public abstract class TwitchSubscriberEvent extends TwitchEvent
+{
+
     private String subscriber;
     private Type type;
 
-    enum Type {
+    enum Type
+    {
+
         SUBSCRIBE,
         UNSUBSCRIBE;
     }
 
-    protected TwitchSubscriberEvent(String subscriber, Type type) {
+    protected TwitchSubscriberEvent(String subscriber, Type type)
+    {
         this.subscriber = subscriber;
         this.type = type;
     }
 
-    public String getSubscriber() {
+    public String getSubscriber()
+    {
         return subscriber;
     }
 
-    public Type getType() {
+    public Type getType()
+    {
         return type;
     }
 }

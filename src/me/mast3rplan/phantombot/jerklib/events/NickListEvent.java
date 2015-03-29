@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.events;
 
 import me.mast3rplan.phantombot.jerklib.Channel;
@@ -33,11 +30,14 @@ import java.util.List;
  *
  * @author mohadib
  */
-public class NickListEvent extends IRCEvent {
+public class NickListEvent extends IRCEvent
+{
+
     private final List<String> nicks;
     private final Channel channel;
 
-    public NickListEvent(String rawEventData, Session session, Channel channel, List<String> nicks) {
+    public NickListEvent(String rawEventData, Session session, Channel channel, List<String> nicks)
+    {
         super(rawEventData, session, Type.NICK_LIST_EVENT);
         this.channel = channel;
         this.nicks = nicks;
@@ -50,7 +50,8 @@ public class NickListEvent extends IRCEvent {
      * @return Channel
      * @see Channel
      */
-    public Channel getChannel() {
+    public Channel getChannel()
+    {
         return channel;
     }
 
@@ -59,7 +60,8 @@ public class NickListEvent extends IRCEvent {
      *
      * @return List of nicks in channel
      */
-    public List<String> getNicks() {
+    public List<String> getNicks()
+    {
         return nicks;
     }
 }

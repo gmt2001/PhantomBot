@@ -18,20 +18,21 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.script;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
-public class ScriptManager {
+public class ScriptManager
+{
+
     private static HashMap<String, Script> scripts = new HashMap<>();
 
-    public static void loadScript(File scriptFile) throws IOException {
-        if (scripts.containsKey(scriptFile.toPath().toString())) {
+    public static void loadScript(File scriptFile) throws IOException
+    {
+        if (scripts.containsKey(scriptFile.toPath().toString()))
+        {
             return;
         }
 
@@ -39,17 +40,20 @@ public class ScriptManager {
         scripts.put(scriptFile.toPath().toString(), script);
         script.load();
     }
-    
-    public static Script loadScriptR(File scriptFile) throws IOException {
+
+    public static Script loadScriptR(File scriptFile) throws IOException
+    {
         loadScript(scriptFile);
         return getScript(scriptFile);
     }
-    
-    public static Script getScript(File scriptFile) throws IOException {
-        if (!scripts.containsKey(scriptFile.toPath().toString())) {
+
+    public static Script getScript(File scriptFile) throws IOException
+    {
+        if (!scripts.containsKey(scriptFile.toPath().toString()))
+        {
             return null;
         }
-        
+
         return scripts.get(scriptFile.toPath().toString());
     }
 }

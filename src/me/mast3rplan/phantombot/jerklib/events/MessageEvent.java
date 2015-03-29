@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.events;
 
 import me.mast3rplan.phantombot.jerklib.Channel;
@@ -30,19 +27,19 @@ import me.mast3rplan.phantombot.jerklib.Session;
  * @author mohadib
  * @see me.mast3rplan.phantombot.jerklib.events.MessageEvent
  */
-public class MessageEvent extends IRCEvent {
+public class MessageEvent extends IRCEvent
+{
 
     private final String message;
     private final Channel channel;
 
-    public MessageEvent
-            (
-                    Channel channel,
-                    String message,
-                    String rawEventData,
-                    Session session,
-                    Type type
-            ) {
+    public MessageEvent(
+            Channel channel,
+            String message,
+            String rawEventData,
+            Session session,
+            Type type)
+    {
         super(rawEventData, session, type);
         this.channel = channel;
         this.message = message;
@@ -53,7 +50,8 @@ public class MessageEvent extends IRCEvent {
      *
      * @return the Channel object
      */
-    public Channel getChannel() {
+    public Channel getChannel()
+    {
         return channel;
     }
 
@@ -62,7 +60,8 @@ public class MessageEvent extends IRCEvent {
      *
      * @return the message
      */
-    public String getMessage() {
+    public String getMessage()
+    {
         return message;
     }
 
@@ -71,7 +70,8 @@ public class MessageEvent extends IRCEvent {
      *
      * @return true if type == Type.PRIVATE_MESSAGE
      */
-    public boolean isPrivate() {
+    public boolean isPrivate()
+    {
         return getType() == Type.PRIVATE_MESSAGE;
     }
 }

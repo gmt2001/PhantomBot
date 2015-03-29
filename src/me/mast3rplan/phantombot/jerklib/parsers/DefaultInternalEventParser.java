@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.parsers;
 
 import me.mast3rplan.phantombot.jerklib.events.IRCEvent;
@@ -30,52 +27,62 @@ import java.util.Map;
 
 /**
  * This is the default impl of InternalEventParser. This class is used to turn
- * raw irc text into IRCEvents. You can change the parsing of data and the creation of
- * events by adding/removing CommandParsers.
+ * raw irc text into IRCEvents. You can change the parsing of data and the
+ * creation of events by adding/removing CommandParsers.
  *
  * @author mohadib
  * @see me.mast3rplan.phantombot.jerklib.parsers.CommandParser
  */
-public class DefaultInternalEventParser implements InternalEventParser {
+public class DefaultInternalEventParser implements InternalEventParser
+{
+
     private final Map<String, CommandParser> parsers = new HashMap<String, CommandParser>();
     private CommandParser defaultParser;
 
-    public DefaultInternalEventParser() {
+    public DefaultInternalEventParser()
+    {
         initDefaultParsers();
     }
 
-    public IRCEvent receiveEvent(IRCEvent e) {
+    public IRCEvent receiveEvent(IRCEvent e)
+    {
         CommandParser parser = parsers.get(e.command());
         parser = parser == null ? defaultParser : parser;
         return parser == null ? e : parser.createEvent(e);
     }
 
-
-    public void removeAllParsers() {
+    public void removeAllParsers()
+    {
         parsers.clear();
     }
 
-    public void addParser(String command, CommandParser parser) {
+    public void addParser(String command, CommandParser parser)
+    {
         parsers.put(command, parser);
     }
 
-    public CommandParser getParser(String command) {
+    public CommandParser getParser(String command)
+    {
         return parsers.get(command);
     }
 
-    public boolean removeParser(String command) {
+    public boolean removeParser(String command)
+    {
         return parsers.remove(command) != null;
     }
 
-    public void setDefaultParser(CommandParser parser) {
+    public void setDefaultParser(CommandParser parser)
+    {
         defaultParser = parser;
     }
 
-    public CommandParser getDefaultParser() {
+    public CommandParser getDefaultParser()
+    {
         return defaultParser;
     }
 
-    public void initDefaultParsers() {
+    public void initDefaultParsers()
+    {
         parsers.put("001", new ConnectionCompleteParser());
         parsers.put("002", new ServerVersionParser());
         parsers.put("005", new ServerInformationParser());
@@ -132,7 +139,8 @@ public class DefaultInternalEventParser implements InternalEventParser {
 
         //numeric errors
         CommandParser errorParser = new NumericErrorParser();
-        for (int i = 400; i < 553; i++) {
+        for (int i = 400; i < 553; i++)
+        {
             parsers.put(String.valueOf(i), errorParser);
         }
 

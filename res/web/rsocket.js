@@ -83,7 +83,7 @@ function ReconnectingWebSocket(url, protocols) {
             if (self.debug || ReconnectingWebSocket.debugAll) {
                 console.debug('ReconnectingWebSocket', 'onmessage', url, event.data);
             }
-                self.onmessage(event);
+            self.onmessage(event);
         };
         ws.onerror = function(event) {
             if (self.debug || ReconnectingWebSocket.debugAll) {

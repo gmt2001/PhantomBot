@@ -18,23 +18,21 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.parsers;
 
 import me.mast3rplan.phantombot.jerklib.events.IRCEvent;
 import me.mast3rplan.phantombot.jerklib.events.InviteEvent;
 
-public class InviteParser implements CommandParser {
+public class InviteParser implements CommandParser
+{
     /* :r0bby!n=wakawaka@guifications/user/r0bby INVITE scripy1 :#jerklib2 */
     /* :yaloki!~yaloki@localhost INVITE SuSEmeet #test */
-    public IRCEvent createEvent(IRCEvent event) {
-        return new InviteEvent
-                (
-                        event.arg(0),
-                        event.getRawEventData(),
-                        event.getSession()
-                );
+
+    public IRCEvent createEvent(IRCEvent event)
+    {
+        return new InviteEvent(
+                event.arg(0),
+                event.getRawEventData(),
+                event.getSession());
     }
 }

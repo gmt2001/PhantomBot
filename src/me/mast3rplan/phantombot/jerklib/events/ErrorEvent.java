@@ -18,24 +18,25 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.events;
 
 import me.mast3rplan.phantombot.jerklib.Session;
 
-public class ErrorEvent extends IRCEvent {
+public class ErrorEvent extends IRCEvent
+{
+
     private final ErrorType errorType;
 
-    public enum ErrorType {
+    public enum ErrorType
+    {
+
         NUMERIC_ERROR,
         UNRESOLVED_HOSTNAME,
         GENERIC
     }
 
-
-    public ErrorEvent(String data, Session session, ErrorType errorType) {
+    public ErrorEvent(String data, Session session, ErrorType errorType)
+    {
         super(data, session, Type.ERROR);
         this.errorType = errorType;
     }
@@ -45,8 +46,8 @@ public class ErrorEvent extends IRCEvent {
      *
      * @return ErrorType
      */
-    public ErrorType getErrorType() {
+    public ErrorType getErrorType()
+    {
         return errorType;
     }
-
 }

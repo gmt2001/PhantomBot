@@ -18,12 +18,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.event.console;
 
 import me.mast3rplan.phantombot.event.Event;
 
-public class ConsoleEvent extends Event {
+public class ConsoleEvent extends Event
+{
 }

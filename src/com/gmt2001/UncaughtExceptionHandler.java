@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package com.gmt2001;
 
 import java.io.FileNotFoundException;
@@ -41,13 +38,15 @@ import java.util.TimeZone;
 public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
 {
 
-    private static final UncaughtExceptionHandler instance = new UncaughtExceptionHandler();;
+    private static final UncaughtExceptionHandler instance = new UncaughtExceptionHandler();
+
+    ;
     
     public static UncaughtExceptionHandler instance()
     {
         return instance;
     }
-    
+
     @Override
     public void uncaughtException(Thread t, Throwable e)
     {
@@ -64,12 +63,12 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
 
             SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss");
             datefmt.setTimeZone(TimeZone.getTimeZone("GMT"));
-            
+
             String timestamp = datefmt.format(new Date());
-            
+
             ps.println(timestamp + "Z (" + t.toString() + ") " + trace.toString());
             ps.println();
-            
+
             fos.close();
         } catch (FileNotFoundException ex)
         {

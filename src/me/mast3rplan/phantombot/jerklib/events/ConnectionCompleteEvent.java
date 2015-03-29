@@ -18,28 +18,27 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.events;
 
 import me.mast3rplan.phantombot.jerklib.Session;
 
 /**
- * Event made when connected to the server
- * This event contains the real server name. Example. When connection
- * to 'irc.freenode.net' we might actually connect to kornbluf.freenode.net
- * or some other host. This event will have the real hosts name.
+ * Event made when connected to the server This event contains the real server
+ * name. Example. When connection to 'irc.freenode.net' we might actually
+ * connect to kornbluf.freenode.net or some other host. This event will have the
+ * real hosts name.
  * <p/>
  * After receiving this event a Session is ready to join channels
  *
  * @author mohadib
  */
-public class ConnectionCompleteEvent extends IRCEvent {
+public class ConnectionCompleteEvent extends IRCEvent
+{
 
     private final String hostName, oldHostName;
 
-    public ConnectionCompleteEvent(String rawEventData, String hostName, Session session, String oldHostName) {
+    public ConnectionCompleteEvent(String rawEventData, String hostName, Session session, String oldHostName)
+    {
         super(rawEventData, session, Type.CONNECT_COMPLETE);
         this.hostName = hostName;
         this.oldHostName = oldHostName;
@@ -50,7 +49,8 @@ public class ConnectionCompleteEvent extends IRCEvent {
      *
      * @return old host name
      */
-    public String getOldHostName() {
+    public String getOldHostName()
+    {
         return oldHostName;
     }
 
@@ -59,8 +59,8 @@ public class ConnectionCompleteEvent extends IRCEvent {
      *
      * @return actual host name
      */
-    public String getActualHostName() {
+    public String getActualHostName()
+    {
         return hostName;
     }
-
 }

@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package com.gmt2001;
 
 import java.io.IOException;
@@ -33,6 +30,7 @@ import org.json.JSONObject;
 
 /**
  * Communicates with Twitch Kraken server using the version 2 API
+ *
  * @author gmt2001
  */
 public class TwitchAPIv2
@@ -100,11 +98,12 @@ public class TwitchAPIv2
             }
 
             String content;
-            
+
             if (c.getResponseCode() == 200)
             {
                 content = IOUtils.toString(c.getInputStream(), c.getContentEncoding());
-            } else {
+            } else
+            {
                 content = IOUtils.toString(c.getErrorStream(), c.getContentEncoding());
             }
 
@@ -156,10 +155,11 @@ public class TwitchAPIv2
 
         return j;
     }
-    
+
     /**
      * Sets the Twitch API Client-ID header
-     * @param clientid 
+     *
+     * @param clientid
      */
     public void SetClientID(String clientid)
     {

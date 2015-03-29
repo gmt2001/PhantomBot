@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.events;
 
 import me.mast3rplan.phantombot.jerklib.Session;
@@ -30,17 +27,17 @@ import me.mast3rplan.phantombot.jerklib.Session;
  *
  * @author mohadib
  */
-public class NickChangeEvent extends IRCEvent {
+public class NickChangeEvent extends IRCEvent
+{
 
     private final String oldNick, newNick;
 
-    public NickChangeEvent
-            (
-                    String rawEventData,
-                    Session session,
-                    String oldNick,
-                    String newNick
-            ) {
+    public NickChangeEvent(
+            String rawEventData,
+            Session session,
+            String oldNick,
+            String newNick)
+    {
         super(rawEventData, session, Type.NICK_CHANGE);
         this.oldNick = oldNick;
         this.newNick = newNick;
@@ -51,7 +48,8 @@ public class NickChangeEvent extends IRCEvent {
      *
      * @return Old nick for user.
      */
-    public final String getOldNick() {
+    public final String getOldNick()
+    {
         return oldNick;
     }
 
@@ -60,7 +58,8 @@ public class NickChangeEvent extends IRCEvent {
      *
      * @return New nick for user
      */
-    public final String getNewNick() {
+    public final String getNewNick()
+    {
         return newNick;
     }
 }

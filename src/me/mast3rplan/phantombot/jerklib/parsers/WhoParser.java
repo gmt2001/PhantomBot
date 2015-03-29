@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.parsers;
 
 import me.mast3rplan.phantombot.jerklib.events.IRCEvent;
@@ -29,12 +26,16 @@ import me.mast3rplan.phantombot.jerklib.events.WhoEvent;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class WhoParser implements CommandParser {
-    public IRCEvent createEvent(IRCEvent event) {
+public class WhoParser implements CommandParser
+{
+
+    public IRCEvent createEvent(IRCEvent event)
+    {
         String data = event.getRawEventData();
         Pattern p = Pattern.compile("^:.+?\\s+352\\s+.+?\\s+(.+?)\\s+(.+?)\\s+(.+?)\\s+(.+?)\\s+(.+?)\\s+(.+?):(\\d+)\\s+(.+)$");
         Matcher m = p.matcher(data);
-        if (m.matches()) {
+        if (m.matches())
+        {
 
             boolean away = m.group(6).charAt(0) == 'G';
             return new WhoEvent(m.group(1), // channel
@@ -47,7 +48,7 @@ public class WhoParser implements CommandParser {
                     m.group(4), // server name
                     event.getSession(), // session
                     m.group(2) // username
-            );
+                    );
         }
         return event;
     }

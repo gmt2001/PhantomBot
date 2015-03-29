@@ -48,36 +48,36 @@ $.on('command', function(event) {
             return;
         }
 
-    $var.raffle_toggle = true;
-    if ($.inidb.get('settings', 'raffle_toggle') == 1) {
         $var.raffle_toggle = true;
-    } else if ($.inidb.get('settings', 'raffle_toggle') == 2) {
-        $var.raffle_toggle = false;
-    }
-
-
-    if (action.equalsIgnoreCase("toggle") && !argsString.isEmpty()) {
-        if (!$.isAdmin(sender)) {
-            $.say($.adminmsg);
-            return;
-        }
-
-        if ($var.raffle_toggle == false) {
-
+        if ($.inidb.get('settings', 'raffle_toggle') == 1) {
             $var.raffle_toggle = true;
-            $.inidb.set('settings', 'raffle_toggle', 1);
-            $.say("Raffle messages have been turned on!");
-
-        } else if ($var.raffle_toggle == true) {
-
+        } else if ($.inidb.get('settings', 'raffle_toggle') == 2) {
             $var.raffle_toggle = false;
-            $.inidb.set('settings', 'raffle_toggle', 2);
-            $.say("Raffle messages have been turned off!");
         }
 
 
+        if (action.equalsIgnoreCase("toggle") && !argsString.isEmpty()) {
+            if (!$.isAdmin(sender)) {
+                $.say($.adminmsg);
+                return;
+            }
 
-    }
+            if ($var.raffle_toggle == false) {
+
+                $var.raffle_toggle = true;
+                $.inidb.set('settings', 'raffle_toggle', 1);
+                $.say("Raffle messages have been turned on!");
+
+            } else if ($var.raffle_toggle == true) {
+
+                $var.raffle_toggle = false;
+                $.inidb.set('settings', 'raffle_toggle', 2);
+                $.say("Raffle messages have been turned off!");
+            }
+
+
+
+        }
 
         if (action.equalsIgnoreCase("results") && !argsString.isEmpty()) {
             if ($var.raffle_running) {
@@ -105,35 +105,35 @@ $.on('command', function(event) {
                     $.say("No past raffles!");
                 } else {
 
-                if (rPrice == null) {
-                    rPrice = 0;
+                    if (rPrice == null) {
+                        rPrice = 0;
+                    }
+
+                    if (rMode == 1) {
+
+                        rMode = "Default";
+
+                    } else if (rMode == 0) {
+                        rMode = "Followers";
+                    }
+
+                    if (rKey == null) {
+
+                        rKey = "None";
+                    }
+
+                    if (rWinner == null) {
+                        rWinner = "None"
+                    }
+
+                    if (rEntries == null) {
+                        rEntries = 0;
+                    }
+
+                    $.say("[" + rDate + "] - [Reward: " + rReward + "] - [Entry Price: " + rPrice + " " + $.pointname + "] - [Mode: " + rMode + "] - [Keyword: " + rKey + "] - [Winner: " + $.username.resolve(rWinner) + "] - [Entries: " + rEntries + "]");
                 }
-
-                if (rMode == 1) {
-
-                    rMode = "Default";
-
-                } else if (rMode == 0) {
-                    rMode = "Followers";
-                }
-
-                if (rKey == null) {
-
-                    rKey = "None";
-                }
-
-                if (rWinner == null) {
-                    rWinner = "None"
-                }
-
-                if (rEntries == null) {
-                    rEntries = 0;
-                }
-
-                $.say("[" + rDate + "] - [Reward: " + rReward + "] - [Entry Price: " + rPrice + " " + $.pointname + "] - [Mode: " + rMode + "] - [Keyword: " + rKey + "] - [Winner: " + rWinner + "] - [Entries: " + rEntries + "]");
             }
         }
-                }
 
  
         if (action.equalsIgnoreCase("start")) {
@@ -260,19 +260,19 @@ $.on('command', function(event) {
 
 
             if ($var.raffle_mode == 0) {
-                $.say("/me [Winner] -> " + winner + "! Congratulations! " + $var.raffle_win + " " + $.pointname +  " has been credited to your account!");
+                $.say("/me [Winner] -> " + $.username.resolve(winner) + "! Congratulations! " + $var.raffle_win + " " + $.pointname +  " has been credited to your account!");
                 
                 $.inidb.incr('points', winner.toLowerCase(), $var.raffle_win);
             } else {
                 $.say("/me [Winner] for [" + $var.raffle_win + "] is " + winner + "! Congratulations!");
             }
-                $.inidb.set('raffles', 'reward', $var.raffle_win);
-                $.inidb.set('raffles', 'winner', winner);
-                $.inidb.set('raffles', 'price', $var.raffle_price);
-                $.inidb.set('raffles', 'mode', $var.raffle_mode);
-                $.inidb.set('raffles', 'keyword', $var.raffle_keyword);
-                $.inidb.set('raffles', 'entries', $var.raffle_entrants.length);
-                $.inidb.set('raffles', 'date', date);
+            $.inidb.set('raffles', 'reward', $var.raffle_win);
+            $.inidb.set('raffles', 'winner', winner);
+            $.inidb.set('raffles', 'price', $var.raffle_price);
+            $.inidb.set('raffles', 'mode', $var.raffle_mode);
+            $.inidb.set('raffles', 'keyword', $var.raffle_keyword);
+            $.inidb.set('raffles', 'entries', $var.raffle_entrants.length);
+            $.inidb.set('raffles', 'date', date);
 
         } else if (action.equalsIgnoreCase("repick")) {
             if (!$.isMod(sender)) {

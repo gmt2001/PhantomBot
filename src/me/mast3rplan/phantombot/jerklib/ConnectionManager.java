@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib;
 
 import java.io.IOException;
@@ -87,7 +84,7 @@ public final class ConnectionManager
     public ConnectionManager(Profile defaultProfile)
     {
         this.defaultProfile = defaultProfile;
-        
+
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
         try
@@ -693,17 +690,17 @@ public final class ConnectionManager
                 {
                     long last = session.getLastRetry();
                     long current = System.currentTimeMillis();
-                    
+
                     long reconnectIntervalCur = reconnectIntervalShort;
                     int reconTriesCur = reconTriesShort;
-                    
+
                     if (session.getRetries() >= reconTriesShort)
                     {
                         if (session.getRetries() < (reconTriesShort + reconTriesMed))
                         {
                             reconnectIntervalCur = reconnectIntervalMed;
                             reconTriesCur = reconTriesMed;
-                        } else 
+                        } else
                         {
                             reconnectIntervalCur = reconnectIntervalLong;
                             reconTriesCur = reconTriesLong;

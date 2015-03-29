@@ -18,86 +18,72 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.events;
 
 import me.mast3rplan.phantombot.jerklib.Session;
-
 
 /**
  * The base class for all JerkLib events.
  *
  * @author mohadib
  */
-
-public class IRCEvent extends EventToken {
+public class IRCEvent extends EventToken
+{
 
     /**
      * Type enum is used to determine type. It is returned from getType()
      */
-    public enum Type {
+    public enum Type
+    {
+
         /**
          * Topic event - channel topic event
          */
         TOPIC,
-
         /**
          * Private message event - msg not sent to channel
          */
         PRIVATE_MESSAGE,
-
         /**
          * Channel message event - msg sent to a channel
          */
         CHANNEL_MESSAGE,
-
         /**
          * Server notice event
          */
         NOTICE,
-
         /**
          * Message of the day event
          */
         MOTD,
-
         /**
          * Default event - unreconized or ignored by JerkLib
          */
         DEFAULT,
-
         /**
          * Quit Event - when someone quits from a server
          */
         QUIT,
-
         /**
          * Part event - someone parts a channel
          */
         PART,
-
         /**
          * Join event - someone joins a channel
          */
         JOIN,
-
         /**
          * Nick change event - someones nick changed
          */
         NICK_CHANGE,
-
         /**
          * Nick in use event - The nick JerkLib is tring to use is in use
          */
         NICK_IN_USE,
-
         /**
          * unused
          */
         EXCEPTION,
-
         /**
          * Event spawned from irc numeric 005
          */
@@ -117,51 +103,48 @@ public class IRCEvent extends EventToken {
         AWAY_EVENT,
         ERROR,
         CTCP_EVENT,
-        CONNECTION_LOST,
-    }
-
-
+        CONNECTION_LOST,}
     private final Type type;
     private final String data;
     private final Session session;
 
-
-    public IRCEvent(String data, Session session, Type type) {
+    public IRCEvent(String data, Session session, Type type)
+    {
         super(data);
         this.type = type;
         this.session = session;
         this.data = data;
     }
 
-
     /**
-     * Used to find out the exact type of event the IrcEvent object
-     * is. The IrcEvent object can be cast into a more specific event object to
-     * get access to convience methods for the specific event types.
+     * Used to find out the exact type of event the IrcEvent object is. The
+     * IrcEvent object can be cast into a more specific event object to get
+     * access to convience methods for the specific event types.
      *
      * @return Type of event
      */
-    public Type getType() {
+    public Type getType()
+    {
         return type;
     }
-
 
     /**
      * Returns the raw IRC data that makes up this event
      *
      * @return Raw IRC event text.
      */
-    public String getRawEventData() {
+    public String getRawEventData()
+    {
         return data;
     }
-
 
     /**
      * Gets session for connection
      *
      * @return Session
      */
-    public Session getSession() {
+    public Session getSession()
+    {
         return session;
     }
 
@@ -170,8 +153,8 @@ public class IRCEvent extends EventToken {
      * @see java.lang.Object#toString()
      */
     @Override
-    public String toString() {
+    public String toString()
+    {
         return data;
     }
-
 }

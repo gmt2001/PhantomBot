@@ -18,13 +18,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.events;
 
 import me.mast3rplan.phantombot.jerklib.Session;
-
 
 /**
  * The event fired when a line from a channel listing is parsed
@@ -33,18 +29,19 @@ import me.mast3rplan.phantombot.jerklib.Session;
  * @see Session#chanList()
  * @see Session#chanList(String)
  */
-public class ChannelListEvent extends IRCEvent {
+public class ChannelListEvent extends IRCEvent
+{
 
     private final String channelName, topic;
     private final int numUsers;
 
-    public ChannelListEvent
-            (
-                    String rawEventData,
-                    String channelName,
-                    String topic,
-                    int numUsers,
-                    Session session) {
+    public ChannelListEvent(
+            String rawEventData,
+            String channelName,
+            String topic,
+            int numUsers,
+            Session session)
+    {
         super(rawEventData, session, Type.CHANNEL_LIST_EVENT);
         this.channelName = channelName;
         this.topic = topic;
@@ -56,7 +53,8 @@ public class ChannelListEvent extends IRCEvent {
      *
      * @return the channel name
      */
-    public String getChannelName() {
+    public String getChannelName()
+    {
         return channelName;
     }
 
@@ -65,17 +63,18 @@ public class ChannelListEvent extends IRCEvent {
      *
      * @return number of users
      */
-    public int getNumberOfUser() {
+    public int getNumberOfUser()
+    {
         return numUsers;
     }
-
 
     /**
      * Gets the topic of the channel
      *
      * @return the channel topic
      */
-    public String getTopic() {
+    public String getTopic()
+    {
         return topic;
     }
 }

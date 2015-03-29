@@ -1,46 +1,46 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Phantombot Youtube Player</title>
-    <script type="text/javascript" src="jquery-1.11.2.min.js"></script>
-    <script type="text/javascript" src="webcontrols.js"></script>
-    <script type="text/javascript" src="app.js"></script>
-    <link rel="icon" href="favicon.ico" type="image/x-icon" />
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <head>
+        <title>Phantombot Youtube Player</title>
+        <script type="text/javascript" src="jquery-1.11.2.min.js"></script>
+        <script type="text/javascript" src="webcontrols.js"></script>
+        <script type="text/javascript" src="app.js"></script>
+        <link rel="icon" href="favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 
-    <link rel="stylesheet" type="text/css" href="style.css">
-</head>
+        <link rel="stylesheet" type="text/css" href="style.css">
+    </head>
 
-<body>
+    <body>
 
-    <div class="header">
-        <img id="logo" src="logo.png"/>
-        <h1>YouTube Player</h1>
-    </div>
-    <div class="container">
-        <div id="main">
-            <div id="player"></div>
-            <div id="songlist">
+        <div class="header">
+            <img id="logo" src="logo.png"/>
+            <h1>YouTube Player</h1>
+        </div>
+        <div class="container">
+            <div id="main">
+                <div id="player"></div>
+                <div id="songlist">
 
+                </div>
+
+                <div id="panel">
+                    <form>
+                        <button id="skip" class="button" onclick="nextSong()">Skip</button>
+                        <button id="steal" class="button" onclick="stealSong()">Steal</button>
+                        <button id="remove" class="button">Remove(Not working yet)</button>
+                    </form>
+                </div>
+                <div id="rightcontain">
+                </div>
             </div>
 
-            <div id="panel">
-                <form>
-                <button id="skip" class="button" onclick="nextSong()">Skip</button>
-                <button id="steal" class="button" onclick="stealSong()">Steal</button>
-                <button id="remove" class="button">Remove(Not working yet)</button>
-                </form>
-            </div>
-			        <div id="rightcontain">
+
         </div>
+        <div id="copyright">
+            YouTube Player by: 
+            <a href="http://www.phantombot.net">www.phantombot.net</a>
         </div>
 
-
-    </div>
-    <div id="copyright">
-      YouTube Player by: 
-      <a href="http://www.phantombot.net">www.phantombot.net</a>
-    </div>
-
-</body>
+    </body>
 </html>

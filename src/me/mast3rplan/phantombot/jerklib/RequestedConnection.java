@@ -18,18 +18,15 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib;
-
 
 /**
  * Class to encapsulate data about a requested connection,
  *
  * @author mohadib
  */
-public class RequestedConnection {
+public class RequestedConnection
+{
 
     private final String hostName;
     private final int port;
@@ -41,17 +38,19 @@ public class RequestedConnection {
      * Create new RequestedConnection object
      *
      * @param hostName - hostname to connect to
-     * @param port     - port to use
-     * @param profile  - profile to use
+     * @param port - port to use
+     * @param profile - profile to use
      */
-    public RequestedConnection(String hostName, int port, Profile profile) {
+    public RequestedConnection(String hostName, int port, Profile profile)
+    {
         this.hostName = hostName;
         this.port = port;
         this.profile = profile;
         this.pass = null;
     }
 
-    public RequestedConnection(String hostName, int port, String pass, Profile profile) {
+    public RequestedConnection(String hostName, int port, String pass, Profile profile)
+    {
         this.hostName = hostName;
         this.port = port;
         this.pass = pass;
@@ -63,7 +62,8 @@ public class RequestedConnection {
      *
      * @return hostname
      */
-    public String getHostName() {
+    public String getHostName()
+    {
         return hostName;
     }
 
@@ -72,7 +72,8 @@ public class RequestedConnection {
      *
      * @return port
      */
-    public int getPort() {
+    public int getPort()
+    {
         return port;
     }
 
@@ -81,7 +82,8 @@ public class RequestedConnection {
      *
      * @return profile
      */
-    public Profile getProfile() {
+    public Profile getProfile()
+    {
         return profile;
     }
 
@@ -90,26 +92,30 @@ public class RequestedConnection {
      *
      * @return time
      */
-    public long getTimeRequested() {
+    public long getTimeRequested()
+    {
         return requestedTime;
     }
 
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
      */
-    public int hashCode() {
+    public int hashCode()
+    {
         return hostName.hashCode() + port + profile.hashCode();
     }
 
     /* (non-Javadoc)
      * @see java.lang.Object#equals(java.lang.Object)
      */
-    public boolean equals(Object o) {
-        if (o instanceof RequestedConnection && o.hashCode() == hashCode()) {
+    public boolean equals(Object o)
+    {
+        if (o instanceof RequestedConnection && o.hashCode() == hashCode())
+        {
             RequestedConnection rCon = (RequestedConnection) o;
-            return rCon.getHostName().equals(hostName) &&
-                    rCon.getPort() == port &&
-                    rCon.getProfile().equals(profile);
+            return rCon.getHostName().equals(hostName)
+                    && rCon.getPort() == port
+                    && rCon.getProfile().equals(profile);
         }
         return false;
     }
@@ -119,11 +125,13 @@ public class RequestedConnection {
      *
      * @param profile
      */
-    void setProfile(Profile profile) {
+    void setProfile(Profile profile)
+    {
         this.profile = profile;
     }
 
-    public String getPass() {
+    public String getPass()
+    {
         return pass;
     }
 }

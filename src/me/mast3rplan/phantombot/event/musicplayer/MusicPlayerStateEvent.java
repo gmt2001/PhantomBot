@@ -18,26 +18,27 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.event.musicplayer;
 
 import me.mast3rplan.phantombot.musicplayer.MusicPlayerState;
 
-public class MusicPlayerStateEvent extends MusicPlayerEvent {
+public class MusicPlayerStateEvent extends MusicPlayerEvent
+{
 
     private MusicPlayerState state;
 
-    public MusicPlayerStateEvent(MusicPlayerState state) {
+    public MusicPlayerStateEvent(MusicPlayerState state)
+    {
         this.state = state;
     }
 
-    public MusicPlayerState getState() {
+    public MusicPlayerState getState()
+    {
         return state;
     }
 
-    public int getStateId() {
+    public int getStateId()
+    {
         return state.i;
     }
 }

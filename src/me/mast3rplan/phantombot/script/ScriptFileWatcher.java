@@ -18,34 +18,39 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.script;
 
 import java.io.File;
 
-public class ScriptFileWatcher implements Runnable {
+public class ScriptFileWatcher implements Runnable
+{
+
     private Script script;
 
-    public ScriptFileWatcher(Script script) {
+    public ScriptFileWatcher(Script script)
+    {
         this.script = script;
-        
+
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 
     @Override
-    public void run() {
+    public void run()
+    {
         File file = script.getFile();
         long lastUpdate = file.lastModified();
-        while(true) {
-            try {
+        while (true)
+        {
+            try
+            {
                 Thread.sleep(100);
-                if(file.lastModified() != lastUpdate) {
+                if (file.lastModified() != lastUpdate)
+                {
                     lastUpdate = file.lastModified();
                     script.reload();
                 }
-            } catch (Exception e) {
+            } catch (Exception e)
+            {
                 com.gmt2001.Console.err.printStackTrace(e);
             }
         }

@@ -18,31 +18,28 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.events;
 
 import java.nio.channels.UnresolvedAddressException;
 import me.mast3rplan.phantombot.jerklib.Session;
-
 
 /**
  * Error generated when a DNS lookup fails during connection.
  *
  * @author mohadib
  */
-public class UnresolvedHostnameErrorEvent extends ErrorEvent {
+public class UnresolvedHostnameErrorEvent extends ErrorEvent
+{
+
     private String hostName;
     private UnresolvedAddressException exception;
 
-    public UnresolvedHostnameErrorEvent
-            (
-                    Session session,
-                    String rawEventData,
-                    String hostName,
-                    UnresolvedAddressException exception
-            ) {
+    public UnresolvedHostnameErrorEvent(
+            Session session,
+            String rawEventData,
+            String hostName,
+            UnresolvedAddressException exception)
+    {
         super(rawEventData, session, ErrorType.UNRESOLVED_HOSTNAME);
         this.hostName = hostName;
         this.exception = exception;
@@ -53,7 +50,8 @@ public class UnresolvedHostnameErrorEvent extends ErrorEvent {
      *
      * @return UnresolvedAddressException
      */
-    public UnresolvedAddressException getException() {
+    public UnresolvedAddressException getException()
+    {
         return exception;
     }
 
@@ -62,7 +60,8 @@ public class UnresolvedHostnameErrorEvent extends ErrorEvent {
      *
      * @return hostname that could not be resloved
      */
-    public String getHostName() {
+    public String getHostName()
+    {
         return hostName;
     }
 }

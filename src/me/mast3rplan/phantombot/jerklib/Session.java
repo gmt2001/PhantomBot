@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib;
 
 import java.util.*;
@@ -95,7 +92,7 @@ public class Session extends RequestGenerator
         this.rCon = rCon;
         this.conman = conman;
         setSession(this);
-        
+
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 
@@ -327,7 +324,7 @@ public class Session extends RequestGenerator
     public void close(String quitMessage)
     {
         isClosing = true;
-        
+
         if (con != null)
         {
             con.quit(quitMessage);

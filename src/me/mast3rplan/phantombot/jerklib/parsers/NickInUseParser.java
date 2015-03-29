@@ -18,21 +18,19 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.parsers;
 
 import me.mast3rplan.phantombot.jerklib.events.IRCEvent;
 import me.mast3rplan.phantombot.jerklib.events.NickInUseEvent;
 
-public class NickInUseParser implements CommandParser {
-    public IRCEvent createEvent(IRCEvent event) {
-        return new NickInUseEvent
-                (
-                        event.arg(1),
-                        event.getRawEventData(),
-                        event.getSession()
-                );
+public class NickInUseParser implements CommandParser
+{
+
+    public IRCEvent createEvent(IRCEvent event)
+    {
+        return new NickInUseEvent(
+                event.arg(1),
+                event.getRawEventData(),
+                event.getSession());
     }
 }

@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.tasks;
 
 import me.mast3rplan.phantombot.jerklib.Session;
@@ -28,19 +25,24 @@ import me.mast3rplan.phantombot.jerklib.events.IRCEvent;
 import me.mast3rplan.phantombot.jerklib.events.IRCEvent.Type;
 
 /**
- * An augmented {@link me.mast3rplan.phantombot.jerklib.tasks.TaskImpl} that only executes once
- * as it cancels itself out of the task queue once completed,
- * <em>even if it fails (= throws an <code>Exception</code>)</em>.
+ * An augmented {@link me.mast3rplan.phantombot.jerklib.tasks.TaskImpl} that
+ * only executes once as it cancels itself out of the task queue once completed,
+ * <em>even if it fails (= throws an
+ * <code>Exception</code>)</em>.
  *
  * @author pbleser
  * @see OnceUntilSucceedsTaskImpl
  * @see Session#onEvent(me.mast3rplan.phantombot.jerklib.tasks.Task)
- * @see Session#onEvent(Task, me.mast3rplan.phantombot.jerklib.events.IRCEvent.Type...)
+ * @see Session#onEvent(Task,
+ * me.mast3rplan.phantombot.jerklib.events.IRCEvent.Type...)
  * @see me.mast3rplan.phantombot.jerklib.tasks.TaskImpl
  * @see Type
  */
-public abstract class OnceTaskImpl extends TaskImpl {
-    public OnceTaskImpl(String name) {
+public abstract class OnceTaskImpl extends TaskImpl
+{
+
+    public OnceTaskImpl(String name)
+    {
         super(name);
     }
 
@@ -54,12 +56,14 @@ public abstract class OnceTaskImpl extends TaskImpl {
     /**
      * {@inheritDoc}
      */
-    public final void receiveEvent(IRCEvent e) {
-        try {
+    public final void receiveEvent(IRCEvent e)
+    {
+        try
+        {
             receiveEventOnce(e);
-        } finally {
+        } finally
+        {
             this.cancel();
         }
     }
-
 }

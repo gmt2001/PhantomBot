@@ -18,26 +18,30 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.util;
 
+public class Pair<A, B>
+{
 
-public class Pair<A, B> {
     public final A first;
     public final B second;
 
-    public Pair(A first, B second) {
+    public Pair(A first, B second)
+    {
         this.first = first;
         this.second = second;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public boolean equals(Object obj) {
-        if (obj == this) return true;
-        if (obj instanceof Pair && obj.hashCode() == hashCode()) {
+    public boolean equals(Object obj)
+    {
+        if (obj == this)
+        {
+            return true;
+        }
+        if (obj instanceof Pair && obj.hashCode() == hashCode())
+        {
             Pair<A, B> other = (Pair<A, B>) obj;
             return (first != null ? first.equals(other.first) : other.first == null) && (second != null ? second.equals(other.second) : other.second == null);
         }
@@ -45,7 +49,8 @@ public class Pair<A, B> {
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         int hash = (first != null ? first.hashCode() ^ 42 : 0);
         hash += (second != null ? second.hashCode() : 0);
         return hash;

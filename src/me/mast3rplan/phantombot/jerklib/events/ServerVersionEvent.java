@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.events;
 
 import me.mast3rplan.phantombot.jerklib.Session;
@@ -30,18 +27,19 @@ import me.mast3rplan.phantombot.jerklib.Session;
  *
  * @author mohadib
  */
-public class ServerVersionEvent extends IRCEvent {
+public class ServerVersionEvent extends IRCEvent
+{
+
     private final String comment, hostName, version, debugLevel;
 
-    public ServerVersionEvent
-            (
-                    String comment,
-                    String hostName,
-                    String version,
-                    String debugLevel,
-                    String rawEventData,
-                    Session session
-            ) {
+    public ServerVersionEvent(
+            String comment,
+            String hostName,
+            String version,
+            String debugLevel,
+            String rawEventData,
+            Session session)
+    {
         super(rawEventData, session, Type.SERVER_VERSION_EVENT);
         this.comment = comment;
         this.hostName = hostName;
@@ -54,7 +52,8 @@ public class ServerVersionEvent extends IRCEvent {
      *
      * @return comment
      */
-    public String getComment() {
+    public String getComment()
+    {
         return comment;
     }
 
@@ -63,7 +62,8 @@ public class ServerVersionEvent extends IRCEvent {
      *
      * @return hostname
      */
-    public String getHostName() {
+    public String getHostName()
+    {
         return hostName;
     }
 
@@ -72,7 +72,8 @@ public class ServerVersionEvent extends IRCEvent {
      *
      * @return version string
      */
-    public String getVersion() {
+    public String getVersion()
+    {
         return version;
     }
 
@@ -81,8 +82,8 @@ public class ServerVersionEvent extends IRCEvent {
      *
      * @return Not impled
      */
-    public String getdebugLevel() {
+    public String getdebugLevel()
+    {
         return debugLevel;
     }
-
 }

@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.event;
 
 import com.google.common.collect.Lists;
@@ -29,26 +26,32 @@ import com.google.common.collect.Sets;
 import java.util.List;
 import java.util.Set;
 
-public class EventBus {
+public class EventBus
+{
+
     private static final EventBus instance = new EventBus();
-    public static EventBus instance() {
+
+    public static EventBus instance()
+    {
         return instance;
     }
-
     private com.google.common.eventbus.EventBus eventBus = new com.google.common.eventbus.EventBus("PhantomBot");
     private Set<Listener> listeners = Sets.newHashSet();
 
-    public void register(Listener listener) {
+    public void register(Listener listener)
+    {
         listeners.add(listener);
         eventBus.register(listener);
     }
 
-    public void unregister(Listener listener) {
+    public void unregister(Listener listener)
+    {
         listeners.remove(listener);
         eventBus.unregister(listener);
     }
 
-    public void post(Event event) {
+    public void post(Event event)
+    {
         eventBus.post(event);
     }
 }

@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.parsers;
 
 import me.mast3rplan.phantombot.jerklib.events.IRCEvent;
@@ -28,8 +25,11 @@ import me.mast3rplan.phantombot.jerklib.events.IRCEvent;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class TopicUpdatedParser implements CommandParser {
-    public IRCEvent createEvent(IRCEvent event) {
+public class TopicUpdatedParser implements CommandParser
+{
+
+    public IRCEvent createEvent(IRCEvent event)
+    {
         Pattern p = Pattern.compile("^.+?TOPIC\\s+(.+?)\\s+.*$");
         Matcher m = p.matcher(event.getRawEventData());
         m.matches();

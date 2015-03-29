@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.events;
 
 import me.mast3rplan.phantombot.jerklib.Channel;
@@ -33,35 +30,37 @@ import java.util.List;
  *
  * @author mohadib
  */
-public class QuitEvent extends IRCEvent {
+public class QuitEvent extends IRCEvent
+{
 
     private final String msg;
     private final List<Channel> chanList;
 
-    public QuitEvent(String rawEventData, Session session, String msg, List<Channel> chanList) {
+    public QuitEvent(String rawEventData, Session session, String msg, List<Channel> chanList)
+    {
         super(rawEventData, session, Type.QUIT);
         this.msg = msg;
         this.chanList = chanList;
     }
-
 
     /**
      * getQuitMessage get the quit message
      *
      * @return the quit message
      */
-    public final String getQuitMessage() {
+    public final String getQuitMessage()
+    {
         return msg;
     }
 
     /**
-     * returns a list of Channel objects
-     * the nick who quit was in
+     * returns a list of Channel objects the nick who quit was in
      *
      * @return List of channels nick was in
      * @see Channel
      */
-    public final List<Channel> getChannelList() {
+    public final List<Channel> getChannelList()
+    {
         return chanList;
     }
 }

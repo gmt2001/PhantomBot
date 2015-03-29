@@ -18,22 +18,20 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.parsers;
 
 import me.mast3rplan.phantombot.jerklib.events.IRCEvent;
 import me.mast3rplan.phantombot.jerklib.events.MotdEvent;
 
-public class MotdParser implements CommandParser {
-    public IRCEvent createEvent(IRCEvent event) {
-        return new MotdEvent
-                (
-                        event.getRawEventData(),
-                        event.getSession(),
-                        event.arg(1),
-                        event.prefix()
-                );
+public class MotdParser implements CommandParser
+{
+
+    public IRCEvent createEvent(IRCEvent event)
+    {
+        return new MotdEvent(
+                event.getRawEventData(),
+                event.getSession(),
+                event.arg(1),
+                event.prefix());
     }
 }

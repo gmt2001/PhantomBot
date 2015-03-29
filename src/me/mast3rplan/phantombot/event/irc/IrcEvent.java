@@ -18,22 +18,23 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.event.irc;
 
 import me.mast3rplan.phantombot.event.Event;
 import me.mast3rplan.phantombot.jerklib.Session;
 
-public abstract class IrcEvent extends Event {
+public abstract class IrcEvent extends Event
+{
+
     private Session session;
 
-    protected IrcEvent(Session session) {
+    protected IrcEvent(Session session)
+    {
         this.session = session;
     }
 
-    public Session getSession() {
+    public Session getSession()
+    {
         return session;
     }
 }

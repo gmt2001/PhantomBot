@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.tasks;
 
 import me.mast3rplan.phantombot.jerklib.Session;
@@ -32,21 +29,24 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * An impl of the Task interface. This impl also
- * provides methods for notifications to listeners.
+ * An impl of the Task interface. This impl also provides methods for
+ * notifications to listeners.
  *
  * @author mohadib
  * @see Session#onEvent(me.mast3rplan.phantombot.jerklib.tasks.Task)
- * @see Session#onEvent(Task, me.mast3rplan.phantombot.jerklib.events.IRCEvent.Type...)
+ * @see Session#onEvent(Task,
+ * me.mast3rplan.phantombot.jerklib.events.IRCEvent.Type...)
  * @see Type
  */
-public abstract class TaskImpl implements Task {
+public abstract class TaskImpl implements Task
+{
+
     private final List<TaskCompletionListener> listeners = new ArrayList<TaskCompletionListener>();
     private boolean canceled;
     private String name;
 
-
-    public TaskImpl(String name) {
+    public TaskImpl(String name)
+    {
         this.name = name;
     }
 
@@ -54,21 +54,24 @@ public abstract class TaskImpl implements Task {
     /* (non-Javadoc)
      * @see me.mast3rplan.phantombot.jerklib.tasks.Task#getName()
      */
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
 
     /* (non-Javadoc)
      * @see me.mast3rplan.phantombot.jerklib.tasks.Task#cancel()
      */
-    public void cancel() {
+    public void cancel()
+    {
         canceled = true;
     }
 
     /* (non-Javadoc)
      * @see me.mast3rplan.phantombot.jerklib.tasks.Task#isCanceled()
      */
-    public boolean isCanceled() {
+    public boolean isCanceled()
+    {
         return canceled;
     }
 
@@ -78,7 +81,8 @@ public abstract class TaskImpl implements Task {
      * @param listener
      * @see me.mast3rplan.phantombot.jerklib.tasks.TaskImpl#taskComplete(Object)
      */
-    public void addTaskListener(TaskCompletionListener listener) {
+    public void addTaskListener(TaskCompletionListener listener)
+    {
         listeners.add(listener);
     }
 
@@ -88,7 +92,8 @@ public abstract class TaskImpl implements Task {
      * @param listener
      * @return true if a listener was removed , else false
      */
-    public boolean removeTaskListener(TaskCompletionListener listener) {
+    public boolean removeTaskListener(TaskCompletionListener listener)
+    {
         return listeners.remove(listener);
     }
 
@@ -97,7 +102,8 @@ public abstract class TaskImpl implements Task {
      *
      * @return list of listeners
      */
-    public List<TaskCompletionListener> getTaskListeners() {
+    public List<TaskCompletionListener> getTaskListeners()
+    {
         return Collections.unmodifiableList(listeners);
     }
 
@@ -106,8 +112,10 @@ public abstract class TaskImpl implements Task {
      *
      * @param result
      */
-    protected void taskComplete(Object result) {
-        for (TaskCompletionListener listener : listeners) {
+    protected void taskComplete(Object result)
+    {
+        for (TaskCompletionListener listener : listeners)
+        {
             listener.taskComplete(result);
         }
     }

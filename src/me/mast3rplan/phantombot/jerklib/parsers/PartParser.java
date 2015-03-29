@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.parsers;
 
 import me.mast3rplan.phantombot.jerklib.events.IRCEvent;
@@ -29,15 +26,16 @@ import me.mast3rplan.phantombot.jerklib.events.PartEvent;
 /**
  * @author mohadib
  */
-public class PartParser implements CommandParser {
-    public PartEvent createEvent(IRCEvent event) {
-        return new PartEvent
-                (
-                        event.getRawEventData(),
-                        event.getSession(),
-                        event.getNick(), // who
-                        event.getSession().getChannel(event.arg(0)),
-                        event.args().size() == 2 ? event.arg(1) : ""
-                );
+public class PartParser implements CommandParser
+{
+
+    public PartEvent createEvent(IRCEvent event)
+    {
+        return new PartEvent(
+                event.getRawEventData(),
+                event.getSession(),
+                event.getNick(), // who
+                event.getSession().getChannel(event.arg(0)),
+                event.args().size() == 2 ? event.arg(1) : "");
     }
 }

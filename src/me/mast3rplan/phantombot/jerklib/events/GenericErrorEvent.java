@@ -18,23 +18,23 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.events;
 
 import me.mast3rplan.phantombot.jerklib.Session;
 
-public class GenericErrorEvent extends ErrorEvent {
+public class GenericErrorEvent extends ErrorEvent
+{
+
     private final Exception ex;
 
-    public GenericErrorEvent(String data, Session session, Exception exception) {
+    public GenericErrorEvent(String data, Session session, Exception exception)
+    {
         super(data, session, ErrorType.GENERIC);
         ex = exception;
     }
 
-    public Exception getException() {
+    public Exception getException()
+    {
         return ex;
     }
-
 }

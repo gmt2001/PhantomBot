@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package com.gmt2001.Console;
 
 /**
@@ -31,26 +28,26 @@ public class out
 {
 
     private static final out instance = new out();
-    
+
     public static out instance()
     {
         return instance;
     }
-    
+
     private out()
     {
     }
-    
+
     public static void print(Object o)
     {
         System.out.print(o);
     }
-    
+
     public static void println()
     {
         System.out.println();
     }
-    
+
     public static void println(Object o)
     {
         System.out.println(o);

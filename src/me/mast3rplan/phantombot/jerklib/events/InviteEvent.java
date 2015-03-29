@@ -18,9 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-
-
 package me.mast3rplan.phantombot.jerklib.events;
 
 import me.mast3rplan.phantombot.jerklib.Session;
@@ -30,10 +27,13 @@ import me.mast3rplan.phantombot.jerklib.Session;
  *
  * @author <a href="mailto:robby.oconnor@gmail.com">Robert O'Connor</a>
  */
-public class InviteEvent extends IRCEvent {
+public class InviteEvent extends IRCEvent
+{
+
     private final String channelName;
 
-    public InviteEvent(String channelName, String rawEventData, Session session) {
+    public InviteEvent(String channelName, String rawEventData, Session session)
+    {
         super(rawEventData, session, Type.INVITE_EVENT);
         this.channelName = channelName;
     }
@@ -43,8 +43,8 @@ public class InviteEvent extends IRCEvent {
      *
      * @return the channel we were invited to.
      */
-    public String getChannelName() {
+    public String getChannelName()
+    {
         return channelName;
     }
-
 }
