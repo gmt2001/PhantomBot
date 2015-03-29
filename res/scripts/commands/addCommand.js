@@ -320,12 +320,7 @@ $.on('command', function(event) {
         if (args.length == 1) {
 			
             var commandname = args[0].toLowerCase();
-			
-            if (!$.inidb.exists("command", commandname)) {
-                $.say("The command !" + commandname + " does not exist!");
-                return;
-            } 
-			
+				
             if ($.inidb.exists("pricecom", commandname) && ($.inidb.get("pricecom", commandname) >= 0)) {
 				
                 var retrieveprice = $.inidb.get("pricecom", commandname);

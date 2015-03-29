@@ -15,8 +15,12 @@ $.songurl = null;
 $.songprefix = null;
 
 
-if($.song_limit==null || $.song_limit=="") {
+if ($.song_limit === undefined || $.song_limit === null || isNaN($.song_limit) || $.song_limit < 0) {
     $.song_limit = 3;
+}
+
+if ($.vetosong_cost === undefined || $.vetosong_cost === null || isNaN($.vetosong_cost) || $.vetosong_cost < 0) {
+    $.vetosong_cost = 0;
 }
 
 if($.song_toggle==null || $.song_toggle=="") {
@@ -335,6 +339,19 @@ $.on('musicPlayerDisconnect', function (event) {
     $.say("[\u266B] Song requests have been disabled.")
     musicPlayerConnected = false;
 });
+           
+if ($.inidb.exists("pricecom", "addsong")){
+$.songcost = $.inidb.get("pricecom", "addsong");
+}
+
+if ($.inidb.exists("pricecom", "songrequest")) {
+$.songcost = $.inidb.get("pricecom", "songrequest");
+}
+
+if ($.songcost === undefined || $.songcost === null || isNaN($.songcost) || $.songcost < 0) {
+    $.songcost = 0;
+}
+
 
 $.on('command', function (event) {
     var sender = event.getSender();
@@ -412,23 +429,6 @@ $.on('command', function (event) {
             $.say("Song request limit has been changed to: " + args[1] + " songs")
         }
 
-        if (action.equalsIgnoreCase("cost")) {
-            if (!$.isAdmin(sender)) {
-                $.say($.adminmsg);
-                return;
-            }
-
-
-            if (args[1] == null) {
-                $.say("Current song cost is: " + $.addsong_cost);
-                return;
-            }
-
-            $.inidb.set('settings', 'addsong_cost', args[1]);
-            $.addsong_cost = parseInt(args[1]);
-            $.say("Cost to add songs will now cost: " + parseInt(args[1]) + " " + $.pointname)
-
-        }
         if (action.equalsIgnoreCase("storing")) {
             if (!$.isCaster(sender)) {
                 $.say($.adminmsg);
@@ -530,8 +530,8 @@ $.on('command', function (event) {
             } else {
                 $.song_status = "Disabled";
             }
-
-            $.say("[Music Settings] - [Limit: " + $.song_limit + " songs] - [Cost: " + $.addsong_cost + " " + $.pointname + "] - [Veto: " + $.vetosong_cost + " " + $.pointname + " " + "] - [Msgs: " + $.song_t + "] - [Music Player: " + $.song_status + "]")
+            
+            $.say("[Music Settings] - [Limit: " + $.song_limit + " songs] - [Cost: " + $.songcost + " " + $.pointname + "] - [Veto: " + $.vetosong_cost + " " + $.pointname + " " + "] - [Msgs: " + $.song_t + "] - [Music Player: " + $.song_status + "]")
         }
 		if (action.equalsIgnoreCase("steal")) {
 			if (!$.isAdmin(sender)) {

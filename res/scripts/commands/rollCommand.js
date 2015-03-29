@@ -4,7 +4,7 @@ $var.lastRandomLost = "";
 
 $.rollbonus = parseInt($.inidb.get('settings', 'roll_bonus'));
 $.rolltimer = parseInt($.inidb.get('settings', 'roll_timer'));
-$.rollcost = parseInt($.inidb.get('settings', 'roll_cost'));
+
 
 if ($.rollbonus === undefined || $.rollbonus === null || isNaN($.rollbonus) || $.rollbonus < 0) {
     $.rollbonus = 2;
@@ -16,6 +16,9 @@ if ($.rolltimer === undefined || $.rolltimer === null || isNaN($.rolltimer) || $
 
 if ($.rollcost === undefined || $.rollcost === null || isNaN($.rollcost) || $.rollcost < 0) {
     $.rollcost = 0;
+}
+if ($.inidb.exists("pricecom", "roll")) {
+$.rollcost = $.inidb.get("pricecom", "roll");
 }
 
 $.on('command', function (event) {
@@ -105,11 +108,6 @@ $.on('command', function (event) {
 			points = 0;
 		}
 
-        if (points < $.rollcost) {
-            $.say(username + ", it costs " + $.rollcost + " " + $.pointname + " to roll and you only have " + points + " " + $.pointname + "!");
-                 return;
-        }
-
             if (d1 == d2) {
                 do {
                     s = $.randElement(win);
@@ -122,6 +120,7 @@ $.on('command', function (event) {
                     s = $.randElement(lost);
                 } while (s.equalsIgnoreCase($var.lastRandomLost) && lost.length > 1);
                 
+
                
                 $.say(username + " rolled a " + die1 + " & " + die2 + ". " + s);
 		if( points > $.rollcost)
