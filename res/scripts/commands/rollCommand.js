@@ -5,6 +5,9 @@ $var.lastRandomLost = "";
 $.rollbonus = parseInt($.inidb.get('settings', 'roll_bonus'));
 $.rolltimer = parseInt($.inidb.get('settings', 'roll_timer'));
 
+if ($.inidb.exists("pricecom", "roll")) {
+$.rollcost = parseInt($.inidb.get("pricecom", "roll"));
+}
 
 if ($.rollbonus === undefined || $.rollbonus === null || isNaN($.rollbonus) || $.rollbonus < 0) {
     $.rollbonus = 2;
@@ -17,9 +20,7 @@ if ($.rolltimer === undefined || $.rolltimer === null || isNaN($.rolltimer) || $
 if ($.rollcost === undefined || $.rollcost === null || isNaN($.rollcost) || $.rollcost < 0) {
     $.rollcost = 0;
 }
-if ($.inidb.exists("pricecom", "roll")) {
-$.rollcost = $.inidb.get("pricecom", "roll");
-}
+
 
 $.on('command', function (event) {
     var sender = event.getSender().toLowerCase();
@@ -108,14 +109,13 @@ $.on('command', function (event) {
                 points = 0;
             }
 
-<<<<<<< HEAD
-=======
+
             if (points < $.rollcost) {
                 $.say(username + ", it costs " + $.rollcost + " " + $.pointname + " to roll and you only have " + points + " " + $.pointname + "!");
                 return;
             }
 
->>>>>>> 2afd3396fc0e905c505618acb5905ca946a78fb9
+
             if (d1 == d2) {
                 do {
                     s = $.randElement(win);
