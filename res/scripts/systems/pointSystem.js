@@ -321,7 +321,7 @@ $.on('command', function (event) {
             return;
         }
         
-        if (isNan(parseInt(args[1]))) {
+        if (isNaN(parseInt(args[1]))) {
             return;
         }
 
