@@ -25,8 +25,8 @@ $.on('command', function(event) {
                 commandString = commandString.substring(1);
             }
             
-            if ($.commandExists(commandString) && !$.isCustomCommand(commandString)) {
-                $.say("You can not overwrite a built in command, " + username + "!");
+            if ($.commandExists(commandString)) {
+                $.say("That command already exists, " + username + "!");
                 return;
             }
             
