@@ -314,12 +314,12 @@ $api.on($script, 'command', function(event) {
         event.setCommand($.inidb.get('aliases', event.getCommand().toLowerCase()));
     }
     
-    if ($.moduleEnabled("./systems/pointSystem.js") && !$.isMod(sender) && $.inidb.exists("pricecom", command.toLowerCase())) {
-            if (parseInt($.inidb.get("points", sender)) < parseInt($.inidb.get("pricecom", command.toLowerCase()))) {
-                $.say("That command costs " + $.inidb.get("pricecom", command.toLowerCase()) + " " + $.pointname + ", which you don't have.");
+    if ($.moduleEnabled("./systems/pointSystem.js") && !$.isMod(sender) && $.inidb.exists("pricecom", 'command'.toLowerCase())) {
+            if (parseInt($.inidb.get("points", sender)) < parseInt($.inidb.get("pricecom", 'command'.toLowerCase()))) {
+                $.say("That command costs " + $.inidb.get("pricecom", 'command'.toLowerCase()) + " " + $.pointname + ", which you don't have.");
                 return;
             } else {
-                $.inidb.decr("points", sender, parseInt($.inidb.get("pricecom", command.toLowerCase())));
+                $.inidb.decr("points", sender, parseInt($.inidb.get("pricecom", 'command'.toLowerCase())));
             }
         }
     
