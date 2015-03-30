@@ -248,4 +248,4 @@ $.on('command', function (event) {
     }
 });
 
-$.registerChatCommand("roll");
+$.registerChatCommand("./commands/rollCommand.js", "roll");

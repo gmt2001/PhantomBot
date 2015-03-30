@@ -350,7 +350,7 @@ $.on('command', function(event) {
             var commandname = args[0].toLowerCase();
             var commandprice = parseInt(args[1]);
             
-            if (!$.commandExists(commandname) || !$.getCommandGroup(commandname).equalsIgnoreCase("")) {
+            if (!$.commandExists(commandname)) {
                 $.say("Please select a command that exists and is available to non-mods.");
                 return;
             } else if (isNaN(commandprice) || commandprice < 0) {
