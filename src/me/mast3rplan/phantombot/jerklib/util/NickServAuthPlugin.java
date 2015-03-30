@@ -50,30 +50,15 @@ import java.util.TimerTask;
  * Example Code:
  * <p/>
  * <
- * pre>
- * final NickServAuthPlugin auth = new NickServAuthPlugin
- * (
- * "letmein", //password
- * 'e', //mode char that indicates success
- * session, //session
- * Arrays.asList("#me.mast3rplan.phantombot.jerklib" , "##swing") // list of channels to join on success
- * );
+ * pre> final NickServAuthPlugin auth = new NickServAuthPlugin ( "letmein",
+ * //password 'e', //mode char that indicates success session, //session
+ * Arrays.asList("#me.mast3rplan.phantombot.jerklib" , "##swing") // list of
+ * channels to join on success );
  *
- * // task listener is optional
- * auth.addTaskListener(new TaskCompletionListener()
- * {
- * public void taskComplete(Object result)
- * {
- * if(result.equals(new Boolean(false)))
- * {
- * conman.quit();
- * }
- * else
- * {
- * com.gmt2001.Console.out.println("Authed!");
- * }
- * }
- * });
+ * // task listener is optional auth.addTaskListener(new
+ * TaskCompletionListener() { public void taskComplete(Object result) {
+ * if(result.equals(new Boolean(false))) { conman.quit(); } else {
+ * com.gmt2001.Console.out.println("Authed!"); } } });
  * </pre>
  *
  * @author mohadib

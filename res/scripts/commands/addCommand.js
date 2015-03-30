@@ -42,6 +42,35 @@ $.on('command', function(event) {
 
     }
     
+    if (command.equalsIgnoreCase("delalias")) {
+        if (!$.isMod(sender)) {
+            $.say($.modmsg);
+            return;
+        }
+        
+        if (args.length < 1) {
+            $.say("Usage: !delalias <alias name>");
+        } else {
+            if (args[0].substring(0, 1) == '!') { 
+                args[0] = args[0].substring(1);
+            }
+            
+            if (!$.inidb.exists('aliases', args[0].toLowerCase())) {
+                $.say("That alias does not exist!");
+                return;
+            }
+            
+            $.logEvent("addCommand.js", 56, username + " deleted the alias !" + args[0].toLowerCase());
+            
+            $.inidb.del('aliases', args[0].toLowerCase());
+            
+            $.unregisterCustomChatCommand("./commands/addCommand.js", args[0].toLowerCase());
+            
+            $.say(username + ", the alias !" + args[0].toLowerCase() + " was successfully deleted!");
+            return;
+        }
+    }
+    
     if (command.equalsIgnoreCase("aliascom")) {
         if (!$.isMod(sender)) {
             $.say($.modmsg);
@@ -67,12 +96,7 @@ $.on('command', function(event) {
                 return;
             }
             
-            if (!$.isCustomCommand(commandString)) {
-                $.say("You can not alias a built in command!");
-                return;
-            }
-            
-            if ($.commandExists(message) && (!$.isCustomCommand(message) || !$.inidb.exists('aliases', message))) {
+            if ($.commandExists(message) && !$.inidb.exists('aliases', message)) {
                 $.say("You can only overwrite an alias!");
                 return;
             }
@@ -83,9 +107,7 @@ $.on('command', function(event) {
             
             $.registerCustomChatCommand("./commands/addCommand.js", message);
             
-            if ($.inidb.exists("commandperm", commandString)) {
-                $.setCustomChatCommandGroup(message, $.inidb.get("commandperm", commandString));
-            }
+            $.setCustomChatCommandGroup(message, $.getCommandGroup(commandString));
             
             $.say(username + ", the command !" + commandString + " was successfully aliased to !" + message);
             return;
@@ -197,28 +219,39 @@ $.on('command', function(event) {
                 return;
             }
             
+            var newgroup = "";
+            
             if (args[1].equalsIgnoreCase("caster") || args[1].equalsIgnoreCase("casters")) {
                 $.logEvent("addCommand.js", 142, username + " set the command !" + args[0] + " to casters only");
-                $.setCustomChatCommandGroup(args[0].toLowerCase(), "caster");
+                newgroup = "caster";
                 $.inidb.set("commandperm", args[0].toLowerCase(), "caster");
                 $.say("The command !" + args[0] + " can now only be used by Casters");
             } else if (args[1].equalsIgnoreCase("mod") || args[1].equalsIgnoreCase("mods")
                 || args[1].equalsIgnoreCase("moderator") || args[1].equalsIgnoreCase("moderators")) {
                 $.logEvent("addCommand.js", 148, username + " set the command !" + args[0] + " to mods only");
-                $.setCustomChatCommandGroup(args[0].toLowerCase(), "mod");
+                newgroup = "mod";
                 $.inidb.set("commandperm", args[0].toLowerCase(), "mod");
                 $.say("The command !" + args[0] + " can now only be used by Moderators");
             } else if (args[1].equalsIgnoreCase("admin") || args[1].equalsIgnoreCase("admins")
                 || args[1].equalsIgnoreCase("administrator") || args[1].equalsIgnoreCase("administrators")) {
                 $.logEvent("addCommand.js", 154, username + " set the command !" + args[0] + " to admins only");
-                $.setCustomChatCommandGroup(args[0].toLowerCase(), "admin");
+                newgroup = "admin";
                 $.inidb.set("commandperm", args[0].toLowerCase(), "admin");
                 $.say("The command !" + args[0] + " can now only be used by Administrators");
             } else {
                 $.logEvent("addCommand.js", 159, username + " set the command !" + args[0] + " to allow all");
-                $.setCustomChatCommandGroup(args[0].toLowerCase(), "");
                 $.inidb.del("commandperm", args[0].toLowerCase());
                 $.say("The command !" + args[0] + " can now be used by all viewers");
+            }
+            
+            $.setCustomChatCommandGroup(args[0].toLowerCase(), newgroup);
+            
+            var acommands = $.inidb.GetKeyList("aliases", "");
+
+            for (var i = 0; i < acommands.length; i++) {
+                if ($.inidb.get("aliases", acommands[i]).equalsIgnoreCase(args[0].toLowerCase())) {
+                    $.setCustomChatCommandGroup(acommands[i], newgroup);
+                }
             }
         }
     }
@@ -233,14 +266,6 @@ $.on('command', function(event) {
         $.say("Additional special tags: '(count)' will add the number of times the command was used (including the current usage)");
     }
     
-    if ($.inidb.exists('aliases', command.toLowerCase())) {
-        command = $.inidb.get('aliases', command.toLowerCase());
-    }
-    if ($.inidb.exists('blacklist', command.toLowerCase())) {
-        $.say(username + ", you have been denied access to that command!");
-        return;
-    }
-    
     if ($.inidb.exists('command', command.toLowerCase())) {
         if ($.inidb.exists("commandperm", command.toLowerCase())) {
             if ($.inidb.get("commandperm", command.toLowerCase()).equalsIgnoreCase("caster") && !isCaster(sender)) {
@@ -249,15 +274,6 @@ $.on('command', function(event) {
                 return;
             } else if ($.inidb.get("commandperm", command.toLowerCase()).equalsIgnoreCase("admin") && !isAdmin(sender)) {
                 return;
-            }
-        }
-		
-        if ($.inidb.exists("pricecom", command.toLowerCase())) {
-            if ( parseInt($.inidb.get("points", sender)) < parseInt($.inidb.get("pricecom", command.toLowerCase()))) {
-                $.say("That command costs " + $.inidb.get("pricecom", command.toLowerCase()) + " " + $.pointname + ", which you don't have.");
-                return;
-            } else {
-                $.inidb.decr("points", sender, parseInt($.inidb.get("pricecom", command.toLowerCase())));
             }
         }
 
@@ -307,36 +323,38 @@ $.on('command', function(event) {
     }
 	
     if (command.equalsIgnoreCase("pricecom")) {
-        if (!isAdmin(sender)) {
+        if (!$.isAdmin(sender) && args.length != 1) {
             $.say($.adminmsg);
             return;
         }
         
         if (args.length == 0) {
-            $.say("Usage: !pricecom <command name> <price>. Set's a cost for use the custom command");
+            $.say("Usage: !pricecom <command name> <price>. Sets the cost for using a command");
             return;
         }
 		
         if (args.length == 1) {
-			
             var commandname = args[0].toLowerCase();
 				
-            if ($.inidb.exists("pricecom", commandname) && ($.inidb.get("pricecom", commandname) >= 0)) {
-				
+            if ($.inidb.exists("pricecom", commandname) && parseInt($.inidb.get("pricecom", commandname)) >= 0) {
                 var retrieveprice = $.inidb.get("pricecom", commandname);
-					
-                $.say("The command !" + commandname + " costs " + retrieveprice + " " + $.pointname + ".");
+		
+                $.say("The command !" + commandname + " costs " + retrieveprice + " " + $.pointname + "!");
                 return;
             } else {
-                $.say("The command !" + commandname + " currently costs 0!");
+                $.say("The command !" + commandname + " currently costs 0 " + $.pointname + "!");
             }
         }
-		
+	
         if (args.length == 2) {
             var commandname = args[0].toLowerCase();
             var commandprice = parseInt(args[1]);
-            if (commandprice < 0) {
-                $.say(commandprice + " is less than 0. Price must be more than 0.")
+            
+            if (!$.commandExists(commandname) || !$.getCommandGroup(commandname).equalsIgnoreCase("")) {
+                $.say("Please select a command that exists and is available to non-mods.");
+                return;
+            } else if (isNaN(commandprice) || commandprice < 0) {
+                $.say("Please enter a valid price, 0 or greater.");
                 return;
             } else {
                 $.inidb.set("pricecom", commandname, commandprice);
@@ -351,6 +369,7 @@ $.registerChatCommand("./commands/addCommand.js", "addcom", "mod");
 $.registerChatCommand("./commands/addCommand.js", "editcom", "mod");
 $.registerChatCommand("./commands/addCommand.js", "pricecom", "mod");
 $.registerChatCommand("./commands/addCommand.js", "aliascom", "mod");
+$.registerChatCommand("./commands/addCommand.js", "delalias", "mod");
 $.registerChatCommand("./commands/addCommand.js", "delcom", "mod");
 $.registerChatCommand("./commands/addCommand.js", "permcom", "admin");
 $.registerChatCommand("./commands/addCommand.js", "helpcom", "mod");
@@ -370,12 +389,11 @@ for (var i = 0; i < commands.length; i++) {
     }
 }
 
-var acommands = $.inidb.GetKeyList("aliases", "");
+$.timer.addTimer("./commands/addCommand.js", "registerAliases", false, function() {
+    var acommands = $.inidb.GetKeyList("aliases", "");
 
-for (i = 0; i < acommands.length; i++) {
-    $.registerCustomChatCommand("./commands/addCommand.js", acommands[i]);
-    
-    if ($.inidb.exists("commandperm", $.inidb.get("aliases", acommands[i]))) {
-        $.setCustomChatCommandGroup(acommands[i], $.inidb.get("commandperm", $.inidb.get("aliases", acommands[i])));
+    for (i = 0; i < acommands.length; i++) {
+        $.registerCustomChatCommand("./commands/addCommand.js", acommands[i]);
+        $.setCustomChatCommandGroup(acommands[i], $.getCommandGroup($.inidb.get("aliases", acommands[i])));
     }
-}
+}, 2 * 1000);

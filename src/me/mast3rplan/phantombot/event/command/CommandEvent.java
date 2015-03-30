@@ -80,6 +80,11 @@ public class CommandEvent extends Event
         return command;
     }
 
+    public void setCommand(String command)
+    {
+        this.command = command;
+    }
+
     public String[] getArgs()
     {
         return args;

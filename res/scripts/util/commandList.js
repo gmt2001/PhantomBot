@@ -138,6 +138,26 @@ $.isCustomCommand = function(command) {
     return false;
 }
 
+$.getCommandGroup = function(command) {
+    var i;
+    
+    for (i = 0; i < $.commandList.length; i++)
+    {
+        if ($.commandList[i][1].equalsIgnoreCase(command)) {
+            return $.commandList[i][2];
+        }
+    }
+    
+    for (i = 0; i < $.customCommandList.length; i++)
+    {
+        if ($.customCommandList[i][1].equalsIgnoreCase(command)) {
+            return $.customCommandList[i][2];
+        }
+    }
+    
+    return "";
+}
+
 $.on('command', function(event) {
     var sender = event.getSender().toLowerCase();
     var username = $.username.resolve(sender);
@@ -165,9 +185,9 @@ $.on('command', function(event) {
             } else {
                 if ($.moduleEnabled($.customCommandList[i - $.commandList.length][0])
                     && (($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("admin") && $.isAdmin(sender))
-                    || ($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("mod") && $.isMod(sender))
-                    || ($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("caster") && $.isCaster(sender))
-                    || $.customCommandList[i - $.commandList.length][2].equalsIgnoreCase(""))) {
+                        || ($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("mod") && $.isMod(sender))
+                        || ($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("caster") && $.isCaster(sender))
+                        || $.customCommandList[i - $.commandList.length][2].equalsIgnoreCase(""))) {
                     length++;
                 }
             }
@@ -213,9 +233,9 @@ $.on('command', function(event) {
             } else {
                 if (!$.moduleEnabled($.customCommandList[i - $.commandList.length][0])
                     || !(($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("admin") && $.isAdmin(sender))
-                    || ($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("mod") && $.isMod(sender))
-                    || ($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("caster") && $.isCaster(sender))
-                    || $.customCommandList[i - $.commandList.length][2].equalsIgnoreCase(""))) {
+                        || ($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("mod") && $.isMod(sender))
+                        || ($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("caster") && $.isCaster(sender))
+                        || $.customCommandList[i - $.commandList.length][2].equalsIgnoreCase(""))) {
                     start++;
                 }
             }
@@ -231,9 +251,9 @@ $.on('command', function(event) {
             } else {
                 if (!$.moduleEnabled($.customCommandList[i - $.commandList.length][0])
                     || !(($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("admin") && $.isAdmin(sender))
-                    || ($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("mod") && $.isMod(sender))
-                    || ($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("caster") && $.isCaster(sender))
-                    || $.customCommandList[i - $.commandList.length][2].equalsIgnoreCase(""))) {
+                        || ($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("mod") && $.isMod(sender))
+                        || ($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("caster") && $.isCaster(sender))
+                        || $.customCommandList[i - $.commandList.length][2].equalsIgnoreCase(""))) {
                     continue;
                 }
             }

@@ -10,7 +10,7 @@ $.println = function(o) {
 };
 
 function isNumeric(num){
-  return !isNaN(num);
+    return !isNaN(num);
 }
 
 var blackList = ["getClass", "equals", "notify", "class", "hashCode", "toString", "wait", "notifyAll"];
@@ -308,6 +308,21 @@ $.hook.call = function(hook, arg, alwaysrun) {
 }
 
 $api.on($script, 'command', function(event) {
+    var sender = event.getSender();
+    
+    if ($.inidb.exists('aliases', event.getCommand().toLowerCase())) {
+        event.setCommand($.inidb.get('aliases', event.getCommand().toLowerCase()));
+    }
+    
+    if ($.moduleEnabled("./systems/pointSystem.js") && !$.isMod(sender) && $.inidb.exists("pricecom", command.toLowerCase())) {
+            if (parseInt($.inidb.get("points", sender)) < parseInt($.inidb.get("pricecom", command.toLowerCase()))) {
+                $.say("That command costs " + $.inidb.get("pricecom", command.toLowerCase()) + " " + $.pointname + ", which you don't have.");
+                return;
+            } else {
+                $.inidb.decr("points", sender, parseInt($.inidb.get("pricecom", command.toLowerCase())));
+            }
+        }
+    
     $.hook.call('command', event, false);
 });
 
@@ -424,7 +439,7 @@ if ($.inidb.GetBoolean("init", "initialsettings", "loaded") == false
     $.loadScript('./util/initialsettings.js');
 }
 
-$.upgrade_version = 6;
+$.upgrade_version = 7;
 if ($.inidb.GetInteger("init", "upgrade", "version") < $.upgrade_version) {
     $.logEvent("init.js", 426, "Running upgrade from v" + $.inidb.GetInteger("init", "upgrade", "version") + " to v" + $.upgrade_version + "...");
     $.loadScript('./util/upgrade.js');

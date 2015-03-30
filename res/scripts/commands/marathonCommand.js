@@ -90,7 +90,7 @@ var announceSchedule = function() {
     }
     
     $.say("Current Caster's Time: " + timestamp + " " + $.timezone);
-	$.say("List of Scheduled Marathons:");
+    $.say("List of Scheduled Marathons:");
     
     lines.sort();
     
@@ -127,16 +127,16 @@ $.on('command', function(event) {
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
     var args = event.getArgs();
-	var groups = new Array();
+    var groups = new Array();
 
     
     if (command.equalsIgnoreCase("marathon")) {
         if (args.length == 0) {
-			if (!$.inidb.FileExists("marathon") || $.inidb.GetKeyList("marathon", "").length == 0) {
-				$.say("There is currently no marathon schedule");
-				return;
-			} 
-			announceSchedule();
+            if (!$.inidb.FileExists("marathon") || $.inidb.GetKeyList("marathon", "").length == 0) {
+                $.say("There is currently no marathon schedule");
+                return;
+            } 
+            announceSchedule();
         } else {
             if (!isMod(sender)) {
                 $.say($.modmsg);
@@ -166,7 +166,7 @@ $.on('command', function(event) {
                 
                 $.inidb.set("marathon", "name", data); 
                 $.say("Marathon name set!");
-			} else if (args[0].equalsIgnoreCase("nameclear")) {
+            } else if (args[0].equalsIgnoreCase("nameclear")) {
                 $.inidb.del("marathon", "name");
                 
                 $.say("Marathon name cleared!");

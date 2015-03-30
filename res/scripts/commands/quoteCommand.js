@@ -9,10 +9,10 @@ $.on('command', function(event) {
     var num;
     
     if(command.equalsIgnoreCase("quote")) {
-         if (argsString.length() > 0) {
-                num = parseInt(argsString);
+        if (argsString.length() > 0) {
+            num = parseInt(argsString);
         } else {
-                num = $.rand(num_quotes);
+            num = $.rand(num_quotes);
         }
 
         if (isNaN(num_quotes) || num_quotes == 0) {
@@ -49,7 +49,7 @@ $.on('command', function(event) {
         $.say("Quote added! There are now " + (num_quotes + 1) + " quotes!");
     }
 
-     if (command.equalsIgnoreCase("editquote")) {
+    if (command.equalsIgnoreCase("editquote")) {
         if (!$.isMod(sender)) {
             $.say($.modmsg);
             return;

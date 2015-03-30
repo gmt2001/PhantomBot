@@ -1,9 +1,9 @@
 if ($.inidb.FileExists("timezone")) {
-	$.timezone = $.inidb.get("timezone", "timezone");
+    $.timezone = $.inidb.get("timezone", "timezone");
 }
 else {
-	$.inidb.set("timezone", "timezone", "America/New_York" );
-	$.timezone = $.inidb.get("timezone", "timezone");
+    $.inidb.set("timezone", "timezone", "America/New_York" );
+    $.timezone = $.inidb.get("timezone", "timezone");
 }
 $.timelevel = $.inidb.get('settings', 'timelevel');
 if($.timelevel == null) {
@@ -16,19 +16,19 @@ $.say("A list of time zones can be found here: http://en.wikipedia.org/wiki/List
 $.say("");
 
 $.setTimeZone = function (timezone) { 
-	var validIDs = java.util.TimeZone.getAvailableIDs();
-	for (var i=0; i < validIDs.length; i++) {
-		var currentID = validIDs[i];
-		if (currentID != null && currentID.toLowerCase()==timezone.toLowerCase()) {
-			$.inidb.set("timezone", "timezone", currentID);
-			$.timezone = $.inidb.get("timezone", "timezone");
-			$.say("New time zone " + currentID + " set!");
-			return;
-		}
-	}
-	$.say("Error! Invalid time zone specified. Time zone has not been changed.");
-	$.say("For a list of valid time zones visit http://en.wikipedia.org/wiki/List_of_tz_database_time_zones.");
-	$.say("Current time zone is: " + $.timezone);
+    var validIDs = java.util.TimeZone.getAvailableIDs();
+    for (var i=0; i < validIDs.length; i++) {
+        var currentID = validIDs[i];
+        if (currentID != null && currentID.toLowerCase()==timezone.toLowerCase()) {
+            $.inidb.set("timezone", "timezone", currentID);
+            $.timezone = $.inidb.get("timezone", "timezone");
+            $.say("New time zone " + currentID + " set!");
+            return;
+        }
+    }
+    $.say("Error! Invalid time zone specified. Time zone has not been changed.");
+    $.say("For a list of valid time zones visit http://en.wikipedia.org/wiki/List_of_tz_database_time_zones.");
+    $.say("Current time zone is: " + $.timezone);
 }
 
 
@@ -50,51 +50,51 @@ $.on('command', function(event) {
     } else {
         args = argsString.split(" ");
     }
-	if (command.equalsIgnoreCase("timezone")) {
+    if (command.equalsIgnoreCase("timezone")) {
         if (args.length == 0) {
-			if (!$.isAdmin(sender)) {
-				$.say("The caster's time zone is '" + $.timezone + ".");
-                return;
-            }
-			else {
-				$.say("The current time zone is '" + $.timezone + ".");
-				$.say(" A list of time zones can be found here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones.");
-				return;
-			}
-        } else if (args[0]=="help"){
-			$.say("The current time zone is '" + $.timezone + "'! To change it use '!timezone <timezone>'.")
-			$.say("A list of time zones can be found here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones.");
-			return;
-		} else {
-			timezone = args[0];
-
-			if (!$.isAdmin(sender)) {
-				$.say($.adminmsg);
-                return;
-            }
-			$.setTimeZone(timezone);
-			$.timezone = $.inidb.get("timezone", "timezone");
-		}
-		
-	}
-	if (command.equalsIgnoreCase("timelevel")) {
             if (!$.isAdmin(sender)) {
-		$.say("You must be an admin to use this command.");
+                $.say("The caster's time zone is '" + $.timezone + ".");
                 return;
-            }   else {
-                if ($.timelevel=="true") {
-                    $.timelevel = "false";
-                    $.inidb.set('settings','timelevel', "false");
-                    $.say("Earning higher group rank by spending time in chat has been disabled.");
-                    return;
-                } else {
-                    $.timelevel = "true";
-                    $.inidb.set('settings','timelevel', "true");
-                    $.say("Earning higher group rank by spending time in chat has been enabled.");
-                    return;
-                }
-            }  
+            }
+            else {
+                $.say("The current time zone is '" + $.timezone + ".");
+                $.say(" A list of time zones can be found here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones.");
+                return;
+            }
+        } else if (args[0]=="help"){
+            $.say("The current time zone is '" + $.timezone + "'! To change it use '!timezone <timezone>'.")
+            $.say("A list of time zones can be found here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones.");
+            return;
+        } else {
+            timezone = args[0];
+
+            if (!$.isAdmin(sender)) {
+                $.say($.adminmsg);
+                return;
+            }
+            $.setTimeZone(timezone);
+            $.timezone = $.inidb.get("timezone", "timezone");
         }
+		
+    }
+    if (command.equalsIgnoreCase("timelevel")) {
+        if (!$.isAdmin(sender)) {
+            $.say("You must be an admin to use this command.");
+            return;
+        } else {
+            if ($.timelevel=="true") {
+                $.timelevel = "false";
+                $.inidb.set('settings','timelevel', "false");
+                $.say("Earning higher group rank by spending time in chat has been disabled.");
+                return;
+            } else {
+                $.timelevel = "true";
+                $.inidb.set('settings','timelevel', "true");
+                $.say("Earning higher group rank by spending time in chat has been enabled.");
+                return;
+            }
+        }  
+    }
 
     if(command.equalsIgnoreCase("time")) {
         if(args.length == 3) {

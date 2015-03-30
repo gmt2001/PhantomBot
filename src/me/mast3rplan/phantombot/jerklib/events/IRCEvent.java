@@ -103,7 +103,8 @@ public class IRCEvent extends EventToken
         AWAY_EVENT,
         ERROR,
         CTCP_EVENT,
-        CONNECTION_LOST,}
+        CONNECTION_LOST,
+    }
     private final Type type;
     private final String data;
     private final Session session;

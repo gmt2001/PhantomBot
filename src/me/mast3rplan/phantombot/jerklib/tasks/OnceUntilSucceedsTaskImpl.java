@@ -52,8 +52,8 @@ public abstract class OnceUntilSucceedsTaskImpl extends TaskImpl
      * Process the {@link IRCEvent}.
      *
      * @param e the {@link IRCEvent} to process
-     * @return whether the task was successful or not; when        returning <code>false</code>, the task will remain in the
-     * task queue; when returning <code>true</code>, it will be removed (and not
+     * @return whether the task was successful or not; when returning <code>false</code>, the task will remain in the task
+     * queue; when returning <code>true</code>, it will be removed (and not
      * executed any more)
      */
     public abstract boolean receiveEventOnce(IRCEvent e);

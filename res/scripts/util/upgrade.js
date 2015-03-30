@@ -269,7 +269,7 @@ if ($.inidb.GetInteger("init", "upgrade", "version") < 2) {
     
     if ($.inidb.exists("settings", "caps_msg") && !$.inidb.get("settings", "caps_msg").isEmpty()) {
         $.inidb.set("settings", "capsmessage", $.inidb.get("settings", "caps_msg"));
-        $.inidb.del("settings", "caps_msg")
+        $.inidb.del("settings", "caps_msg");
     }
     
     if ($.inidb.exists("settings", "caps_limit")) {
@@ -386,6 +386,90 @@ if ($.inidb.GetInteger("init", "upgrade", "version") < 6) {
     }
     
     println("   End version 6 upgrades...");
+}
+
+if ($.inidb.GetInteger("init", "upgrade", "version") < 7) {
+    println("   Starting version 7 upgrades...");
+    
+    $.inidb.del("settings", "casterallowed");
+    
+    println("     Migrating cost values to pricecom");
+    
+    if ($.inidb.exists("settings", "roll_cost")) {
+        $.inidb.set("pricecom", "roll", $.inidb.get("settings", "roll_cost"));
+        
+        $.inidb.del("settings", "roll_cost");
+    }
+    
+    if ($.inidb.exists("settings", "vetosong_cost")) {
+        $.inidb.set("pricecom", "vetosong", $.inidb.get("settings", "vetosong_cost"));
+        
+        $.inidb.del("settings", "vetosong_cost");
+    }
+    
+    if ($.inidb.exists("pricecom", "songrequest") && !$.inidb.exists("pricecom", "addsong")) {
+        $.inidb.set("pricecom", "addsong", $.inidb.get("pricecom", "songrequest"));
+    }
+    
+    if ($.inidb.exists("pricecom", "songrequest")) {
+        $.inidb.del("pricecom", "songrequest");
+    }
+    
+    println("     Creating default aliases");
+    
+    $.inidb.set("aliases", "songrequest", "addsong");
+    $.inidb.set("aliases", "deletesong", "delsong");
+    $.inidb.set("aliases", "removesong", "delsong");
+    $.inidb.set("aliases", "songsteal", "stealsong");
+    $.inidb.set("aliases", "music", "song");
+    
+    if (!$.inidb.exists("groups", "0") || !$.inidb.get("groups", "0").equalsIgnoreCase("caster")) {
+        println("     Upgrading groups system");
+        
+        keys = $.inidb.GetKeyList("groups", "");
+        var admingroup = 8;
+        var modgroup = 7;
+        
+        for (i = 0; i < keys.length; i++) {
+            if ($.inidb.get("groups", keys[i]).equalsIgnoreCase("Administrator")) {
+                admingroup = keys[i];
+            }
+            
+            if ($.inidb.get("groups", keys[i]).equalsIgnoreCase("Moderator")) {
+                modgroup = keys[i];
+            }
+            
+            $.inidb.del("groups", keys[i]);
+        }
+        
+        keys = $.inidb.GetKeyList("group", "");
+        
+        var users = new Array();
+        
+        for (i = 0; i < keys.length; i++) {
+            var group = $.inidb.get("group", keys[i]);
+            
+            if (group == admingroup) {
+                users.push(new Array(keys[i], 1));
+            }
+            
+            if (group == modgroup) {
+                users.push(new Array(keys[i], 2));
+            }
+            
+            if (group == 1) {
+                users.push(new Array(keys[i], 6));
+            }
+            
+            $.inidb.del("group", keys[i]);
+        }
+        
+        for (i = 0; i < users.length; i++) {
+            $.inidb.set("group", users[i][0], users[i][1]);
+        }
+    }
+    
+    println("   End version 7 upgrades...");
 }
 
 println("   Saving...");

@@ -19,10 +19,6 @@ if ($.song_limit === undefined || $.song_limit === null || isNaN($.song_limit) |
     $.song_limit = 3;
 }
 
-if ($.vetosong_cost === undefined || $.vetosong_cost === null || isNaN($.vetosong_cost) || $.vetosong_cost < 0) {
-    $.vetosong_cost = 0;
-}
-
 if($.song_toggle==null || $.song_toggle=="") {
     $.song_toggle = 1;
 }
@@ -339,19 +335,6 @@ $.on('musicPlayerDisconnect', function (event) {
     $.say("[\u266B] Song requests have been disabled.")
     musicPlayerConnected = false;
 });
-           
-if ($.inidb.exists("pricecom", "addsong")){
-$.songcost = $.inidb.get("pricecom", "addsong");
-}
-
-if ($.inidb.exists("pricecom", "songrequest")) {
-$.songcost = $.inidb.get("pricecom", "songrequest");
-}
-
-if ($.songcost === undefined || $.songcost === null || isNaN($.songcost) || $.songcost < 0) {
-    $.songcost = 0;
-}
-
 
 $.on('command', function (event) {
     var sender = event.getSender();
@@ -372,7 +355,7 @@ $.on('command', function (event) {
     }
 
 
-    if (command.equalsIgnoreCase("song") || command.equalsIgnoreCase("music")) {
+    if (command.equalsIgnoreCase("song")) {
         action = args[0];
         if (action.equalsIgnoreCase("toggle")) {
             if (!$.isCaster(sender)) {
@@ -500,23 +483,6 @@ $.on('command', function (event) {
             reloadPlaylist();
             $.say("Default playlist has been reloaded.");
         }
-        
-        if (action.equalsIgnoreCase("veto")) {
-            if (!$.isAdmin(sender)) {
-                $.say($.adminmsg);
-                return;
-            }
-
-            if (args[1] == null) {
-                $.say("Current veto cost is: " + $.vetosong_cost);
-                return;
-            }
-
-            $.inidb.set('settings', 'vetosong_cost', parseInt(args[1]));
-            $.vetosong_cost = parseInt(args[1]);
-            $.say("Cost to veto songs will now cost: " + parseInt(args[1]) + " " + $.pointname)
-
-        }
 
         if (action.equalsIgnoreCase("config")) {
             if ($.song_toggle == 1) {
@@ -531,7 +497,7 @@ $.on('command', function (event) {
                 $.song_status = "Disabled";
             }
             
-            $.say("[Music Settings] - [Limit: " + $.song_limit + " songs] - [Cost: " + $.songcost + " " + $.pointname + "] - [Veto: " + $.vetosong_cost + " " + $.pointname + " " + "] - [Msgs: " + $.song_t + "] - [Music Player: " + $.song_status + "]")
+            $.say("[Music Settings] - [Limit: " + $.song_limit + " songs] - [Msgs: " + $.song_t + "] - [Music Player: " + $.song_status + "]")
         }
         if (action.equalsIgnoreCase("steal")) {
             if (!$.isAdmin(sender)) {
@@ -549,25 +515,10 @@ $.on('command', function (event) {
 			
     }
 
-    if (command.equalsIgnoreCase("addsong") || command.equalsIgnoreCase("songrequest")) {
+    if (command.equalsIgnoreCase("addsong")) {
         if ($.inidb.get('blacklist', sender) == "true") {
             $.say("You are denied access to song request features!");
             return;
-        }
-        if (!$.isMod(sender)) {
-            var points = $.inidb.get('points', sender);
-
-            if (points == null) points = 0;
-            else points = parseInt(points);
-
-            if ($.addsong_cost > points) {
-                $.say(sender + ", " + " You need " + $.addsong_cost + " " + $.pointname + " to add this song!");
-                return;
-            }
-            if ($.addsong_cost > 0) {
-                $.inidb.decr('points', sender, $.addsong_cost);
-            }
-            
         }
         
 
@@ -625,7 +576,7 @@ $.on('command', function (event) {
             }
         }
     }
-    if (command.equalsIgnoreCase("delsong") || command.equalsIgnoreCase("deletesong") || command.equalsIgnoreCase("removesong")) {
+    if (command.equalsIgnoreCase("delsong")) {
         if (!musicPlayerConnected) {
             $.say("Songrequests is currently disabled!");
             return;
@@ -713,22 +664,7 @@ $.on('command', function (event) {
     
     
     if (command.equalsIgnoreCase("vetosong")) {
-        var points = $.inidb.get('points', sender);
-
-        if (points == null) {
-            points = 0; 
-        } else {
-            points = parseInt(points); 
-        }
-        
-        if ($.vetosong_cost > points) {
-            $.say(sender + ", You need " + $.vetosong_cost + " " + $.pointname + " to skip this song!");
-            return;
-        }
-
-        $.inidb.decr('points', sender, parseInt($.vetosong_cost));
-
-        $.say(username + ", paid " + $.vetosong_cost + " " + $.pointname + " to skip the current song!");
+        $.say(username + ", paid to skip the current song!");
 
         next();
     }
@@ -749,7 +685,7 @@ $.on('command', function (event) {
         }
     }
 
-    if (command.equalsIgnoreCase("stealsong") || command.equalsIgnoreCase("songsteal")) {
+    if (command.equalsIgnoreCase("stealsong")) {
         if (!$.isAdmin(sender)) {
             $.say($.adminmsg);
             return;
@@ -768,13 +704,13 @@ $.on('command', function (event) {
 
 
 $.registerChatCommand("addsong");
-$.registerChatCommand("volume");
+$.registerChatCommand("volume", "mod");
 $.registerChatCommand("skipsong");
 $.registerChatCommand("vetosong");
 $.registerChatCommand("currentsong");
 $.registerChatCommand("nextsong");
-$.registerChatCommand("stealsong");
-$.registerChatCommand("songsteal");
+$.registerChatCommand("stealsong", "admin");
+$.registerChatCommand("delsong", "mod");
 
 $.on('musicPlayerCurrentVolume', function (event) {
     $.say("[\u266B] Music volume is currently: " + parseInt(event.getVolume()) + "%");

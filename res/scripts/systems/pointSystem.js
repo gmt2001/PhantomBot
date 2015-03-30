@@ -35,25 +35,25 @@ if ($.mingift == undefined || $.mingift == null || isNaN($.mingift) || $.mingift
 }
 
 $.getPoints = function (user) {
-            var points = $.inidb.get('points', user);
+    var points = $.inidb.get('points', user);
 
-            var timeString = "";
+    var timeString = "";
 
-            var time = $.inidb.get('time', user);
+    var time = $.inidb.get('time', user);
 
-            if (points == null) points = 0;
-            if (time == null) time = 0;
+    if (points == null) points = 0;
+    if (time == null) time = 0;
 
-            var minutes = parseInt((time / 60) % 60);
-            var hours = parseInt(time / 3600);
+    var minutes = parseInt((time / 60) % 60);
+    var hours = parseInt(time / 3600);
 
-            timeString = " -- [";
-            if (hours != 0) timeString += " " + hours + " Hrs";
-            else if (minutes != 0) timeString += " " + minutes + " Mins";
-            else timeString += " " + minutes + " Mins";
-            timeString += " ]";
+    timeString = " -- [";
+    if (hours != 0) timeString += " " + hours + " Hrs";
+    else if (minutes != 0) timeString += " " + minutes + " Mins";
+    else timeString += " " + minutes + " Mins";
+    timeString += " ]";
 
-            $.say($.username.resolve(user) + " has " + points.toString() + " " + $.pointname + timeString);
+    $.say($.username.resolve(user) + " has " + points.toString() + " " + $.pointname + timeString);
 }
 
 
@@ -77,246 +77,246 @@ $.on('command', function (event) {
 
 
     if (command.equalsIgnoreCase("points") || command.equalsIgnoreCase($.pointname) || command.equalsIgnoreCase("bank")) {
-    if (args.length >=1) {
-        var action = args[0];
+        if (args.length >=1) {
+            var action = args[0];
 
 
-        $var.perm_toggle = false;
-        if ($.inidb.get('settings', 'perm_toggle') == 1) {
-            $var.perm_toggle = true;
-        } else if ($.inidb.get('settings', 'perm_toggle') == 2) {
             $var.perm_toggle = false;
-        }
-
-        if (action.equalsIgnoreCase("give") || action.equalsIgnoreCase("send")) {
-            if ($var.perm_toggle == true) {
-                if (!$.isMod(sender)) {
-                    $.say($.modmsg);
-                    return;
-                }
-            } else {
-                if (!$.isAdmin(sender)) {
-                    $.say($.adminmsg);
-                    return;
-                }
-            }
-            
-            username = args[1].toLowerCase();
-            points = parseInt(args[2]);
-            
-            if (points < 0){
-                $.say($.username.resolve(sender) + ", you can't gift " + $.pointname + " in the negative.");
-                return;
-            } else {
-                $.inidb.incr('points', username, points);
-                $.say(points + " " + $.pointname + " was sent to " + $.username.resolve(username) + ".");
-            }
-
-        } else if (action.equalsIgnoreCase("take") || action.equalsIgnoreCase("withdraw")) {
-            if ($var.perm_toggle == true) {
-                if (!$.isMod(sender)) {
-                    $.say($.modmsg);
-                    return;
-                }
-            } else {
-                if (!$.isAdmin(sender)) {
-                    $.say($.adminmsg);
-                    return;
-                }
-            }
-            
-            username = args[1].toLowerCase();
-            points = parseInt(args[2]);
-            
-            if (points > $.inidb.get('points', username)) {
-                $.say($.username.resolve(sender) + ", why are you trying to take more than what" + $.username.resolve(username) + " has in " + $.pointname + "?");
-            } else {
-                $.inidb.decr('points', username, points);
-                $.say(points + " " + $.pointname + " was withdrawn from " + $.username.resolve(username) + ".");
-
-            }
-
-        } else if (action.equalsIgnoreCase("set")) {
-            if ($var.perm_toggle == true) {
-                if (!$.isMod(sender)) {
-                    $.say($.modmsg);
-                    return;
-                }
-            } else {
-                if (!$.isAdmin(sender)) {
-                    $.say($.adminmsg);
-                    return;
-                }
-            }
-            
-            username = args[1].toLowerCase();
-            points = parseInt(args[2]);
-            
-            if (points < 0) {
-                $.say($.username.resolve(sender) + ", you know very well you can't set someone's " + $.pointname + " to a negative number.");
-            } else {
-                $.inidb.set('points', username, points);
-                $.say($.username.resolve(username) + "'s " + $.pointname + " were set to " + points + " " + $.pointname + ".");
-            }
-
-        } else if (action.equalsIgnoreCase("gain")) {
-            if (!$.isAdmin(sender)) {
-                $.say($.adminmsg);
-                return;
-            }
-
-            if (args[1] < 0) {
-                $.say("That'll cause people to lose " + $.pointname + ". Don't use negatives!");
-                return;
-            } else {
-                $.inidb.set('settings', 'pointgain', args[1]);
-                $.pointgain = parseInt(args[1]);
-
-                $.say(username + " has set the current point earnings to " + $.pointgain + " " + $.pointname + " every " + $.pointinterval + " minute(s) while stream is online.");
-            }
-        } else if (action.equalsIgnoreCase("offlinegain")) {
-            if (!$.isAdmin(sender)) {
-                $.say($.adminmsg);
-                return;
-            }
-
-            if (args[1] < 0) {
-                $.say("That'll cause people to lose " + $.pointname + ". Don't use negatives!");
-                return;
-            } else {
-                $.inidb.set('settings', 'offlinegain', args[1]);
-                $.offlinegain = parseInt(args[1]);
-
-                $.say(username + " has set the offline point earnings to " + $.offlinegain + " " + $.pointname + " every " + $.offlineinterval + " minute(s) while stream is offline.");
-            }
-        } else if (action.equalsIgnoreCase("all")) {
-            if ($var.perm_toggle == true) {
-                if (!$.isMod(sender)) {
-                    $.say($.modmsg);
-                    return;
-                }
-            } else {
-                if (!$.isAdmin(sender)) {
-                    $.say($.adminmsg);
-                    return;
-                }
-            }
-
-            if (args[1] < 0) {
-                $.say($.username.resolve(sender) + " seems like you want to give everyone negative " + $.pointname + "!");
-                return;
-            } else {
-                var name;
-                var i;
-                for (i = 0; i < $.users.length; i++) {
-                    name = $.users[i][0];
-                    $.inidb.incr('points', name.toLowerCase(), args[1]);
-                }
-                $.say(args[1] + " " + $.pointname + " has been sent to everyone in the channel!");
-            }
-        } else if (action.equalsIgnoreCase("bonus")) {
-            if (!$.isAdmin(sender)) {
-                $.say($.adminmsg);
-                return;
-            }
-
-            if (args[1] < 0) {
-                $.say("That'll cause people to lose " + $.pointname + ". Don't use negatives!")
-                return;
-            } else {
-                $.inidb.set('settings', 'pointbonus', args[1]);
-                $.pointbonus = parseInt(args[1]);
-
-                $.say(username + " has set the current point bonus to " + $.pointbonus + " " + $.pointname + " per group level.");
-            }
-
-        } else if (action.equalsIgnoreCase("interval")) {
-            if (!$.isAdmin(sender)) {
-                $.say($.adminmsg);
-                return;
-            }
-
-            if (args[1] < 0) {
-                $.say("Can't set the interval with negative minutes.");
-                return;
-            } else {
-                $.inidb.set('settings', 'pointinterval', args[1]);
-                $.pointinterval = parseInt(args[1]);
-
-                $.say(username + " has set the interval time for earning points to " + $.pointinterval + " minutes.");
-            }
-
-        } else if (action.equalsIgnoreCase("offlineinterval")) {
-            if (!$.isAdmin(sender)) {
-                $.say($.adminmsg);
-                return;
-            }
-
-            if (args[1] < 0) {
-                $.say("Can't set the interval with negative minutes.");
-                return;
-            } else {
-                $.inidb.set('settings', 'offlineinterval', args[1]);
-                $.offlineinterval = parseInt(args[1]);
-
-                $.say(username + " has set the interval time for earning points to " + $.offlineinterval + " minutes while the stream is offline.");
-            }
-
-        } else if (action.equalsIgnoreCase("mingift")) {
-            if (!$.isAdmin(sender)) {
-                $.say($.adminmsg);
-                return;
-            }
-
-            if (args[1] < 0) {
-                $.say("Can't set the minimum gift amount to negatives.");
-                return;
-            } else {
-                $.inidb.set('settings', 'mingift', args[1]);
-                $.mingift = parseInt(args[1]);
-
-                $.say(username + " has set the minimum amount of " + $.pointname + " that can be gifted to: " + args[1] + " " + $.pointname + ".");
-            }
-
-        } else if (action.equalsIgnoreCase("name")) {
-            if (!$.isAdmin(sender)) {
-                $.say($.adminmsg);
-                return;
-            }
-
-            $.inidb.set('settings', 'pointname', argsString2);
-            $.say(username + " has changed the name of " + $.pointname + " to '" + argsString2 + "'!");
-
-            $.pointname = argsString2;
-        } else if (action.equalsIgnoreCase("toggle") && !argsString.isEmpty()) {
-            if (!$.isAdmin(sender)) {
-                $.say($.adminmsg);
-                return;
-            }
-
-            if ($var.perm_toggle == false) {
-
+            if ($.inidb.get('settings', 'perm_toggle') == 1) {
                 $var.perm_toggle = true;
-                $.inidb.set('settings', 'perm_toggle', 1);
-                $.say("From now on Mods will be able to use privileged point commands!");
-
-            } else if ($var.perm_toggle == true) {
-
+            } else if ($.inidb.get('settings', 'perm_toggle') == 2) {
                 $var.perm_toggle = false;
-                $.inidb.set('settings', 'perm_toggle', 2);
-                $.say("From now on only Admins will be able to use privileged point commands!");
             }
-        } else if (action.equalsIgnoreCase("gain") || action.equalsIgnoreCase("bonus") || action.equalsIgnoreCase("interval") || action.equalsIgnoreCase("offlineinterval") || action.equalsIgnoreCase("name") || action.equalsIgnoreCase("config") ||  action.equalsIgnoreCase("mingift")) {
-            $.say("[Point Settings] - [Name: " + $.pointname + "] - [Gain: " + $.pointgain + " " + $.pointname + "] - [Interval: " + $.pointinterval + " minutes] - [Offline Gain: " + $.offlinegain + " " + $.pointname + "] - [Offline interval: " + $.offlineinterval + " minutes] - [Bonus: " + $.pointbonus + " " + $.pointname + "] - [Gifting Minimum: " + $.mingift + "]");
-        } else if (action.equalsIgnoreCase("help")) {
-            $.say("Usage: '!points give <name> <amount>' -- '!points take <name> <amount>' -- '!points set <name> <amount>' -- '!points gift <name> <amount>' -- '!points gain <amount>' -- '!points bonus <amount>' -- '!points name <amount>'");
-            return;
-        } else {
+
+            if (action.equalsIgnoreCase("give") || action.equalsIgnoreCase("send")) {
+                if ($var.perm_toggle == true) {
+                    if (!$.isMod(sender)) {
+                        $.say($.modmsg);
+                        return;
+                    }
+                } else {
+                    if (!$.isAdmin(sender)) {
+                        $.say($.adminmsg);
+                        return;
+                    }
+                }
+            
+                username = args[1].toLowerCase();
+                points = parseInt(args[2]);
+            
+                if (points < 0){
+                    $.say($.username.resolve(sender) + ", you can't gift " + $.pointname + " in the negative.");
+                    return;
+                } else {
+                    $.inidb.incr('points', username, points);
+                    $.say(points + " " + $.pointname + " was sent to " + $.username.resolve(username) + ".");
+                }
+
+            } else if (action.equalsIgnoreCase("take") || action.equalsIgnoreCase("withdraw")) {
+                if ($var.perm_toggle == true) {
+                    if (!$.isMod(sender)) {
+                        $.say($.modmsg);
+                        return;
+                    }
+                } else {
+                    if (!$.isAdmin(sender)) {
+                        $.say($.adminmsg);
+                        return;
+                    }
+                }
+            
+                username = args[1].toLowerCase();
+                points = parseInt(args[2]);
+            
+                if (points > $.inidb.get('points', username)) {
+                    $.say($.username.resolve(sender) + ", why are you trying to take more than what" + $.username.resolve(username) + " has in " + $.pointname + "?");
+                } else {
+                    $.inidb.decr('points', username, points);
+                    $.say(points + " " + $.pointname + " was withdrawn from " + $.username.resolve(username) + ".");
+
+                }
+
+            } else if (action.equalsIgnoreCase("set")) {
+                if ($var.perm_toggle == true) {
+                    if (!$.isMod(sender)) {
+                        $.say($.modmsg);
+                        return;
+                    }
+                } else {
+                    if (!$.isAdmin(sender)) {
+                        $.say($.adminmsg);
+                        return;
+                    }
+                }
+            
+                username = args[1].toLowerCase();
+                points = parseInt(args[2]);
+            
+                if (points < 0) {
+                    $.say($.username.resolve(sender) + ", you know very well you can't set someone's " + $.pointname + " to a negative number.");
+                } else {
+                    $.inidb.set('points', username, points);
+                    $.say($.username.resolve(username) + "'s " + $.pointname + " were set to " + points + " " + $.pointname + ".");
+                }
+
+            } else if (action.equalsIgnoreCase("gain")) {
+                if (!$.isAdmin(sender)) {
+                    $.say($.adminmsg);
+                    return;
+                }
+
+                if (args[1] < 0) {
+                    $.say("That'll cause people to lose " + $.pointname + ". Don't use negatives!");
+                    return;
+                } else {
+                    $.inidb.set('settings', 'pointgain', args[1]);
+                    $.pointgain = parseInt(args[1]);
+
+                    $.say(username + " has set the current point earnings to " + $.pointgain + " " + $.pointname + " every " + $.pointinterval + " minute(s) while stream is online.");
+                }
+            } else if (action.equalsIgnoreCase("offlinegain")) {
+                if (!$.isAdmin(sender)) {
+                    $.say($.adminmsg);
+                    return;
+                }
+
+                if (args[1] < 0) {
+                    $.say("That'll cause people to lose " + $.pointname + ". Don't use negatives!");
+                    return;
+                } else {
+                    $.inidb.set('settings', 'offlinegain', args[1]);
+                    $.offlinegain = parseInt(args[1]);
+
+                    $.say(username + " has set the offline point earnings to " + $.offlinegain + " " + $.pointname + " every " + $.offlineinterval + " minute(s) while stream is offline.");
+                }
+            } else if (action.equalsIgnoreCase("all")) {
+                if ($var.perm_toggle == true) {
+                    if (!$.isMod(sender)) {
+                        $.say($.modmsg);
+                        return;
+                    }
+                } else {
+                    if (!$.isAdmin(sender)) {
+                        $.say($.adminmsg);
+                        return;
+                    }
+                }
+
+                if (args[1] < 0) {
+                    $.say($.username.resolve(sender) + " seems like you want to give everyone negative " + $.pointname + "!");
+                    return;
+                } else {
+                    var name;
+                    var i;
+                    for (i = 0; i < $.users.length; i++) {
+                        name = $.users[i][0];
+                        $.inidb.incr('points', name.toLowerCase(), args[1]);
+                    }
+                    $.say(args[1] + " " + $.pointname + " has been sent to everyone in the channel!");
+                }
+            } else if (action.equalsIgnoreCase("bonus")) {
+                if (!$.isAdmin(sender)) {
+                    $.say($.adminmsg);
+                    return;
+                }
+
+                if (args[1] < 0) {
+                    $.say("That'll cause people to lose " + $.pointname + ". Don't use negatives!")
+                    return;
+                } else {
+                    $.inidb.set('settings', 'pointbonus', args[1]);
+                    $.pointbonus = parseInt(args[1]);
+
+                    $.say(username + " has set the current point bonus to " + $.pointbonus + " " + $.pointname + " per group level.");
+                }
+
+            } else if (action.equalsIgnoreCase("interval")) {
+                if (!$.isAdmin(sender)) {
+                    $.say($.adminmsg);
+                    return;
+                }
+
+                if (args[1] < 0) {
+                    $.say("Can't set the interval with negative minutes.");
+                    return;
+                } else {
+                    $.inidb.set('settings', 'pointinterval', args[1]);
+                    $.pointinterval = parseInt(args[1]);
+
+                    $.say(username + " has set the interval time for earning points to " + $.pointinterval + " minutes.");
+                }
+
+            } else if (action.equalsIgnoreCase("offlineinterval")) {
+                if (!$.isAdmin(sender)) {
+                    $.say($.adminmsg);
+                    return;
+                }
+
+                if (args[1] < 0) {
+                    $.say("Can't set the interval with negative minutes.");
+                    return;
+                } else {
+                    $.inidb.set('settings', 'offlineinterval', args[1]);
+                    $.offlineinterval = parseInt(args[1]);
+
+                    $.say(username + " has set the interval time for earning points to " + $.offlineinterval + " minutes while the stream is offline.");
+                }
+
+            } else if (action.equalsIgnoreCase("mingift")) {
+                if (!$.isAdmin(sender)) {
+                    $.say($.adminmsg);
+                    return;
+                }
+
+                if (args[1] < 0) {
+                    $.say("Can't set the minimum gift amount to negatives.");
+                    return;
+                } else {
+                    $.inidb.set('settings', 'mingift', args[1]);
+                    $.mingift = parseInt(args[1]);
+
+                    $.say(username + " has set the minimum amount of " + $.pointname + " that can be gifted to: " + args[1] + " " + $.pointname + ".");
+                }
+
+            } else if (action.equalsIgnoreCase("name")) {
+                if (!$.isAdmin(sender)) {
+                    $.say($.adminmsg);
+                    return;
+                }
+
+                $.inidb.set('settings', 'pointname', argsString2);
+                $.say(username + " has changed the name of " + $.pointname + " to '" + argsString2 + "'!");
+
+                $.pointname = argsString2;
+            } else if (action.equalsIgnoreCase("toggle") && !argsString.isEmpty()) {
+                if (!$.isAdmin(sender)) {
+                    $.say($.adminmsg);
+                    return;
+                }
+
+                if ($var.perm_toggle == false) {
+
+                    $var.perm_toggle = true;
+                    $.inidb.set('settings', 'perm_toggle', 1);
+                    $.say("From now on Mods will be able to use privileged point commands!");
+
+                } else if ($var.perm_toggle == true) {
+
+                    $var.perm_toggle = false;
+                    $.inidb.set('settings', 'perm_toggle', 2);
+                    $.say("From now on only Admins will be able to use privileged point commands!");
+                }
+            } else if (action.equalsIgnoreCase("gain") || action.equalsIgnoreCase("bonus") || action.equalsIgnoreCase("interval") || action.equalsIgnoreCase("offlineinterval") || action.equalsIgnoreCase("name") || action.equalsIgnoreCase("config") ||  action.equalsIgnoreCase("mingift")) {
+                $.say("[Point Settings] - [Name: " + $.pointname + "] - [Gain: " + $.pointgain + " " + $.pointname + "] - [Interval: " + $.pointinterval + " minutes] - [Offline Gain: " + $.offlinegain + " " + $.pointname + "] - [Offline interval: " + $.offlineinterval + " minutes] - [Bonus: " + $.pointbonus + " " + $.pointname + "] - [Gifting Minimum: " + $.mingift + "]");
+            } else if (action.equalsIgnoreCase("help")) {
+                $.say("Usage: '!points give <name> <amount>' -- '!points take <name> <amount>' -- '!points set <name> <amount>' -- '!points gift <name> <amount>' -- '!points gain <amount>' -- '!points bonus <amount>' -- '!points name <amount>'");
+                return;
+            } else {
                 points_user = args[0].toLowerCase();
                 $.getPoints(points_user);
+            }
         }
-    }
-    else {
+        else {
             $.getPoints(points_user);
         }
     }

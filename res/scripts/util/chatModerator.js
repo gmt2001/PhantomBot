@@ -12,7 +12,6 @@ var capsmessage = $.inidb.get("settings", "capsmessage");
 var linksallowed = $.inidb.get("settings", "linksallowed").equalsIgnoreCase("1");
 var permittime = parseInt($.inidb.get("settings", "permittime"));
 var youtubeallowed = $.inidb.get("settings", "youtubeallowed").equalsIgnoreCase("1");
-var casterallowed = $.inidb.get("settings", "casterallowed").equalsIgnoreCase("1");
 var subsallowed = $.inidb.get("settings", "subsallowed").equalsIgnoreCase("1");
 var linksmessage = $.inidb.get("settings", "linksmessage");
 var spamallowed = $.inidb.get("settings", "spamallowed").equalsIgnoreCase("1");
@@ -424,7 +423,7 @@ $.on('command', function(event) {
             if (args.length < 1 || args[0].equalsIgnoreCase("help")) {
                 $.say("Usage: !chatmod <option> [new value]");
                 $.say("-Options: warningcountresettime, timeouttype, autopurgemessage, capsallowed, capstriggerratio, capstriggerlength, "
-                    + "capsmessage, linksallowed, permittime, youtubeallowed, casterallowed, subsallowed, linksmessage, spamallowed, spamlimit, spammessage");
+                    + "capsmessage, linksallowed, permittime, youtubeallowed, subsallowed, linksmessage, spamallowed, spamlimit, spammessage");
                 $.say(">>symbolsallowed, symbolslimit, symbolsrepeatlimit, symbolsmessage, repeatallowed, repeatlimit, repeatmessage, graphemeallowed, "
                     + "graphemelimit, graphememessage, "
                     + "warning1type, warning2type, warning3type, warning1message, warning2message, warning3message");
@@ -635,34 +634,6 @@ $.on('command', function(event) {
                         }
                         else {
                             $.say("Youtube links are now moderated!");
-                        }
-                    }
-                } else if (args[0].equalsIgnoreCase("casterallowed")) {
-                    val = argsString;
-                    
-                    if (args.length == 1 || (!val.equalsIgnoreCase("false") && !val.equalsIgnoreCase("true"))) {
-                        if (casterallowed) {
-                            val = "allowed";
-                        } else {
-                            val = "NOT allowed";
-                        }
-                        
-                        $.say("Casters are currently " + val + " to post links. To change it use: !chatmod casterallowed <'true' or 'false'>");
-                    } else {
-                        if (val.equalsIgnoreCase("true")) {
-                            val = "1";
-                        } else {
-                            val = "0";
-                        }
-                        
-                        $.inidb.set("settings", "casterallowed", val);
-                        
-                        casterallowed = val.equalsIgnoreCase("1");
-                        
-                        if (casterallowed) {
-                            $.say("Casters are now allowed to post links!");
-                        } else {
-                            $.say("Casters are no longer allowed to post links!");
                         }
                     }
                 } else if (args[0].equalsIgnoreCase("subsallowed")) {
@@ -1129,7 +1100,7 @@ $.on('ircChannelMessage', function(event) {
         }
     }
 	
-    if (linksallowed == false && $.hasLinks(event, false) && !$.isMod(sender) && (!$.isCaster(sender) || !casterallowed) && (!$.isSub(sender) || !subsallowed)) {
+    if (linksallowed == false && $.hasLinks(event, false) && !$.isMod(sender) && (!$.isSub(sender) || !subsallowed)) {
         //Change the second parameter to true to fallback to the Java version instead
         var permitted = false;
             

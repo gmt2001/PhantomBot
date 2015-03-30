@@ -125,109 +125,109 @@ $.on('command', function (event) {
         }
 
 
-    $var.vote_toggle = true;
-    if ($.inidb.get('settings', 'vote_toggle') == 1) {
         $var.vote_toggle = true;
-    } else if ($.inidb.get('settings', 'vote_toggle') == 2) {
-        $var.vote_toggle = false;
-    }
-
-    if (args.length >= 1) {
-
-    if (action.equalsIgnoreCase("toggle")) {
-        if (!$.isAdmin(sender)) {
-            $.say($.adminmsg);
-            return;
-        }
-
-        if ($var.vote_toggle == false) {
-
+        if ($.inidb.get('settings', 'vote_toggle') == 1) {
             $var.vote_toggle = true;
-            $.inidb.set('settings', 'vote_toggle', 1);
-            $.say("Vote messages have been turned on!");
-
-        } else if ($var.vote_toggle == true) {
-
+        } else if ($.inidb.get('settings', 'vote_toggle') == 2) {
             $var.vote_toggle = false;
-            $.inidb.set('settings', 'vote_toggle', 2);
-            $.say("Vote messages have been turned off!");
         }
 
+        if (args.length >= 1) {
+
+            if (action.equalsIgnoreCase("toggle")) {
+                if (!$.isAdmin(sender)) {
+                    $.say($.adminmsg);
+                    return;
+                }
+
+                if ($var.vote_toggle == false) {
+
+                    $var.vote_toggle = true;
+                    $.inidb.set('settings', 'vote_toggle', 1);
+                    $.say("Vote messages have been turned on!");
+
+                } else if ($var.vote_toggle == true) {
+
+                    $var.vote_toggle = false;
+                    $.inidb.set('settings', 'vote_toggle', 2);
+                    $.say("Vote messages have been turned off!");
+                }
 
 
-    }
+
+            }
             if (action.equalsIgnoreCase("results")) {
-            if ($var.vote_running) {
+                if ($var.vote_running) {
 
-                $.say("[Poll Session] - [" + parseInt($var.pollTotalVotes) + " Total Votes] - [Options: " + $.displayOptions + "]");
+                    $.say("[Poll Session] - [" + parseInt($var.pollTotalVotes) + " Total Votes] - [Options: " + $.displayOptions + "]");
 
-            } else {
-
-                var date = $.inidb.get('polls', 'date');
-                var vOptions = $.inidb.get('polls', 'vote_options');
-                var vTotal = $.inidb.get('polls', 'total_votes');
-                var WinR = $.inidb.get('polls', 'winning_result');
-                var WinRV = $.inidb.get('polls', 'winning_result_votes');
-
-                if (vOptions == null) {
-                    $.say("No past polls.");
                 } else {
-                if (vTotal == null) {
-                    vTotal = 0;
-                }
 
-                if (WinR == null) {
-                    WinR = "None";
-                }
+                    var date = $.inidb.get('polls', 'date');
+                    var vOptions = $.inidb.get('polls', 'vote_options');
+                    var vTotal = $.inidb.get('polls', 'total_votes');
+                    var WinR = $.inidb.get('polls', 'winning_result');
+                    var WinRV = $.inidb.get('polls', 'winning_result_votes');
 
-                if (WinRV == null) {
-                    WinRV = "0";
-                }
+                    if (vOptions == null) {
+                        $.say("No past polls.");
+                    } else {
+                        if (vTotal == null) {
+                            vTotal = 0;
+                        }
 
-                $.say("[" + date + "] - [" + vTotal + " Total Votes] - [Winning Result: " + WinR + " with " + WinRV + " votes] - [Options: " + vOptions + "]") 
+                        if (WinR == null) {
+                            WinR = "None";
+                        }
+
+                        if (WinRV == null) {
+                            WinRV = "0";
+                        }
+
+                        $.say("[" + date + "] - [" + vTotal + " Total Votes] - [Winning Result: " + WinR + " with " + WinRV + " votes] - [Options: " + vOptions + "]") 
+                    }
+
                 }
 
             }
-
         }
-    }
 
- if (args.length >= 2) {
-        if (action.equalsIgnoreCase("open")) {
-            if (!$.isMod(sender)) {
-            $.say($.modmsg);
-            return;
-        }
-            length = 0;
-            options = []
+        if (args.length >= 2) {
+            if (action.equalsIgnoreCase("open")) {
+                if (!$.isMod(sender)) {
+                    $.say($.modmsg);
+                    return;
+                }
+                length = 0;
+                options = []
 
-            if (args.length < 2) {
-                $.say("Usage: '!poll open -t <seconds> <option 1> <option 2>' -- '!poll results' -- '!poll close'");
-                return;
+                if (args.length < 2) {
+                    $.say("Usage: '!poll open -t <seconds> <option 1> <option 2>' -- '!poll results' -- '!poll close'");
+                    return;
+                }
+
+                argStart = 1
+                if (args[argStart] == '-t') {
+                    length = parseInt(args[argStart + 1]);
+                    argStart += 2
+                }
+
+                options = args.slice(argStart);
+
+                if (options.length < 2) {
+                    $.say("Not enough options, polls must have at least two options!");
+                    return;
+                }
+                if (options.length > 10) {
+                    $.say("Max number of options in a poll is 10!");
+                    return;
+                }
+
+                if ($var.vote_running) {
+                    $.say("A vote is already running");
+                    return;
+                }
             }
-
-            argStart = 1
-            if (args[argStart] == '-t') {
-                length = parseInt(args[argStart + 1]);
-                argStart += 2
-            }
-
-            options = args.slice(argStart);
-
-            if (options.length < 2) {
-                $.say("Not enough options, polls must have at least two options!");
-                return;
-            }
-            if (options.length > 10) {
-                $.say("Max number of options in a poll is 10!");
-                return;
-            }
-
-            if ($var.vote_running) {
-                $.say("A vote is already running");
-                return;
-            }
-}
 
             if ($.runPoll(function (result) {
                 if (result.length) {
@@ -288,7 +288,7 @@ $.on('command', function (event) {
 
         }
 
-        }
+    }
     
 
 });

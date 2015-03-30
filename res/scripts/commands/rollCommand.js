@@ -5,10 +5,6 @@ $var.lastRandomLost = "";
 $.rollbonus = parseInt($.inidb.get('settings', 'roll_bonus'));
 $.rolltimer = parseInt($.inidb.get('settings', 'roll_timer'));
 
-if ($.inidb.exists("pricecom", "roll")) {
-$.rollcost = parseInt($.inidb.get("pricecom", "roll"));
-}
-
 if ($.rollbonus === undefined || $.rollbonus === null || isNaN($.rollbonus) || $.rollbonus < 0) {
     $.rollbonus = 2;
 }
@@ -16,11 +12,6 @@ if ($.rollbonus === undefined || $.rollbonus === null || isNaN($.rollbonus) || $
 if ($.rolltimer === undefined || $.rolltimer === null || isNaN($.rolltimer) || $.rolltimer < 0) {
     $.rolltimer = 30;
 }
-
-if ($.rollcost === undefined || $.rollcost === null || isNaN($.rollcost) || $.rollcost < 0) {
-    $.rollcost = 0;
-}
-
 
 $.on('command', function (event) {
     var sender = event.getSender().toLowerCase();
@@ -109,13 +100,6 @@ $.on('command', function (event) {
                 points = 0;
             }
 
-
-            if (points < $.rollcost) {
-                $.say(username + ", it costs " + $.rollcost + " " + $.pointname + " to roll and you only have " + points + " " + $.pointname + "!");
-                return;
-            }
-
-
             if (d1 == d2) {
                 do {
                     s = $.randElement(win);
@@ -131,16 +115,6 @@ $.on('command', function (event) {
 
                
                 $.say(username + " rolled a " + die1 + " & " + die2 + ". " + s);
-                if( points > $.rollcost)
-                {
-                    $.inidb.decr('points', sender, $.rollcost);
-                }
-                else
-                {
-                    $.inidb.set('points', sender, 0);
-                }
-        
-
             }
         } 
     }
@@ -170,26 +144,12 @@ $.on('command', function (event) {
                 $.say("Roll limit set to once every " + $.rolltimer + " seconds!");
 
             }
-
-            if (action.equalsIgnoreCase("cost") && !argsString.isEmpty()) {
-                if (!$.isAdmin(sender)) {
-                    $.say($.adminmsg);
-                    return;
-                }
-
-                $.inidb.set('settings', 'roll_cost', args[1]);
-                $.rollcost = parseInt(args[1]);
-                $.say("Rolls will now cost " + $.rollcost + " " + $.pointname + " for every roll!");
-
-            }
-           
-
-        } else if (action.equalsIgnoreCase("bonus") || action.equalsIgnoreCase("time") || action.equalsIgnoreCase("cost") || action.equalsIgnoreCase("config")) {
-            $.say("[Roll Settings] - [Roll Bonus: x" + $.rollbonus + "] - [Cooldown: " + $.rolltimer + " seconds] - [Cost: " + $.rollcost + " " + $.pointname + "]");
+        } else if (action.equalsIgnoreCase("bonus") || action.equalsIgnoreCase("time") || action.equalsIgnoreCase("config")) {
+            $.say("[Roll Settings] - [Roll Bonus: x" + $.rollbonus + "] - [Cooldown: " + $.rolltimer + " seconds]");
         }
         if (action.equalsIgnoreCase("commands") && !argsString.isEmpty()) {
 
-            $.say("'!roll' -- 'roll bonus <amount>' -- '!roll time <seconds>' -- '!roll cost <amount>'");
+            $.say("'!roll' -- 'roll bonus <amount>' -- '!roll time <seconds>'");
 
         }
 

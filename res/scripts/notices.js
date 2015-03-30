@@ -43,11 +43,11 @@ $.on('command', function (event) {
                 if (args.length < 2) {
                     $.say("There are " + num_messages + " notices. Say '!notice get <id>' to get a messages content. Message IDs go from 0 to " + (num_messages));
                 } else {
-					if ($.inidb.get('notices', 'message_' + message) == null) {
-					$.say("There are " + num_messages + " notices. Message IDs go from 0 to " + (num_messages) + " and " + args[1] + " isn't one of them");
-					} else {
-                    $.say($.inidb.get('notices', 'message_' + message));
-					}
+                    if ($.inidb.get('notices', 'message_' + message) == null) {
+                        $.say("There are " + num_messages + " notices. Message IDs go from 0 to " + (num_messages) + " and " + args[1] + " isn't one of them");
+                    } else {
+                        $.say($.inidb.get('notices', 'message_' + message));
+                    }
                 }
             }
 
@@ -142,11 +142,11 @@ $.on('command', function (event) {
                 }
             } 
 
-            } else {
+        } else {
                 
-                if (!args[0] == ("timer") ||!args[0] == ("interval") || !args[0] == ("insert") || !args[0] == ("get") || !args[0] == ("toggle") || argsString.isEmpty()) {
-                    $.say("Usage: !addnotice <message>, !delnotice <id>, !notice insert <id> <message>, !notice get [id], !notice timer <minutes>, !notice req <amount>, !notice config")
-                }
+            if (!args[0] == ("timer") ||!args[0] == ("interval") || !args[0] == ("insert") || !args[0] == ("get") || !args[0] == ("toggle") || argsString.isEmpty()) {
+                $.say("Usage: !addnotice <message>, !delnotice <id>, !notice insert <id> <message>, !notice get [id], !notice timer <minutes>, !notice req <amount>, !notice config")
+            }
 
         }
     }
@@ -230,7 +230,7 @@ function sendMessage() {
     if (messageIndex >= num_messages) {
         messageIndex = 0;
     }
-        $.say(message);
+    $.say(message);
 }
 
 $.on('ircChannelMessage', function (event) {
