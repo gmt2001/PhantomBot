@@ -175,19 +175,42 @@ if ($.inidb.GetInteger("init", "upgrade", "version") < 2) {
     }
     
     println("     Updating permission groups...");
-    
-    var mod = 7;
-    var admin = 8;
+
+    var caster = 0;
+    var admin = 1;
+    var mod = 2;
+    var sub = 3;
+    var don = 4;
+    var host = 5;
+    var reg = 6;
+    var view = 7;
     
     keys = $.inidb.GetKeyList("groups", "");
     
     for (i = 0; i < keys.length; i++) {
+        if ($.inidb.get("groups", keys[i]).equalsIgnoreCase("Caster")) {
+            caster = i;
+        }
+        if ($.inidb.get("groups", keys[i]).equalsIgnoreCase("Administrator")) {
+            admin = i;
+        }
         if ($.inidb.get("groups", keys[i]).equalsIgnoreCase("Moderator")) {
             mod = i;
         }
-        
-        if ($.inidb.get("groups", keys[i]).equalsIgnoreCase("Administrator")) {
-            admin = i;
+        if ($.inidb.get("groups", keys[i]).equalsIgnoreCase("Subscriber")) {
+            sub = i;
+        }
+        if ($.inidb.get("groups", keys[i]).equalsIgnoreCase("Donator")) {
+            don = i;
+        }
+        if ($.inidb.get("groups", keys[i]).equalsIgnoreCase("Hoster")) {
+            host = i;
+        }
+        if ($.inidb.get("groups", keys[i]).equalsIgnoreCase("Regular")) {
+            reg = i;
+        }
+        if ($.inidb.get("groups", keys[i]).equalsIgnoreCase("Viewer")) {
+            view = i;
         }
     }
     
@@ -427,15 +450,45 @@ if ($.inidb.GetInteger("init", "upgrade", "version") < 7) {
         println("     Upgrading groups system");
         
         keys = $.inidb.GetKeyList("groups", "");
-        var admingroup = 7;
-        var modgroup = 6;
-        
+        var castgroup = 0;
+        var admingroup = 1;
+        var modgroup = 2;
+        var subgroup = 3;
+        var dongroup = 4;
+        var hostgroup = 5;
+        var reggroup = 6;
+        var viewgroup = 7;
+
         for (i = 0; i < keys.length; i++) {
+            if ($.inidb.get("groups", keys[i]).equalsIgnoreCase("Caster") || $.inidb.get("groups", keys[i]).equalsIgnoreCase("Casters")) {
+                admingroup = keys[i];
+            }
+            
             if ($.inidb.get("groups", keys[i]).equalsIgnoreCase("Administrator") || $.inidb.get("groups", keys[i]).equalsIgnoreCase("Administrators")) {
                 admingroup = keys[i];
             }
             
             if ($.inidb.get("groups", keys[i]).equalsIgnoreCase("Moderator") || $.inidb.get("groups", keys[i]).equalsIgnoreCase("Moderators")) {
+                modgroup = keys[i];
+            }
+            
+            if ($.inidb.get("groups", keys[i]).equalsIgnoreCase("Subscriber") || $.inidb.get("groups", keys[i]).equalsIgnoreCase("Subscribers")) {
+                admingroup = keys[i];
+            }
+            
+            if ($.inidb.get("groups", keys[i]).equalsIgnoreCase("Donator") || $.inidb.get("groups", keys[i]).equalsIgnoreCase("Donators")) {
+                modgroup = keys[i];
+            }
+            
+            if ($.inidb.get("groups", keys[i]).equalsIgnoreCase("Hoster") || $.inidb.get("groups", keys[i]).equalsIgnoreCase("Hosters")) {
+                admingroup = keys[i];
+            }
+            
+            if ($.inidb.get("groups", keys[i]).equalsIgnoreCase("Regular") || $.inidb.get("groups", keys[i]).equalsIgnoreCase("Regulars")) {
+                modgroup = keys[i];
+            }
+            
+            if ($.inidb.get("groups", keys[i]).equalsIgnoreCase("Viewer") || $.inidb.get("groups", keys[i]).equalsIgnoreCase("Viewers")) {
                 modgroup = keys[i];
             }
             
@@ -449,6 +502,10 @@ if ($.inidb.GetInteger("init", "upgrade", "version") < 7) {
         for (i = 0; i < keys.length; i++) {
             var group = $.inidb.get("group", keys[i]);
             
+            if (group == castgroup) {
+                users.push(new Array(keys[i], 0));
+            }
+            
             if (group == admingroup) {
                 users.push(new Array(keys[i], 1));
             }
@@ -457,8 +514,28 @@ if ($.inidb.GetInteger("init", "upgrade", "version") < 7) {
                 users.push(new Array(keys[i], 2));
             }
             
-            if (group == 1) {
+            if (group == subgroup) {
+                users.push(new Array(keys[i], 3));
+            }
+            
+            if (group == dongroup) {
+                users.push(new Array(keys[i], 4));
+            }
+            
+            if (group == hostgroup) {
+                users.push(new Array(keys[i], 5));
+            }
+            
+            if (group == reggroup) {
                 users.push(new Array(keys[i], 6));
+            }
+            
+            if (group == viewgroup) {
+                users.push(new Array(keys[i], 7));
+            }            
+            
+            if (group == 0 || group == 1 || group == 2) {
+                users.push(new Array(keys[i], 7));
             }
             
             $.inidb.del("group", keys[i]);
