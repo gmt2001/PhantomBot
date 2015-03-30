@@ -427,15 +427,15 @@ if ($.inidb.GetInteger("init", "upgrade", "version") < 7) {
         println("     Upgrading groups system");
         
         keys = $.inidb.GetKeyList("groups", "");
-        var admingroup = 8;
-        var modgroup = 7;
+        var admingroup = 7;
+        var modgroup = 6;
         
         for (i = 0; i < keys.length; i++) {
-            if ($.inidb.get("groups", keys[i]).equalsIgnoreCase("Administrator")) {
+            if ($.inidb.get("groups", keys[i]).equalsIgnoreCase("Administrator") || $.inidb.get("groups", keys[i]).equalsIgnoreCase("Administrators")) {
                 admingroup = keys[i];
             }
             
-            if ($.inidb.get("groups", keys[i]).equalsIgnoreCase("Moderator")) {
+            if ($.inidb.get("groups", keys[i]).equalsIgnoreCase("Moderator") || $.inidb.get("groups", keys[i]).equalsIgnoreCase("Moderators")) {
                 modgroup = keys[i];
             }
             
