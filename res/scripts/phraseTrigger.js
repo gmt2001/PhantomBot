@@ -47,3 +47,6 @@ $.on('command', function (event) {
     }
 
 });
+
+$.registerChatCommand("./commands/phraseTrigger.js", "addphrase");
+$.registerChatCommand("./commands/phraseTrigger.js", "delphrase");
