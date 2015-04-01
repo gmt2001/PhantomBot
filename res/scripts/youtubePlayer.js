@@ -702,13 +702,13 @@ $.on('command', function (event) {
 
 });
 
-$.registerChatCommand("./commands/youtubePlayer.js", "addsong");
-$.registerChatCommand("./commands/youtubePlayer.js", "skipsong");
-$.registerChatCommand("./commands/youtubePlayer.js", "currentsong");
-$.registerChatCommand("./commands/youtubePlayer.js", "nextsong");
-$.registerChatCommand("./commands/youtubePlayer.js", "stealsong", "admin");
-$.registerChatCommand("./commands/youtubePlayer.js", "delsong", "mod");
-$.registerChatCommand("./commands/youtubePlayer.js", "volume", "mod");
+$.registerChatCommand("./youtubePlayer.js", "addsong");
+$.registerChatCommand("./youtubePlayer.js", "skipsong");
+$.registerChatCommand("./youtubePlayer.js", "currentsong");
+$.registerChatCommand("./youtubePlayer.js", "nextsong");
+$.registerChatCommand("./youtubePlayer.js", "stealsong", "admin");
+$.registerChatCommand("./youtubePlayer.js", "delsong", "mod");
+$.registerChatCommand("./youtubePlayer.js", "volume", "mod");
 
 $.on('musicPlayerCurrentVolume', function (event) {
     $.say("[\u266B] Music volume is currently: " + parseInt(event.getVolume()) + "%");
