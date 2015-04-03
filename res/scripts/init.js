@@ -309,10 +309,11 @@ $.hook.call = function(hook, arg, alwaysrun) {
 
 $api.on($script, 'command', function(event) {
     var sender = event.getSender();
-    var command = event.getCommand();
     if ($.inidb.exists('aliases', event.getCommand().toLowerCase())) {
         event.setCommand($.inidb.get('aliases', event.getCommand().toLowerCase()));
     }
+    
+    var command = event.getCommand();
     
     if ($.moduleEnabled("./systems/pointSystem.js") && !$.isMod(sender) && $.inidb.exists("pricecom", command.toLowerCase())) {
             if (parseInt($.inidb.get("points", sender)) < parseInt($.inidb.get("pricecom", command.toLowerCase()))) {
