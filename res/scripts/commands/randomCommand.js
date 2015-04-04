@@ -161,16 +161,11 @@ $.on('command', function(event) {
         ar.push("Dango, dango, dango, dango, big (sender) family~\u266B");
         ar.push("What are we gonna do on the bed (sender)?");
         ar.push("Your mother was a hamster and your father smelt of elderberries!");
-        ar.push("I would rather not acknowledge that (sender) typed '!random'");
-        ar.push("(sender) was standing in the park wondering why a Frisbee got bigger as it got closer. Then it hit 'em.");
         ar.push("When life gives you lemons (sender), make orange juice and leave the world wondering how the hell you did it.");
         ar.push("(sender) was violated by a tentacle monster on stream.");
         ar.push("/me licked (sender). . .");
-        ar.push("THIS JUST IN! (sender)'s waifu is actually in a ahegao doujin!");
         ar.push("This is the first time (sender) has noticed the scent of a woman.");
-        ar.push("(sender) you're a beautiful strong black woman.");
         ar.push("/me licking intensifies!");
-        ar.push("༼ つ ◕_◕ ༽=ε̵͇̿̿'̿'̿ ̿ ̿̿  " + " I has a gun, Gimme yo money (sender)!");
         ar.push("I hope (sender)-senpai notices me..");
         ar.push("(sender) is so awesome because (sender) can trip over flat surfaces, fall up the stair and also fall up!!");
         ar.push("(sender) looks good enough to dress like the grim reaper and go to a retirement home and tap on the windows!");
@@ -212,6 +207,23 @@ $.on('command', function(event) {
 		ar.push("Boobs that don’t shake, aren’t boobs at all.");
 		ar.push("(sender), during your last physical it was discovered you have Athletes Foot, and we now believe it is affecting your brain.");
 		ar.push("When you have a swimsuit tan. You could jump in the pool naked and no one would know you weren’t wearing anything.");
+		ar.push("I came to laugh at you - Chars Aznabal (Gundam)");
+		ar.push("You're thinking in Japanese! If you must think, do it in German!");
+		ar.push("*bursts into tears* I can't talk about it! It's so horrible! They were-- they were-- the milk! Oh God, the milk!");
+		ar.push("Man fears the darkness, and so he scrapes away at the edges of it with fire." );
+		ar.push("Panties, Panties, Panties");
+		ar.push("Now I understand the relieved, I feel very situation...");
+		ar.push("Nothing amazing happens here" );
+		ar.push("Come on, scribbles on the bathroom wall, please show me the path that I must follow!");
+		ar.push("Please don't worry, Mister, I only came here to obliterate you- not rob you.");
+		ar.push("... if you let the fly live, the spider is going to die. You can't save both without one suffering..");
+		ar.push("Bansai, bathtoy, wise guy, waterboy, lights shine bright in the o-town tonight" );
+		ar.push("Why don't we drink to me and my reflection in your lovely eyes?");
+		ar.push("Faye faye smoke smoke, faye faye puff puff! Yay!");
+		ar.push("Total slaughter, total slaughter. I won't leave a single man alive. La dee da dee dide, genocide. La dee da dee dud, an ocean of blood. Let's begin the killing time.");
+		ar.push("Someone once told me...that watching the birds made them want to go on a journey...");
+		ar.push("I wouldn't mind if you want to kill me, but I might struggle a bit");
+		ar.push("I think I know, I don't think I know, I don't think I think I know, I don't think I think.");
 
 
     if ($.inidb.get("randoms", "num_randoms") == null || $.inidb.get("randoms", "num_randoms") == 0 ) {
