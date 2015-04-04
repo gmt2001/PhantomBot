@@ -109,11 +109,11 @@ $.on('command', function(event) {
                         rPrice = 0;
                     }
 
-                    if (rMode == 1) {
+                    if (rMode == 0) {
 
-                        rMode = "Default";
+                        rMode = "Normal";
 
-                    } else if (rMode == 0) {
+                    } else if (rMode == 1) {
                         rMode = "Followers";
                     }
 
@@ -281,11 +281,12 @@ $.on('command', function(event) {
             }
  
             if ($var.raffle_running || $var.raffle_entrants.length == 0) {
+
                 return;
             }
             
             if ($var.raffle_mode == 0) {
-                $.say("You can not use repick on a points raffle!");
+                $.say("You can not use re-pick on a points raffle!");
                 return;
             }
  
@@ -335,6 +336,7 @@ $.on('ircChannelMessage', function(event) {
     
     if ($var.raffle_running) {
         if (message.toLowerCase().indexOf($var.raffle_keyword.toLowerCase()) == -1 || $.array.contains($var.raffle_entrants, sender)) {
+			$.say("You have already entered the raffle!");
             return;
         }
         
@@ -348,7 +350,7 @@ $.on('ircChannelMessage', function(event) {
             }
            
             if ($var.raffle_price > points) {
-                $.say("/me " + username + ", " + " you don't have enough " + $.pointname + " to enter!");
+                $.say(username + ", " + " you don't have enough " + $.pointname + " to enter!");
                 return;
             }
  
@@ -359,7 +361,7 @@ $.on('ircChannelMessage', function(event) {
         if ($var.raffle_toggle == false) {
             println(username + " entered the raffle!");
         } else {
-            $.say("/me " + username + " entered the raffle!");
+            $.say(username + " entered the raffle!");
         }
         
     }
