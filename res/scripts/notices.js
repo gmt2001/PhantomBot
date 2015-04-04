@@ -222,6 +222,10 @@ function sendMessage() {
     if (isNaN(parseInt(num_messages)) || parseInt(num_messages) == 0) {
         return;
     }
+	
+	if ($.inidb.get('notices', 'message_' + messageIndex) ==  null) {
+		return;
+	}
 
     var message = $.inidb.get('notices', 'message_' + messageIndex);
 

@@ -268,12 +268,11 @@ $.on('command', function (event) {
                     return;
                 }
 
-                if (args[1] < 0) {
-                    $.say("Can't set the minimum gift amount to negatives.");
+                if (args[1] < 0 || args[1] == null) {
+					$.say("Usage: !points mingift <amount> - Sets the minimum amount of points that can be gifted to others. Must be 0 or higher.");
                     return;
                 } else {
                     $.inidb.set('settings', 'mingift', args[1]);
-                    $.mingift = parseInt(args[1]);
 
                     $.say(username + " has set the minimum amount of " + $.pointname + " that can be gifted to: " + args[1] + " " + $.pointname + ".");
                 }
