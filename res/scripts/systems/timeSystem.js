@@ -79,7 +79,7 @@ $.on('command', function(event) {
     }
     if (command.equalsIgnoreCase("timelevel")) {
         if (!$.isAdmin(sender)) {
-            $.say("You must be an admin to use this command.");
+            $.say($.adminmsg);
             return;
         } else {
             if ($.timelevel=="true") {
@@ -91,6 +91,25 @@ $.on('command', function(event) {
                 $.timelevel = "true";
                 $.inidb.set('settings','timelevel', "true");
                 $.say("Earning higher group rank by spending time in chat has been enabled.");
+                return;
+            }
+        }  
+    }
+	
+    if (command.equalsIgnoreCase("timetoggle")) {
+        if (!$.isAdmin(sender)) {
+            $.say($.adminmsg);
+            return;
+        } else {
+            if ($.timetoggle=="true") {
+                $.timetoggle = "false";
+                $.inidb.set('settings','timetoggle', "false");
+                $.say("Time won't be displayed when viewing your " + $.pointname + " any more.");
+                return;
+            } else {
+                $.timetoggle = "true";
+                $.inidb.set('settings','timetoggle', "true");
+                $.say("Time will be displayed when viewing your " + $.pointname + " now.");
                 return;
             }
         }  
@@ -176,6 +195,7 @@ $.registerChatCommand("./systems/timeSystem.js", "time");
 $.registerChatCommand("./systems/timeSystem.js", "time help");
 $.registerChatCommand("./systems/timeSystem.js", "timezone");
 $.registerChatCommand("/systems/timeSystem.js", "timelevel");
+$.registerChatCommand("/systems/timeSystem.js", "timetoggle");
 
 
 $.setInterval(function() {

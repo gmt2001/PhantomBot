@@ -53,6 +53,10 @@ $.getPoints = function (user) {
     else timeString += " " + minutes + " Mins";
     timeString += " ]";
 
+	if ($.inidb.get('settings', 'timetoggle') == "false") {
+		timeString = ".";
+	}
+	
     $.say($.username.resolve(user) + " has " + points.toString() + " " + $.pointname + timeString);
 }
 
