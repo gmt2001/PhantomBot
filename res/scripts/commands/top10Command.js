@@ -18,7 +18,7 @@ $.on('command', function(event) {
         var b;
         var k;
         var points;
-        var s = "Top 10 " + $.pointsname + ">> ";
+        var s = "Top 10 " + $.pointname + " -> ";
         
         for (i = 0; i < keys.length; i++) {
             if (!keys[i].equalsIgnoreCase($.botname) && !keys[i].equalsIgnoreCase($.botowner)) {
@@ -42,13 +42,12 @@ $.on('command', function(event) {
                 s += "  -  ";
             }
             
-            s += (i + 1) + ". " + top10[i][0] + " [" + top10[i][1] + "]";
+            s += (i + 1) + ". " + top10[i][0] + " (" + top10[i][1] + ")";
         }
         
         $.say(s);
     }
-    
-    if (command.equalsIgnoreCase("top10time")) {
+if (command.equalsIgnoreCase("top10time")) {
         if (!$.moduleEnabled("./systems/timeSystem.js")) {
             return;
         }
@@ -95,3 +94,4 @@ $.on('command', function(event) {
 $.registerChatCommand("./commands/top10Command.js", "top10");
 $.registerChatCommand("./commands/top10Command.js", "top10time");
 ;
+
