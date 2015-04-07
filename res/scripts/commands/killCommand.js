@@ -26,7 +26,7 @@ $.on('command', function(event) {
 
         } 
         
-    } else {
+    } else if (command.equalsIgnoreCase("kill") && args.length == " "){
 		var self = new Array(0)
             sender = $.username.resolve(sender);
  
@@ -80,7 +80,16 @@ $.on('command', function(event) {
         
         $.say("kill message added! There are now " + (num_kills + 1) + " kill messages!");
     }
-
+ if (command.equalsIgnoreCase("getkill")) {
+	 if (!$.inidb.get("kills", "kill_" + parseInt(args[0])) == " ") {
+          $.say($.inidb.get("kills", "kill_" + parseInt(args[0])));
+	 } else {
+		   $.say("There are " + num_kills + " kill messages. Message IDs go from 0 to " + (num_kills) + " and " + args[0] + " isn't one of them");
+            return;
+	 }
+                    
+                
+            }
      if (command.equalsIgnoreCase("editkill")) {
         if (!$.isMod(sender)) {
             $.say($.modmsg);
