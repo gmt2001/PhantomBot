@@ -36,8 +36,14 @@ $.on('command', function(event) {
             
             $.registerCustomChatCommand("./commands/addCommand.js", commandString);
             
-            $.say(username + ", the command !" + commandString + " was successfully created!");
+			if (sender == $.botname) {
+				println("You have successfully created the command: !" + commandString + "");
+				return;
+			}
+            $.say(username + ", has successfully created the command: !" + commandString + "");
             return;
+			
+			
         }
 
     }
@@ -143,8 +149,11 @@ $.on('command', function(event) {
             $.inidb.del('commandcount', commandString);
             
             $.unregisterCustomChatCommand(commandString);
-            
-            $.say($.username.resolve(sender) + ", the command !" + commandString + " was successfully removed!");
+			if (sender == $.botname) {
+				println("You have successfully removed the command: !" + commandString + "");
+				return;
+			}
+            $.say($.username.resolve(sender) + ", has successfully removed the command !" + commandString + "");
             return;
         }
         $.say("Usage: !delcom <command>");
@@ -177,7 +186,11 @@ $.on('command', function(event) {
 	
         
             $.inidb.set('command', commandString, message);
-            $.say("Command !" + commandString + " has been modified!");
+			if (sender == $.botname) {
+				println("You have modified the command: !" + commandString + "");
+				return;
+			}
+            $.say(username + " has modified the command: !" + commandString + "");
             return;
         }
         $.say("Usage: !editcom <command> <message>");
