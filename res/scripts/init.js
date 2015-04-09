@@ -321,6 +321,7 @@ $api.on($script, 'command', function(event) {
                 return;
             } else {
                 $.inidb.decr("points", sender, parseInt($.inidb.get("pricecom", command.toLowerCase())));
+				$.println("[Paid]" + username + "s balance is now: " + $.inidb.get('points', sender) + " " + $.pointname + "");
             }
         }
     
