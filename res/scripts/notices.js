@@ -137,7 +137,7 @@ $.on('command', function (event) {
                         $.inidb.set('notices', 'reqmessages', message);
                         $.noticemessages = parseInt(message);
 
-                        $.say("The minumum number messages to trigger a notice has been set to " + $.noticemessages + " messages!");
+                        $.say("The minimum number messages to trigger a notice has been set to " + $.noticemessages + " messages!");
                     }
                 }
             } 

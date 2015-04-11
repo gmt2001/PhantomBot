@@ -80,7 +80,7 @@ $.on('command', function(event) {
     }
     
 
-    if (command.equalsIgnoreCase("status")) {
+    if (command.equalsIgnoreCase("status") || command.equalsIgnoreCase("title") || command.equalsIgnoreCase("topic")) {
         if ($.strlen(argsString) == 0) {
             $.say("Current Status: " + $.getStatus($.channelName));
             return;

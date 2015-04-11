@@ -1,5 +1,6 @@
 var ircPrefix = ".";
 var autoBanPhrases = new Array();
+var autoPurgePhrases = new Array();
 var permitList = new Array();
 var sinbin = new Array();
 var warningcountresettime = parseInt($.inidb.get("settings", "warningcountresettime")) * 1000;
@@ -216,6 +217,22 @@ $.on('command', function(event) {
     var lines;
     var found;
 	
+	if (command.equalsIgnoreCase("whitelist")) {
+	        if (!$.isMod(sender)) {
+            $.say ($.modmsg);
+			return;
+			}
+			
+			if (args.length > 0) {
+					$.inidb.set('whitelist', 'link', args[0]);
+					$.say("The URL: " + args[0] + " has been added to the whitelist!");
+			} else {
+				$.say("Usage: !whitelist <link>");
+				return;
+			}
+			
+			
+	}
     if (command.equalsIgnoreCase("chat") && username.equalsIgnoreCase($.botname)) {
         $.say (argsString);
     } else if (command.equalsIgnoreCase("purge")) {
@@ -303,18 +320,6 @@ $.on('command', function(event) {
                 $.saveArray(lines, "sinbin", false);
             } else {
                 $.say ("You must specify a user to increase");
-            }
-        } else {
-            $.say ($.adminmsg);
-        }
-    } else if (command.equalsIgnoreCase("autopurge")) {
-        if ($.isMod(sender)) {
-            if (args.length == 1) {
-                $.logEvent("chatModerator.js", 314, username + " issued an auto punishment to " + args[0]);
-                
-                autoPurgeUser(args[0], autopurgemessage);
-            } else {
-                $.say ("You must specify a user to autopurge");
             }
         } else {
             $.say ($.adminmsg);
@@ -414,6 +419,27 @@ $.on('command', function(event) {
                 $.inidb.incr("autobanphrases", "num_phrases", 1);
             
                 $.say("Added a phrase to the autoban list! This can only be undone manually!");
+            }
+        } else {
+            $.say ($.modmsg);
+        }	
+		} else if (command.equalsIgnoreCase("autopurge")) {
+        if ($.isMod(sender)) {
+            if ($.strlen(argsString) > 0) {
+                $.logEvent("chatModerator.js", 404, username + " added a phrase to the autopurge list: " + argsString);
+                
+                autoPurgePhrases.push(argsString);
+            
+                var num_phrases = $.inidb.get("autopurgephrases", "num_phrases");
+                
+                if (isNaN(num_phrases)) {
+                    num_phrases = 0;
+                }
+                
+                $.inidb.set("autopurgephrases", "phrase_" + num_phrases, argsString);
+                $.inidb.incr("autopurgephrases", "num_phrases", 1);
+            
+                $.say("Added a phrase to the autopurge list! This can only be undone manually!");
             }
         } else {
             $.say ($.modmsg);
@@ -1100,6 +1126,20 @@ $.on('ircChannelMessage', function(event) {
         }
     }
 	
+   for (i = 0; i < autoPurgePhrases.length; i++) {
+        phlen = $.strlen(autoPurgePhrases[i]);
+
+        if (autoPurgePhrases[i] != null && autoPurgePhrases[i] != undefined && message.indexOf(autoPurgePhrases[i].toLowerCase()) != -1
+            && !$.isMod(sender) && phlen > 0) {
+            $.logEvent("chatModerator.js", 1123, "Autopurge triggered by " + username + ". Message: " + omessage);
+            
+            timeoutUser(sender, 1);
+            
+            $.say (username + " auto-purged for using banned phrase #" + i);
+            return;
+        }
+    }
+	
     if (linksallowed == false && $.hasLinks(event, false) && !$.isMod(sender) && (!$.isSub(sender) || !subsallowed)) {
         //Change the second parameter to true to fallback to the Java version instead
         var permitted = false;
@@ -1116,7 +1156,11 @@ $.on('ircChannelMessage', function(event) {
                 }
             }
         }
-            
+		
+        if (message.contains($.inidb.get('whitelist', 'link')) ) {
+			permitted = true;
+		}
+		
         if (youtubeallowed == true && (message.indexOf("youtube.com") != -1 || message.indexOf("youtu.be") != -1)) {
             permitted = true;
         }
@@ -1226,6 +1270,13 @@ $.timer.addTimer("./util/chatModerator.js", "maintainlists", true, function() {
         }
     }
 }, 1000);
+
+var num_phrases = parseInt($.inidb.get("autopurgephrases", "num_phrases"));
+
+for (i = 0; i < num_phrases; i++) {
+    autoPurgePhrases.push($.inidb.get("autopurgephrases", "phrase_" + i));
+}
+
 
 var num_phrases = parseInt($.inidb.get("autobanphrases", "num_phrases"));
 
