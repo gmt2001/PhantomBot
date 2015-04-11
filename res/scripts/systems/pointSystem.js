@@ -345,7 +345,7 @@ $.on('command', function (event) {
             } else {
                 $.inidb.decr('points', sender, parseInt(args[1]));
                 $.inidb.incr('points', username, parseInt(args[1]));
-                $.say($.username.resolve(sender) + " transferred " + args[1] + " " + $.pointname + " to " + $.username.resolve(args[1]) + "!  " + $.username.resolve(sender) + " now has " + $.inidb.get('points', sender) + " " + $.pointname + " and " + $.username.resolve(args[0]) + " now has " + $.inidb.get('points', args[0]) + " " + $.pointname + ".");
+                $.say("Transferred " + args[1] + " " + $.pointname + " to " + $.username.resolve(args[0]) + " who now has: " + $.inidb.get('points', args[0]) + " " + $.pointname + ". " + $.username.resolve(sender) + ", you're left with: " + $.inidb.get('points', sender) + " " + $.pointname + ".");
             }
 
         }
