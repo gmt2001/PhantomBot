@@ -80,7 +80,7 @@ $.on('command', function (event) {
     }
 
 
-    if (command.equalsIgnoreCase("points") || command.equalsIgnoreCase($.pointname) || command.equalsIgnoreCase("bank")) {
+    if (command.equalsIgnoreCase("points") || command.equalsIgnoreCase($.pointname) || command.equalsIgnoreCase("bank") || command.equalsIgnoreCase("wallet") || command.equalsIgnoreCase("info")) {
         if (args.length >=1) {
             var action = args[0];
 
@@ -324,28 +324,28 @@ $.on('command', function (event) {
         }
     }
  
-    if (command.equalsIgnoreCase("gift")) {
+    if (command.equalsIgnoreCase("gift") || command.equalsIgnoreCase("transfer")) {
         username = args[0].toLowerCase();
         if (username == sender) {
-            $.say("Why would you need to gift yourself DansGame?!");
+            $.say("Why would you need to transfer " + $.pointname + " to yourself DansGame?!");
             return;
         }
 
         if (points > $.inidb.get('points', sender)) {
-            $.say($.username.resolve(sender) + ", you don't have that much points to gift to " + $.username.resolve(username) + "!");
+            $.say($.username.resolve(sender) + ", you don't have that much " + $.pointname + " to transfer " + $.username.resolve(username) + "!");
             return;
 
         } else {
             if (args[1] < $.mingift) {
-                $.say($.username.resolve(sender) + ", you can't gift " + $.pointname + " that's lower than the minimum amount! Minimum: " + $.mingift + " " + $.pointname + ".");
+                $.say($.username.resolve(sender) + ", you can't transfer " + $.pointname + " that's lower than the minimum amount! Minimum: " + $.mingift + " " + $.pointname + ".");
                 return;
             } else if (points < args[1]){
-                $.say($.username.resolve(sender) + ", you can't gift " + $.pointname + " what you don't have.");
+                $.say($.username.resolve(sender) + ", you can't transfer " + $.pointname + " what you don't have.");
                 return;
             } else {
-                $.inidb.decr('points', sender, points);
-                $.inidb.incr('points', username, points);
-                $.say(points + " " + $.pointname + " was gifted to " + $.username.resolve(username) + " by " + $.username.resolve(sender) + ".");
+                $.inidb.decr('points', sender, parseInt(args[1]));
+                $.inidb.incr('points', username, parseInt(args[1]));
+                $.say($.username.resolve(sender) + " transferred " + args[1] + " " + $.pointname + " to " + $.username.resolve(args[1]) + "!  " + $.username.resolve(sender) + " now has " + $.inidb.get('points', sender) + " " + $.pointname + " and " + $.username.resolve(args[0]) + " now has " + $.inidb.get('points', args[0]) + " " + $.pointname + ".");
             }
 
         }
@@ -387,5 +387,7 @@ $.setInterval(function() {
 }, 1000);
 
 $.registerChatCommand("./systems/pointSystem.js", "points");
+$.registerChatCommand("./systems/pointSystem.js", "info");
+$.registerChatCommand("./systems/pointSystem.js", "wallet");
 $.registerChatCommand("./systems/pointSystem.js", "bank");
-$.registerChatCommand("./systems/pointSystem.js", "points help");
+
