@@ -5,20 +5,20 @@ $.on('command', function(event) {
     var argsString = event.getArguments().trim();
     var args = event.getArgs();
 
-	if(command.equalsIgnoreCase("bid")) {
+	if(command.equalsIgnoreCase("bid") || command.equalsIgnoreCase("auction")) {
 
 		$var.bid_highest_amount;
 		$var.bid_highest_username;
 		if (args.length == 0){ // Check for command arguments being 0;
 			if($var.bid_running){ // Check if bid is started!\
 				if ($var.bid_highest_username || $var.bid_highest_username === null){
-					$.say("Current highest bider is: " + $var.bid_highest_username + " with " + $var.bid_highest_amount + " of " + $.pointname);
+					$.say("Current highest bider is: " + $var.bid_highest_username + " with " + $var.bid_highest_amount + " of " + $.pointname + ".");
 					return;
 				}
-					$.say(username + " There is no bids opended!");
+					$.say(username + " There is no bids opened!");
 					return;
 			}else{
-				$.say(username + " There is no bids opended!");
+				$.say(username + " There is no bids opened!");
 				return;
 			}
 		}
@@ -59,8 +59,8 @@ $.on('command', function(event) {
 			$var.bid_increment = increment;
 
 			$var.bid_running = true;
-			$.say("Bid is now starting!");
-			$.say("Starting amount of  " + $var.bid_amount + " " + $.pointname + " || Bids accepted in " + $var.bid_increment + " " + $.pointname + " increments");
+			$.say("/me Auction started!");
+			$.say("/me Starting amount of  " + $var.bid_amount + " " + $.pointname + " || Bids accepted in " + $var.bid_increment + " " + $.pointname + " increments.");
 			return;
 		}else if(subCommand.equalsIgnoreCase("warn")){ // !bid warn command
 
@@ -75,13 +75,20 @@ $.on('command', function(event) {
                 return;
             }
 
-            $.say("/me Bid is now ending, no more bid's will be added!");
-            $.say("/me Winner is " + $var.bid_highest_username + "!");
+            $.say("/me Auction is ending, new bids will no longer be accepted!");
+			
+			if ($var.bid_highest_username == "undefined") {
+				$.say("/me There were no winners!");
+				$var.bid_running = false;
+				return;
+			} else {
+			    $.say("/me Winner is " + $var.bid_highest_username + "!");	
+				$var.bid_running = false;
+				$.inidb.decr('points', $var.bid_highest_username.toLowerCase(), parseInt($var.bid_highest_amount));
+				$.say($var.bid_highest_amount + " " + $.pointname + " was withdrawn from " + $var.bid_highest_username + " account! Your new balance is: " + $.inidb.get('points', $var.bid_highest_username.toLowerCase()) + " " + $.pointname + ".");
+				return;
+			}
 
-            $var.bid_running = false;
-            $.inidb.decr('points', $var.bid_highest_username.toLowerCase(), parseInt($var.bid_highest_amount));
-            $.say($var.bid_highest_amount + " " + $.pointname + " was withdrawn from " + $var.bid_highest_username + " account!");
-            return;
 		}else{
 			if(isNumeric(subCommand)){
 
@@ -110,13 +117,13 @@ $.on('command', function(event) {
 
 						$var.bid_highest_amount = $var.user_bid;
 						$var.bid_highest_username = username;
-						$.say("New bid " + $var.bid_highest_username + " starts the bid with " + $var.bid_highest_amount + " " + $.pointname);
+						$.say("New bid from " + $var.bid_highest_username + " bidding with " + $var.bid_highest_amount + " " + $.pointname + ".");
 						return;
 					// IF this is not the first Bid!!!
 					}else{
 						//If bid is higher than user points!!
 						if($var.user_bid > $.inidb.get('points', sender)){
-							$.say(username + " You don't have enough " + $.pointname + " to participate");
+							$.say(username + " You don't have enough " + $.pointname + " to participate.");
 							return;
 						}
 						//If bid is lower than highest increment + current bid!!!
@@ -125,17 +132,17 @@ $.on('command', function(event) {
 							return;
 						}
 						if($var.user_bid > $.inidb.get('points', sender)){
-							$.say(username + " You don't have that many " + $.pointname);
+							$.say(username + " You don't have that much " + $.pointname);
 							return;
 						}
 						$var.bid_highest_amount = $var.user_bid;
 						$var.bid_highest_username = username;
-						$.say("New highest bid is: " + $var.bid_highest_username + " tops the bid with " + $var.bid_highest_amount + " " + $.pointname);
+						$.say("New highest bid is: " + $var.bid_highest_username + " tops the bid with " + $var.bid_highest_amount + " " + $.pointname + "!");
 						return;
 					}
 
 				}else {
-					$.say(username + " There is no bid open at the moment!");
+					$.say(username + " There is no auction open at the moment!");
 					return;
 				}
 
