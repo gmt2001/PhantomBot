@@ -74,6 +74,18 @@ public class IrcEventHandler implements IRCEventListener
 
                 eventBus.post(new IrcChannelMessageEvent(session, cusername, cmessage, cchannel));
                 break;
+            case CTCP_EVENT:
+                CtcpEvent ctcmessageEvent = (CtcpEvent) event;
+                
+                if (ctcmessageEvent.getCtcpString().startsWith("ACTION")) {
+                    com.gmt2001.Console.out.println("Message from Channel [" + ctcmessageEvent.getChannel().getName() + "] " + ctcmessageEvent.getNick());
+                    Channel ctcchannel = ctcmessageEvent.getChannel();
+                    String ctcusername = ctcmessageEvent.getNick();
+                    String ctcmessage = ctcmessageEvent.getCtcpString().replace("ACTION", "/me");
+
+                    eventBus.post(new IrcChannelMessageEvent(session, ctcusername, ctcmessage, ctcchannel));
+                }
+                break;
             case PRIVATE_MESSAGE:
                 MessageEvent pmessageEvent = (MessageEvent) event;
                 String pusername = pmessageEvent.getNick();
