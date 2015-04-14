@@ -217,22 +217,22 @@ $.on('command', function(event) {
     var lines;
     var found;
 	
-	if (command.equalsIgnoreCase("whitelist")) {
-	        if (!$.isMod(sender)) {
+    if (command.equalsIgnoreCase("whitelist")) {
+        if (!$.isMod(sender)) {
             $.say ($.modmsg);
-			return;
-			}
+            return;
+        }
 			
-			if (args.length > 0) {
-					$.inidb.set('whitelist', 'link', args[0]);
-					$.say("The URL: " + args[0] + " has been added to the whitelist!");
-			} else {
-				$.say("Usage: !whitelist <link>");
-				return;
-			}
+        if (args.length > 0) {
+            $.inidb.set('whitelist', 'link', args[0]);
+            $.say("The URL: " + args[0] + " has been added to the whitelist!");
+        } else {
+            $.say("Usage: !whitelist <link>");
+            return;
+        }
 			
 			
-	}
+    }
     if (command.equalsIgnoreCase("chat") && username.equalsIgnoreCase($.botname)) {
         $.say (argsString);
     } else if (command.equalsIgnoreCase("purge")) {
@@ -423,7 +423,7 @@ $.on('command', function(event) {
         } else {
             $.say ($.modmsg);
         }	
-		} else if (command.equalsIgnoreCase("autopurge")) {
+    } else if (command.equalsIgnoreCase("autopurge")) {
         if ($.isMod(sender)) {
             if ($.strlen(argsString) > 0) {
                 $.logEvent("chatModerator.js", 404, username + " added a phrase to the autopurge list: " + argsString);
@@ -1126,7 +1126,7 @@ $.on('ircChannelMessage', function(event) {
         }
     }
 	
-   for (i = 0; i < autoPurgePhrases.length; i++) {
+    for (i = 0; i < autoPurgePhrases.length; i++) {
         phlen = $.strlen(autoPurgePhrases[i]);
 
         if (autoPurgePhrases[i] != null && autoPurgePhrases[i] != undefined && message.indexOf(autoPurgePhrases[i].toLowerCase()) != -1
@@ -1140,8 +1140,8 @@ $.on('ircChannelMessage', function(event) {
         }
     }
 	
+    //Change the second parameter to true to use aggressive link detection
     if (linksallowed == false && $.hasLinks(event, false) && !$.isMod(sender) && (!$.isSub(sender) || !subsallowed)) {
-        //Change the second parameter to true to fallback to the Java version instead
         var permitted = false;
             
         for (i = 0; i < permitList.length; i++) {
@@ -1158,8 +1158,8 @@ $.on('ircChannelMessage', function(event) {
         }
 		
         if (message.contains($.inidb.get('whitelist', 'link')) ) {
-			permitted = true;
-		}
+            permitted = true;
+        }
 		
         if (youtubeallowed == true && (message.indexOf("youtube.com") != -1 || message.indexOf("youtu.be") != -1)) {
             permitted = true;
