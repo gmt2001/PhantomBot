@@ -35,16 +35,46 @@ $.on('command', function (event) {
             $.say("You can not use !bet because points are disabled!");
             return;
         }
-
-        $var.bet_toggle = true;
-        if ($.inidb.get('settings', 'bet_toggle') == 1) {
-            $var.bet_toggle = true;
-        } else if ($.inidb.get('settings', 'bet_toggle') == 2) {
-            $var.bet_toggle = false;
-        }
   
             
         if (args.length >= 1) {
+			
+            if (action.equalsIgnoreCase("minimum") && $.isMod(sender)) {
+			if (args[1] == null){
+                $.say("Current bet maximum: " + $.bet_maximum + " " + $.pointname + " and Current bet minimum: " + $.bet_minimum + " " + $.pointname + ".");
+                return;
+            }
+			
+                if (parseInt(args[1]) <= 0) {
+                $.say("You can't set the minimum bet amount below 0!");
+                return;
+                
+                } else {
+                $.inidb.set('settings', 'bet_minimum', args[1]);
+                $.bet_minimum = args[1];
+                $.say("You have set the minimum amount someone could bet to: " + args[1] + " " + $.pointname + ".");
+                }
+                
+            }
+
+			
+            if (action.equalsIgnoreCase("maximum") && $.isMod(sender)) {
+				if (args[1] == null){
+                $.say("Current bet maximum: " + $.bet_maximum + " " + $.pointname + " and Current bet minimum: " + $.bet_minimum + " " + $.pointname + ".");
+                return;
+            }
+				
+                if (parseInt(args[1]) <= 0) {
+                $.say("You can't set the maximum bet amount below 0!");
+                return;
+                } else {
+                $.inidb.set('settings', 'bet_maximum', args[1]);
+                $.bet_maximum = args[1];
+                $.say("You have set the maximum amount someone could bet to: " + args[1] + " " + $.pointname + ".");
+                }
+
+			}
+            
             if (action.equalsIgnoreCase("results")) {
          
                 var rWinner = $.inidb.get('bets', 'winner');
@@ -84,26 +114,6 @@ $.on('command', function (event) {
                         $.say("[" + bDate +"] - [Pot: " + rPot + " " + $.pointname + "] - [Options: " + rOptions + "] - [Entries: " + rEntries + "] - [Winning Option: " + rWinOp + "] - [Winner: " + rWinner + "]");
                     }
 
-                }
-
-            }
-           if (action.equalsIgnoreCase("toggle")) {
-                if (!$.isAdmin(sender)) {
-                    $.say($.adminmsg);
-                    return;
-                }
-
-                if ($var.bet_toggle == false) {
-
-                    $var.bet_toggle = true;
-                    $.inidb.set('settings', 'bet_toggle', 1);
-                    $.say("Bet messages have been turned on!");
-
-                } else if ($var.bet_toggle == true) {
-
-                    $var.bet_toggle = false;
-                    $.inidb.set('settings', 'bet_toggle', 2);
-                    $.say("Bet messages have been turned off!");
                 }
 
             }
@@ -323,7 +333,7 @@ $.on('command', function (event) {
                     return;
                 }
                 
-                if (amount < $.bet_maximum) {
+                if (amount > $.bet_maximum) {
                     $.say("The maximum amount of " + $.pointname + " that you can wager is: " + $.bet_maximum + " " + $.pointname +".");
                     return;
                 }
@@ -354,11 +364,8 @@ $.on('command', function (event) {
                     potmessage = pot;
                 }
 
-                if ($var.bet_toggle == true) {
                     $.say("/me " + $.username.resolve(sender) + " wagers " + args[0] + " " + $.pointname + " on " + option + "! [Pot: " + potmessage + " " + $.pointname + "]");
-                } else if ($var.bet_toggle == false) {
-                    println($.username.resolve(sender) + " wagers " + args[0] + " " + $.pointname + " on " + option + "! [Pot: " + potmessage + " " + $.pointname + "]");
-                }
+
                 
                 $.inidb.set('bets', 'pot', parseInt(pot)); //
                 $var.bet_table[sender] = {
@@ -389,38 +396,8 @@ $.on('command', function (event) {
             }
         }
     
-}
-  if (args.length >= 1) {
-            if (action.equalsIgnoreCase("minimum")) {
-                if (parseInt(args[1]) <= 0) {
-                $.say("You can't set the minimum bet amount below 0!");
-                return;
-                
-                } else {
-                $.inidb.set('settings', 'bet_minimum', args[1]);
-                $.bet_minimum = args[1];
-                $.say("You have set the minimum amount someone could bet to: " + args[1] + " " + $.pointname+ ".");
-                }
-                
-            }
+		}
 
-            if (action.equalsIgnoreCase("maximum")) {
-                if (parseInt(args[1]) <= 0) {
-                $.say("You can't set the maximum bet amount below 0!");
-                return;
-                } else {
-                $.inidb.set('settings', 'bet_maximum', args[1]);
-                $.bet_maximum = args[1];
-                $.say("You have set the maximum amount someone could bet to: " + args[1] + " " + $.pointname+ ".");
-                }
-                
-            }
-            } else {
-                 if (args.length >= 1){
-                $.say("Current bet maximum: " + $.bet_maximum + " " + $.pointname + " and Current bet minimum: " + $.bet_minimum + " " + $.pointname + ".");
-                return;
-            }
-            }
 });
 
 $.registerChatCommand("./commands/betSystem.js", "bet");
