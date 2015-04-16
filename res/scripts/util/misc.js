@@ -86,16 +86,16 @@ $.logChat = function(sender, message) {
     }
     
     var datefmt = new java.text.SimpleDateFormat("yyyy-MM-dd");
-    datefmt.setTimeZone(java.util.TimeZone.getTimeZone("GMT"));
+    datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.timezone));
     
     var date = datefmt.format(new java.util.Date());
     
-    datefmt = new java.text.SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss");
-    datefmt.setTimeZone(java.util.TimeZone.getTimeZone("GMT"));
+    datefmt = new java.text.SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss Z");
+    datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.timezone));
     
     var timestamp = datefmt.format(new java.util.Date());
     
-    var str = timestamp + "Z [" + sender + "] " + message;
+    var str = timestamp + " [" + sender + "] " + message;
     
     $.writeToFile(str, "chatlog_" + date + ".txt", true);
 }
@@ -106,16 +106,16 @@ $.logLink = function(sender, message) {
     }
     
     var datefmt = new java.text.SimpleDateFormat("yyyy-MM-dd");
-    datefmt.setTimeZone(java.util.TimeZone.getTimeZone("GMT"));
+    datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.timezone));
     
     var date = datefmt.format(new java.util.Date());
     
-    datefmt = new java.text.SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss");
-    datefmt.setTimeZone(java.util.TimeZone.getTimeZone("GMT"));
+    datefmt = new java.text.SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss Z");
+    datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.timezone));
     
     var timestamp = datefmt.format(new java.util.Date());
     
-    var str = timestamp + "Z [" + sender + "] " + message;
+    var str = timestamp + " [" + sender + "] " + message;
     
     $.writeToFile(str, "linklog_" + date + ".txt", true);
 }
@@ -126,16 +126,16 @@ $.logEvent = function(file, line, message) {
     }
     
     var datefmt = new java.text.SimpleDateFormat("yyyy-MM-dd");
-    datefmt.setTimeZone(java.util.TimeZone.getTimeZone("GMT"));
+    datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.timezone));
     
     var date = datefmt.format(new java.util.Date());
     
-    datefmt = new java.text.SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss");
-    datefmt.setTimeZone(java.util.TimeZone.getTimeZone("GMT"));
+    datefmt = new java.text.SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss Z");
+    datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.timezone));
     
     var timestamp = datefmt.format(new java.util.Date());
     
-    var str = timestamp + "Z [" + file + "#" + line + "] " + message;
+    var str = timestamp + " [" + file + "#" + line + "] " + message;
     
     $.writeToFile(str, "eventlog_" + date + ".txt", true);
 }
@@ -146,22 +146,22 @@ $.logError = function(file, line, message) {
     }
     
     var datefmt = new java.text.SimpleDateFormat("yyyy-MM-dd");
-    datefmt.setTimeZone(java.util.TimeZone.getTimeZone("GMT"));
+    datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.timezone));
     
     var date = datefmt.format(new java.util.Date());
     
-    datefmt = new java.text.SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss");
-    datefmt.setTimeZone(java.util.TimeZone.getTimeZone("GMT"));
+    datefmt = new java.text.SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss Z");
+    datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.timezone));
     
     var timestamp = datefmt.format(new java.util.Date());
     
-    var str = timestamp + "Z [" + file + "#" + line + "] " + message;
+    var str = timestamp + " [" + file + "#" + line + "] " + message;
     
     $.writeToFile(str, "errorlog_" + date + ".txt", true);
 }
 
 $.logRotate = function() {
-    var cal = java.util.Calendar.getInstance(java.util.TimeZone.getTimeZone("GMT"));
+    var cal = java.util.Calendar.getInstance(java.util.TimeZone.getTimeZone($.timezone));
     var now = cal.getTimeInMillis();
 
     cal.set(java.util.Calendar.HOUR, 0);
@@ -184,7 +184,7 @@ $.logRotate = function() {
     var date;
     var i;
     
-    datefmt.setTimeZone(java.util.TimeZone.getTimeZone("GMT"));
+    datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.timezone));
     
     for (i = 0; i < chatlogs.length; i++) {
         date = datefmt.parse(chatlogs[i].substring(8, 18));
