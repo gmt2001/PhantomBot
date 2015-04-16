@@ -316,14 +316,14 @@ $api.on($script, 'command', function(event) {
     var command = event.getCommand();
     
     if ($.moduleEnabled("./systems/pointSystem.js") && !$.isMod(sender) && $.inidb.exists("pricecom", command.toLowerCase())) {
-            if (parseInt($.inidb.get("points", sender)) < parseInt($.inidb.get("pricecom", command.toLowerCase()))) {
-                $.say("That command costs " + $.inidb.get("pricecom", command.toLowerCase()) + " " + $.pointname + ", which you don't have.");
-                return;
-            } else {
-                $.inidb.decr("points", sender, parseInt($.inidb.get("pricecom", command.toLowerCase())));
-				$.println("[Paid]" + username + "s balance is now: " + $.inidb.get('points', sender) + " " + $.pointname + "");
-            }
+        if (parseInt($.inidb.get("points", sender)) < parseInt($.inidb.get("pricecom", command.toLowerCase()))) {
+            $.say("That command costs " + $.inidb.get("pricecom", command.toLowerCase()) + " " + $.pointname + ", which you don't have.");
+            return;
+        } else {
+            $.inidb.decr("points", sender, parseInt($.inidb.get("pricecom", command.toLowerCase())));
+            $.println("[Paid]" + username + "s balance is now: " + $.inidb.get('points', sender) + " " + $.pointname + "");
         }
+    }
     
     $.hook.call('command', event, false);
 });
@@ -426,6 +426,14 @@ $.botowner = $.ownerName;
 $.castermsg = "Only a Caster has access to that command!";
 $.adminmsg = "Only a Administrator has access to that command!";
 $.modmsg = "Only a Moderator has access to that command!";
+
+if ($.inidb.FileExists("timezone")) {
+    $.timezone = $.inidb.get("timezone", "timezone");
+}
+else {
+    $.inidb.set("timezone", "timezone", "America/New_York" );
+    $.timezone = $.inidb.get("timezone", "timezone");
+}
 
 $.loadScript('./util/misc.js');
 $.loadScript('./util/commandList.js');

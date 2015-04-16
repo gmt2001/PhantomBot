@@ -1,10 +1,3 @@
-if ($.inidb.FileExists("timezone")) {
-    $.timezone = $.inidb.get("timezone", "timezone");
-}
-else {
-    $.inidb.set("timezone", "timezone", "America/New_York" );
-    $.timezone = $.inidb.get("timezone", "timezone");
-}
 $.timelevel = $.inidb.get('settings', 'timelevel');
 if($.timelevel == null) {
     $.timelevel = "false";
@@ -30,9 +23,6 @@ $.setTimeZone = function (timezone) {
     $.say("For a list of valid time zones visit http://en.wikipedia.org/wiki/List_of_tz_database_time_zones.");
     $.say("Current time zone is: " + $.timezone);
 }
-
-
-
 
 $.on('command', function(event) {
     var sender = event.getSender().toLowerCase();
