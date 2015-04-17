@@ -11,10 +11,10 @@ $.bet_minimum = parseInt($.inidb.get('settings', 'bet_minimum'));
 $.bet_maximum = parseInt($.inidb.get('settings', 'bet_maximum'));
 
 if ($.bet_minimum === undefined || $.bet_minimum === null || isNaN($.bet_minimum) || $.bet_minimum < 0) {
-    $.bet_minimum = 5;
+    $.bet_minimum = 0;
 }
 if ($.bet_maximum === undefined || $.bet_maximum === null || isNaN($.bet_maximum) || $.bet_maximum < 0) {
-    $.bet_maximum = 500;
+    $.bet_maximum = 0;
 }
 
 $.on('command', function (event) {
@@ -40,13 +40,30 @@ $.on('command', function (event) {
         if (args.length >= 1) {
 			
             if (action.equalsIgnoreCase("minimum") && $.isMod(sender)) {
-			if (args[1] == null){
-                $.say("Current bet maximum: " + $.bet_maximum + " " + $.pointname + " and Current bet minimum: " + $.bet_minimum + " " + $.pointname + ".");
+                if (args[1] == 0) {
+                    $.say ("You have disabled the minimum bet amount!");
+                    $.inidb.set('settings', 'bet_minimum', args[1]);
+                    $.bet_minimum = args[1];
+                    return;
+                }
+                
+                if (args[1] == null){
+                    if ($.bet_minimum == 0 && $.bet_maximum > 0) {
+                        $.say("You may bet up to " + $.bet_maximum + " " + $.pointname + " or lower!");
+                        return;
+                    }
+                    
+                    if ($.bet_maximum == 0 && $.bet_minimum > 0) {
+                        $.say ("You may bet no lower than " + $.bet_minimum + " " + $.pointname + ".");
+                        return;
+                    }
+                
+                $.say("Current Bet Maximum: " + $.bet_maximum + " " + $.pointname + ", Current Bet Minimum: " + $.bet_minimum + " " + $.pointname + ".");
                 return;
-            }
-			
-                if (parseInt(args[1]) <= 0) {
-                $.say("You can't set the minimum bet amount below 0!");
+                }  
+                
+                if (parseInt(args[1]) < 0 || parseInt(args[1]) > $.bet_maximum && !$.bet_maximum == 0) {
+                $.say("You can't set the minimum bet amount below 0 or higher than the bet maximum!");
                 return;
                 
                 } else {
@@ -59,17 +76,35 @@ $.on('command', function (event) {
 
 			
             if (action.equalsIgnoreCase("maximum") && $.isMod(sender)) {
-				if (args[1] == null){
-                $.say("Current bet maximum: " + $.bet_maximum + " " + $.pointname + " and Current bet minimum: " + $.bet_minimum + " " + $.pointname + ".");
+                
+                if (args[1] == 0) {
+                    $.say ("You have disabled the maximum bet amount!");
+                    $.inidb.set('settings', 'bet_maximum', args[1]);
+                    $.bet_maximum = args[1];
+                    return;
+                }
+                
+                if (args[1] == null){
+                    if ($.bet_minimum == 0 && $.bet_maximum > 0) {
+                        $.say("You may bet up to " + $.bet_maximum + " " + $.pointname + " or lower!");
+                        return;
+                    }
+                    
+                    if ($.bet_maximum == 0 && $.bet_minimum > 0) {
+                        $.say ("You may bet no lower than " + $.bet_minimum + " " + $.pointname + ".");
+                        return;
+                    }
+                    
+                $.say("Current Bet Maximum: " + $.bet_maximum + " " + $.pointname + ", Current Bet Minimum: " + $.bet_minimum + " " + $.pointname + ".");
                 return;
             }
 				
-                if (parseInt(args[1]) <= 0) {
-                $.say("You can't set the maximum bet amount below 0!");
+                if (parseInt(args[1]) < $.bet_minimum) {
+                $.say("You can't set the maximum bet amount below the minimum amount!");
                 return;
                 } else {
-                $.inidb.set('settings', 'bet_maximum', args[1]);
                 $.bet_maximum = args[1];
+                $.inidb.set('settings', 'bet_maximum', args[1]);
                 $.say("You have set the maximum amount someone could bet to: " + args[1] + " " + $.pointname + ".");
                 }
 
@@ -218,7 +253,7 @@ $.on('command', function (event) {
                     a++;
                     bet = $var.bet_table[user];
                     if (bet.option.equalsIgnoreCase(winning)) {
-                        moneyWon = parseInt((bet.amount / totalwin) * pot );
+                        moneyWon = parseInt((pot/totalwin));
                         println("[Bet Pot Amount] " + bet.amount + " / totalwin: " + totalwin + ") * pot: " + pot);
 
                         if (moneyWon > 0) {
@@ -328,12 +363,16 @@ $.on('command', function (event) {
                     return;
                 }
 
-                if (amount < $.bet_minimum) {
+                if ($.bet_minimum == 0) {
+                    println("Proceeding...");
+                } else if (amount > $.bet_minimum) {
                     $.say("The minimum amount of " + $.pointname + " that you can wager is: " + $.bet_minimum + " " + $.pointname +".");
                     return;
                 }
                 
-                if (amount > $.bet_maximum) {
+                if ($.bet_maximum == 0) {
+                    println("Proceeding...");
+                } else if (amount > $.bet_maximum) {
                     $.say("The maximum amount of " + $.pointname + " that you can wager is: " + $.bet_maximum + " " + $.pointname +".");
                     return;
                 }
@@ -343,7 +382,7 @@ $.on('command', function (event) {
                 else points = parseInt(points);
 
                 if (amount > points) {
-                    $.say($.username.resolve(sender) + ", " + " you don't have that amount of " + $.pointname + " to wager!");
+                    $.say($.username.resolve(sender) + "," + " you don't have that amount of " + $.pointname + " to wager!");
                     return;
                 }
 
@@ -400,8 +439,8 @@ $.on('command', function (event) {
 
 });
 
-$.registerChatCommand("./commands/betSystem.js", "bet");
-$.registerChatCommand("./commands/betSystem.js", "bet win");
-$.registerChatCommand("./commands/betSystem.js", "bet open");
-$.registerChatCommand("./commands/betSystem.js", "bet time", "mod");
-$.registerChatCommand("./commands/betSystem.js", "bet results");
+$.registerChatCommand("./systems/betSystem.js", "bet");
+$.registerChatCommand("./systems/betSystem.js", "bet win");
+$.registerChatCommand("./systems/betSystem.js", "bet open");
+$.registerChatCommand("./systems/betSystem.js", "bet time", "mod");
+$.registerChatCommand("./systems/betSystem.js", "bet results");

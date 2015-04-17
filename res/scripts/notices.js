@@ -11,11 +11,10 @@ if ($.noticemessages == undefined || $.noticemessages == null || isNaN($.noticem
 
 
 $.on('command', function (event) {
-    var sender = event.getSender()
-    var username = $.username.resolve(sender)
-    var command = event.getCommand()
-    var num_messages = $.inidb.get('notices', 'num_messages')
-    var argsString = event.getArguments().trim()
+    var sender = event.getSender();
+    var command = event.getCommand();
+    var num_messages = $.inidb.get('notices', 'num_messages');
+    var argsString = event.getArguments().trim();
     var args = event.getArgs();
     var action;
     var message;
@@ -194,7 +193,6 @@ $.on('command', function (event) {
             }
 
             $.inidb.del('notices', 'message_' + (num_messages - 1))
-
             $.inidb.decr('notices', 'num_messages', 1);
 
             num_messages = $.inidb.get('notices', 'num_messages');
@@ -223,7 +221,7 @@ function sendMessage() {
         return;
     }
 	
-	if ($.inidb.get('notices', 'message_' + messageIndex) ==  null) {
+	if ($.inidb.get('notices', 'message_' + messageIndex) ==  null || $.inidb.get('notices', 'message_' + messageIndex) ==  " ") {
 		return;
 	}
 
