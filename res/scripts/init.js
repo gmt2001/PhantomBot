@@ -423,9 +423,15 @@ $api.on($script, 'musicPlayerState', function(event) {
 $.botname = $.botName;
 $.botowner = $.ownerName;
 
+if ($.inidb.get("settings", "permmsg") == "true" || $.inidb.get("settings", "permmsg") == null) {
 $.castermsg = "Only a Caster has access to that command!";
 $.adminmsg = "Only a Administrator has access to that command!";
-$.modmsg = "Only a Moderator has access to that command!";
+$.modmsg = "Only a Moderator has access to that command!";  
+} else {
+$.castermsg = "";
+$.adminmsg = "";
+$.modmsg = "";   
+}
 
 if ($.inidb.FileExists("timezone")) {
     $.timezone = $.inidb.get("timezone", "timezone");
@@ -476,9 +482,21 @@ $api.on(initscript, 'command', function(event) {
     var args = event.getArgs();
     var index;
     
+    if (command.equalsIgnoreCase("togglepermmsg")) {
+         if ($.inidb.get("settings", "permmsg") == "true" || $.inidb.get("settings", "permmsg") == null) {
+            $.inidb.set("settings", "permmsg", "false");
+            $.say("Permission messages have been toggled off!");
+            return;
+     } else if ($.inidb.get("settings", "permmsg") == "false") {
+            $.inidb.set("settings", "permmsg", "true");
+            $.say("Permission messages have been toggled on!");
+            return;
+     }
+ }
+
     if (command.equalsIgnoreCase("setconnectedmessage")) {
         if (!$.isAdmin(sender)) {
-            $.say("You must be an Administrator to use that command.");
+            $.say($.adminmsg);
             return;
         }
         
@@ -487,10 +505,10 @@ $api.on(initscript, 'command', function(event) {
         $.inidb.set('settings', 'connectedMessage', argsString);
         $.say("Connected message set!");
     }
-    
+   
     if (command.equalsIgnoreCase("reconnect")) {
         if (!$.isMod(sender)) {
-            $.say("You must be a Moderator to use that command.");
+            $.say($.modmsg);
             return;
         }
         
@@ -502,7 +520,7 @@ $api.on(initscript, 'command', function(event) {
     
     if (command.equalsIgnoreCase("module")) {
         if (!$.isAdmin(sender)) {
-            $.say("You must be an Administrator to use that command.");
+            $.say($.adminmsg);
             return;
         }
         

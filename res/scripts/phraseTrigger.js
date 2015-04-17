@@ -2,7 +2,6 @@ $.on('ircChannelMessage', function(event) {
     
     var message = event.getMessage();
     var sender = event.getSender().toLowerCase();
-    var username = $.username.resolve(sender);
     var emoteKey = $.inidb.GetKeyList("phrases", "");
 
 
@@ -19,7 +18,6 @@ $.on('ircChannelMessage', function(event) {
 
 $.on('command', function (event) {
     var sender = event.getSender();
-    var username = $.username.resolve(sender);
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
     var message = argsString.substring(argsString.indexOf(" ") + 1, argsString.length());

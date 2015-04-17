@@ -39,7 +39,8 @@ $.on('command', function (event) {
             
         if (args.length >= 1) {
 			
-            if (action.equalsIgnoreCase("minimum") && $.isMod(sender)) {
+            if (action.equalsIgnoreCase("min") && $.isMod(sender)) {
+                
                 if (args[1] == 0) {
                     $.say ("You have disabled the minimum bet amount!");
                     $.inidb.set('settings', 'bet_minimum', args[1]);
@@ -75,7 +76,7 @@ $.on('command', function (event) {
             }
 
 			
-            if (action.equalsIgnoreCase("maximum") && $.isMod(sender)) {
+            if (action.equalsIgnoreCase("max") && $.isMod(sender)) {
                 
                 if (args[1] == 0) {
                     $.say ("You have disabled the maximum bet amount!");
