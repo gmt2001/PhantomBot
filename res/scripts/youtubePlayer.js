@@ -704,6 +704,7 @@ $.on('command', function (event) {
 
 $.registerChatCommand("./youtubePlayer.js", "addsong");
 $.registerChatCommand("./youtubePlayer.js", "skipsong");
+$.registerChatCommand("./youtubePlayer.js", "vetosong");
 $.registerChatCommand("./youtubePlayer.js", "currentsong");
 $.registerChatCommand("./youtubePlayer.js", "nextsong");
 $.registerChatCommand("./youtubePlayer.js", "stealsong", "admin");
