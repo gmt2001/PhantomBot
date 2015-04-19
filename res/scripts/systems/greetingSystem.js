@@ -3,8 +3,9 @@ $.on('ircChannelJoin', function(event) {
     var username = $.username.resolve(sender);
     var s = $.inidb.get("greeting", sender);
     
-     println("[Join] " + username + " has joined the channel.");
-     
+        println("[Join] " + username + " has joined the channel.");
+        $.inidb.set("visited", 'visitor', sender);
+    
     if ($.inidb.get("greeting", sender + "_enabled") == "1") {
 
         if (s == null || s == undefined || s.isEmpty()) {
