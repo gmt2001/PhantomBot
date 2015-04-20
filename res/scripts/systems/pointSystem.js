@@ -112,7 +112,7 @@ $.on('command', function (event) {
                     $.say($.username.resolve(sender) + ", you can't send a negative amount.");
                     return;
                 } else {
-                if ($.inidb.exists("visited", 'visitor') == args[0]) {
+                if ($.inidb.exists("visited", args[0].toLowerCase()) == "visited") {
                     $.inidb.incr('points', username, points);
                     $.say(points + " " + $.pointname + " was sent to " + $.username.resolve(username) + ". New balance is: " + $.inidb.get('points', username.toLowerCase()) + " " + $.pointname + ".");
                 } else {
@@ -139,7 +139,7 @@ $.on('command', function (event) {
                 if (points > $.inidb.get('points', username)) {
                     $.say($.username.resolve(sender) + ", why are you trying to take more than what" + $.username.resolve(username) + " has in " + $.pointname + "?");
                 } else {
-                if ($.inidb.exists("visited", 'visitor') == args[0]) {
+                if ($.inidb.exists("visited", args[0].toLowerCase()) == "visited")  {
                     $.inidb.decr('points', username, points);
                     $.say(points + " " + $.pointname + " was withdrawn from " + $.username.resolve(username) + ". New balance is: " + $.inidb.get('points', username.toLowerCase()) + " " + $.pointname + ".");
                 } else {
@@ -167,7 +167,7 @@ $.on('command', function (event) {
                 if (points < 0) {
                     $.say($.username.resolve(sender) + ", you know very well you can't set someone's " + $.pointname + " to a negative number.");
                 } else {
-                 if ($.inidb.exists("visited", 'visitor') == args[0]) {
+                 if ($.inidb.exists("visited", args[0].toLowerCase()) == "visited")  {
                     $.inidb.set('points', username, points);
                     $.say($.username.resolve(username) + "'s " + $.pointname + " were set to " + points + " " + $.pointname + ". New balance is: " + $.inidb.get('points', username.toLowerCase()) + " " + $.pointname + ".");
                 } else {
@@ -348,14 +348,14 @@ $.on('command', function (event) {
             return;
 
         } else {
-            if (args[1] < $.mingift) {
+            if (parseInt(args[1]) < $.mingift) {
                 $.say($.username.resolve(sender) + ", you can't transfer " + $.pointname + " that's lower than the minimum amount! Minimum: " + $.mingift + " " + $.pointname + ".");
                 return;
-            } else if (points < args[1]){
+            } else if (points < parseInt(args[1])){
                 $.say($.username.resolve(sender) + ", you can't transfer " + $.pointname + " what you don't have.");
                 return;
             } else {
-                if ($.inidb.exists("visited", 'visitor') == args[0]) {
+                if ($.inidb.exists("visited", args[0].toLowerCase()) == "visited") {
                 $.inidb.decr('points', sender, parseInt(args[1]));
                 $.inidb.incr('points', username, parseInt(args[1]));
                 $.say("Transferred " + args[1] + " " + $.pointname + " to " + $.username.resolve(args[0]) + " who now has: " + $.inidb.get('points', args[0]) + " " + $.pointname + ". " + $.username.resolve(sender) + ", you're left with: " + $.inidb.get('points', sender) + " " + $.pointname + ".");
