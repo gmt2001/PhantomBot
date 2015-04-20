@@ -31,15 +31,15 @@ $.isOwner = function (user) {
 }
 
 $.isCaster = function (user) {
-    return $.getUserGroupId(user) == 0;
+    return $.getUserGroupId(user) == 0 || $.isOwner(user) || $.isBot(user);
 }
 
 $.isAdmin = function (user) {
-    return $.getUserGroupId(user) <= 1;
+    return $.getUserGroupId(user) <= 1 || $.isOwner(user) || $.isBot(user);
 }
 
 $.isMod = function (user) {
-    return $.getUserGroupId(user) <= 2;
+    return $.getUserGroupId(user) <= 2 || $.isOwner(user) || $.isBot(user);
 }
 
 $.isSub = function (user) {
@@ -61,7 +61,7 @@ $.isHoster = function (user) {
 }
 
 $.isReg = function (user) {
-    return $.getUserGroupId(user) <= 6;
+    return $.getUserGroupId(user) <= 6 || $.isOwner(user) || $.isBot(user);
 }
 
 $.hasModeO = function (user) {
