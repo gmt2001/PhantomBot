@@ -48,7 +48,6 @@ for (i = 0; i < lines.length; i++) {
 
 function issueCommand(command) {
     $.say(command);
-    $.say(command);
 }
 
 function banUserFor (user, time) {
@@ -60,7 +59,6 @@ function banUserFor (user, time) {
 
 function banUser (user) {
     issueCommand(ircPrefix + "ban " + user);
-    timeoutUser(user, 1);
 }
 
 function unbanUser (user) {
@@ -1157,7 +1155,7 @@ $.on('ircChannelMessage', function(event) {
             }
         }
 		
-        if (message.contains($.inidb.get('whitelist', 'link')) ) {
+        if ($.inidb.exists('whitelist', 'link') && message.contains($.inidb.get('whitelist', 'link')) ) {
             permitted = true;
         }
 		
