@@ -14,6 +14,7 @@ var linksallowed = $.inidb.get("settings", "linksallowed").equalsIgnoreCase("1")
 var permittime = parseInt($.inidb.get("settings", "permittime"));
 var youtubeallowed = $.inidb.get("settings", "youtubeallowed").equalsIgnoreCase("1");
 var subsallowed = $.inidb.get("settings", "subsallowed").equalsIgnoreCase("1");
+var regsallowed = $.inidb.get("settings", "regsallowed").equalsIgnoreCase("1");
 var linksmessage = $.inidb.get("settings", "linksmessage");
 var spamallowed = $.inidb.get("settings", "spamallowed").equalsIgnoreCase("1");
 var spamlimit = parseInt($.inidb.get("settings", "spamlimit"));
@@ -447,7 +448,7 @@ $.on('command', function(event) {
             if (args.length < 1 || args[0].equalsIgnoreCase("help")) {
                 $.say("Usage: !chatmod <option> [new value]");
                 $.say("-Options: warningcountresettime, timeouttype, autopurgemessage, capsallowed, capstriggerratio, capstriggerlength, "
-                    + "capsmessage, linksallowed, permittime, youtubeallowed, subsallowed, linksmessage, spamallowed, spamlimit, spammessage");
+                    + "capsmessage, linksallowed, permittime, youtubeallowed, subsallowed, regsallowed, linksmessage, spamallowed, spamlimit, spammessage");
                 $.say(">>symbolsallowed, symbolslimit, symbolsrepeatlimit, symbolsmessage, repeatallowed, repeatlimit, repeatmessage, graphemeallowed, "
                     + "graphemelimit, graphememessage, "
                     + "warning1type, warning2type, warning3type, warning1message, warning2message, warning3message");
@@ -688,6 +689,36 @@ $.on('command', function(event) {
                             $.say("Subscribers are no longer allowed to post links!");
                         }
                     }
+                    
+                } else if (args[0].equalsIgnoreCase("regsallowed")) {
+                    val = argsString;
+                    
+                    if (args.length == 1 || (!val.equalsIgnoreCase("false") && !val.equalsIgnoreCase("true"))) {
+                        if (regsallowed) {
+                            val = "allowed";
+                        } else {
+                            val = "NOT allowed";
+                        }
+                        
+                        $.say("Regulars are currently " + val + " to post links. To change it use: !chatmod regsallowed <'true' or 'false'>");
+                    } else {
+                        if (val.equalsIgnoreCase("true")) {
+                            val = "1";
+                        } else {
+                            val = "0";
+                        }
+                        
+                        $.inidb.set("settings", "regsallowed", val);
+                        
+                        regsallowed = val.equalsIgnoreCase("1");
+                        
+                        if (regsallowed) {
+                            $.say("Regulars are now allowed to post links!");
+                        } else {
+                            $.say("Regulars are no longer allowed to post links!");
+                        }
+                    }
+                    
                 } else if (args[0].equalsIgnoreCase("linksmessage")) {
                     val = argsString;
                     
@@ -1139,7 +1170,7 @@ $.on('ircChannelMessage', function(event) {
     }
 	
     //Change the second parameter to true to use aggressive link detection
-    if (linksallowed == false && $.hasLinks(event, false) && !$.isMod(sender) && (!$.isSub(sender) || !subsallowed)) {
+    if (linksallowed == false && $.hasLinks(event, false) && !$.isMod(sender) && ((!$.isSub(sender) || !subsallowed) || (!$.isReg(sender) || !regsallowed))) {
         var permitted = false;
             
         for (i = 0; i < permitList.length; i++) {

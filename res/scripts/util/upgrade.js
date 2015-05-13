@@ -549,6 +549,18 @@ if ($.inidb.GetInteger("init", "upgrade", "version") < 7) {
     println("   End version 7 upgrades...");
 }
 
+if ($.inidb.GetInteger("init", "upgrade", "version") < 8) {
+    println("   Starting version 8 upgrades...");
+    
+    println("     Populating new chat moderation values");
+    
+    if (!$.inidb.exists("settings", "regsallowed")) {
+        $.inidb.set("settings", "regsallowed", "0");
+    }
+    
+    println("   End version 8 upgrades...");
+}
+
 println("   Saving...");
 
 $.inidb.SetInteger("init", "upgrade", "version", parseInt($.upgrade_version));
