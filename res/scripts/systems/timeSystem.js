@@ -208,3 +208,7 @@ $.setInterval(function() {
         }
     }
 }, 60 * 1000);
+
+$.setInterval(function() {    
+    $.inidb.SaveAll(true);
+}, 300 * 1000);
