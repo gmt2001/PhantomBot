@@ -1170,7 +1170,7 @@ $.on('ircChannelMessage', function(event) {
     }
 	
     //Change the second parameter to true to use aggressive link detection
-    if (linksallowed == false && $.hasLinks(event, false) && !$.isMod(sender) && ((!$.isSub(sender) || !subsallowed) || (!$.isReg(sender) || !regsallowed))) {
+    if (linksallowed == false && $.hasLinks(event, false) && !$.isMod(sender) && (!$.isSub(sender) || !subsallowed) && (!$.isReg(sender) || !regsallowed)) {
         var permitted = false;
             
         for (i = 0; i < permitList.length; i++) {
