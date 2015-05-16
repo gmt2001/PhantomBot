@@ -38,7 +38,8 @@ if($.titles==null || $.titles=="") {
 
 var musicplayer = $.musicplayer;
 
-function Song(name) {
+//TO DO: FIX THIS
+/*function Song(name) {
     var data = $.youtube.getVideoInfo(name, "none");
     if (data != null) {
         this.id = data.id;
@@ -60,6 +61,45 @@ function Song(name) {
 
     this.getName = function () {
         return $.youtube.getVideoTitle(this.id);
+    }
+}
+*/
+
+//TEMP FIX, NEEDS SONG LENGTH
+function Song(name) {
+    if (name==null) return;
+    var HttpRequest = Packages.com.gmt2001.HttpRequest;
+    var HashMap = Packages.java.util.HashMap;
+    var JSONObject = Packages.org.json.JSONObject;
+    var j = new JSONObject("{}");
+    var h = new HashMap(1);
+    h.put("Content-Type", "application/json-rpc");
+
+    var jsonurl = "http://www.youtube.com/oembed?url=http://www.youtube.com/watch?v=" + name + "&format=json";
+    var r = HttpRequest.getData(HttpRequest.RequestType.GET, jsonurl, j.toString(), h);
+
+    var response = new JSONObject(r.content);
+
+    if (response != null) {
+        this.id = name;
+        this.name = response.getString("title");
+        this.length = 1;
+    } else {
+        this.id = null;
+        this.name = "";
+        this.length = 0;
+    }
+
+    this.getId = function () {
+        return this.id;
+    }
+
+    this.cue = function () {
+        musicplayer.cue(this.id);
+    }
+
+    this.getName = function () {
+        return this.name;
     }
 }
 
@@ -516,7 +556,7 @@ $.on('command', function (event) {
     }
 
     if (command.equalsIgnoreCase("addsong")) {
-        if ($.inidb.get('blacklist', sender) == "true") {
+        if ($.inidb.get('blacklist', sender) == "true" || !$.isReg(sender)) {
             $.say("You are denied access to song request features!");
             return;
         }
@@ -582,7 +622,12 @@ $.on('command', function (event) {
             return;
         }
 
-        id = $.youtube.searchVideo(argsString, "none");
+        //TODO: FIX
+        //id = $.youtube.searchVideo(argsString, "none");
+        
+        //TEMP FIX
+        id = youtubeParser(argsString);
+        
         if (id == null) {
             $.say("Song doesn't exist or you typed something wrong.");
             return;
