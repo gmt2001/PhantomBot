@@ -556,7 +556,7 @@ $.on('command', function (event) {
     }
 
     if (command.equalsIgnoreCase("addsong")) {
-        if ($.inidb.get('blacklist', sender) == "true" || !$.isReg(sender)) {
+        if ($.inidb.get('blacklist', sender) == "true" || (!$.isReg(sender) && (!$.inidb.exists("pricecom", "songrequest") && !$.inidb.exists("pricecom", "addsong")))) {
             $.say("You are denied access to song request features!");
             return;
         }
