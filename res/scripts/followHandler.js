@@ -27,6 +27,7 @@ $.on('twitchFollow', function(event) {
                 } else {
                     s = "Thanks for the follow (name)!";
                 }
+                $.writeToFile(username, "./web/latestfollower.txt", false);
             }
             
             while (s.indexOf('(name)') != -1) {

@@ -1,4 +1,4 @@
-$var.defaultplaylist = $.readFile("./playlist.txt");
+$var.defaultplaylist = $.readFile("./web/playlist.txt");
 $var.defaultplaylistpos = 0;
 $var.songqueue = [];
 $var.requestusers = {};
@@ -225,10 +225,10 @@ function nextDefault() {
             $var.defaultplaylistretry++;
 
             setTimeout(function () {
-                if ($.fileExists("./playlist.txt")) {
-                    $var.defaultplaylist = $.readFile("./playlist.txt");
-                } else if ($.fileExists("../playlist.txt")) {
-                    $var.defaultplaylist = $.readFile("../playlist.txt");
+                if ($.fileExists("./web/playlist.txt")) {
+                    $var.defaultplaylist = $.readFile("./web/playlist.txt");
+                } else if ($.fileExists("../web/playlist.txt")) {
+                    $var.defaultplaylist = $.readFile("../web/playlist.txt");
                 }
 
                 $var.defaultplaylistpos = 0;
@@ -275,9 +275,9 @@ function nextDefault() {
         println("[\u266B] Now Playing -- " + name + " - requested by @" + user);
     }
     if (user.equalsIgnoreCase("DJ " + $.username.resolve($.botname))) {
-        $.writeToFile(name, "currentsong.txt", false);
+        $.writeToFile(name, "web/currentsong.txt", false);
     } else if (!user.equalsIgnoreCase("DJ " + $.username.resolve($.botname))){
-        $.writeToFile(name + " requested by: " + user, "currentsong.txt", false);
+        $.writeToFile(name + " requested by: " + user, "web/currentsong.txt", false);
     }
 }
 
@@ -337,9 +337,9 @@ function next() {
         println(nextMsg);
     }
     if (user.equalsIgnoreCase("DJ " + $.username.resolve($.botname))) {
-        $.writeToFile(name, "currentsong.txt", false);
+        $.writeToFile(name, "web/currentsong.txt", false);
     } else if (!user.equalsIgnoreCase("DJ " + $.username.resolve($.botname))){
-        $.writeToFile(name + " requested by: " + user, "currentsong.txt", false);
+        $.writeToFile(name + " requested by: " + user, "web/currentsong.txt", false);
     }
 
 }
@@ -462,7 +462,7 @@ $.on('command', function (event) {
 
                 $.storing = 1;
                 $.inidb.set('settings', 'song_storing', $.storing.toString());
-                $.defaultplaylist = $.readFile("./playlist.txt");
+                $.defaultplaylist = $.readFile("./web/playlist.txt");
                 $.say("Playlists' positions and titles will now be exported to a readable file.");
 
             } else {
@@ -547,7 +547,7 @@ $.on('command', function (event) {
             if ($var.currSong != null) {
                 var songurl = "https://www.youtube.com/watch?v=" + $var.currSong.song.getId();
                 $.musicplayer.stealSong(songurl);
-                $var.defaultplaylist = $.readFile("./playlist.txt");
+                $var.defaultplaylist = $.readFile("./web/playlist.txt");
                 $.say("[\u266B]" + $var.currSong.song.getName() + " -- requested by @" + $var.currSong.user + " has been stolen and added to the default playlist!");
                 return;
             }
@@ -738,7 +738,7 @@ $.on('command', function (event) {
         if ($var.currSong != null) {
             var songurl = "https://www.youtube.com/watch?v=" + $var.currSong.song.getId();
             $.musicplayer.stealSong(songurl);
-            $var.defaultplaylist = $.readFile("./playlist.txt");
+            $var.defaultplaylist = $.readFile("./web/playlist.txt");
             $.say($var.currSong.song.getName() + "~\u266B requested by " + $var.currSong.user + " has been stolen and added to the default playlist!");
             return;
         }

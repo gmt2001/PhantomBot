@@ -15,6 +15,11 @@ $.readFile = function(path) {
     return lines;
 }
 
+$.mkDir = function(path) {
+    var dir = new java.io.File(path);
+    dir.mkdir();
+}
+
 $.saveArray = function(array, path, append) {
     try {
         var fos = new java.io.FileOutputStream (path, append);

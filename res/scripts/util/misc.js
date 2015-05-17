@@ -97,7 +97,7 @@ $.logChat = function(sender, message) {
     
     var str = timestamp + " [" + sender + "] " + message;
     
-    $.writeToFile(str, "chatlog_" + date + ".txt", true);
+    $.writeToFile(str, "./logs/chatlog_" + date + ".txt", true);
 }
 
 $.logLink = function(sender, message) {
@@ -117,7 +117,7 @@ $.logLink = function(sender, message) {
     
     var str = timestamp + " [" + sender + "] " + message;
     
-    $.writeToFile(str, "linklog_" + date + ".txt", true);
+    $.writeToFile(str, "./logs/linklog_" + date + ".txt", true);
 }
 
 $.logEvent = function(file, line, message) {
@@ -137,7 +137,7 @@ $.logEvent = function(file, line, message) {
     
     var str = timestamp + " [" + file + "#" + line + "] " + message;
     
-    $.writeToFile(str, "eventlog_" + date + ".txt", true);
+    $.writeToFile(str, "./logs/eventlog_" + date + ".txt", true);
 }
 
 $.logError = function(file, line, message) {
@@ -157,7 +157,7 @@ $.logError = function(file, line, message) {
     
     var str = timestamp + " [" + file + "#" + line + "] " + message;
     
-    $.writeToFile(str, "errorlog_" + date + ".txt", true);
+    $.writeToFile(str, "./logs/errorlog_" + date + ".txt", true);
 }
 
 $.logRotate = function() {

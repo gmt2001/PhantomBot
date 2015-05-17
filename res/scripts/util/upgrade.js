@@ -561,6 +561,16 @@ if ($.inidb.GetInteger("init", "upgrade", "version") < 8) {
     println("   End version 8 upgrades...");
 }
 
+if ($.inidb.GetInteger("init", "upgrade", "version") < 9) {
+    println("   Starting version 9 upgrades...");
+    
+    println("     Creating logs folder");
+    
+    $.mkDir("logs");
+    
+    println("   End version 9 upgrades...");
+}
+
 println("   Saving...");
 
 $.inidb.SetInteger("init", "upgrade", "version", parseInt($.upgrade_version));
