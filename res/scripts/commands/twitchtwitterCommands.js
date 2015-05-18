@@ -8,7 +8,7 @@ $.on('command', function(event) {
     var oldlist;
     var i;
     
-    if (command.equalsIgnoreCase("twitch") || command.equalsIgnoreCase("twitter")) {
+    if (command.equalsIgnoreCase("twitch") || command.equalsIgnoreCase("tweet")) {
         if (args.length == 0) {
             return;
         }
@@ -49,7 +49,7 @@ $.on('command', function(event) {
             $.say(message);
         }
         
-        if (command.equalsIgnoreCase("twitter")) {
+        if (command.equalsIgnoreCase("tweet")) {
             message = $.inidb.get("twitchtwitter", "twittermsg");
             
             while (message.contains('(name)')) {
@@ -213,5 +213,5 @@ $.on('command', function(event) {
 });
 
 //$.registerChatCommand("./commands/twitchtwitterCommands.js", "twitch", "caster");
-//$.registerChatCommand("./commands/twitchtwitterCommands.js", "twitter", "caster");
+$.registerChatCommand("./commands/twitchtwitterCommands.js", "tweet", "caster");
 $.registerChatCommand("./commands/twitchtwitterCommands.js", "twitchopt", "admin");
