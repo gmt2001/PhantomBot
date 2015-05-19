@@ -571,6 +571,16 @@ if ($.inidb.GetInteger("init", "upgrade", "version") < 9) {
     println("   End version 9 upgrades...");
 }
 
+if ($.inidb.GetInteger("init", "upgrade", "version") < 10) {
+    println("   Starting version 10 upgrades...");
+    
+    println("     Move playlist.txt to /web folder");
+    
+    $.moveFile("playlist.txt","web/");
+    $.moveFile("currentsong.txt","web/");
+    
+    println("   End version 10 upgrades...");
+}
 println("   Saving...");
 
 $.inidb.SetInteger("init", "upgrade", "version", parseInt($.upgrade_version));

@@ -20,6 +20,15 @@ $.mkDir = function(path) {
     dir.mkdir();
 }
 
+$.moveFile = function(file,path) {
+    var file = new java.io.File(file);
+    var path = new java.io.File(path);
+    if((file!=null && path!=null)|| (file!="" && path!=""))
+    {
+    org.apache.commons.io.FileUtils.moveFileToDirectory(file, path, true);
+    }
+}
+
 $.saveArray = function(array, path, append) {
     try {
         var fos = new java.io.FileOutputStream (path, append);
