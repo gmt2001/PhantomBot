@@ -539,9 +539,9 @@ public class TwitchAPIv3
      * @param channel
      * @return
      */
-    public JSONObject GetHostUsers(String channel)
+    public JSONObject GetHostUsers(int channelid)
     {
-        return GetData(request_type.GET, "https://chatdepot.twitch.tv/rooms/" + channel + "/hosts", false);
+        return GetData(request_type.GET, "https://tmi.twitch.tv/hosts?include_logins=1&target=" + channelid, false);
     }
 
     /**

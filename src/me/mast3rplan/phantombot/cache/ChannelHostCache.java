@@ -60,6 +60,7 @@ public class ChannelHostCache implements Runnable
     private Date timeoutExpire = new Date();
     private Date lastFail = new Date();
     private int numfail = 0;
+    private int id = 0;
 
     public ChannelHostCache(String channel)
     {
@@ -90,9 +91,7 @@ public class ChannelHostCache implements Runnable
     @Override
     public void run()
     {
-        com.gmt2001.Console.out.println("ChannelHostCache.run>>Channel Host notifications disabled due to Twitch removing the API");
-        
-        /*
+
         try
         {
             Thread.sleep(30 * 1000);
@@ -143,14 +142,34 @@ public class ChannelHostCache implements Runnable
             {
                 com.gmt2001.Console.out.println("ChannelHostCache.run>>Failed to sleep: [InterruptedException] " + e.getMessage());
             }
-        }*/
+        }
     }
 
     private void updateCache() throws Exception
     {
         Map<String, JSONObject> newCache = Maps.newHashMap();
 
-        JSONObject j = TwitchAPIv3.instance().GetHostUsers(channel);
+        JSONObject j;
+
+        if (id == 0)
+        {
+            j = TwitchAPIv3.instance().GetChannel(channel);
+            
+            if (j.getBoolean("_success"))
+            {
+                if (j.getInt("_http") == 200)
+                {
+                    id = j.getInt("_id");
+                }
+            }
+        }
+        
+        if (id == 0)
+        {
+            return;
+        }
+
+        j = TwitchAPIv3.instance().GetHostUsers(id);
 
         if (j.getBoolean("_success"))
         {
@@ -160,7 +179,7 @@ public class ChannelHostCache implements Runnable
 
                 for (int i = 0; i < hosts.length(); i++)
                 {
-                    newCache.put(hosts.getJSONObject(i).getString("host"), hosts.getJSONObject(i));
+                    newCache.put(hosts.getJSONObject(i).getString("host_login"), hosts.getJSONObject(i));
                 }
             } else
             {
