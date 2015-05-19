@@ -113,7 +113,7 @@ $.on('command', function (event) {
             
             if (action.equalsIgnoreCase("results")) {
          
-                var rWinner = $.inidb.get('bets', 'winner');
+                var rWinner = $.inidb.get('bets', 'winners');
                 var rWinOp = $.inidb.get('bets', 'winning_option');
                 var rOptions = $.inidb.get('bets', 'options');
                 var rEntries = $.inidb.get('bets', 'entries');
@@ -147,7 +147,7 @@ $.on('command', function (event) {
                             rWinOp = "None";
                         }
 
-                        $.say("[" + bDate +"] - [Pot: " + rPot + " " + $.pointname + "] - [Options: " + rOptions + "] - [Entries: " + rEntries + "] - [Winning Option: " + rWinOp + "] - [Winner: " + rWinner + "]");
+                        $.say("[" + bDate +"] - [Pot: " + rPot + " " + $.pointname + "] - [Options: " + rOptions + "] - [Entries: " + rEntries + "] - [Winning Option: " + rWinOp + "] - [Winners: " + rWinner + "]");
                     }
 
                 }
@@ -296,8 +296,8 @@ $.on('command', function (event) {
                         }
 
                         $.say("/me [DA-DA-DAA!] The results are in! " + winning + " has won! [Winning Pot: " + pot + " " + $.pointname + "] Pot will be sent to the following viewers: " + winners);
-                        $.inidb.set('bets', 'winner', (winners)); //
-                        $.inidb.set('bets', 'winning_option', pot); //
+                        $.inidb.set('bets', 'winners', (winners)); //
+                        $.inidb.set('bets', 'winning_option', (winning)); //
                         pot = 0;
                     }
                 }
@@ -366,7 +366,7 @@ $.on('command', function (event) {
 
                 if ($.bet_minimum == 0) {
                     println("Proceeding...");
-                } else if (amount > $.bet_minimum) {
+                } else if (amount < $.bet_minimum) {
                     $.say("The minimum amount of " + $.pointname + " that you can wager is: " + $.bet_minimum + " " + $.pointname +".");
                     return;
                 }
