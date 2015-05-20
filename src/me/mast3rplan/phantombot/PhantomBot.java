@@ -22,20 +22,18 @@ package me.mast3rplan.phantombot;
 
 import com.gmt2001.IniStore;
 import com.gmt2001.TwitchAPIv3;
+import com.gmt2001.YouTubeAPIv3;
 import com.google.common.eventbus.Subscribe;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 import me.mast3rplan.phantombot.cache.BannedCache;
 import me.mast3rplan.phantombot.cache.ChannelHostCache;
 import me.mast3rplan.phantombot.cache.ChannelUsersCache;
@@ -61,7 +59,6 @@ import me.mast3rplan.phantombot.musicplayer.MusicWebSocketServer;
 import me.mast3rplan.phantombot.script.Script;
 import me.mast3rplan.phantombot.script.ScriptEventManager;
 import me.mast3rplan.phantombot.script.ScriptManager;
-import me.mast3rplan.phantombot.youtube.YoutubeAPI;
 import org.apache.commons.io.FileUtils;
 
 public class PhantomBot implements Listener
@@ -77,6 +74,7 @@ public class PhantomBot implements Listener
     private int port;
     private int baseport;
     private double msglimit30;
+    private String youtubekey;
     private String channelStatus;
     private SecureRandom rng;
     private BannedCache bancache;
@@ -105,7 +103,7 @@ public class PhantomBot implements Listener
     }
 
     public PhantomBot(String username, String oauth, String apioauth, String clientid, String channel, String owner,
-            int baseport, String hostname, int port, double msglimit30)
+            int baseport, String hostname, int port, double msglimit30, String youtubekey)
     {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
@@ -130,6 +128,12 @@ public class PhantomBot implements Listener
         this.channelName = channel;
         this.ownerName = owner;
         this.baseport = baseport;
+        this.youtubekey = youtubekey;
+        
+        if (!youtubekey.isEmpty())
+        {
+            YouTubeAPIv3.instance().SetAPIKey(youtubekey);
+        }
 
         this.profile = new Profile(username.toLowerCase());
         this.connectionManager = new ConnectionManager(profile);
@@ -265,7 +269,7 @@ public class PhantomBot implements Listener
         Script.global.defineProperty("channelStatus", channelStatus, 0);
         Script.global.defineProperty("musicplayer", mws, 0);
         Script.global.defineProperty("random", rng, 0);
-        Script.global.defineProperty("youtube", YoutubeAPI.instance, 0);
+        Script.global.defineProperty("youtube", YouTubeAPIv3.instance(), 0);
         Script.global.defineProperty("pollResults", pollResults, 0);
         Script.global.defineProperty("pollVoters", voters, 0);
         Script.global.defineProperty("connmgr", connectionManager, 0);
@@ -449,6 +453,17 @@ public class PhantomBot implements Listener
             changed = true;
         }
 
+        if (message.equals("youtubekey"))
+        {
+            com.gmt2001.Console.out.print("Please enter a new YouTube API key: ");
+            String newyoutubekey = System.console().readLine().trim();
+            
+            YouTubeAPIv3.instance().SetAPIKey(newyoutubekey);
+            youtubekey = newyoutubekey;
+
+            changed = true;
+        }
+
         if (changed)
         {
             try
@@ -463,7 +478,8 @@ public class PhantomBot implements Listener
                 data += "baseport=" + baseport + "\r\n";
                 data += "hostname=" + hostname + "\r\n";
                 data += "port=" + port + "\r\n";
-                data += "msglimit30=" + msglimit30;
+                data += "msglimit30=" + msglimit30 + "\r\n";
+                data += "youtubekey=" + youtubekey;
 
                 FileUtils.writeStringToFile(new File("./botlogin.txt"), data);
 
@@ -531,6 +547,7 @@ public class PhantomBot implements Listener
         int baseport = 25000;
         int port = 0;
         double msglimit30 = 0;
+        string youtubekey = "";
 
         boolean changed = false;
 
@@ -592,6 +609,11 @@ public class PhantomBot implements Listener
                 {
                     msglimit30 = Double.parseDouble(lines[i].substring(11));
                 }
+
+                if (lines[i].startsWith("youtubekey=") && lines[i].length() > 12)
+                {
+                    youtubekey = lines[i].substring(11);
+                }
             }
         } catch (IOException ex)
         {
@@ -637,6 +659,7 @@ public class PhantomBot implements Listener
                     com.gmt2001.Console.out.println("hostname='" + hostname + "'");
                     com.gmt2001.Console.out.println("port='" + port + "'");
                     com.gmt2001.Console.out.println("msglimit30='" + msglimit30 + "'");
+                    com.gmt2001.Console.out.println("youtubekey='" + youtubekey + "'");
                 }
 
                 if (args[i].toLowerCase().startsWith("user=") && args[i].length() > 8)
@@ -729,12 +752,21 @@ public class PhantomBot implements Listener
                     }
                 }
 
+                if (args[i].toLowerCase().startsWith("youtubekey=") && args[i].length() > 12)
+                {
+                    if (!youtubekey.equals(args[i].substring(11)))
+                    {
+                        youtubekey = args[i].substring(11);
+                        changed = true;
+                    }
+                }
+
                 if (args[i].equalsIgnoreCase("help") || args[i].equalsIgnoreCase("--help") || args[i].equalsIgnoreCase("-h"))
                 {
                     com.gmt2001.Console.out.println("Usage: java -Dfile.encoding=UTF-8 -jar PhantomBot.jar [printlogin] [user=<bot username>] "
                             + "[oauth=<bot irc oauth>] [apioauth=<editor oauth>] [clientid=<oauth clientid>] [channel=<channel to join>] "
                             + "[owner=<bot owner username>] [baseport=<bot webserver port, music server will be +1>] [hostname=<custom irc server>] "
-                            + "[port=<custom irc port>] [msglimit30=<message limit per 30 seconds>]");
+                            + "[port=<custom irc port>] [msglimit30=<message limit per 30 seconds>] [youtubekey=<youtube api key>]");
                     return;
                 }
             }
@@ -752,12 +784,13 @@ public class PhantomBot implements Listener
             data += "baseport=" + baseport + "\r\n";
             data += "hostname=" + hostname + "\r\n";
             data += "port=" + port + "\r\n";
-            data += "msglimit30=" + msglimit30;
+            data += "msglimit30=" + msglimit30 + "\r\n";
+            data += "youtubekey=" + youtubekey;
 
             FileUtils.writeStringToFile(new File("./botlogin.txt"), data);
         }
 
-        PhantomBot.instance = new PhantomBot(user, oauth, apioauth, clientid, channel, owner, baseport, hostname, port, msglimit30);
+        PhantomBot.instance = new PhantomBot(user, oauth, apioauth, clientid, channel, owner, baseport, hostname, port, msglimit30, youtubekey);
     }
 
     public static boolean isLink(String message)

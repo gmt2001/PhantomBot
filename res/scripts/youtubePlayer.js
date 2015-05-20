@@ -38,13 +38,16 @@ if($.titles==null || $.titles=="") {
 
 var musicplayer = $.musicplayer;
 
-//TO DO: FIX THIS
-/*function Song(name) {
-    var data = $.youtube.getVideoInfo(name, "none");
-    if (data != null) {
-        this.id = data.id;
-        this.name = data.name;
-        this.length = data.length;
+function Song(name) {
+    var data = $.youtube.SearchForVideo(name);
+    
+    if (!data[0].equalsIgnoreCase("")) {
+        this.id = data[0];
+        this.name = data[1];
+        
+        var ldata = $.youtube.GetVideoLength(this.id);
+        
+        this.length = ldata[0];
     } else {
         this.id = null;
         this.name = "";
@@ -60,13 +63,12 @@ var musicplayer = $.musicplayer;
     }
 
     this.getName = function () {
-        return $.youtube.getVideoTitle(this.id);
+        return this.name;
     }
 }
-*/
 
 //TEMP FIX, NEEDS SONG LENGTH
-function Song(name) {
+/*function Song(name) {
     if (name==null) return;
     var HttpRequest = Packages.com.gmt2001.HttpRequest;
     var HashMap = Packages.java.util.HashMap;
@@ -101,7 +103,7 @@ function Song(name) {
     this.getName = function () {
         return this.name;
     }
-}
+}*/
 
 function youtubeParser(url){
     var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?^\s]*).*/;
