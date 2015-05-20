@@ -39,6 +39,8 @@ if($.titles==null || $.titles=="") {
 var musicplayer = $.musicplayer;
 
 function Song(name) {
+    if (name==null || name=="") return;
+    
     var data = $.youtube.SearchForVideo(name);
     
     if (!data[0].equalsIgnoreCase("")) {
@@ -174,7 +176,7 @@ function parseDefault() {
             $.writeToFile(  $.songprefix, $.storepath + "queue.txt", false);
         }
         for(var i=position; i< list.length; i++){
-            $.song = new Song(list[i]);
+            $.song = new Song(youtubeParser(list[i]));
             $.songname = $.song.getName();
             $.songid = $.song.getId();
                 
@@ -624,12 +626,8 @@ $.on('command', function (event) {
             return;
         }
 
-        //TODO: FIX
-        //id = $.youtube.searchVideo(argsString, "none");
-        
-        //TEMP FIX
-        id = youtubeParser(argsString);
-        
+        id = $.youtube.searchVideo(argsString, "none");
+                
         if (id == null) {
             $.say("Song doesn't exist or you typed something wrong.");
             return;
