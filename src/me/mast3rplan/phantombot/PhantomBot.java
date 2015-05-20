@@ -547,7 +547,7 @@ public class PhantomBot implements Listener
         int baseport = 25000;
         int port = 0;
         double msglimit30 = 0;
-        string youtubekey = "";
+        String youtubekey = "";
 
         boolean changed = false;
 
