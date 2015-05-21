@@ -67,22 +67,21 @@ function Song(name) {
 
         if (response != null) {
             this.name = response.getString("title");
-            $.say("using: " + this.id);
-            ldata = $.youtube.GetVideoLength(this.id);
-            this.length = ldata[0];
+            ldata = $.youtube.GetVideoLength(this.id.toString());
+            this.length = ldata[1];
         } else {
             this.id = null;
             this.name = "";
             this.length = 0;
         }
         
-    } else {        
-        var data = $.youtube.SearchForVideo(name);    
+    } else {
+        var data = $.youtube.SearchForVideo(name.split(' ').join('%20'));
         if (!data[0].equalsIgnoreCase("")) {
             this.id = data[0];
             this.name = data[1];
-            ldata = $.youtube.GetVideoLength(this.id);
-            this.length = ldata[0];           
+            ldata = $.youtube.GetVideoLength(this.id.toString());
+            this.length = ldata[1];           
         } else {
             this.id = null;
             this.name = "";
@@ -574,10 +573,8 @@ $.on('command', function (event) {
                 return;
             }
             
-            var vlength = parseInt(video.getLength() / 60);
-            $.say(vlength.toString());
-            if ( vlength > 8.0) {
-                $.say("Song >> " + video.getName() + " is " + ( vlength.toString().subindex(0, vlength.toString().indexOf(".")) ) + " minutes long, maximum length is 7 minutes.");
+            if ( video.getLength() > 8.0) {
+                $.say("Song >> " + video.getName() + " is " + video.getLength().toString() + " minutes long, maximum length is 7 minutes.");
                 return;
             }
 

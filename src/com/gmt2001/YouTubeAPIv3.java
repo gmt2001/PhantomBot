@@ -45,9 +45,9 @@ import org.joda.time.format.PeriodFormatter;
  */
 public class YouTubeAPIv3
 {
-    public static final YouTubeAPIv3 instance = new YouTubeAPIv3();
-    public static final int timeout = 1;
-    public String apikey = "AIzaSyCzHxG53pxE0hWrWBIMMGm75PRHBQ8ZP8c";
+    private static final YouTubeAPIv3 instance = new YouTubeAPIv3();
+    private static final int timeout = 5000;
+    private String apikey = "AIzaSyCzHxG53pxE0hWrWBIMMGm75PRHBQ8ZP8c";
 
     private enum request_type
     {
@@ -93,7 +93,7 @@ public class YouTubeAPIv3
 
             c.setUseCaches(false);
             c.setDefaultUseCaches(false);
-            c.setConnectTimeout(timeout);
+            c.setReadTimeout(timeout);
 
             if (!post.isEmpty())
             {
@@ -299,11 +299,11 @@ public class YouTubeAPIv3
                     s = Integer.parseInt(d.substring(0, d.indexOf("S")));
                     */
                     
-                    return new int[]{ (h * 3600) + (m * 60) + s, h, m, s };
+                    return new int[]{ h, m, s };
                 }
             }
         }
         
-        return new int[]{ 0, 0, 0, 0 };
+        return new int[]{ 0, 0, 0 };
     }
 }
