@@ -49,6 +49,7 @@ function youtubeParser(url){
 
 function Song(name) {
     var ldata;
+    var delay=2000; //2 seconds
     if (name==null || name=="") return;
     if (parseInt(youtubeParser(name).length) == 11)
     {
@@ -67,8 +68,10 @@ function Song(name) {
 
         if (response != null) {
             this.name = response.getString("title");
-            ldata = $.youtube.GetVideoLength(this.id.toString());
-            this.length = ldata[1];
+            setTimeout(function(){
+                ldata = $.youtube.GetVideoLength(this.id);
+                this.length = ldata[1];
+            }, delay);     
         } else {
             this.id = null;
             this.name = "";
@@ -76,12 +79,17 @@ function Song(name) {
         }
         
     } else {
-        var data = $.youtube.SearchForVideo(name.split(' ').join('%20'));
+        var searchstring = name.toString().replaceAll(/[&\/\\#,+()$~%.'":*?<>{}]/g, "");
+        var data;
+        searchstring = searchstring.split(' ').join('%20');
+        data = $.youtube.SearchForVideo(searchstring);       
         if (!data[0].equalsIgnoreCase("")) {
             this.id = data[0];
             this.name = data[1];
-            ldata = $.youtube.GetVideoLength(this.id.toString());
-            this.length = ldata[1];           
+            setTimeout(function(){
+                ldata = $.youtube.GetVideoLength(this.id);
+                this.length = ldata[1]; 
+            }, delay*3);          
         } else {
             this.id = null;
             this.name = "";

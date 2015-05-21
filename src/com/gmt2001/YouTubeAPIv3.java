@@ -46,7 +46,6 @@ import org.joda.time.format.PeriodFormatter;
 public class YouTubeAPIv3
 {
     private static final YouTubeAPIv3 instance = new YouTubeAPIv3();
-    private static final int timeout = 5000;
     private String apikey = "AIzaSyCzHxG53pxE0hWrWBIMMGm75PRHBQ8ZP8c";
 
     private enum request_type
@@ -93,7 +92,8 @@ public class YouTubeAPIv3
 
             c.setUseCaches(false);
             c.setDefaultUseCaches(false);
-            c.setReadTimeout(timeout);
+            c.setConnectTimeout(5000);
+            c.setReadTimeout(10000);
 
             if (!post.isEmpty())
             {
