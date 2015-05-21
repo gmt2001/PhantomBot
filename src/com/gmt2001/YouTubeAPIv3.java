@@ -33,6 +33,10 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.joda.time.Period;
+import org.joda.time.format.ISOPeriodFormat;
+import org.joda.time.format.PeriodFormatter;
+
 
 /**
  * Communicates with YouTube via the version 3 API
@@ -41,9 +45,9 @@ import org.json.JSONObject;
  */
 public class YouTubeAPIv3
 {
-    private static final YouTubeAPIv3 instance = new YouTubeAPIv3();
-    private static final int timeout = 2 * 1000;
-    private String apikey = "AIzaSyCzHxG53pxE0hWrWBIMMGm75PRHBQ8ZP8c";
+    public static final YouTubeAPIv3 instance = new YouTubeAPIv3();
+    public static final int timeout = 1;
+    public String apikey = "AIzaSyCzHxG53pxE0hWrWBIMMGm75PRHBQ8ZP8c";
 
     private enum request_type
     {
@@ -260,15 +264,25 @@ public class YouTubeAPIv3
                     
                     JSONObject cd = i.getJSONObject("contentDetails");
                     
-                    String d = cd.getString("duration");
+                    PeriodFormatter formatter = ISOPeriodFormat.standard();
                     
-                    d = d.substring(2);
+                    Period d = formatter.parsePeriod(cd.getString("duration"));
                     
-                    int h = 0;
-                    int m = 0;
-                    int s = 0;
+                    //String d = cd.getString("duration").substring(2);
+                    int h=0;
+                    int m=0;
+                    int s=0;
                     
-                    if (d.contains("H"))
+                    String hours = d.toStandardHours().toString().substring(2);
+                    h = Integer.parseInt(hours.substring(0, hours.indexOf("H")));
+                    
+                    String minutes = d.toStandardMinutes().toString().substring(2);
+                    m = Integer.parseInt(minutes.substring(0, minutes.indexOf("M")));
+
+                    String seconds = d.toStandardSeconds().toString().substring(2);
+                    s = Integer.parseInt(seconds.substring(0, seconds.indexOf("S")));
+                    
+                    /*if (d.contains("H"))
                     {
                         h = Integer.parseInt(d.substring(0, d.indexOf("H")));
                         
@@ -283,6 +297,7 @@ public class YouTubeAPIv3
                     }
                     
                     s = Integer.parseInt(d.substring(0, d.indexOf("S")));
+                    */
                     
                     return new int[]{ (h * 3600) + (m * 60) + s, h, m, s };
                 }

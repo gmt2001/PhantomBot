@@ -35,77 +35,7 @@ if($.titles==null || $.titles=="") {
     $.titles = 1;
 }
 
-
 var musicplayer = $.musicplayer;
-
-function Song(name) {
-    if (name==null || name=="") return;
-    
-    var data = $.youtube.SearchForVideo(name);
-    
-    if (!data[0].equalsIgnoreCase("")) {
-        this.id = data[0];
-        this.name = data[1];
-        
-        var ldata = $.youtube.GetVideoLength(this.id);
-        
-        this.length = ldata[0];
-    } else {
-        this.id = null;
-        this.name = "";
-        this.length = 0;
-    }
-
-    this.getId = function () {
-        return this.id;
-    }
-
-    this.cue = function () {
-        musicplayer.cue(this.id);
-    }
-
-    this.getName = function () {
-        return this.name;
-    }
-}
-
-//TEMP FIX, NEEDS SONG LENGTH
-/*function Song(name) {
-    if (name==null) return;
-    var HttpRequest = Packages.com.gmt2001.HttpRequest;
-    var HashMap = Packages.java.util.HashMap;
-    var JSONObject = Packages.org.json.JSONObject;
-    var j = new JSONObject("{}");
-    var h = new HashMap(1);
-    h.put("Content-Type", "application/json-rpc");
-
-    var jsonurl = "http://www.youtube.com/oembed?url=http://www.youtube.com/watch?v=" + name + "&format=json";
-    var r = HttpRequest.getData(HttpRequest.RequestType.GET, jsonurl, j.toString(), h);
-
-    var response = new JSONObject(r.content);
-
-    if (response != null) {
-        this.id = name;
-        this.name = response.getString("title");
-        this.length = 1;
-    } else {
-        this.id = null;
-        this.name = "";
-        this.length = 0;
-    }
-
-    this.getId = function () {
-        return this.id;
-    }
-
-    this.cue = function () {
-        musicplayer.cue(this.id);
-    }
-
-    this.getName = function () {
-        return this.name;
-    }
-}*/
 
 function youtubeParser(url){
     var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?^\s]*).*/;
@@ -117,6 +47,65 @@ function youtubeParser(url){
     }
 }
 
+function Song(name) {
+    var ldata;
+    if (name==null || name=="") return;
+    if (parseInt(youtubeParser(name).length) == 11)
+    {
+        this.id = youtubeParser(name);
+        var HttpRequest = Packages.com.gmt2001.HttpRequest;
+        var HashMap = Packages.java.util.HashMap;
+        var JSONObject = Packages.org.json.JSONObject;
+        var j = new JSONObject("{}");
+        var h = new HashMap(1);
+        h.put("Content-Type", "application/json-rpc");
+
+        var jsonurl = "http://www.youtube.com/oembed?url=http://www.youtube.com/watch?v=" + this.id + "&format=json";
+        var r = HttpRequest.getData(HttpRequest.RequestType.GET, jsonurl, j.toString(), h);
+
+        var response = new JSONObject(r.content);
+
+        if (response != null) {
+            this.name = response.getString("title");
+            $.say("using: " + this.id);
+            ldata = $.youtube.GetVideoLength(this.id);
+            this.length = ldata[0];
+        } else {
+            this.id = null;
+            this.name = "";
+            this.length = 0;
+        }
+        
+    } else {        
+        var data = $.youtube.SearchForVideo(name);    
+        if (!data[0].equalsIgnoreCase("")) {
+            this.id = data[0];
+            this.name = data[1];
+            ldata = $.youtube.GetVideoLength(this.id);
+            this.length = ldata[0];           
+        } else {
+            this.id = null;
+            this.name = "";
+            this.length = 0;
+        }
+    }
+    
+    this.getId = function () {
+        return this.id;
+    }
+    
+    this.getLength = function () {
+        return parseInt(this.length);
+    }
+
+    this.cue = function () {
+        musicplayer.cue(this.id);
+    }
+
+    this.getName = function () {
+        return this.name;
+    }
+}
 
 function RequestedSong(song, user) {
     this.song = song;
@@ -176,7 +165,7 @@ function parseDefault() {
             $.writeToFile(  $.songprefix, $.storepath + "queue.txt", false);
         }
         for(var i=position; i< list.length; i++){
-            $.song = new Song(youtubeParser(list[i]));
+            $.song = new Song(list[i]);
             $.songname = $.song.getName();
             $.songid = $.song.getId();
                 
@@ -229,8 +218,8 @@ function nextDefault() {
             $var.defaultplaylistretry++;
 
             setTimeout(function () {
-                if ($.fileExists("./web/playlist.txt")) {
-                    $var.defaultplaylist = $.readFile("./web/playlist.txt");
+                if ($.fileExists("web/playlist.txt")) {
+                    $var.defaultplaylist = $.readFile("web/playlist.txt");
                 } else if ($.fileExists("../web/playlist.txt")) {
                     $var.defaultplaylist = $.readFile("../web/playlist.txt");
                 }
@@ -248,7 +237,7 @@ function nextDefault() {
 
     if ($var.defaultplaylist.length > 0) {
 
-        s = new Song(youtubeParser($var.defaultplaylist[$var.defaultplaylistpos]));
+        s = new Song($var.defaultplaylist[$var.defaultplaylistpos]);
         s = new RequestedSong(s, "DJ " + $.username.resolve($.botname));
         $var.defaultplaylistpos++;
 
@@ -387,7 +376,6 @@ $.on('command', function (event) {
     var argsString = event.getArguments().trim();
     var argsString2 = argsString.substring(argsString.indexOf(" ") + 1, argsString.length());
     var args;
-    var videoL;
     var song;
     var id;
     var i;
@@ -579,24 +567,17 @@ $.on('command', function (event) {
             
             
 
-            var video = new Song(youtubeParser(argsString));
+            var video = new Song(argsString);
 
-            if (video.id == null) {
+            if (video.getId() == null) {
                 $.say("Song doesn't exist or you typed something wrong.");
                 return;
             }
-
-            if (video.length < 10) {
-                videoL = video.length.toString().substr(0, 1);
-
-            } else if (video.length < 100) {
-                videoL = video.length.toString().substr(0, 3);
-            } else {
-                videoL = video.length.toString().substr(0, 2);
-            }
-
-            if (video.length > 8.0) {
-                $.say("Song >> " + video.name + " is " + videoL + " minutes long, maximum length is 7 minutes.");
+            
+            var vlength = parseInt(video.getLength() / 60);
+            $.say(vlength.toString());
+            if ( vlength > 8.0) {
+                $.say("Song >> " + video.getName() + " is " + ( vlength.toString().subindex(0, vlength.toString().indexOf(".")) ) + " minutes long, maximum length is 7 minutes.");
                 return;
             }
 
