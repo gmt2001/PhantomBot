@@ -202,6 +202,10 @@ $.setInterval(function() {
     }
 }, 60 * 1000);
 
+$.timer.addTimer("./systems/timeSystem.js", "autosave", true, function() {
+    $.inidb.SaveAll(true);
+}, 300* 1000);
+
 $.registerChatCommand("./systems/timeSystem.js", "time");
 $.registerChatCommand("./systems/timeSystem.js", "time help");
 $.registerChatCommand("./systems/timeSystem.js", "timezone");

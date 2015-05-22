@@ -66,10 +66,13 @@ function Song(name) {
         var response = new JSONObject(r.content);
 
         if (response != null) {
-            this.name = response.getString("title");   
+            this.name = response.getString("title");
+            ldata = $.youtube.GetVideoLength(this.id);
+            this.length = ldata[1];
         } else {
             this.id = null;
             this.name = "";
+            this.length = 0;
         }       
     } /*else {
     
@@ -93,8 +96,6 @@ function Song(name) {
     }
     
     this.getLength = function () {
-        ldata = $.youtube.GetVideoLength(this.id);
-        this.length = ldata[1];
         return parseInt(this.length);
     }
 
