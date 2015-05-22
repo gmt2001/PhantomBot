@@ -75,6 +75,8 @@ public class PhantomBot implements Listener
     private int baseport;
     private double msglimit30;
     private String youtubekey;
+    private String webenable;
+    private String musicenable;
     private String channelStatus;
     private SecureRandom rng;
     private BannedCache bancache;
@@ -94,6 +96,8 @@ public class PhantomBot implements Listener
     ConsoleInputListener cil;
     public static boolean enableDebugging = false;
     public static boolean interactive;
+    public static boolean webenabled = false;
+    public static boolean musicenabled = false;
     private Thread t;
     private static PhantomBot instance;
 
@@ -103,7 +107,7 @@ public class PhantomBot implements Listener
     }
 
     public PhantomBot(String username, String oauth, String apioauth, String clientid, String channel, String owner,
-            int baseport, String hostname, int port, double msglimit30, String youtubekey)
+            int baseport, String hostname, int port, double msglimit30, String youtubekey, String webenable, String musicenable)
     {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
@@ -129,11 +133,13 @@ public class PhantomBot implements Listener
         this.ownerName = owner;
         this.baseport = baseport;
         this.youtubekey = youtubekey;
-        
         if (!youtubekey.isEmpty())
         {
             YouTubeAPIv3.instance().SetAPIKey(youtubekey);
         }
+        
+        this.webenable = webenable;
+        this.musicenable = musicenable;
 
         this.profile = new Profile(username.toLowerCase());
         this.connectionManager = new ConnectionManager(profile);
@@ -242,9 +248,17 @@ public class PhantomBot implements Listener
 
     public final void init()
     {
-        mhs = new HTTPServer(baseport);
-        mhs.start();
-        mws = new MusicWebSocketServer(baseport + 1);
+        if(!webenable.equalsIgnoreCase("false"))
+        {
+            webenabled = true;
+            mhs = new HTTPServer(baseport);
+            mhs.start();
+            if(!musicenable.equalsIgnoreCase("false"))
+            {
+                    musicenabled = true;
+                    mws = new MusicWebSocketServer(baseport + 1);
+            }
+        }
 
         if (interactive)
         {
@@ -296,8 +310,14 @@ public class PhantomBot implements Listener
 
     public void onExit()
     {
-        mhs.dispose();
-        mws.dispose();
+        if(webenabled)
+        {
+            mhs.dispose();
+        }
+        if(musicenabled)
+        {
+            mws.dispose();
+        }
         IniStore.instance().SaveAll(true);
     }
 
@@ -463,6 +483,33 @@ public class PhantomBot implements Listener
 
             changed = true;
         }
+        
+        if (message.equals("webenable"))
+        {
+            com.gmt2001.Console.out.print("Please note that the music server will also be disabled if the web server is disabled. The bot will require a restart for this to take effect. Type true or false to enable/disable web server: ");
+            String newwebenable = System.console().readLine().trim();
+            webenable = newwebenable;
+            changed = true;
+        }
+        
+        if (message.equals("musicenable"))
+        {
+            if(webenable.equalsIgnoreCase("false"))
+            {
+                com.gmt2001.Console.out.println("Web server must be enabled first. ");
+            }
+            if(webenable.equalsIgnoreCase("true"))
+            {
+                com.gmt2001.Console.out.print("The bot will require a restart for this to take effect. Please type true or false to enable/disable music server: ");
+                String newmusicenable = System.console().readLine().trim();
+                musicenable = newmusicenable;
+                changed = true;
+            }
+            //else {
+                //com.gmt2001.Console.out.println("Web server must be enabled first. ");
+                //return;
+            //}
+        }
 
         if (changed)
         {
@@ -479,16 +526,29 @@ public class PhantomBot implements Listener
                 data += "hostname=" + hostname + "\r\n";
                 data += "port=" + port + "\r\n";
                 data += "msglimit30=" + msglimit30 + "\r\n";
-                data += "youtubekey=" + youtubekey;
+                data += "youtubekey=" + youtubekey + "\r\n";
+                data += "webenable=" + webenable + "\r\n";
+                data += "musicenable=" + musicenable;
 
                 FileUtils.writeStringToFile(new File("./botlogin.txt"), data);
-
-                mws.dispose();
-                mhs.dispose();
-
-                mhs = new HTTPServer(baseport);
-                mhs.start();
-                mws = new MusicWebSocketServer(baseport + 1);
+                
+                //Commented out since you need to restart the bot for port changes anyway
+                /*if(webenabled)
+                {
+                    mhs.dispose();
+                    mhs = new HTTPServer(baseport);
+                    mhs.start();
+                }
+                if(musicenabled)
+                {
+                    if(webenabled)
+                    {
+                        mws.dispose();
+                        mws = new MusicWebSocketServer(baseport + 1); 
+                    }
+                }*/
+                
+                com.gmt2001.Console.out.println("Changes have been saved. For web and music server settings to take effect you must restart the bot.");
             } catch (IOException ex)
             {
             }
@@ -548,6 +608,8 @@ public class PhantomBot implements Listener
         int port = 0;
         double msglimit30 = 0;
         String youtubekey = "";
+        String webenable = "";   
+        String musicenable = ""; 
 
         boolean changed = false;
 
@@ -614,6 +676,14 @@ public class PhantomBot implements Listener
                 {
                     youtubekey = lines[i].substring(11);
                 }
+                if (lines[i].startsWith("webenable=") && lines[i].length() > 11)
+                {
+                    webenable = lines[i].substring(10);
+                }
+                if (lines[i].startsWith("musicenable=") && lines[i].length() > 13)
+                {
+                    musicenable = lines[i].substring(12);
+                }
             }
         } catch (IOException ex)
         {
@@ -660,6 +730,9 @@ public class PhantomBot implements Listener
                     com.gmt2001.Console.out.println("port='" + port + "'");
                     com.gmt2001.Console.out.println("msglimit30='" + msglimit30 + "'");
                     com.gmt2001.Console.out.println("youtubekey='" + youtubekey + "'");
+                    com.gmt2001.Console.out.println("webenable='" + webenable + "'");
+                    com.gmt2001.Console.out.println("musicenable='" + musicenable + "'");
+                    
                 }
 
                 if (args[i].toLowerCase().startsWith("user=") && args[i].length() > 8)
@@ -760,6 +833,22 @@ public class PhantomBot implements Listener
                         changed = true;
                     }
                 }
+                if (args[i].toLowerCase().startsWith("webenable=") && args[i].length() > 11)
+                {
+                    if (!webenable.equals(args[i].substring(10)))
+                    {
+                        webenable = args[i].substring(10);
+                        changed = true;
+                    }
+                }
+                if (args[i].toLowerCase().startsWith("musicenable=") && args[i].length() > 13)
+                {
+                    if (!musicenable.equals(args[i].substring(12)))
+                    {
+                        musicenable = args[i].substring(12);
+                        changed = true;
+                    }
+                }
 
                 if (args[i].equalsIgnoreCase("help") || args[i].equalsIgnoreCase("--help") || args[i].equalsIgnoreCase("-h"))
                 {
@@ -785,12 +874,13 @@ public class PhantomBot implements Listener
             data += "hostname=" + hostname + "\r\n";
             data += "port=" + port + "\r\n";
             data += "msglimit30=" + msglimit30 + "\r\n";
-            data += "youtubekey=" + youtubekey;
-
+            data += "youtubekey=" + youtubekey + "\r\n";
+            data += "webenable=" + webenable + "\r\n";
+            data += "musicenable=" + musicenable;
             FileUtils.writeStringToFile(new File("./botlogin.txt"), data);
         }
 
-        PhantomBot.instance = new PhantomBot(user, oauth, apioauth, clientid, channel, owner, baseport, hostname, port, msglimit30, youtubekey);
+        PhantomBot.instance = new PhantomBot(user, oauth, apioauth, clientid, channel, owner, baseport, hostname, port, msglimit30, youtubekey, webenable, musicenable);
     }
 
     public static boolean isLink(String message)
