@@ -181,13 +181,6 @@ $.on('command', function(event) {
     }
 });
 
-$.registerChatCommand("./systems/timeSystem.js", "time");
-$.registerChatCommand("./systems/timeSystem.js", "time help");
-$.registerChatCommand("./systems/timeSystem.js", "timezone");
-$.registerChatCommand("/systems/timeSystem.js", "timelevel");
-$.registerChatCommand("/systems/timeSystem.js", "timetoggle");
-
-
 $.setInterval(function() {
     if (!$.moduleEnabled("./systems/timeSystem.js")) {
         return;
@@ -209,6 +202,9 @@ $.setInterval(function() {
     }
 }, 60 * 1000);
 
-$.setInterval(function() {    
-    $.inidb.SaveAll(true);
-}, 300 * 1000);
+$.registerChatCommand("./systems/timeSystem.js", "time");
+$.registerChatCommand("./systems/timeSystem.js", "time help");
+$.registerChatCommand("./systems/timeSystem.js", "timezone");
+$.registerChatCommand("/systems/timeSystem.js", "timelevel");
+$.registerChatCommand("/systems/timeSystem.js", "timetoggle");
+

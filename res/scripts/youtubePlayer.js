@@ -50,7 +50,7 @@ function Song(name) {
     var ldata;
     if (name==null || name=="") return;
     var search = new String(name);
-    if (parseInt(youtubeParser(search).length) == 11)
+    if (youtubeParser(search).length == 11)
     {
         this.id = youtubeParser(search);
         var HttpRequest = Packages.com.gmt2001.HttpRequest;
@@ -71,12 +71,12 @@ function Song(name) {
             this.id = null;
             this.name = "";
         }       
-    }
+    } /*else {
     
     //TODO: Figure out why the hell this doesn't work.
-    /*if (parseInt(youtubeParser(search).length) > 12)
-    {        
-        var data = $.youtube.SearchForVideo(name);
+    //if (youtubeParser(search).length > 11)
+    //{        
+        var data = $.youtube.SearchForVideo(youtubeParser(name));
         if (!data[0].equalsIgnoreCase("")) {
             this.id = data[0];
             this.name = data[1];
@@ -84,6 +84,7 @@ function Song(name) {
             this.id = null;
             this.name = "";
         }
+      }
     }*/
 
     

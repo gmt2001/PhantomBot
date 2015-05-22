@@ -157,7 +157,7 @@ public class PhantomBot implements Listener
         if (hostname.isEmpty())
         {
             this.hostname = "irc.twitch.tv";
-            this.port = 443;
+            this.port = 6667;
         } else
         {
             this.hostname = hostname;

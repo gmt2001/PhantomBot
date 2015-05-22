@@ -393,11 +393,12 @@ $.setInterval(function() {
         }
     }
 
+    var points = 0;
     for (var i = 0; i < $.users.length; i++) {
         var nick = $.users[i][0].toLowerCase();
 
-        amount = amount + ($.pointbonus * $.getGroupPointMultiplier(nick));
-        $.inidb.incr('points', nick, amount);
+        points = amount + ($.pointbonus * $.getGroupPointMultiplier(nick));
+        $.inidb.incr('points', nick, points);
     }
 
     $.lastpointinterval = System.currentTimeMillis();
