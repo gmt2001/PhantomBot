@@ -320,8 +320,11 @@ $api.on($script, 'command', function(event) {
             $.say("That command costs " + $.inidb.get("pricecom", command.toLowerCase()) + " " + $.pointname + ", which you don't have.");
             return;
         } else {
-            $.inidb.decr("points", sender, parseInt($.inidb.get("pricecom", command.toLowerCase())));
-            $.println("[Paid]" + username + "s balance is now: " + $.inidb.get('points', sender) + " " + $.pointname + "");
+            if(parseInt($.inidb.get("pricecom", command.toLowerCase()))>0)
+            {
+                $.inidb.decr("points", sender, parseInt($.inidb.get("pricecom", command.toLowerCase())));
+                $.println("[Paid]" + username + "s balance is now: " + $.inidb.get('points', sender) + " " + $.pointname + "");
+            }
         }
     }
     

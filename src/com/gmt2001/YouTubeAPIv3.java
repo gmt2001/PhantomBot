@@ -225,8 +225,8 @@ public class YouTubeAPIv3
     
     public String[] SearchForVideo(String q)
     {
+        q = q.replace(" ", "%20");
         JSONObject j = GetData(request_type.GET, "https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&q=" + q + "&type=video&key=" + apikey);
-        
         if (j.getBoolean("_success"))
         {
             if (j.getInt("_http") == 200)

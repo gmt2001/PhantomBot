@@ -208,41 +208,39 @@ $.on('command', function(event) {
         args = argsString.split(" ");
     }
 	
-    if(args.length >=2) {
-        if(command.equalsIgnoreCase("group")) {
-            var action = args[0];
-			
-            if (!$.isAdmin(sender)) {
-                $.say($.adminmsg);
-                return;
-            }
-			
-            if (action.equalsIgnoreCase("remove") || action.equalsIgnoreCase("delete") || action.equalsIgnoreCase("reset")) {
-                $.setUserGroupById(args[1], $.getGroupIdByName("Viewers"));
-                $.say("Group for " + $.username.resolve(args[1]) + " reset to " + $.getUserGroupName($.username.resolve(args[1])) + "!");
-                $.logEvent("permissions.js", 183, username + " reset " + args[1] + "'s group to " + $.getUserGroupName($.username.resolve(args[1])));
-                return;
-            }
-            if (action.equalsIgnoreCase("create")) {
-                $.inidb.set("groups",$.usergroups.length.toString(),args[1].toString());
-                $.inidb.set("grouppoints", args[1].toString(), "0");
-                $.reloadGroups();
-                $.say("Group " + args[1].toString() + " created!");
-                return;
-            }
-        }
-    }
 	
-    if(args.length >= 3) {
+    if(args.length >= 2) {
         if(command.equalsIgnoreCase("group")) {
             var action = args[0];
             name = args[2];
             var groupid = $.getGroupIdByName(name);
             var groupname = $.getGroupNameById(groupid);
 			
-            if (!$.isAdmin(sender)) {
-                $.say($.adminmsg);
+            if (!$.isMod(sender)) {
+                $.say($.modmsg);
                 return;                
+            }
+            
+            if (action.equalsIgnoreCase("remove") || action.equalsIgnoreCase("delete") || action.equalsIgnoreCase("reset")) {
+                if (!$.isAdmin(sender)) {
+                    $.say($.adminmsg);
+                    return;
+                }
+                $.setUserGroupById(args[1], $.getGroupIdByName("Viewers"));
+                $.say("Group for " + $.username.resolve(args[1]) + " reset to " + $.getUserGroupName($.username.resolve(args[1])) + "!");
+                $.logEvent("permissions.js", 183, username + " reset " + args[1] + "'s group to " + $.getUserGroupName($.username.resolve(args[1])));
+                return;
+            }
+            if (action.equalsIgnoreCase("create")) {
+                if (!$.isAdmin(sender)) {
+                    $.say($.adminmsg);
+                    return;
+                }
+                $.inidb.set("groups",$.usergroups.length.toString(),args[1].toString());
+                $.inidb.set("grouppoints", args[1].toString(), "0");
+                $.reloadGroups();
+                $.say("Group " + args[1].toString() + " created!");
+                return;
             }
 
             if (action.equalsIgnoreCase("set") || action.equalsIgnoreCase("add") || action.equalsIgnoreCase("change")) {                				
@@ -250,9 +248,23 @@ $.on('command', function(event) {
                     $.say("That group does not exist! To view a list of groups, use !group list.");
                 }
                 else {
+                    if( (parseInt($.getUserGroupId(sender))< $.parseInt($.getUserGroupId($.username.resolve(args[1])))) )
+                    {
+                    if( parseInt($.getUserGroupId(sender)) < parseInt($.getGroupIdByName(name)) )
+                    {
                     $.setUserGroupByName(args[1], name);
                     $.say("Group for " + $.username.resolve(args[1]) + " changed to " + $.getUserGroupName($.username.resolve(args[1])) + "!");
-                    $.logEvent("permissions.js", 200, username + " changed " + args[1] + "'s group to " + $.getUserGroupName($.username.resolve(args[1])));                
+                    $.logEvent("permissions.js", 200, username + " changed " + args[1] + "'s group to " + $.getUserGroupName($.username.resolve(args[1])));
+                    return;
+                    } else {
+                        $.say("You cannot promote others to the same rank as you.");
+                        return;
+                    }
+                    }
+                    else {
+                        $.say("You must be a higher rank than the person you are trying to promote!");
+                        return;
+                    }
                 }
             }
             if (action.equalsIgnoreCase("points")) {                				
@@ -275,6 +287,7 @@ $.on('command', function(event) {
                 else {               
                     $.setUserGroupByName(args[1], name);
                     $.logEvent("permissions.js", 200, username + " silently changed " + args[1] + "'s group to " + $.getUserGroupName($.username.resolve(args[1])));
+                    return;
                 }
             }
         }
@@ -289,11 +302,12 @@ $.on('command', function(event) {
 
             } else {
                 $.say($.username.resolve(username) + " is currently in the " + $.getUserGroupName(username) + " group.");
+                return;
             }
 
         } else {
-
             $.say($.username.resolve(sender) + ", you're in the " + $.getUserGroupName(username) + " group.");
+            return;
         }
     }
     

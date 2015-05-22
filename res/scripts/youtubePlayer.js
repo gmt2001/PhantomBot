@@ -14,7 +14,6 @@ $.songid = null;
 $.songurl = null;
 $.songprefix = null;
 
-
 if ($.song_limit === undefined || $.song_limit === null || isNaN($.song_limit) || $.song_limit < 0) {
     $.song_limit = 3;
 }
@@ -49,11 +48,11 @@ function youtubeParser(url){
 
 function Song(name) {
     var ldata;
-    var delay=2000; //2 seconds
     if (name==null || name=="") return;
-    if (parseInt(youtubeParser(name).length) == 11)
+    var search = new String(name);
+    if (parseInt(youtubeParser(search).length) == 11)
     {
-        this.id = youtubeParser(name);
+        this.id = youtubeParser(search);
         var HttpRequest = Packages.com.gmt2001.HttpRequest;
         var HashMap = Packages.java.util.HashMap;
         var JSONObject = Packages.org.json.JSONObject;
@@ -67,41 +66,34 @@ function Song(name) {
         var response = new JSONObject(r.content);
 
         if (response != null) {
-            this.name = response.getString("title");
-            setTimeout(function(){
-                ldata = $.youtube.GetVideoLength(this.id);
-                this.length = ldata[1];
-            }, delay);     
+            this.name = response.getString("title");   
         } else {
             this.id = null;
             this.name = "";
-            this.length = 0;
-        }
-        
-    } else {
-        var searchstring = name.toString().replaceAll(/[&\/\\#,+()$~%.'":*?<>{}]/g, "");
-        var data;
-        searchstring = searchstring.split(' ').join('%20');
-        data = $.youtube.SearchForVideo(searchstring);       
+        }       
+    }
+    
+    //TODO: Figure out why the hell this doesn't work.
+    /*if (parseInt(youtubeParser(search).length) > 12)
+    {        
+        var data = $.youtube.SearchForVideo(name);
         if (!data[0].equalsIgnoreCase("")) {
             this.id = data[0];
             this.name = data[1];
-            setTimeout(function(){
-                ldata = $.youtube.GetVideoLength(this.id);
-                this.length = ldata[1]; 
-            }, delay*3);          
         } else {
             this.id = null;
             this.name = "";
-            this.length = 0;
         }
-    }
+    }*/
+
     
     this.getId = function () {
         return this.id;
     }
     
     this.getLength = function () {
+        ldata = $.youtube.GetVideoLength(this.id);
+        this.length = ldata[1];
         return parseInt(this.length);
     }
 
@@ -555,12 +547,24 @@ $.on('command', function (event) {
     }
 
     if (command.equalsIgnoreCase("addsong")) {
-        if ($.inidb.get('blacklist', sender) == "true" || (!$.isReg(sender) && (!$.inidb.exists("pricecom", "songrequest") && !$.inidb.exists("pricecom", "addsong")))) {
-            $.say("You are denied access to song request features!");
-            return;
-        }
-        
 
+        if (!$.isReg(sender))
+        {
+            if ($.inidb.get('blacklist', sender) == "true") {
+                //blacklisted, deny
+                $.say("You are denied access to song request features!");
+                return;
+            }
+            if( parseInt($.inidb.get("pricecom", "addsong"))==0 || $.inidb.get("pricecom", "addsong")==null )
+            {
+                //if no price and not regular, deny.
+                $.say("There is currently no cost for song requests, howerver you must be a channel regular.");
+                return;   
+            }
+        }         
+        
+        
+        //start arguments check
         if (args.length == 0) {
             $.say("Type >> '!addsong or !songrequest <youtube link>' to add a song to the playlist.")
             return;
@@ -612,7 +616,7 @@ $.on('command', function (event) {
             return;
         }
 
-        id = $.youtube.searchVideo(argsString, "none");
+        id = youtubeParser(argsString);
                 
         if (id == null) {
             $.say("Song doesn't exist or you typed something wrong.");

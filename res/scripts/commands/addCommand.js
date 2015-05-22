@@ -349,7 +349,7 @@ $.on('command', function(event) {
         if (args.length == 1) {
             var commandname = args[0].toLowerCase();
 				
-            if ($.inidb.exists("pricecom", commandname) && parseInt($.inidb.get("pricecom", commandname)) >= 0) {
+            if ($.inidb.exists("pricecom", commandname) && parseInt($.inidb.get("pricecom", commandname)) > 0) {
                 var retrieveprice = $.inidb.get("pricecom", commandname);
 		
                 $.say("The command !" + commandname + " costs " + retrieveprice + " " + $.pointname + "!");
