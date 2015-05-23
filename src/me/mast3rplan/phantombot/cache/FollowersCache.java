@@ -137,7 +137,7 @@ public class FollowersCache implements Runnable
         {
             com.gmt2001.Console.out.println("FollowersCache.run>>Failed to initial sleep: [InterruptedException] " + e.getMessage());
         }
-
+        EventBus.instance().post(new TwitchFollowsInitializedEvent());
         while (true)
         {
             try
@@ -151,11 +151,11 @@ public class FollowersCache implements Runnable
                      this.updateCache(newCount);
                      }*/
 
-                    if (firstUpdate)
+                    /*if (firstUpdate)
                     {
                         firstUpdate = false;
                         EventBus.instance().post(new TwitchFollowsInitializedEvent());
-                    }
+                    }*/
                 }
             } catch (Exception e)
             {
