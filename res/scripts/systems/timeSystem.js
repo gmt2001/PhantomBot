@@ -164,19 +164,24 @@ $.on('command', function(event) {
             time = $.inidb.get('time', points_user);
 			
             if(points == null) points = 0;
-            if(time == null) time = 0;
-			
-            var time2 = new Date; 
+            if(time == null) time = 0;			
 
             var minutes = parseInt((time / 60) % 60);
             var hours = parseInt(time / 3600);
-
-            var timeString = "";
-            if(hours != 0) timeString += " " + hours + " Hrs";
-            else if(minutes != 0) timeString += " " + minutes + " Mins";
-            else timeString += " " + minutes + " Mins";
+            
+        var timeString = "";
+        if (hours>0)
+        {
+            timeString+=hours.toString();
+            timeString+=" Hrs ";
+        }
+        if (minutes>0)
+        {
+            timeString+=minutes.toString();
+            timeString+=" Min"
+        }
 			
-            $.say($.username.resolve(points_user) + " has been in this channel for a total of " + hours + " hours & " + minutes + " minutes.");
+            $.say($.username.resolve(points_user) + " has been in this channel for a total of " + timeString);
         }
     }
 });

@@ -36,9 +36,6 @@ if ($.mingift == undefined || $.mingift == null || isNaN($.mingift) || $.mingift
 
 $.getPoints = function (user) {
     var points = $.inidb.get('points', user);
-
-    var timeString = "";
-
     var time = $.inidb.get('time', user);
 
     if (points == null) points = 0;
@@ -47,17 +44,22 @@ $.getPoints = function (user) {
     var minutes = parseInt((time / 60) % 60);
     var hours = parseInt(time / 3600);
 
-    timeString = " -- [";
-    if (hours != 0) timeString += " " + hours + " Hrs";
-    else if (minutes != 0) timeString += " " + minutes + " Mins";
-    else timeString += " " + minutes + " Mins";
-    timeString += " ]";
-
-	if ($.inidb.get('settings', 'timetoggle') == "false") {
-		timeString = ".";
-	}
-	
-    $.say($.username.resolve(user) + " has " + points.toString() + " " + $.pointname + timeString);
+    var timeString = " -- ";
+    if (hours>0)
+    {
+        timeString+=hours.toString();
+        timeString+=" Hrs ";
+    }
+    if (minutes>0)
+    {
+        timeString+=minutes.toString();
+        timeString+=" Min"
+    }
+    if ($.inidb.get('settings', 'timetoggle') == "false") {
+    	timeString = "";
+    }
+    	
+    $.say($.username.resolve(user) + " has " + points + " " + $.pointname + timeString);
 }
 
 

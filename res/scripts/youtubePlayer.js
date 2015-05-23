@@ -67,8 +67,7 @@ function Song(name) {
 
         if (response != null) {
             this.name = response.getString("title");
-            ldata = $.youtube.GetVideoLength(this.id);
-            this.length = ldata[1];
+            this.length = 1;
         } else {
             this.id = null;
             this.name = "";
@@ -96,6 +95,8 @@ function Song(name) {
     }
     
     this.getLength = function () {
+        ldata = $.youtube.GetVideoLength(this.id);
+        this.length = ldata[1];
         return parseInt(this.length);
     }
 
