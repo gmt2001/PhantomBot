@@ -211,7 +211,9 @@ $.registerChatCommand("./notice.js", "notice");
 var messageCount = 0
 var messageTime = 0
 var messageIndex = 0
-$.notices_toggle = true;
+if ($.notices_toggle == undefined || $.notices_toggle == null) {
+    $.notices_toggle = true;
+}
 
 function sendMessage() {
 
