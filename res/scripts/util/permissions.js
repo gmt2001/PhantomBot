@@ -267,7 +267,11 @@ $.on('command', function(event) {
                     }
                 }
             }
-            if (action.equalsIgnoreCase("points")) {                				
+            if (action.equalsIgnoreCase("points")) {
+                name = args[1].toString();
+                groupid = $.getGroupIdByName(name);
+                groupname = $.getGroupNameById(groupid);
+                
                 if( name.toLowerCase() != groupname.toLowerCase() ) {
                     $.say("That group does not exist! To view a list of groups, use !group list.");
                     return;
