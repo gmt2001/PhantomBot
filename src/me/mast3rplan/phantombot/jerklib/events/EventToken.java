@@ -163,7 +163,7 @@ public class EventToken
     private void extractPrefix(String data)
     {
         //set prefix - : is at 0
-        prefix = data.substring(offset + 1, data.indexOf(" "));
+        prefix = data.substring(offset + 1, data.indexOf(" ", offset + 1));
 
         //increment offset , +1 is for : removed
         offset += prefix.length() + 1;
@@ -172,7 +172,7 @@ public class EventToken
     private void extractTags(String data)
     {
         //set tags - @ is at 0
-        tags = data.substring(offset + 1, data.indexOf(" "));
+        tags = data.substring(offset + 1, data.indexOf(" ", offset + 1));
 
         //increment offset , +1 is for @ removed
         offset += tags.length() + 1;
