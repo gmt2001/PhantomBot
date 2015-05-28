@@ -48,7 +48,7 @@ public class EventToken
 {
 
     private final String data;
-    private String prefix = "", command = "";
+    private String tags = "", prefix = "", command = "";
     private List<String> arguments = new ArrayList<String>();
     private int offset = 0;
 
@@ -74,7 +74,14 @@ public class EventToken
         }
 
         //see if message has prefix
-        if (data.startsWith(":"))
+        if (data.substring(offset).startsWith("@"))
+        {
+            extractTags(data);
+            incTillChar();
+        }
+        
+        //see if message has prefix
+        if (data.substring(offset).startsWith(":"))
         {
             extractPrefix(data);
             incTillChar();
@@ -156,10 +163,19 @@ public class EventToken
     private void extractPrefix(String data)
     {
         //set prefix - : is at 0
-        prefix = data.substring(1, data.indexOf(" "));
+        prefix = data.substring(offset + 1, data.indexOf(" "));
 
         //increment offset , +1 is for : removed
         offset += prefix.length() + 1;
+    }
+    
+    private void extractTags(String data)
+    {
+        //set tags - @ is at 0
+        tags = data.substring(offset + 1, data.indexOf(" "));
+
+        //increment offset , +1 is for @ removed
+        offset += tags.length() + 1;
     }
 
     /**
@@ -209,6 +225,11 @@ public class EventToken
             return prefix.substring(0, prefix.indexOf('!'));
         }
         return "";
+    }
+    
+    public String tags()
+    {
+        return tags;
     }
 
     /**

@@ -67,6 +67,35 @@ public class IrcEventHandler implements IRCEventListener
                 break;
             case CHANNEL_MESSAGE:
                 MessageEvent cmessageEvent = (MessageEvent) event;
+                String cmessageTags = cmessageEvent.tags();
+                
+                if (cmessageTags.length() > 0)
+                {
+                    String[] tags = cmessageTags.split(";");
+                    
+                    for (int i = 0; i < tags.length; i++)
+                    {
+                        String[] kv = tags[i].split("=");
+                        
+                        if (kv[0].equalsIgnoreCase("subscriber") && kv[1].equalsIgnoreCase("1"))
+                        {
+                            eventBus.post(new IrcPrivateMessageEvent(session, "jtv", "SPECIALUSER " + cmessageEvent.getNick() + " subscriber"));
+                            com.gmt2001.Console.out.println(">>Next message marked Subscriber by IRCv3");
+                        }
+                        
+                        if (kv[0].equalsIgnoreCase("user-type"))
+                        {
+                            if (kv[1].isEmpty())
+                            {
+                                eventBus.post(new IrcChannelUserModeEvent(session, cmessageEvent.getChannel(), cmessageEvent.getNick(), "O", false));
+                            } else {
+                                com.gmt2001.Console.out.println(">>Next message marked Moderator/Staff by IRCv3");
+                                eventBus.post(new IrcChannelUserModeEvent(session, cmessageEvent.getChannel(), cmessageEvent.getNick(), "O", true));
+                            }
+                        }
+                    }
+                }
+                
                 com.gmt2001.Console.out.println("Message from Channel [" + cmessageEvent.getChannel().getName() + "] " + cmessageEvent.getNick());
                 Channel cchannel = cmessageEvent.getChannel();
                 String cusername = cmessageEvent.getNick();
