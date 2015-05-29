@@ -98,8 +98,8 @@ public class YouTubeAPIv3
 
             c.setUseCaches(false);
             c.setDefaultUseCaches(false);
-            c.setConnectTimeout(5000);
-            c.setReadTimeout(10000);
+            c.setConnectTimeout(2000);
+            c.setReadTimeout(2100);
 
             if (!post.isEmpty())
             {

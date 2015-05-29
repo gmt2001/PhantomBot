@@ -47,7 +47,8 @@ function youtubeParser(url){
 }
 
 function Song(name) {
-    var ldata;
+    var x = 0;
+    var retries = 6;
     if (name==null || name=="") return;
     var search = new String(name);
     if (youtubeParser(search).length == 11)
@@ -77,12 +78,19 @@ function Song(name) {
     
     //TODO: Figure out why the hell this doesn't work.
     //if (youtubeParser(search).length > 11)
-    //{        
-        var data = $.youtube.SearchForVideo(youtubeParser(name));
-        if (!data[0].equalsIgnoreCase("")) {
-            this.id = data[0];
-            this.name = data[1];
-        } else {
+    //{  
+        while( x <= retries ) {
+            x++;
+            var data = $.youtube.SearchForVideo(youtubeParser(name));
+            if (data[0]!="") {
+                this.id = data[0];
+                this.name = data[1];
+                break;
+            }
+        }
+        if( x > retries )
+        {
+                x = 0;
                 $.say("Song >> " + name + " not searchable due to API error. Please try again.");
                 return;
         }
@@ -95,9 +103,20 @@ function Song(name) {
     }
     
     this.getLength = function () {
-        ldata = $.youtube.GetVideoLength(this.id);
-        this.length = ldata[1];
-        return parseInt(this.length);
+        while( x <= retries ) {
+            x++;
+            var ldata = $.youtube.GetVideoLength(this.id);
+            if (ldata[1]!="") {
+                this.length = ldata[1];
+                return parseInt(this.length);
+                break;
+            }
+        }
+        if( x > retries )
+        {
+                x = 0;
+                return;
+        }
     }
 
     this.cue = function () {
