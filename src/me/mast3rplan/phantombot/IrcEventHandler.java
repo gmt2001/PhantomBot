@@ -77,7 +77,7 @@ public class IrcEventHandler implements IRCEventListener
                     {
                         String[] kv = tags[i].split("=");
                         
-                        if (kv[0].equalsIgnoreCase("subscriber") && kv[1].equalsIgnoreCase("1"))
+                        if (kv[0].equalsIgnoreCase("subscriber") && kv.length == 2 && kv[1].equalsIgnoreCase("1"))
                         {
                             eventBus.post(new IrcPrivateMessageEvent(session, "jtv", "SPECIALUSER " + cmessageEvent.getNick() + " subscriber"));
                             com.gmt2001.Console.out.println(">>Next message marked Subscriber by IRCv3");
@@ -85,7 +85,7 @@ public class IrcEventHandler implements IRCEventListener
                         
                         if (kv[0].equalsIgnoreCase("user-type"))
                         {
-                            if (kv[1].isEmpty())
+                            if (kv.length == 1 || kv[1].isEmpty())
                             {
                                 eventBus.post(new IrcChannelUserModeEvent(session, cmessageEvent.getChannel(), cmessageEvent.getNick(), "O", false));
                             } else {
