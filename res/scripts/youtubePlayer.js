@@ -588,7 +588,12 @@ $.on('command', function (event) {
                 return;
             }
             
-            if ( video.getLength() > 8.0) {
+             if ( video.getLength()=="" || video.getLength()==null || !video.getLength()) {
+                $.say("Song >> " + video.getName() + " length not retrievable. Please try again.");
+                return;
+            }           
+            
+            if ( (video.getLength() > 8.0)) {
                 $.say("Song >> " + video.getName() + " is " + video.getLength().toString() + " minutes long, maximum length is 7 minutes.");
                 return;
             }
