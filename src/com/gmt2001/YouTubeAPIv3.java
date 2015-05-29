@@ -127,9 +127,18 @@ public class YouTubeAPIv3
                 i = c.getErrorStream();
             }
 
-            available = i.available();
-            
-            if (c.getResponseCode() == 204 || i == null || i.available() == 0)
+            if (i != null)
+            {
+                available = i.available();
+
+                while (available == 0 && (new Date().getTime() - postconnect.getTime()) < 10000)
+                {
+                    Thread.sleep(500);
+                    available = i.available();
+                }
+            }
+
+            if (c.getResponseCode() == 204 || available == 0)
             {
                 content = "{}";
             } else
