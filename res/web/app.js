@@ -8,8 +8,8 @@ var player;
 
 function onYouTubeIframeAPIReady() {
     player = new YT.Player('player', {
-        height: '720',
-        width: '1280',
+        height: '480',
+        width: '720',
         videoId: '',
         playerVars: {
             iv_load_policy: 3,
@@ -27,7 +27,9 @@ function onYouTubeIframeAPIReady() {
 }
 
 function onPlayerReady(event) {
+    event.target.setPlaybackQuality('hd720');
     ready();
+
 }
 
 var r = false;
@@ -45,8 +47,12 @@ var vids = [];
 var i = -1;
 
 function onPlayerStateChange(event) {
+
     console.log(event);
     connection.send("state|" + event.data);
+if (event.data == YT.PlayerState.BUFFERING) {
+    event.target.setPlaybackQuality('hd720');
+}
 }
 
 var url = window.location.host.split(":");
@@ -101,13 +107,13 @@ connection.onmessage = function (e) {
 function handleNext(d) {
     i++;
     if (vids[i] === null) i = 0;
-    player.cueVideoById(vids[i], 0, "720hd");
+    player.cueVideoById(vids[i], 0, "hd720");
 }
 
 function handlePrevious(d) {
     i--;
     if (vids[i] === null) i = vids.length - 1;
-    player.cueVideoById(vids[i], 0, "720hd");
+    player.cueVideoById(vids[i], 0, "hd720");
 }
 
 function handlePlay(d) {
@@ -131,7 +137,7 @@ function handleReload(d) {
 }
 
 function handleCue(d) {
-    player.cueVideoById(d[1], 0, "720hd");
+    player.cueVideoById(d[1], 0, "hd720");
 }
 
 function handleEval(d) {

@@ -44,14 +44,14 @@ h1 {
     display: inline;
     float: left;
     overflow: hidden;
-    width: 1280px;
+    width: 720px;
     padding-top: 5px;
 }
 
 #player {
 
     vertical-align: top;
-    width: 1280px;
+    width: 720px;
     float: left;
     display: block;
 }
