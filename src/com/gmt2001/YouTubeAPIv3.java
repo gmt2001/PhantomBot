@@ -23,19 +23,19 @@ package com.gmt2001;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
-import java.net.URLEncoder;
+import java.util.Date;
 import javax.net.ssl.HttpsURLConnection;
+import me.mast3rplan.phantombot.PhantomBot;
 import org.apache.commons.io.IOUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.joda.time.Period;
 import org.joda.time.format.ISOPeriodFormat;
 import org.joda.time.format.PeriodFormatter;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 /**
@@ -71,6 +71,7 @@ public class YouTubeAPIv3
     
     private JSONObject GetData(request_type type, String url, String post)
     {
+        Date start = new Date();
         JSONObject j = new JSONObject("{}");
         InputStream i = null;
         String rawcontent = "";
@@ -99,8 +100,10 @@ public class YouTubeAPIv3
             {
                 c.setDoOutput(true);
             }
-
+            
+            Date preconnect = new Date();
             c.connect();
+            Date postconnect = new Date();
 
             if (!post.isEmpty())
             {
@@ -108,7 +111,7 @@ public class YouTubeAPIv3
                 IOUtils.write(post, o);
                 o.close();
             }
-
+            
             String content;
 
             if (c.getResponseCode() == 200)
@@ -128,7 +131,7 @@ public class YouTubeAPIv3
             }
 
             rawcontent = content;
-
+            Date prejson = new Date();
             j = new JSONObject(content);
             j.put("_success", true);
             j.put("_type", type.name());
@@ -138,6 +141,14 @@ public class YouTubeAPIv3
             j.put("_exception", "");
             j.put("_exceptionMessage", "");
             j.put("_content", content);
+            Date postjson = new Date();
+            
+            if (PhantomBot.enableDebugging)
+            {
+                com.gmt2001.Console.out.println(">>>[DEBUG] YouTubeAPIv3.GetData Timers " + (preconnect.getTime() - start.getTime()) + " "
+                        + (postconnect.getTime() - start.getTime()) + " " + (prejson.getTime() - start.getTime()) + " "
+                        + (postjson.getTime() - start.getTime()));
+            }
         } catch (JSONException ex)
         {
             if (ex.getMessage().contains("A JSONObject text must begin with"))
