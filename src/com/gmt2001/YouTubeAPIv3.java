@@ -37,14 +37,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
 /**
  * Communicates with YouTube via the version 3 API
- * 
+ *
  * @author gmt2001
  */
 public class YouTubeAPIv3
 {
+
     private static final YouTubeAPIv3 instance = new YouTubeAPIv3();
     private String apikey = "AIzaSyCzHxG53pxE0hWrWBIMMGm75PRHBQ8ZP8c";
 
@@ -53,12 +53,12 @@ public class YouTubeAPIv3
 
         GET, POST, PUT, DELETE
     };
-    
+
     public static YouTubeAPIv3 instance()
     {
         return instance;
     }
-    
+
     private YouTubeAPIv3()
     {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
@@ -68,10 +68,14 @@ public class YouTubeAPIv3
     {
         return GetData(type, url, "");
     }
-    
+
     private JSONObject GetData(request_type type, String url, String post)
     {
         Date start = new Date();
+        Date preconnect = start;
+        Date postconnect = start;
+        Date prejson = start;
+        Date postjson = start;
         JSONObject j = new JSONObject("{}");
         InputStream i = null;
         String rawcontent = "";
@@ -100,10 +104,10 @@ public class YouTubeAPIv3
             {
                 c.setDoOutput(true);
             }
-            
-            Date preconnect = new Date();
+
+            preconnect = new Date();
             c.connect();
-            Date postconnect = new Date();
+            postconnect = new Date();
 
             if (!post.isEmpty())
             {
@@ -111,7 +115,7 @@ public class YouTubeAPIv3
                 IOUtils.write(post, o);
                 o.close();
             }
-            
+
             String content;
 
             if (c.getResponseCode() == 200)
@@ -131,7 +135,7 @@ public class YouTubeAPIv3
             }
 
             rawcontent = content;
-            Date prejson = new Date();
+            prejson = new Date();
             j = new JSONObject(content);
             j.put("_success", true);
             j.put("_type", type.name());
@@ -141,14 +145,7 @@ public class YouTubeAPIv3
             j.put("_exception", "");
             j.put("_exceptionMessage", "");
             j.put("_content", content);
-            Date postjson = new Date();
-            
-            if (PhantomBot.enableDebugging)
-            {
-                com.gmt2001.Console.out.println(">>>[DEBUG] YouTubeAPIv3.GetData Timers " + (preconnect.getTime() - start.getTime()) + " "
-                        + (postconnect.getTime() - start.getTime()) + " " + (prejson.getTime() - start.getTime()) + " "
-                        + (postjson.getTime() - start.getTime()));
-            }
+            postjson = new Date();
         } catch (JSONException ex)
         {
             if (ex.getMessage().contains("A JSONObject text must begin with"))
@@ -226,14 +223,21 @@ public class YouTubeAPIv3
             }
         }
 
+        if (PhantomBot.enableDebugging)
+        {
+            com.gmt2001.Console.out.println(">>>[DEBUG] YouTubeAPIv3.GetData Timers " + (preconnect.getTime() - start.getTime()) + " "
+                    + (postconnect.getTime() - start.getTime()) + " " + (prejson.getTime() - start.getTime()) + " "
+                    + (postjson.getTime() - start.getTime()));
+        }
+
         return j;
     }
-    
+
     public void SetAPIKey(String apikey)
     {
         this.apikey = apikey;
     }
-    
+
     public String[] SearchForVideo(String q)
     {
         q = q.replace(" ", "%20");
@@ -243,78 +247,90 @@ public class YouTubeAPIv3
             if (j.getInt("_http") == 200)
             {
                 JSONArray a = j.getJSONArray("items");
-                
+
                 if (a.length() > 0)
                 {
                     JSONObject i = a.getJSONObject(0);
-                    
+
                     JSONObject id = i.getJSONObject("id");
                     JSONObject sn = i.getJSONObject("snippet");
-                    
-                    return new String[]{ id.getString("videoId"), sn.getString("title"), sn.getString("channelTitle") };
+
+                    return new String[]
+                            {
+                                id.getString("videoId"), sn.getString("title"), sn.getString("channelTitle")
+                            };
                 }
             }
         }
-        
-        return new String[]{ "", "", "" };
+
+        return new String[]
+                {
+                    "", "", ""
+                };
     }
-    
+
     public int[] GetVideoLength(String id)
     {
         JSONObject j = GetData(request_type.GET, "https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=" + id + "&maxResults=1&key=" + apikey);
-        
+
         if (j.getBoolean("_success"))
         {
             if (j.getInt("_http") == 200)
             {
                 JSONArray a = j.getJSONArray("items");
-                
+
                 if (a.length() > 0)
                 {
                     JSONObject i = a.getJSONObject(0);
-                    
+
                     JSONObject cd = i.getJSONObject("contentDetails");
-                    
+
                     PeriodFormatter formatter = ISOPeriodFormat.standard();
-                    
+
                     Period d = formatter.parsePeriod(cd.getString("duration"));
-                    
+
                     //String d = cd.getString("duration").substring(2);
-                    int h=0;
-                    int m=0;
-                    int s=0;
-                    
+                    int h = 0;
+                    int m = 0;
+                    int s = 0;
+
                     String hours = d.toStandardHours().toString().substring(2);
                     h = Integer.parseInt(hours.substring(0, hours.indexOf("H")));
-                    
+
                     String minutes = d.toStandardMinutes().toString().substring(2);
                     m = Integer.parseInt(minutes.substring(0, minutes.indexOf("M")));
 
                     String seconds = d.toStandardSeconds().toString().substring(2);
                     s = Integer.parseInt(seconds.substring(0, seconds.indexOf("S")));
-                    
+
                     /*if (d.contains("H"))
-                    {
-                        h = Integer.parseInt(d.substring(0, d.indexOf("H")));
+                     {
+                     h = Integer.parseInt(d.substring(0, d.indexOf("H")));
                         
-                        d = d.substring(0, d.indexOf("H"));
-                    }
+                     d = d.substring(0, d.indexOf("H"));
+                     }
                     
-                    if (d.contains("M"))
-                    {
-                        m = Integer.parseInt(d.substring(0, d.indexOf("M")));
+                     if (d.contains("M"))
+                     {
+                     m = Integer.parseInt(d.substring(0, d.indexOf("M")));
                         
-                        d = d.substring(0, d.indexOf("M"));
-                    }
+                     d = d.substring(0, d.indexOf("M"));
+                     }
                     
-                    s = Integer.parseInt(d.substring(0, d.indexOf("S")));
-                    */
-                    
-                    return new int[]{ h, m, s };
+                     s = Integer.parseInt(d.substring(0, d.indexOf("S")));
+                     */
+
+                    return new int[]
+                            {
+                                h, m, s
+                            };
                 }
             }
         }
-        
-        return new int[]{ 0, 0, 0 };
+
+        return new int[]
+                {
+                    0, 0, 0
+                };
     }
 }
