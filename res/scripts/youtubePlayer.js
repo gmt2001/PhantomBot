@@ -73,7 +73,7 @@ function Song(name) {
             this.name = "";
             this.length = 0;
         }       
-    } /*else {
+    } else {
     
     //TODO: Figure out why the hell this doesn't work.
     //if (youtubeParser(search).length > 11)
@@ -83,11 +83,11 @@ function Song(name) {
             this.id = data[0];
             this.name = data[1];
         } else {
-            this.id = null;
-            this.name = "";
+                $.say("Song >> " + name + " not searchable due to API error. Please try again.");
+                return;
         }
-      }
-    }*/
+    //}
+    }
 
     
     this.getId = function () {
@@ -589,7 +589,7 @@ $.on('command', function (event) {
             }
             
              if ( video.getLength()=="" || video.getLength()==null || !video.getLength()) {
-                $.say("Song >> " + video.getName() + " length not retrievable. Please try again.");
+                $.say("Song >> " + video.getName() + " length not retrievable due to API error. Please try again.");
                 return;
             }           
             
