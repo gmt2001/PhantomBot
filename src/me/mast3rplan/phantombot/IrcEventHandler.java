@@ -68,34 +68,80 @@ public class IrcEventHandler implements IRCEventListener
             case CHANNEL_MESSAGE:
                 MessageEvent cmessageEvent = (MessageEvent) event;
                 String cmessageTags = cmessageEvent.tags();
-                
+
+                if (PhantomBot.enableDebugging)
+                {
+                    com.gmt2001.Console.out.println(">>>[DEBUG] cmessageTags " + cmessageTags);
+                }
+
                 if (cmessageTags.length() > 0)
                 {
                     String[] tags = cmessageTags.split(";");
-                    
+
                     for (int i = 0; i < tags.length; i++)
                     {
+                        if (PhantomBot.enableDebugging)
+                        {
+                            com.gmt2001.Console.out.println(">>>[DEBUG] Splitting Tag " + tags[i]);
+                        }
+
                         String[] kv = tags[i].split("=");
-                        
+
+                        if (PhantomBot.enableDebugging)
+                        {
+                            com.gmt2001.Console.out.println(">>>[DEBUG] Split Size " + kv.length);
+                        }
+
+                        if (PhantomBot.enableDebugging && kv.length >= 1)
+                        {
+                            com.gmt2001.Console.out.println(">>>[DEBUG] Split[0] " + kv[0]);
+                        }
+
+                        if (PhantomBot.enableDebugging && kv.length >= 2)
+                        {
+                            com.gmt2001.Console.out.println(">>>[DEBUG] Split[1] " + kv[1]);
+                        }
+
                         if (kv[0].equalsIgnoreCase("subscriber") && kv.length == 2 && kv[1].equalsIgnoreCase("1"))
                         {
+                            if (PhantomBot.enableDebugging)
+                            {
+                                com.gmt2001.Console.out.println(">>>[DEBUG] Dectected Subscriber");
+                            }
+
                             eventBus.post(new IrcPrivateMessageEvent(session, "jtv", "SPECIALUSER " + cmessageEvent.getNick() + " subscriber"));
                             com.gmt2001.Console.out.println(">>Next message marked Subscriber by IRCv3");
                         }
-                        
+
                         if (kv[0].equalsIgnoreCase("user-type"))
                         {
+                            if (PhantomBot.enableDebugging)
+                            {
+                                com.gmt2001.Console.out.println(">>>[DEBUG] Checking user-type");
+                            }
+                            
                             if (kv.length == 1 || kv[1].isEmpty())
                             {
+                                if (PhantomBot.enableDebugging)
+                                {
+                                    com.gmt2001.Console.out.println(">>>[DEBUG] User is not a moderator");
+                                }
+                                
                                 eventBus.post(new IrcChannelUserModeEvent(session, cmessageEvent.getChannel(), cmessageEvent.getNick(), "O", false));
-                            } else {
+                            } else
+                            {
+                                if (PhantomBot.enableDebugging)
+                                {
+                                    com.gmt2001.Console.out.println(">>>[DEBUG] User is a moderator (" + kv[1] + ")");
+                                }
+                                
                                 com.gmt2001.Console.out.println(">>Next message marked Moderator/Staff by IRCv3");
                                 eventBus.post(new IrcChannelUserModeEvent(session, cmessageEvent.getChannel(), cmessageEvent.getNick(), "O", true));
                             }
                         }
                     }
                 }
-                
+
                 com.gmt2001.Console.out.println("Message from Channel [" + cmessageEvent.getChannel().getName() + "] " + cmessageEvent.getNick());
                 Channel cchannel = cmessageEvent.getChannel();
                 String cusername = cmessageEvent.getNick();
@@ -105,8 +151,9 @@ public class IrcEventHandler implements IRCEventListener
                 break;
             case CTCP_EVENT:
                 CtcpEvent ctcmessageEvent = (CtcpEvent) event;
-                
-                if (ctcmessageEvent.getCtcpString().startsWith("ACTION")) {
+
+                if (ctcmessageEvent.getCtcpString().startsWith("ACTION"))
+                {
                     com.gmt2001.Console.out.println("Message from Channel [" + ctcmessageEvent.getChannel().getName() + "] " + ctcmessageEvent.getNick());
                     Channel ctcchannel = ctcmessageEvent.getChannel();
                     String ctcusername = ctcmessageEvent.getNick();
