@@ -141,6 +141,12 @@ public class IrcEventHandler implements IRCEventListener
                         }
                     }
                 }
+                
+                if (cmessageEvent.getChannel().getName().replaceAll("#", "").equalsIgnoreCase(cmessageEvent.getNick()))
+                {
+                    com.gmt2001.Console.out.println(">>Next message marked Moderator (Broadcaster)");
+                    eventBus.post(new IrcChannelUserModeEvent(session, cmessageEvent.getChannel(), cmessageEvent.getNick(), "O", true));
+                }
 
                 com.gmt2001.Console.out.println("Message from Channel [" + cmessageEvent.getChannel().getName() + "] " + cmessageEvent.getNick());
                 Channel cchannel = cmessageEvent.getChannel();
