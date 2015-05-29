@@ -731,12 +731,14 @@ $.on('command', function (event) {
         next();
     }
     if (command.equalsIgnoreCase("currentsong")) {
-        if ($var.currSong == null) {
+
+        if ($.readFile("web/currentsong.txt")=="") {
             $.say("There is no song playing! Request one with !addsong or !songrequest <youtube link>");
             return;
         }
+        
+        $.say("[\u266B] Currently playing -- " + $.readFile("web/currentsong.txt"));
 
-        $.say("[\u266B] Currently playing -- " + $var.currSong.song.getName() + " -- requested by @" + $var.currSong.user);
     }
 
     if (command.equalsIgnoreCase("nextsong")) {
