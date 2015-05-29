@@ -79,6 +79,7 @@ public class YouTubeAPIv3
         JSONObject j = new JSONObject("{}");
         InputStream i = null;
         String rawcontent = "";
+        int available = 0;
 
         try
         {
@@ -126,6 +127,8 @@ public class YouTubeAPIv3
                 i = c.getErrorStream();
             }
 
+            available = i.available();
+            
             if (c.getResponseCode() == 204 || i == null || i.available() == 0)
             {
                 content = "{}";
@@ -142,6 +145,7 @@ public class YouTubeAPIv3
             j.put("_url", url);
             j.put("_post", post);
             j.put("_http", c.getResponseCode());
+            j.put("_available", available);
             j.put("_exception", "");
             j.put("_exceptionMessage", "");
             j.put("_content", content);
@@ -156,6 +160,7 @@ public class YouTubeAPIv3
                 j.put("_url", url);
                 j.put("_post", post);
                 j.put("_http", 0);
+                j.put("_available", available);
                 j.put("_exception", "");
                 j.put("_exceptionMessage", "");
                 j.put("_content", rawcontent);
@@ -170,6 +175,7 @@ public class YouTubeAPIv3
             j.put("_url", url);
             j.put("_post", post);
             j.put("_http", 0);
+            j.put("_available", available);
             j.put("_exception", "MalformedURLException");
             j.put("_exceptionMessage", ex.getMessage());
             j.put("_content", "");
@@ -180,6 +186,7 @@ public class YouTubeAPIv3
             j.put("_url", url);
             j.put("_post", post);
             j.put("_http", 0);
+            j.put("_available", available);
             j.put("_exception", "SocketTimeoutException");
             j.put("_exceptionMessage", ex.getMessage());
             j.put("_content", "");
@@ -190,6 +197,7 @@ public class YouTubeAPIv3
             j.put("_url", url);
             j.put("_post", post);
             j.put("_http", 0);
+            j.put("_available", available);
             j.put("_exception", "IOException");
             j.put("_exceptionMessage", ex.getMessage());
             j.put("_content", "");
@@ -200,6 +208,7 @@ public class YouTubeAPIv3
             j.put("_url", url);
             j.put("_post", post);
             j.put("_http", 0);
+            j.put("_available", available);
             j.put("_exception", "Exception [" + ex.getClass().getName() + "]");
             j.put("_exceptionMessage", ex.getMessage());
             j.put("_content", "");
@@ -217,6 +226,7 @@ public class YouTubeAPIv3
                 j.put("_url", url);
                 j.put("_post", post);
                 j.put("_http", 0);
+                j.put("_available", available);
                 j.put("_exception", "IOException");
                 j.put("_exceptionMessage", ex.getMessage());
                 j.put("_content", "");
@@ -229,6 +239,7 @@ public class YouTubeAPIv3
                     + (postconnect.getTime() - start.getTime()) + " " + (prejson.getTime() - start.getTime()) + " "
                     + (postjson.getTime() - start.getTime()) + " " + start.toString() + " " + postjson.toString());
             com.gmt2001.Console.out.println(">>>[DEBUG] YouTubeAPIv3.GetData Exception " + j.getString("_exception"));
+            com.gmt2001.Console.out.println(">>>[DEBUG] YouTubeAPIv3.GetData HTTP/Available " + j.getInt("_http") + "/" + j.getInt("_available"));
             com.gmt2001.Console.out.println(">>>[DEBUG] YouTubeAPIv3.GetData RawContent[0,100] " + j.getString("_content").substring(0, Math.min(100, j.getString("_content").length())));
         }
 
