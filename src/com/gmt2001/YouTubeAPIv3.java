@@ -136,9 +136,19 @@ public class YouTubeAPIv3
                     Thread.sleep(500);
                     available = i.available();
                 }
+                
+                if (available == 0)
+                {
+                    i = c.getErrorStream();
+                    
+                    if (i != null)
+                    {
+                        available = i.available();
+                    }
+                }
             }
 
-            if (c.getResponseCode() == 204 || available == 0)
+            if (available == 0)
             {
                 content = "{}";
             } else
@@ -268,18 +278,27 @@ public class YouTubeAPIv3
         {
             if (j.getInt("_http") == 200)
             {
-                JSONArray a = j.getJSONArray("items");
-
-                if (a.length() > 0)
+                try
                 {
-                    JSONObject i = a.getJSONObject(0);
+                    JSONArray a = j.getJSONArray("items");
 
-                    JSONObject id = i.getJSONObject("id");
-                    JSONObject sn = i.getJSONObject("snippet");
+                    if (a.length() > 0)
+                    {
+                        JSONObject i = a.getJSONObject(0);
 
+                        JSONObject id = i.getJSONObject("id");
+                        JSONObject sn = i.getJSONObject("snippet");
+
+                        return new String[]
+                                {
+                                    id.getString("videoId"), sn.getString("title"), sn.getString("channelTitle")
+                                };
+                    }
+                } catch (Exception e)
+                {
                     return new String[]
                             {
-                                id.getString("videoId"), sn.getString("title"), sn.getString("channelTitle")
+                                "", "", ""
                             };
                 }
             }
@@ -299,52 +318,61 @@ public class YouTubeAPIv3
         {
             if (j.getInt("_http") == 200)
             {
-                JSONArray a = j.getJSONArray("items");
-
-                if (a.length() > 0)
+                try
                 {
-                    JSONObject i = a.getJSONObject(0);
+                    JSONArray a = j.getJSONArray("items");
 
-                    JSONObject cd = i.getJSONObject("contentDetails");
+                    if (a.length() > 0)
+                    {
+                        JSONObject i = a.getJSONObject(0);
 
-                    PeriodFormatter formatter = ISOPeriodFormat.standard();
+                        JSONObject cd = i.getJSONObject("contentDetails");
 
-                    Period d = formatter.parsePeriod(cd.getString("duration"));
+                        PeriodFormatter formatter = ISOPeriodFormat.standard();
 
-                    //String d = cd.getString("duration").substring(2);
-                    int h = 0;
-                    int m = 0;
-                    int s = 0;
+                        Period d = formatter.parsePeriod(cd.getString("duration"));
 
-                    String hours = d.toStandardHours().toString().substring(2);
-                    h = Integer.parseInt(hours.substring(0, hours.indexOf("H")));
+                        //String d = cd.getString("duration").substring(2);
+                        int h = 0;
+                        int m = 0;
+                        int s = 0;
 
-                    String minutes = d.toStandardMinutes().toString().substring(2);
-                    m = Integer.parseInt(minutes.substring(0, minutes.indexOf("M")));
+                        String hours = d.toStandardHours().toString().substring(2);
+                        h = Integer.parseInt(hours.substring(0, hours.indexOf("H")));
 
-                    String seconds = d.toStandardSeconds().toString().substring(2);
-                    s = Integer.parseInt(seconds.substring(0, seconds.indexOf("S")));
+                        String minutes = d.toStandardMinutes().toString().substring(2);
+                        m = Integer.parseInt(minutes.substring(0, minutes.indexOf("M")));
 
-                    /*if (d.contains("H"))
-                     {
-                     h = Integer.parseInt(d.substring(0, d.indexOf("H")));
+                        String seconds = d.toStandardSeconds().toString().substring(2);
+                        s = Integer.parseInt(seconds.substring(0, seconds.indexOf("S")));
+
+                        /*if (d.contains("H"))
+                         {
+                         h = Integer.parseInt(d.substring(0, d.indexOf("H")));
                         
-                     d = d.substring(0, d.indexOf("H"));
-                     }
+                         d = d.substring(0, d.indexOf("H"));
+                         }
                     
-                     if (d.contains("M"))
-                     {
-                     m = Integer.parseInt(d.substring(0, d.indexOf("M")));
+                         if (d.contains("M"))
+                         {
+                         m = Integer.parseInt(d.substring(0, d.indexOf("M")));
                         
-                     d = d.substring(0, d.indexOf("M"));
-                     }
+                         d = d.substring(0, d.indexOf("M"));
+                         }
                     
-                     s = Integer.parseInt(d.substring(0, d.indexOf("S")));
-                     */
+                         s = Integer.parseInt(d.substring(0, d.indexOf("S")));
+                         */
 
+                        return new int[]
+                                {
+                                    h, m, s
+                                };
+                    }
+                } catch (Exception e)
+                {
                     return new int[]
                             {
-                                h, m, s
+                                0, 0, 0
                             };
                 }
             }
