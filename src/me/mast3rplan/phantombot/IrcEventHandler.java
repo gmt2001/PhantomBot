@@ -113,7 +113,7 @@ public class IrcEventHandler implements IRCEventListener
                             com.gmt2001.Console.out.println(">>Next message marked Subscriber by IRCv3");
                         }
 
-                        if (kv[0].equalsIgnoreCase("user-type"))
+                        if (kv[0].equalsIgnoreCase("user-type") && !cmessageEvent.getChannel().getName().replaceAll("#", "").equalsIgnoreCase(cmessageEvent.getNick()))
                         {
                             if (PhantomBot.enableDebugging)
                             {
