@@ -446,6 +446,12 @@ $.loadScript('./util/fileSystem.js');
 
 $.logEvent("init.js", 410, "Initializing...");
 
+var firstrun = false;
+
+if ($.inidb.GetBoolean("init", "initialsettings", "loaded") == false) {
+    firstrun = true;
+}
+
 $.initialsettings_update = 1;
 if ($.inidb.GetBoolean("init", "initialsettings", "loaded") == false
     || $.inidb.GetInteger("init", "initialsettings", "update") < $.initialsettings_update) {
@@ -463,6 +469,12 @@ $.loadScript('./util/permissions.js');
 $.loadScript('./util/chatModerator.js');
 
 $.loadScriptsRecursive(".");
+
+if (firstrun) {
+    var index = $.getModuleIndex("./subscribeHandler.js");
+    modules[index][1] = false;
+    $.inidb.set('modules', modules[index][0] + '_enabled', "0");
+}
 
 $api.on(initscript, 'ircChannelMessage', function(event) {
     var sender = event.getSender();
