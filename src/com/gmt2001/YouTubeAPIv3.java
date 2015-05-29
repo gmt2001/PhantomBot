@@ -98,8 +98,8 @@ public class YouTubeAPIv3
 
             c.setUseCaches(false);
             c.setDefaultUseCaches(false);
-            c.setConnectTimeout(2000);
-            c.setReadTimeout(2100);
+            c.setConnectTimeout(1000);
+            c.setReadTimeout(2000);
 
             if (!post.isEmpty())
             {
@@ -131,7 +131,7 @@ public class YouTubeAPIv3
             {
                 available = i.available();
 
-                while (available == 0 && (new Date().getTime() - postconnect.getTime()) < 10000)
+                while (available == 0 && (new Date().getTime() - postconnect.getTime()) < 500)
                 {
                     Thread.sleep(500);
                     available = i.available();
