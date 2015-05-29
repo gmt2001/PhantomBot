@@ -30,7 +30,7 @@ $.on('twitchHosted', function(event) {
                 s = "Thanks for the host (name)!";
             } else if ($.hostreward > 0) {
                 s = "Thanks for the host (name)! you're rewarded " + $.hostreward + " " + $.pointname + ".";
-                $.inidb.incr('points', username, $.hostreward);
+                $.inidb.incr('points', username.toLowerCase(), $.hostreward);
             }
         }
             
