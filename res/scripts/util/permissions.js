@@ -561,9 +561,11 @@ $.on('ircChannelLeave', function(event) {
 
 $.on('ircChannelUserMode', function(event) {
     if (event.getMode().equalsIgnoreCase("o")) {
-        if (event.getAdd()) {
+        if (event.getAdd()==true) {
             if (!$.array.contains($.modeOUsers, event.getUser().toLowerCase())) {
+                
                 $.modeOUsers.push(event.getUser().toLowerCase());
+                
                 if ($.array.contains($.modeOUsers, event.getUser().toLowerCase())) {
                     $.inidb.set('group', event.getUser().toLowerCase(), 2);
                     println("Moderator: " + event.getUser().toLowerCase());

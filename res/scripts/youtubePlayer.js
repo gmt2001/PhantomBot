@@ -736,7 +736,7 @@ $.on('command', function (event) {
             $.say("There is no song playing! Request one with !addsong or !songrequest <youtube link>");
             return;
         }
-        
+
         $.say("[\u266B] Currently playing -- " + $.readFile("web/currentsong.txt"));
 
     }
