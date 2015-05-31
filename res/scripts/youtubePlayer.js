@@ -48,7 +48,7 @@ function youtubeParser(url){
 
 function Song(name, user) {
     var x = 0;
-    var retries = 1;
+    var retries = 9;
     if (name==null || name=="") return;
     var search = new String(name);
     if (youtubeParser(search).length == 11)
