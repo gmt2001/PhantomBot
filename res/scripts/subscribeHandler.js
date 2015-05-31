@@ -134,7 +134,7 @@ $.on('command', function(event) {
             
             $.inidb.set('settings', 'subscribereward', argsString);
             
-            $.say("New subscriber reward set to " + argsString + " " + $.pointsname + "!");
+            $.say("New subscriber reward set to " + argsString + " " + $.pointname + "!");
         }
     }
     

@@ -348,20 +348,28 @@ $.on('command', function(event) {
 		
         if (args.length == 1) {
             var commandname = args[0].toLowerCase();
-				
+            
+            if ($.inidb.exists("aliases", commandname) && $.inidb.get("aliases", commandname)!=""){
+                commandname = $.inidb.get("aliases", commandname);
+            }
+            
             if ($.inidb.exists("pricecom", commandname) && parseInt($.inidb.get("pricecom", commandname)) > 0) {
                 var retrieveprice = $.inidb.get("pricecom", commandname);
 		
-                $.say("The command !" + commandname + " costs " + retrieveprice + " " + $.pointname + "!");
+                $.say("The command !" + args[0].toLowerCase() + " costs " + retrieveprice + " " + $.pointname + "!");
                 return;
             } else {
-                $.say("The command !" + commandname + " currently costs 0 " + $.pointname + "!");
+                $.say("The command !" + args[0].toLowerCase() + " currently costs 0 " + $.pointname + "!");
             }
         }
 	
         if (args.length == 2) {
             var commandname = args[0].toLowerCase();
             var commandprice = parseInt(args[1]);
+            
+            if ($.inidb.exists("aliases", commandname) && $.inidb.get("aliases", commandname)!=""){
+                commandname = $.inidb.get("aliases", commandname);
+            }
             
             if (!$.commandExists(commandname)) {
                 $.say("Please select a command that exists and is available to non-mods.");
@@ -371,7 +379,7 @@ $.on('command', function(event) {
                 return;
             } else {
                 $.inidb.set("pricecom", commandname, commandprice);
-                $.say("The price for !" + commandname + " has been set to " + commandprice + " " + $.pointname + ".");
+                $.say("The price for !" + args[0].toLowerCase() + " has been set to " + commandprice + " " + $.pointname + ".");
             }
         }		
 

@@ -46,9 +46,9 @@ function youtubeParser(url){
     }
 }
 
-function Song(name) {
+function Song(name, user) {
     var x = 0;
-    var retries = 6;
+    var retries = 1;
     if (name==null || name=="") return;
     var search = new String(name);
     if (youtubeParser(search).length == 11)
@@ -76,9 +76,6 @@ function Song(name) {
         }       
     } else {
     
-    //TODO: Figure out why the hell this doesn't work.
-    //if (youtubeParser(search).length > 11)
-    //{  
         while( x <= retries ) {
             x++;
             var data = $.youtube.SearchForVideo(youtubeParser(name));
@@ -92,9 +89,18 @@ function Song(name) {
         {
                 x = 0;
                 $.say("Song >> " + name + " not searchable due to API error. Please try again.");
+                //failed search, return user's points
+                if ($.inidb.exists("pricecom", "addsong") && parseInt($.inidb.get("pricecom", "addsong"))> 0 ){
+                    if(!$.isMod(user)){
+                        var cost = $.inidb.get("pricecom", "addsong");
+                        $.say("The command cost of " + cost + " " + $.pointname + " has been returned to " + $.username.resolve(user));
+                        $.inidb.incr("points", user.toLowerCase(), cost);
+                        $.inidb.SaveAll();
+                    }
+                }
+                
                 return;
         }
-    //}
     }
 
     
@@ -186,7 +192,7 @@ function parseDefault() {
             $.writeToFile(  $.songprefix, $.storepath + "queue.txt", false);
         }
         for(var i=position; i< list.length; i++){
-            $.song = new Song(list[i]);
+            $.song = new Song(list[i],"");
             $.songname = $.song.getName();
             $.songid = $.song.getId();
                 
@@ -224,7 +230,7 @@ function parseSongQueue() {
 function nextDefault() {
     var name = "";
     var user = "";
-    var s = new Song(null);
+    var s = new Song(null, "");
 
     if ($var.currSong != null) {
         return;
@@ -258,7 +264,7 @@ function nextDefault() {
 
     if ($var.defaultplaylist.length > 0) {
 
-        s = new Song($var.defaultplaylist[$var.defaultplaylistpos]);
+        s = new Song($var.defaultplaylist[$var.defaultplaylistpos], "");
         s = new RequestedSong(s, "DJ " + $.username.resolve($.botname));
         $var.defaultplaylistpos++;
 
@@ -298,7 +304,7 @@ function nextDefault() {
 function next() {
     var name = "";
     var user = "";
-    var s = new Song(null);
+    var s = new Song(null, "");
 
     if ($var.songqueue.length > 0) {
         s = $var.songqueue.shift();
@@ -594,13 +600,21 @@ $.on('command', function (event) {
 
         if (args.length >= 1) {
             if (!musicPlayerConnected) {
-                println("Music player disabled.");
+                if ($.inidb.exists("pricecom", "addsong") && parseInt($.inidb.get("pricecom", "addsong"))> 0 ){
+                    $.say("Music player disabled.");
+                    if(!$.isMod(sender)){
+                        var cost = $.inidb.get("pricecom", "addsong");
+                        $.say("The command cost of " + cost + " " + $.pointname + " has been returned to " + $.username.resolve(sender));
+                        $.inidb.incr("points", sender.toLowerCase(), cost);
+                        $.inidb.SaveAll();
+                    }
+                }
                 return;
             }
             
             
 
-            var video = new Song(argsString);
+            var video = new Song(argsString, sender);
 
             if (video.getId() == null) {
                 $.say("Song doesn't exist or you typed something wrong.");
@@ -609,6 +623,14 @@ $.on('command', function (event) {
             
              if ( video.getLength()=="" || video.getLength()==null || !video.getLength()) {
                 $.say("Song >> " + video.getName() + " length not retrievable due to API error. Please try again.");
+                if ($.inidb.exists("pricecom", "addsong") && parseInt($.inidb.get("pricecom", "addsong"))> 0 ){
+                    if(!$.isMod(sender)){
+                        var cost = $.inidb.get("pricecom", "addsong");
+                        $.say("The command cost of " + cost + " " + $.pointname + " has been returned to " + $.username.resolve(sender));
+                        $.inidb.incr("points", sender.toLowerCase(), cost);
+                        $.inidb.SaveAll();
+                    }
+                }
                 return;
             }           
             
