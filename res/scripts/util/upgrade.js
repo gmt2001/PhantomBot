@@ -581,6 +581,21 @@ if ($.inidb.GetInteger("init", "upgrade", "version") < 10) {
     
     println("   End version 10 upgrades...");
 }
+
+if ($.inidb.GetInteger("init", "upgrade", "version") < 11) {
+    println("   Starting version 11 upgrades...");
+    
+    println("     Removing obselete Administrator group");
+    
+    if($.inidb.exists("grouppoints", "Administrator")){
+       $.inidb.del("grouppoints","Administrator");
+    }
+    if($.inidb.exists("groups", "1")){
+       $.inidb.del("groups","1");
+    }
+    
+    println("   End version 11 upgrades...");
+}
 println("   Saving...");
 
 $.inidb.SetInteger("init", "upgrade", "version", parseInt($.upgrade_version));
