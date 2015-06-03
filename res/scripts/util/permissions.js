@@ -559,7 +559,7 @@ $.on('ircChannelLeave', function(event) {
 
 $.on('ircChannelUserMode', function(event) {
     if (event.getMode().equalsIgnoreCase("o")) {
-        if (event.getAdd()==true) {
+        if (event.getAdd() == true) {
             if (!$.array.contains($.modeOUsers, event.getUser().toLowerCase())) {
                 
                 $.modeOUsers.push(event.getUser().toLowerCase());
@@ -624,14 +624,14 @@ $.timer.addTimer("./util/permissions.js", "modcheck", true, function() {
 $.timer.addTimer("./util/permissions.js", "usercheck", true, function() {
     var curtime = System.currentTimeMillis();
     
-    if ($.lastjoinpart + usergonetime < curtime) {
+    /*if ($.lastjoinpart + usergonetime < curtime) {
         for (var i = 0; i < $.users.length; i++) {
             if ($.users[i][1] + usergonetime < curtime) {
                 $.users.splice(i, 1);
                 i--;
             }
         }
-    }
+    }*/
     
     for (var b = 0; b < $.subUsers.length; b++) {
         if ($.subUsers[b][1] < curtime) {
