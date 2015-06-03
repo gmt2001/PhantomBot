@@ -443,6 +443,7 @@ $.loadScript('./util/misc.js');
 $.loadScript('./util/commandList.js');
 $.loadScript('./util/patternDetector.js');
 $.loadScript('./util/fileSystem.js');
+$.loadScript('./util/lang.js');
 
 $.logEvent("init.js", 410, "Initializing...");
 
@@ -531,7 +532,7 @@ $api.on(initscript, 'command', function(event) {
                 var utils = 0;
                 
                 for (var n = 0; n < modules.length; n++) {
-                    if (modules[n][0].indexOf("./util/") != -1) {
+                    if (modules[n][0].indexOf("./util/") != -1 || modules[n][0].indexOf("./lang/") != -1) {
                         utils++;
                     }
                 }
@@ -546,7 +547,7 @@ $api.on(initscript, 'command', function(event) {
                     for (var i = (b * 10) + offset; n < 10; i++) {
                         if (i >= modules.length) {
                             break;
-                        } else if (modules[i][0].indexOf("./util/") != -1) {
+                        } else if (modules[i][0].indexOf("./util/") != -1 || modules[i][0].indexOf("./lang/") != -1) {
                             offset++;
                             continue;
                         } else {
@@ -577,7 +578,7 @@ $api.on(initscript, 'command', function(event) {
             }
             
             if (args[0].equalsIgnoreCase("enable")) {
-                if (args[1].indexOf("./util/") != -1) {
+                if (args[1].indexOf("./util/") != -1 || args[1].indexOf("./lang/") != -1) {
                     return;
                 }
                 
@@ -597,7 +598,7 @@ $api.on(initscript, 'command', function(event) {
             }
             
             if (args[0].equalsIgnoreCase("disable")) {
-                if (args[1].indexOf("./util/") != -1) {
+                if (args[1].indexOf("./util/") != -1 || args[1].indexOf("./lang/") != -1) {
                     return;
                 }
                 
@@ -617,7 +618,7 @@ $api.on(initscript, 'command', function(event) {
             }
             
             if (args[0].equalsIgnoreCase("status") || args[0].equalsIgnoreCase("check")) {
-                if (args[1].indexOf("./util/") != -1) {
+                if (args[1].indexOf("./util/") != -1 || args[1].indexOf("./lang/") != -1) {
                     return;
                 }
                 
