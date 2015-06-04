@@ -404,7 +404,7 @@ $.setInterval(function() {
     }
 
     $.lastpointinterval = System.currentTimeMillis();
-}, 1000);
+}, 60 * 1000);
 
 $.registerChatCommand("./systems/pointSystem.js", "points");
 $.registerChatCommand("./systems/pointSystem.js", "info");
