@@ -604,7 +604,6 @@ if ($.inidb.GetInteger("init", "upgrade", "version") < 12) {
     
     $.mkDir("addons");
     $.mkDir("addons/youtubePlayer");
-    $.moveFile("scripts/youtubePlayer.js","scripts/addonscripts/");
     $.moveFile("web/playlist.txt","addons/youtubePlayer/");
     $.moveFile("web/currentsong.txt","addons/youtubePlayer/");    
     
