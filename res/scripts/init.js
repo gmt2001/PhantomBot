@@ -642,7 +642,7 @@ $api.on(initscript, 'command', function(event) {
 });
 
 $.logEvent("init.js", 596, "Bot Online");
-$.loadScriptsRecursive('./addons');
+$.loadScriptsRecursive('./addonscripts');
 $.registerChatCommand('./init.js', 'setconnectedmessage', 'admin');
 $.registerChatCommand('./init.js', 'reconnect', 'mod');
 $.registerChatCommand('./init.js', 'module', 'admin');
