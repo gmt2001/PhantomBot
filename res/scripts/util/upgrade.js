@@ -596,6 +596,19 @@ if ($.inidb.GetInteger("init", "upgrade", "version") < 11) {
     
     println("   End version 11 upgrades...");
 }
+
+if ($.inidb.GetInteger("init", "upgrade", "version") < 12) {
+    println("   Starting version 12 upgrades...");
+    
+    println("     Creating addons folder");
+    
+    $.mkDir("addons");
+    $.mkDir("addons/youtubePlayer");
+    $.moveFile("web/playlist.txt","addons/youtubePlayer/");
+    $.moveFile("web/currentsong.txt","addons/youtubePlayer/");    
+    
+    println("   End version 12 upgrades...");
+}
 println("   Saving...");
 
 $.inidb.SetInteger("init", "upgrade", "version", parseInt($.upgrade_version));

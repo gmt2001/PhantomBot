@@ -1,4 +1,4 @@
-$var.defaultplaylist = $.readFile("./web/playlist.txt");
+$var.defaultplaylist = $.readFile("./addons/youtubePlayer/playlist.txt");
 $var.defaultplaylistpos = 0;
 $var.songqueue = [];
 $var.requestusers = {};
@@ -245,10 +245,10 @@ function nextDefault() {
             $var.defaultplaylistretry++;
 
             setTimeout(function () {
-                if ($.fileExists("web/playlist.txt")) {
-                    $var.defaultplaylist = $.readFile("web/playlist.txt");
-                } else if ($.fileExists("../web/playlist.txt")) {
-                    $var.defaultplaylist = $.readFile("../web/playlist.txt");
+                if ($.fileExists("addons/youtubePlayer/playlist.txt")) {
+                    $var.defaultplaylist = $.readFile("addons/youtubePlayer/playlist.txt");
+                } else if ($.fileExists("../addons/youtubePlayer/playlist.txt")) {
+                    $var.defaultplaylist = $.readFile("../addons/youtubePlayer/playlist.txt");
                 }
 
                 $var.defaultplaylistpos = 0;
@@ -295,9 +295,9 @@ function nextDefault() {
         println("[\u266B] Now Playing -- " + name + " - requested by @" + user);
     }
     if (user.equalsIgnoreCase("DJ " + $.username.resolve($.botname))) {
-        $.writeToFile(name, "web/currentsong.txt", false);
+        $.writeToFile(name, "addons/youtubePlayer/currentsong.txt", false);
     } else if (!user.equalsIgnoreCase("DJ " + $.username.resolve($.botname))){
-        $.writeToFile(name + " requested by: " + user, "web/currentsong.txt", false);
+        $.writeToFile(name + " requested by: " + user, "addons/youtubePlayer/currentsong.txt", false);
     }
 }
 
@@ -357,9 +357,9 @@ function next() {
         println(nextMsg);
     }
     if (user.equalsIgnoreCase("DJ " + $.username.resolve($.botname))) {
-        $.writeToFile(name, "web/currentsong.txt", false);
+        $.writeToFile(name, "addons/youtubePlayer/currentsong.txt", false);
     } else if (!user.equalsIgnoreCase("DJ " + $.username.resolve($.botname))){
-        $.writeToFile(name + " requested by: " + user, "web/currentsong.txt", false);
+        $.writeToFile(name + " requested by: " + user, "addons/youtubePlayer/currentsong.txt", false);
     }
 
 }
@@ -481,7 +481,7 @@ $.on('command', function (event) {
 
                 $.storing = 1;
                 $.inidb.set('settings', 'song_storing', $.storing.toString());
-                $.defaultplaylist = $.readFile("./web/playlist.txt");
+                $.defaultplaylist = $.readFile("./addons/youtubePlayer/playlist.txt");
                 $.say("Playlists' positions and titles will now be exported to a readable file.");
 
             } else {
@@ -566,7 +566,7 @@ $.on('command', function (event) {
             if ($var.currSong != null) {
                 var songurl = "https://www.youtube.com/watch?v=" + $var.currSong.song.getId();
                 $.musicplayer.stealSong(songurl);
-                $var.defaultplaylist = $.readFile("./web/playlist.txt");
+                $var.defaultplaylist = $.readFile("./addons/youtubePlayer/playlist.txt");
                 $.say("[\u266B]" + $var.currSong.song.getName() + " -- requested by @" + $var.currSong.user + " has been stolen and added to the default playlist!");
                 return;
             }
@@ -754,12 +754,12 @@ $.on('command', function (event) {
     }
     if (command.equalsIgnoreCase("currentsong")) {
 
-        if ($.readFile("web/currentsong.txt")=="") {
+        if ($.readFile("addons/youtubePlayer/currentsong.txt")=="") {
             $.say("There is no song playing! Request one with !addsong or !songrequest <youtube link>");
             return;
         }
 
-        $.say("[\u266B] Currently playing -- " + $.readFile("web/currentsong.txt"));
+        $.say("[\u266B] Currently playing -- " + $.readFile("addons/youtubePlayer/currentsong.txt"));
 
     }
 
@@ -779,7 +779,7 @@ $.on('command', function (event) {
         if ($var.currSong != null) {
             var songurl = "https://www.youtube.com/watch?v=" + $var.currSong.song.getId();
             $.musicplayer.stealSong(songurl);
-            $var.defaultplaylist = $.readFile("./web/playlist.txt");
+            $var.defaultplaylist = $.readFile("./addons/youtubePlayer/playlist.txt");
             $.say($var.currSong.song.getName() + "~\u266B requested by " + $var.currSong.user + " has been stolen and added to the default playlist!");
             return;
         }
