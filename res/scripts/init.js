@@ -151,6 +151,9 @@ $.loadScriptsRecursive = function(path) {
             if (list[i].equalsIgnoreCase("util") || list[i].equalsIgnoreCase("init.js")) {
                 continue;
             }
+            if (list[i].equalsIgnoreCase("addons")) {
+                continue;
+            }
         }
         
         if ($.isDirectory("./scripts/" + path + "/" + list[i])) {
@@ -639,7 +642,7 @@ $api.on(initscript, 'command', function(event) {
 });
 
 $.logEvent("init.js", 596, "Bot Online");
-
+$.loadScriptsRecursive('./addons');
 $.registerChatCommand('./init.js', 'setconnectedmessage', 'admin');
 $.registerChatCommand('./init.js', 'reconnect', 'mod');
 $.registerChatCommand('./init.js', 'module', 'admin');

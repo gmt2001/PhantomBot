@@ -600,10 +600,11 @@ if ($.inidb.GetInteger("init", "upgrade", "version") < 11) {
 if ($.inidb.GetInteger("init", "upgrade", "version") < 12) {
     println("   Starting version 12 upgrades...");
     
-    println("     Creating addons folder");
+    println("     Creating addons folders");
     
     $.mkDir("addons");
     $.mkDir("addons/youtubePlayer");
+    $.moveFile("scripts/youtubePlayer.js","scripts/addonscripts/");
     $.moveFile("web/playlist.txt","addons/youtubePlayer/");
     $.moveFile("web/currentsong.txt","addons/youtubePlayer/");    
     
