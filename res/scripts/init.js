@@ -151,7 +151,7 @@ $.loadScriptsRecursive = function(path) {
             if (list[i].equalsIgnoreCase("util") || list[i].equalsIgnoreCase("init.js")) {
                 continue;
             }
-            if (list[i].equalsIgnoreCase("addons")) {
+            if (list[i].equalsIgnoreCase("addonscripts")) {
                 continue;
             }
         }
