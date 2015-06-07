@@ -18,19 +18,19 @@ auxiliary.show.customizer.message=<message>
                 <source-folder>
                     <label>PhantomBot</label>
                     <location>.</location>
-                    <encoding>windows-1252</encoding>
+                    <encoding>UTF-8</encoding>
                 </source-folder>
                 <source-folder>
                     <label>src</label>
                     <type>java</type>
                     <location>src</location>
-                    <encoding>windows-1252</encoding>
+                    <encoding>UTF-8</encoding>
                 </source-folder>
                 <source-folder>
                     <label>res</label>
                     <type>java</type>
                     <location>res</location>
-                    <encoding>windows-1252</encoding>
+                    <encoding>UTF-8</encoding>
                 </source-folder>
             </folders>
             <ide-actions>
