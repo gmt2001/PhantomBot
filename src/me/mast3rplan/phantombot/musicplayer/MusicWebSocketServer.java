@@ -92,7 +92,11 @@ public class MusicWebSocketServer extends WebSocketServer
         try
         {
             this.stop(2000);
-        } catch (IOException | InterruptedException ex)
+        } catch (IOException ex)
+        {
+            Logger.getLogger(MusicWebSocketServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        catch (InterruptedException ex)
         {
             Logger.getLogger(MusicWebSocketServer.class.getName()).log(Level.SEVERE, null, ex);
         }

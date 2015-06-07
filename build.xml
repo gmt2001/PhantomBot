@@ -61,7 +61,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
      </target>
 
      <target depends="pre.compile.test" name="compile.src">
-         <javac target="1.7" source="1.7" debug="on" destdir="${classes}" srcdir="${src}" includeantruntime="false" >
+         <javac target="1.5" source="1.5" debug="on" destdir="${classes}" srcdir="${src}" includeantruntime="false" >
              <compilerarg value="-Xlint:unchecked"/>
              <compilerarg value="-Xlint:-options"/>
              <classpath refid="reference.class.path" />

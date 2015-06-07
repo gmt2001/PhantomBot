@@ -35,8 +35,8 @@ import org.apache.commons.io.FileUtils;
 public class IniStore implements ActionListener
 {
 
-    private HashMap<String, IniFile> files = new HashMap<>();
-    private HashMap<String, Date> changed = new HashMap<>();
+    private HashMap<String, IniFile> files = new HashMap<String, IniFile>();
+    private HashMap<String, Date> changed = new HashMap<String, Date>();
     private Date nextSave = new Date(0);
     private Timer t;
     private Timer t2;
@@ -151,7 +151,7 @@ public class IniStore implements ActionListener
     private static class IniFile
     {
 
-        protected HashMap<String, HashMap<String, String>> data = new HashMap<>();
+        protected HashMap<String, HashMap<String, String>> data = new HashMap<String, HashMap<String, String>>();
     }
 
     public void SaveChangedNow()

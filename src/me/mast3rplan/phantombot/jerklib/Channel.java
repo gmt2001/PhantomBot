@@ -44,8 +44,8 @@ public class Channel
     private Map<String, List<ModeAdjustment>> userMap;
     private List<ModeAdjustment> channelModes = new ArrayList<ModeAdjustment>();
     private TopicEvent topicEvent;
-    private ConcurrentLinkedQueue<String> messages = new ConcurrentLinkedQueue<>();
-    private ConcurrentLinkedQueue<String> prioritymessages = new ConcurrentLinkedQueue<>();
+    private ConcurrentLinkedQueue<String> messages = new ConcurrentLinkedQueue<String>();
+    private ConcurrentLinkedQueue<String> prioritymessages = new ConcurrentLinkedQueue<String>();
     private Timer sayTimer = new Timer();
     private Boolean allowSendMessages = false;
     private long msginterval = 1600;

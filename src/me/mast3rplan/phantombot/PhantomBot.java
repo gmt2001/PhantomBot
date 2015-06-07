@@ -147,8 +147,8 @@ public class PhantomBot implements Listener
 
         rng = new SecureRandom();
         bancache = new BannedCache();
-        pollResults = new TreeMap<>();
-        voters = new TreeSet<>();
+        pollResults = new TreeMap<String, Integer>();
+        voters = new TreeSet<String>();
 
         if (hostname.isEmpty())
         {
@@ -196,15 +196,43 @@ public class PhantomBot implements Listener
 
                 File f = new File("/var/run/PhantomBot." + this.username.toLowerCase() + ".pid");
 
-                try (FileOutputStream fs = new FileOutputStream(f, false))
-                {
+                    FileOutputStream fs = new FileOutputStream(f, false);
                     PrintStream ps = new PrintStream(fs);
 
                     ps.print(pid);
-                }
 
                 f.deleteOnExit();
-            } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException | NoSuchMethodException | InvocationTargetException | IOException ex)
+            } catch (IOException ex)
+            {
+                com.gmt2001.Console.out.println("e " + ex.getMessage());
+                Logger.getLogger(PhantomBot.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            catch (SecurityException ex)
+            {
+                com.gmt2001.Console.out.println("e " + ex.getMessage());
+                Logger.getLogger(PhantomBot.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            catch (IllegalArgumentException ex)
+            {
+                com.gmt2001.Console.out.println("e " + ex.getMessage());
+                Logger.getLogger(PhantomBot.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            catch (NoSuchMethodException ex)
+            {
+                com.gmt2001.Console.out.println("e " + ex.getMessage());
+                Logger.getLogger(PhantomBot.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            catch (IllegalAccessException ex)
+            {
+                com.gmt2001.Console.out.println("e " + ex.getMessage());
+                Logger.getLogger(PhantomBot.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            catch (InvocationTargetException ex)
+            {
+                com.gmt2001.Console.out.println("e " + ex.getMessage());
+                Logger.getLogger(PhantomBot.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            catch (NoSuchFieldException ex)
             {
                 com.gmt2001.Console.out.println("e " + ex.getMessage());
                 Logger.getLogger(PhantomBot.class.getName()).log(Level.SEVERE, null, ex);

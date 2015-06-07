@@ -23,7 +23,7 @@ import java.util.HashMap;
 public class ScriptManager
 {
 
-    private static HashMap<String, Script> scripts = new HashMap<>();
+    private static HashMap<String, Script> scripts = new HashMap<String, Script>();
 
     public static void loadScript(File scriptFile) throws IOException
     {

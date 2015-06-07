@@ -33,7 +33,7 @@ public class CommandEvent extends Event
         this.sender = sender;
         this.command = command;
         this.arguments = arguments;
-        List<String> tmpArgs = new LinkedList<>();
+        List<String> tmpArgs = new LinkedList<String>();
         boolean inquote = false;
         String tmpStr = "";
         for (char c : arguments.toCharArray())

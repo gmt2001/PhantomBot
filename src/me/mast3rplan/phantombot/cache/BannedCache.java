@@ -33,7 +33,7 @@ import java.util.TreeMap;
 public class BannedCache
 {
 
-    private TreeMap<String, Long> bannedUsers = new TreeMap<>();
+    private TreeMap<String, Long> bannedUsers = new TreeMap<String, Long>();
 
     public boolean userIsBanned(String user)
     {
@@ -42,7 +42,7 @@ public class BannedCache
 
     public String[] getReformedUsers()
     {
-        List<String> users = new LinkedList<>();
+        List<String> users = new LinkedList<String>();
         long time = System.currentTimeMillis();
 
         for (String s : bannedUsers.navigableKeySet())
