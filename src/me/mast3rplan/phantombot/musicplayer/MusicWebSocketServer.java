@@ -172,10 +172,10 @@ public class MusicWebSocketServer extends WebSocketServer
     {
         try
         {
-            BufferedReader in = new BufferedReader(new FileReader("playlist.txt"));         //playlist reader
-            BufferedWriter out = new BufferedWriter(new FileWriter("stealsong.txt", true)); //writes stolen songs read from playlist
-            File playlist = new File("playlist.txt");                                       //make the playlist known
-            File stealsong = new File("stealsong.txt");                                     //this is where the stolen playlist songs go
+            BufferedReader in = new BufferedReader(new FileReader("addons/youtubePlayer/playlist.txt"));         //playlist reader
+            BufferedWriter out = new BufferedWriter(new FileWriter("addons/youtubePlayer/stealsong.txt", true)); //writes stolen songs read from playlist
+            File playlist = new File("addons/youtubePlayer/playlist.txt");                                       //make the playlist known
+            File stealsong = new File("addons/youtubePlayer/stealsong.txt");                                     //this is where the stolen playlist songs go
             String data;                                                                    //establish variable for playlist lines
             out.write("");                                                                  //write new blank file stealsong.txt
             while ((data = in.readLine()) != null)                                          //read each playlist line
