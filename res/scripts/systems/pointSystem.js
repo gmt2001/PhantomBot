@@ -291,6 +291,7 @@ $.on('command', function (event) {
                     return;
                 } else {
                     $.inidb.set('settings', 'mingift', args[1]);
+                    $.mingift = parseInt($.inidb.get('settings', 'mingift'));
 
                     $.say(username + " has set the minimum amount of " + $.pointname + " that can be gifted to: " + args[1] + " " + $.pointname + ".");
                 }
