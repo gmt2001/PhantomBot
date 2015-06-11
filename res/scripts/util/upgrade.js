@@ -603,6 +603,20 @@ if ($.inidb.GetInteger("init", "upgrade", "version") < 12) {
     
     println("   End version 12 upgrades...");
 }
+
+if ($.inidb.GetInteger("init", "upgrade", "version") < 13) {
+    println("   Starting version 13 upgrades...");
+    
+    println("     Creating stream command default aliases");
+    
+    $.inidb.set("aliases", "status", "title");
+    $.inidb.set("aliases", "settitle", "title");
+    $.inidb.set("aliases", "topic", "title");
+    $.inidb.set("aliases", "setgame", "game");
+    
+    println("   End version 13 upgrades...");
+}
+
 println("   Saving...");
 
 $.inidb.SetInteger("init", "upgrade", "version", parseInt($.upgrade_version));
