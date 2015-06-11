@@ -87,7 +87,7 @@ $.on('command', function(event) {
     var betAmount = args[0];
 
     if (command.equalsIgnoreCase("bankheist")) {
-        if(args[0]!="toggle"){
+        if(args[0]!="toggle1"){
         
             if ($.bankheistIsOn==false) {
                 $.say("The banks are currently closed!");
@@ -131,7 +131,7 @@ $.on('command', function(event) {
             }
             if($.bankheistToggle==false){
                 $.bankheistToggle = true;
-                $.timer.addTimer("./systems/bankheistSystem.js", "bankheist", true, function() {
+                $.starBankHeist = $.timer.addTimer("./systems/bankheistSystem.js", "bankheist", true, function() {
                     $.enterBankheist = $.timer.addTimer("./systems/bankheistSystem.js", "enterbankheist", true, function() {
                         $.entrySeconds++;
                         if($.entrySeconds == 1){
@@ -150,7 +150,7 @@ $.on('command', function(event) {
                         }
                         return;
                     }, 60*1000); //60 second entry window
-                }, 1800* 1000); //30 minute interval
+                }, 180* 1000); //30 minute interval
 
                 $.say("Bankheists are now enabled!");
             } else {
