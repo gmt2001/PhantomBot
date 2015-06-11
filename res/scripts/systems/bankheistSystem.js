@@ -150,7 +150,7 @@ $.on('command', function(event) {
                         }
                         return;
                     }, 60*1000); //60 second entry window
-                }, 180* 1000); //30 minute interval
+                }, 1800* 1000); //30 minute interval
 
                 $.say("Bankheists are now enabled!");
             } else {
