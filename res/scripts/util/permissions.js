@@ -567,7 +567,8 @@ $.on('ircChannelUserMode', function(event) {
                 $.modeOUsers.push(event.getUser().toLowerCase());
                 
                 if ($.array.contains($.modeOUsers, event.getUser().toLowerCase())) {
-                    if(!parseInt($.inidb.get('group', event.getUser().toLowerCase()))<=1){
+                    var userGroup = $.inidb.get('group', event.getUser().toLowerCase());
+                    if(!(parseInt(userGroup)<=1)){
                         $.inidb.set('group', event.getUser().toLowerCase(), 2);
                         println("Moderator: " + event.getUser().toLowerCase());
                     }
