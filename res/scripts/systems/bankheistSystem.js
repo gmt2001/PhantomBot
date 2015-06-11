@@ -87,7 +87,7 @@ $.on('command', function(event) {
     var betAmount = args[0];
 
     if (command.equalsIgnoreCase("bankheist")) {
-        if(args[0]!="toggle1"){
+        if(args[0]!="toggle"){
         
             if ($.bankheistIsOn==false) {
                 $.say("The banks are currently closed!");
@@ -150,7 +150,7 @@ $.on('command', function(event) {
                         }
                         return;
                     }, 60*1000); //60 second entry window
-                }, 180* 1000); //30 minute interval
+                }, 1800* 1000); //30 minute interval
 
                 $.say("Bankheists are now enabled!");
             } else {
