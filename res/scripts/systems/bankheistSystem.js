@@ -156,6 +156,7 @@ $.on('command', function(event) {
             } else {
                 $.bankheistToggle = false;
                 $.timer.clearTimer("./systems/bankheistSystem.js", "bankheist", true);
+                $.timer.clearTimer("./systems/bankheistSystem.js", "enterbankheist", true);
                 $.say("Bankheists are now disabled!");
             }
         }    
