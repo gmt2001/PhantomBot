@@ -585,14 +585,8 @@ if ($.inidb.GetInteger("init", "upgrade", "version") < 10) {
 if ($.inidb.GetInteger("init", "upgrade", "version") < 11) {
     println("   Starting version 11 upgrades...");
     
-    println("     Removing obselete Administrator group");
+    println("   Nothing to be done, skipping");
     
-    if($.inidb.exists("grouppoints", "Administrator")){
-       $.inidb.del("grouppoints","Administrator");
-    }
-    if($.inidb.exists("groups", "1")){
-       $.inidb.del("groups","1");
-    }
     
     println("   End version 11 upgrades...");
 }

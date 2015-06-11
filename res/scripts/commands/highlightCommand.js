@@ -1,6 +1,6 @@
 var streamSeconds = 0; // stream uptime in seconds
 var botSeconds = 0;
-$.setInterval(function() {
+$.timer.addTimer("./commands/highlightCommand.js", "highlightcommand", true, function() {
         if (!$.isOnline($.channelName)) {
                         streamSeconds=0;
                         botSeconds++;

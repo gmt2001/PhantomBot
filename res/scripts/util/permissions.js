@@ -35,7 +35,7 @@ $.isCaster = function (user) {
 }
 
 $.isAdmin = function (user) {
-    return $.getUserGroupId(user) == 0 || $.isOwner(user) || $.isBot(user);
+    return $.getUserGroupId(user) <= 1 || $.isOwner(user) || $.isBot(user);
 }
 
 $.isMod = function (user) {
@@ -113,6 +113,12 @@ if ($.usergroups[0] == undefined || $.usergroups[0] == null || $.usergroups[0]!=
     $.usergroups[0] = "Caster";
     $.inidb.set("grouppoints", "Caster", "7");
     $.inidb.set("groups", "0", "Caster");
+}
+
+if ($.usergroups[1] == undefined || $.usergroups[1] == null || $.usergroups[1]!= "Administrator") {
+    $.usergroups[1] = "Administrator";
+    $.inidb.set("grouppoints", "Administrator", "6");
+    $.inidb.set("groups", "1", "Administrator");
 }
 
 if ($.usergroups[2] == undefined || $.usergroups[2] == null || $.usergroups[2]!= "Moderator") {
@@ -516,10 +522,6 @@ $.on('ircJoinComplete', function(event) {
 $.on('ircChannelJoin', function(event) {
     var username = event.getUser().toLowerCase();
     var found = false;
-    if($.getUserGroupId(username)==1)
-    {
-        $.inidb.set("group",username,"2");
-    }
     
     $.lastjoinpart = System.currentTimeMillis();
     
@@ -565,8 +567,10 @@ $.on('ircChannelUserMode', function(event) {
                 $.modeOUsers.push(event.getUser().toLowerCase());
                 
                 if ($.array.contains($.modeOUsers, event.getUser().toLowerCase())) {
-                    $.inidb.set('group', event.getUser().toLowerCase(), 2);
-                    println("Moderator: " + event.getUser().toLowerCase());
+                    if(!parseInt($.inidb.get('group', event.getUser().toLowerCase()))<=1){
+                        $.inidb.set('group', event.getUser().toLowerCase(), 2);
+                        println("Moderator: " + event.getUser().toLowerCase());
+                    }
                 }
 
                 if ($.array.contains($.modeOUsers, $.botowner.toLowerCase())) {

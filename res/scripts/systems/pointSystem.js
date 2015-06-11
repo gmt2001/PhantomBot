@@ -373,7 +373,7 @@ $.on('command', function (event) {
          
 });
 
-$.setInterval(function() {
+$.timer.addTimer("./systems/pointSystem.js", "pointsystem", true, function() {
     var amount;
     if (!$.moduleEnabled("./systems/pointSystem.js")) {
         return;
