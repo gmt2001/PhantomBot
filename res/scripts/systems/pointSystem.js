@@ -139,7 +139,7 @@ $.on('command', function (event) {
                 points = parseInt(args[2]);
             
                 if (points > $.inidb.get('points', username.toLowerCase())) {
-                    $.say($.username.resolve(sender) + ", why are you trying to take more than what" + $.username.resolve(username) + " has in " + $.pointname + "?");
+                    $.say($.username.resolve(sender) + ", why are you trying to take more than what " + $.username.resolve(username) + " has in " + $.pointname + "?");
                 } else {
                 if ($.inidb.get("visited", username.toLowerCase()) == "visited")  {
                     $.inidb.decr('points', username.toLowerCase(), points);
