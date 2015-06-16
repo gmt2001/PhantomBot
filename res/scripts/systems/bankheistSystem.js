@@ -42,9 +42,9 @@ function processBankheist() {
             var name = $.inidb.get("bankheist_roster", i);
             var bet = $.inidb.get("bankheist_bets", i);
             var username = $.username.resolve(name);
-            var randomNum = rand(1,100);
+            var randomNum = $.randRange(1, 100);
             $.userPoints = parseInt($.inidb.get("points", name));
-            
+            $.say(randomNum);
             if(randomNum<=chances) {
                 $.inidb.incr("points",name,((winningsRatio*bet)));
                 winnersList += username;
