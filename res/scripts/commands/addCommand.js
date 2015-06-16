@@ -55,7 +55,7 @@ $.on('command', function(event) {
         }
         
         if (args.length < 1) {
-            $.say("Usage: !delalias <alias name>");
+            $.say("Usage: !delalias (alias name)";
         } else {
             if (args[0].substring(0, 1) == '!') { 
                 args[0] = args[0].substring(1);
@@ -156,7 +156,7 @@ $.on('command', function(event) {
             $.say($.username.resolve(sender) + ", has successfully removed the command !" + commandString + "");
             return;
         }
-        $.say("Usage: !delcom <command>");
+        $.say("Usage: !delcom (command)";
         return;
     }
 	
@@ -180,7 +180,7 @@ $.on('command', function(event) {
             }
 
             if (message.isEmpty()) {
-                $.say("Usage: !editcom <command> <message>");
+                $.say("Usage: !editcom (command) (message)";
                 return;
             }
 	
@@ -193,7 +193,7 @@ $.on('command', function(event) {
             $.say(username + " has modified the command: !" + commandString + "");
             return;
         }
-        $.say("Usage: !editcom <command> <message>");
+        $.say("Usage: !editcom (command) (message)";
         return;
     }
 	
@@ -205,7 +205,7 @@ $.on('command', function(event) {
         }
         
         if (args.length == 0) {
-            $.say("Usage: !permcom <command name> [user, caster, mod, admin]. Restricts usage of a custom command to viewers with a certain permission level");
+            $.say("Usage: !permcom (command name) [user, caster, mod, admin]. Restricts usage of a custom command to viewers with a certain permission level";
             return;
         }
         
@@ -251,6 +251,29 @@ $.on('command', function(event) {
                 newgroup = "admin";
                 $.inidb.set("commandperm", args[0].toLowerCase(), "admin");
                 $.say("The command !" + args[0] + " can now only be used by Administrators");
+            } else if (args[1].equalsIgnoreCase("sub") || args[1].equalsIgnoreCase("subs")
+                || args[1].equalsIgnoreCase("subscriber") || args[1].equalsIgnoreCase("subscriber")) {
+                $.logEvent("addCommand.js", 154, username + " set the command !" + args[0] + " to subscribers only");
+                newgroup = "subscriber";
+                $.inidb.set("commandperm", args[0].toLowerCase(), "subscriber");
+                $.say("The command !" + args[0] + " can now only be used by Subscribers");
+            } else if (args[1].equalsIgnoreCase("donator") || args[1].equalsIgnoreCase("donators")) {
+                $.logEvent("addCommand.js", 154, username + " set the command !" + args[0] + " to donators only");
+                newgroup = "donator";
+                $.inidb.set("commandperm", args[0].toLowerCase(), "donator");
+                $.say("The command !" + args[0] + " can now only be used by Donators");
+
+            } else if (args[1].equalsIgnoreCase("hoster") || args[1].equalsIgnoreCase("hosters")) {
+                $.logEvent("addCommand.js", 154, username + " set the command !" + args[0] + " to hosters only");
+                newgroup = "hoster";
+                $.inidb.set("commandperm", args[0].toLowerCase(), "hoster");
+                $.say("The command !" + args[0] + " can now only be used by Hosters");
+            } else if (args[1].equalsIgnoreCase("reg") || args[1].equalsIgnoreCase("regs")
+                || args[1].equalsIgnoreCase("regular") || args[1].equalsIgnoreCase("regular")) {
+                $.logEvent("addCommand.js", 154, username + " set the command !" + args[0] + " to regulars only");
+                newgroup = "regular";
+                $.inidb.set("commandperm", args[0].toLowerCase(), "regular");
+                $.say("The command !" + args[0] + " can now only be used by Regulars");
             } else {
                 $.logEvent("addCommand.js", 159, username + " set the command !" + args[0] + " to allow all");
                 $.inidb.del("commandperm", args[0].toLowerCase());
@@ -270,7 +293,7 @@ $.on('command', function(event) {
     }
     
     if (command.equalsIgnoreCase("helpcom")) {
-        $.say("Usage: !addcom <command name> <message to say>, !delcom <command name>, !permcom <command name> <group>");
+        $.say("Usage: !addcom (command name) (message to say), !delcom (command name), !permcom (command name) (group)";
         
         $.say("When using !addcom, you can put the text '(sender)' to have the name of any user who says the new command inserted into it. ex. '!addcom hello Hello there (sender)!'");
         
@@ -281,11 +304,19 @@ $.on('command', function(event) {
     
     if ($.inidb.exists('command', command.toLowerCase())) {
         if ($.inidb.exists("commandperm", command.toLowerCase())) {
-            if ($.inidb.get("commandperm", command.toLowerCase()).equalsIgnoreCase("caster") && !isCaster(sender)) {
+            if ($.inidb.get("commandperm", command.toLowerCase()).equalsIgnoreCase("caster") && !$.isCaster(sender)) {
                 return;
-            } else if ($.inidb.get("commandperm", command.toLowerCase()).equalsIgnoreCase("mod") && !isMod(sender)) {
+            } else if ($.inidb.get("commandperm", command.toLowerCase()).equalsIgnoreCase("mod") && !$.isMod(sender)) {
                 return;
-            } else if ($.inidb.get("commandperm", command.toLowerCase()).equalsIgnoreCase("admin") && !isAdmin(sender)) {
+            } else if ($.inidb.get("commandperm", command.toLowerCase()).equalsIgnoreCase("admin") && !$.isAdmin(sender)) {
+                return;
+            } else if ($.inidb.get("commandperm", command.toLowerCase()).equalsIgnoreCase("subscriber") && !$.isSub(sender)) {
+                return;
+            } else if ($.inidb.get("commandperm", command.toLowerCase()).equalsIgnoreCase("donator") && !$.isDonator(sender)) {
+                return;
+            } else if ($.inidb.get("commandperm", command.toLowerCase()).equalsIgnoreCase("hoster") && !$.isHoster(sender)) {
+                return;				
+			} else if ($.inidb.get("commandperm", command.toLowerCase()).equalsIgnoreCase("regular") && !$.isReg(sender)) {
                 return;
             }
         }
@@ -342,7 +373,7 @@ $.on('command', function(event) {
         }
         
         if (args.length == 0) {
-            $.say("Usage: !pricecom <command name> <price>. Sets the cost for using a command");
+            $.say("Usage: !pricecom (command name) (price). Sets the cost for using a command";
             return;
         }
 		
