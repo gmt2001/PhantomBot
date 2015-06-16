@@ -596,10 +596,11 @@ if ($.inidb.GetInteger("init", "upgrade", "version") < 12) {
     
     println("     Creating addons folders");
     
-    $.mkDir("addons");
-    $.mkDir("addons/youtubePlayer");
-    $.moveFile("web/playlist.txt","addons/youtubePlayer/");
-    $.moveFile("web/currentsong.txt","addons/youtubePlayer/");    
+    println("   Nothing to be done, skipping");
+    //$.mkDir("addons");
+    //$.mkDir("addons/youtubePlayer");
+    //$.moveFile("web/playlist.txt","addons/youtubePlayer/");
+    //$.moveFile("web/currentsong.txt","addons/youtubePlayer/");    
     
     println("   End version 12 upgrades...");
 }
