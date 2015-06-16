@@ -84,7 +84,7 @@ $.on('command', function(event) {
         }
         
         if (args.length < 2) {
-            $.say("Usage: !aliascom <existing command> <alias name>");
+            $.say("Usage: !aliascom (existing command) (alias name)");
         } else {
             commandString = args[0].toLowerCase();
             message = args[1].toLowerCase();

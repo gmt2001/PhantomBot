@@ -124,3 +124,11 @@ $.isDirectory = function(path) {
     
     return false;
 }
+
+
+
+$.findSize = function(file) {
+    var file = new java.io.File(file); 
+    return file.length();
+}
+

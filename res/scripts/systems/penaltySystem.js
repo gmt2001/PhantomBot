@@ -63,7 +63,7 @@ $.on('command', function(event) {
     }
 });
 
-$.setInterval(function() {
+$.timer.addTimer("./systems/penaltySystem.js", "penaltySystem", true, function() {
     var amount;
     if (!$.moduleEnabled("./systems/pointSystem.js")) {
         return;

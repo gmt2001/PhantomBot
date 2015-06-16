@@ -574,10 +574,10 @@ if ($.inidb.GetInteger("init", "upgrade", "version") < 9) {
 if ($.inidb.GetInteger("init", "upgrade", "version") < 10) {
     println("   Starting version 10 upgrades...");
     
-    println("     Move playlist.txt to /web folder");
+    println("     Nothing to be done, skipping.");
     
-    $.moveFile("playlist.txt","web/");
-    $.moveFile("currentsong.txt","web/");
+    //$.moveFile("playlist.txt","web/");
+    //$.moveFile("currentsong.txt","web/");
     
     println("   End version 10 upgrades...");
 }
@@ -585,17 +585,38 @@ if ($.inidb.GetInteger("init", "upgrade", "version") < 10) {
 if ($.inidb.GetInteger("init", "upgrade", "version") < 11) {
     println("   Starting version 11 upgrades...");
     
-    println("     Removing obselete Administrator group");
+    println("   Nothing to be done, skipping");
     
-    if($.inidb.exists("grouppoints", "Administrator")){
-       $.inidb.del("grouppoints","Administrator");
-    }
-    if($.inidb.exists("groups", "1")){
-       $.inidb.del("groups","1");
-    }
     
     println("   End version 11 upgrades...");
 }
+
+if ($.inidb.GetInteger("init", "upgrade", "version") < 12) {
+    println("   Starting version 12 upgrades...");
+    
+    println("     Creating addons folders");
+    
+    $.mkDir("addons");
+    $.mkDir("addons/youtubePlayer");
+    $.moveFile("web/playlist.txt","addons/youtubePlayer/");
+    $.moveFile("web/currentsong.txt","addons/youtubePlayer/");    
+    
+    println("   End version 12 upgrades...");
+}
+
+if ($.inidb.GetInteger("init", "upgrade", "version") < 13) {
+    println("   Starting version 13 upgrades...");
+    
+    println("     Creating stream command default aliases");
+    
+    $.inidb.set("aliases", "status", "title");
+    $.inidb.set("aliases", "settitle", "title");
+    $.inidb.set("aliases", "topic", "title");
+    $.inidb.set("aliases", "setgame", "game");
+    
+    println("   End version 13 upgrades...");
+}
+
 println("   Saving...");
 
 $.inidb.SetInteger("init", "upgrade", "version", parseInt($.upgrade_version));

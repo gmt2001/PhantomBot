@@ -1,13 +1,10 @@
 /* 
  * Copyright (C) 2015 www.phantombot.net
  *
- * Credits: mast3rplan, gmt2001, PhantomIndex, GloriousEggroll
- * gloriouseggroll@gmail.com, phantomindex@gmail.com
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -15,8 +12,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package me.mast3rplan.phantombot.musicplayer;
 
@@ -176,10 +172,10 @@ public class MusicWebSocketServer extends WebSocketServer
     {
         try
         {
-            BufferedReader in = new BufferedReader(new FileReader("playlist.txt"));         //playlist reader
-            BufferedWriter out = new BufferedWriter(new FileWriter("stealsong.txt", true)); //writes stolen songs read from playlist
-            File playlist = new File("playlist.txt");                                       //make the playlist known
-            File stealsong = new File("stealsong.txt");                                     //this is where the stolen playlist songs go
+            BufferedReader in = new BufferedReader(new FileReader("addons/youtubePlayer/playlist.txt"));         //playlist reader
+            BufferedWriter out = new BufferedWriter(new FileWriter("addons/youtubePlayer/stealsong.txt", true)); //writes stolen songs read from playlist
+            File playlist = new File("addons/youtubePlayer/playlist.txt");                                       //make the playlist known
+            File stealsong = new File("addons/youtubePlayer/stealsong.txt");                                     //this is where the stolen playlist songs go
             String data;                                                                    //establish variable for playlist lines
             out.write("");                                                                  //write new blank file stealsong.txt
             while ((data = in.readLine()) != null)                                          //read each playlist line

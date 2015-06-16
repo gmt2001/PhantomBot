@@ -241,7 +241,7 @@ $.on('ircChannelMessage', function (event) {
     messageCount++;
 });
 
-$.setInterval(function() {
+$.timer.addTimer("./notices.js", "notices", true, function() {
     if (!$.moduleEnabled("./notices.js") || ($.notices_toggle != undefined && $.notices_toggle != null && !$.notices_toggle)) {
         return;
     }

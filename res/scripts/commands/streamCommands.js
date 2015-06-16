@@ -80,7 +80,7 @@ $.on('command', function(event) {
     }
     
 
-    if (command.equalsIgnoreCase("status") || command.equalsIgnoreCase("title") || command.equalsIgnoreCase("topic")) {
+    if (command.equalsIgnoreCase("title")) {
         if ($.strlen(argsString) == 0) {
             $.say("Current Status: " + $.getStatus($.channelName));
             return;
@@ -243,7 +243,7 @@ $.on('command', function(event) {
 });
 $.registerChatCommand("./commands/streamCommands.js", "online");
 $.registerChatCommand("./commands/streamCommands.js", "game");
-$.registerChatCommand("./commands/streamCommands.js", "status");
+$.registerChatCommand("./commands/streamCommands.js", "title");
 $.registerChatCommand("./commands/streamCommands.js", "commercial", "caster");
 $.registerChatCommand("./commands/streamCommands.js", "commercial help", "caster");
 $.registerChatCommand("./commands/streamCommands.js", "viewers");

@@ -203,7 +203,7 @@ $.registerChatCommand("./subscribeHandler.js", "subscribecount");
 $.registerChatCommand("./subscribeHandler.js", "subscribemode", "admin");
 
 
-$.setInterval(function() {
+$.timer.addTimer("./subscribeHandler.js", "subscribehandler", true, function() {
     if (!$.moduleEnabled("./subscribeHandler.js")) {
         $.subscribers.doRun(false);
     } else {

@@ -151,6 +151,9 @@ $.loadScriptsRecursive = function(path) {
             if (list[i].equalsIgnoreCase("util") || list[i].equalsIgnoreCase("init.js")) {
                 continue;
             }
+            if (list[i].equalsIgnoreCase("addonscripts")) {
+                continue;
+            }
         }
         
         if ($.isDirectory("./scripts/" + path + "/" + list[i])) {
@@ -460,7 +463,7 @@ if ($.inidb.GetBoolean("init", "initialsettings", "loaded") == false
     $.loadScript('./util/initialsettings.js');
 }
 
-$.upgrade_version = 11;
+$.upgrade_version = 13;
 if ($.inidb.GetInteger("init", "upgrade", "version") < $.upgrade_version) {
     $.logEvent("init.js", 426, "Running upgrade from v" + $.inidb.GetInteger("init", "upgrade", "version") + " to v" + $.upgrade_version + "...");
     $.loadScript('./util/upgrade.js');
@@ -639,7 +642,7 @@ $api.on(initscript, 'command', function(event) {
 });
 
 $.logEvent("init.js", 596, "Bot Online");
-
+$.loadScriptsRecursive('./addonscripts');
 $.registerChatCommand('./init.js', 'setconnectedmessage', 'admin');
 $.registerChatCommand('./init.js', 'reconnect', 'mod');
 $.registerChatCommand('./init.js', 'module', 'admin');

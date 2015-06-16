@@ -186,7 +186,7 @@ $.on('command', function(event) {
     }
 });
 
-$.setInterval(function() {
+$.timer.addTimer("./systems/timeSystem.js", "timesystem", true, function() {
     if (!$.moduleEnabled("./systems/timeSystem.js")) {
         return;
     }
