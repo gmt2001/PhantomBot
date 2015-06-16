@@ -55,7 +55,7 @@ $.on('command', function(event) {
         }
         
         if (args.length < 1) {
-            $.say("Usage: !delalias (alias name)";
+            $.say("Usage: !delalias (alias name)");
         } else {
             if (args[0].substring(0, 1) == '!') { 
                 args[0] = args[0].substring(1);
@@ -156,7 +156,7 @@ $.on('command', function(event) {
             $.say($.username.resolve(sender) + ", has successfully removed the command !" + commandString + "");
             return;
         }
-        $.say("Usage: !delcom (command)";
+        $.say("Usage: !delcom (command)");
         return;
     }
 	
@@ -180,7 +180,7 @@ $.on('command', function(event) {
             }
 
             if (message.isEmpty()) {
-                $.say("Usage: !editcom (command) (message)";
+                $.say("Usage: !editcom (command) (message)");
                 return;
             }
 	
@@ -193,7 +193,7 @@ $.on('command', function(event) {
             $.say(username + " has modified the command: !" + commandString + "");
             return;
         }
-        $.say("Usage: !editcom (command) (message)";
+        $.say("Usage: !editcom (command) (message)");
         return;
     }
 	
@@ -205,7 +205,7 @@ $.on('command', function(event) {
         }
         
         if (args.length == 0) {
-            $.say("Usage: !permcom (command name) [user, caster, mod, admin]. Restricts usage of a custom command to viewers with a certain permission level";
+            $.say("Usage: !permcom (command name) [user, caster, mod, admin]. Restricts usage of a custom command to viewers with a certain permission level");
             return;
         }
         
@@ -293,7 +293,7 @@ $.on('command', function(event) {
     }
     
     if (command.equalsIgnoreCase("helpcom")) {
-        $.say("Usage: !addcom (command name) (message to say), !delcom (command name), !permcom (command name) (group)";
+        $.say("Usage: !addcom (command name) (message to say), !delcom (command name), !permcom (command name) (group)");
         
         $.say("When using !addcom, you can put the text '(sender)' to have the name of any user who says the new command inserted into it. ex. '!addcom hello Hello there (sender)!'");
         
@@ -373,7 +373,7 @@ $.on('command', function(event) {
         }
         
         if (args.length == 0) {
-            $.say("Usage: !pricecom (command name) (price). Sets the cost for using a command";
+            $.say("Usage: !pricecom (command name) (price). Sets the cost for using a command");
             return;
         }
 		
