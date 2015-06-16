@@ -324,7 +324,7 @@ public class PhantomBot implements Listener
     @Subscribe
     public void onIRCConnectComplete(IrcConnectCompleteEvent event)
     {
-        session.sayRaw("CAP REQ :twitch.tv/tags");
+        session.sayRaw("CAP REQ :twitch.tv/tags twitch.tv/commands");
 
         session.join("#" + channelName.toLowerCase());
         com.gmt2001.Console.out.println("Connected to server\nJoining channel #" + channelName.toLowerCase());

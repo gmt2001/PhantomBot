@@ -198,6 +198,36 @@ public class IrcEventHandler implements IRCEventListener
                     }
                 }
                 break;
+            case DEFAULT:
+                if (event.command().equalsIgnoreCase("USERSTATE"))
+                {
+                    String eventTags = event.tags();
+
+                    if (eventTags.length() > 0)
+                    {
+                        String[] tags = eventTags.split(";");
+                        for (int i = 0; i < tags.length; i++)
+                        {
+                            String[] kv = tags[i].split("=");
+
+                            if (kv[0].equalsIgnoreCase("user-type"))
+                            {
+                                if (kv.length > 1 && !kv[1].isEmpty())
+                                {
+                                    com.gmt2001.Console.out.println(">>Userstate marked bot Moderator/Staff by IRCv3");
+                                    eventBus.post(new IrcChannelUserModeEvent(session, session.getChannel(event.arg(0)), PhantomBot.instance().getSession().getNick(), "O", true));
+                                }
+                            }
+                        }
+                    }
+
+                    if (event.arg(0).replaceAll("#", "").equalsIgnoreCase(PhantomBot.instance().getSession().getNick()))
+                    {
+                        com.gmt2001.Console.out.println(">>Userstate marked bot Moderator (Broadcaster)");
+                        eventBus.post(new IrcChannelUserModeEvent(session, session.getChannel(event.arg(0)), PhantomBot.instance().getSession().getNick(), "O", true));
+                    }
+                }
+                break;
         }
     }
 }
