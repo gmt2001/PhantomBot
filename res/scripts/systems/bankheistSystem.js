@@ -99,26 +99,31 @@ function randomIntFromInterval(min,max)
 $.chances50 = $.inidb.get("bankheist_chances", "chances50");
 if($.chances50 == "" || $.chances50 == null){
     $.chances50 = $.randInterval(33, 36);
+    $.inidb.set("bankheist_chances","chances50","");
 }
 
 $.chances40 = $.inidb.get("bankheist_chances", "chances40");
 if($.chances40 == "" || $.chances40 == null){
     $.chances40 = $.randInterval(39, 44);
+    $.inidb.set("bankheist_chances","chances40","");
 }
 
 $.chances30 = $.inidb.get("bankheist_chances", "chances30");
 if($.chances30 == "" || $.chances30 == null){
     $.chances30 = $.randInterval(43, 50);
+    $.inidb.set("bankheist_chances","chances30","");
 }
 
 $.chances20 = $.inidb.get("bankheist_chances", "chances20");
 if($.chances20 == "" || $.chances20 == null){
     $.chances20 = $.randInterval(48, 58);
+    $.inidb.set("bankheist_chances","chances20","");
 }
 
 $.chances10 = $.inidb.get("bankheist_chances", "chances10");
 if($.chances10 == "" || $.chances10 == null){
     $.chances10 = $.randInterval(55, 65);
+    $.inidb.set("bankheist_chances","chances10","");
 }
 
 $.ratio50 = $.inidb.get("bankheist_ratios", "ratio50");
