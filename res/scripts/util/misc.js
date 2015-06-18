@@ -63,6 +63,10 @@ $.randRange = function (min, max) {
     return $.rand(max) + min;
 }
 
+$.randInterval = function (min,max) {
+    return Math.floor(Math.random()*(max-min+1)+min);
+}
+
 $.rand = function (max) {
     if (max == 0) {
         return max;
