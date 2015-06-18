@@ -82,7 +82,7 @@ $.on('command', function (event) {
     }
 
 
-    if (command.equalsIgnoreCase("points") || command.equalsIgnoreCase($.pointname) || command.equalsIgnoreCase("bank") || command.equalsIgnoreCase("wallet") || command.equalsIgnoreCase("info")) {
+    if (command.equalsIgnoreCase("points") || command.equalsIgnoreCase($.pointname)) {
         if (args.length >=1) {
             var action = args[0];
 
