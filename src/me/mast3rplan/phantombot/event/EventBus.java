@@ -16,11 +16,9 @@
  */
 package me.mast3rplan.phantombot.event;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-
-import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Executors;
 
 public class EventBus
 {
@@ -31,7 +29,7 @@ public class EventBus
     {
         return instance;
     }
-    private com.google.common.eventbus.EventBus eventBus = new com.google.common.eventbus.EventBus("PhantomBot");
+    private com.google.common.eventbus.AsyncEventBus eventBus = new com.google.common.eventbus.AsyncEventBus(Executors.newCachedThreadPool());
     private Set<Listener> listeners = Sets.newHashSet();
 
     public void register(Listener listener)
