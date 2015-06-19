@@ -271,8 +271,7 @@ function startHeist() {
                         }
                         return;
                     }, (parseInt($.signupMinutes)*60)*1000); //60 second entry window
-                //}, (parseInt($.heistMinutes)*60)* 1000); //30 minute interval                
-                }, 180* 1000); //30 minute interval
+                }, (parseInt($.heistMinutes)*60)* 1000); //30 minute interval                
 };
 
 $.on('command', function(event) {
@@ -313,7 +312,6 @@ $.on('command', function(event) {
                 $.timer.clearTimer("./systems/bankheistSystem.js", "bankheist", true);
                 $.timer.clearTimer("./systems/bankheistSystem.js", "enterbankheist", true);
                 $.say(username + $.heistCancelled);
-                //$.timer.addTimer("./systems/bankheistSystem.js", "bankheist", true, function() {
                     $.timer.addTimer("./systems/bankheistSystem.js", "enterbankheist", true, function() {
                         $.entrySeconds++;
                         if($.entrySeconds == 1){
@@ -335,7 +333,6 @@ $.on('command', function(event) {
                         }
                         return;
                     }, (parseInt($.signupMinutes)*60)*1000); //60 second entry window
-                //}, (parseInt($.heistMinutes)*60)* 1000); //30 minute interval
                 return;
             
         } else if(parseInt(args[0])){
