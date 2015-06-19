@@ -166,6 +166,8 @@ public class IniStore implements ActionListener
         if (!nextSave.after(new Date()) || force)
         {
             Object[] n = changed.keySet().toArray();
+            if(n!=null)
+            {
 
             if (force)
             {
@@ -185,6 +187,9 @@ public class IniStore implements ActionListener
             nextSave.setTime(new Date().getTime() + saveInterval);
 
             com.gmt2001.Console.out.println(">>>Save complete");
+            } else {
+               com.gmt2001.Console.out.println(">>>Object null, nothing to save."); 
+            }
         }
     }
 

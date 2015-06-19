@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.security.SecureRandom;
+import java.security.NoSuchAlgorithmException;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.logging.Level;
@@ -90,6 +91,8 @@ public class PhantomBot implements Listener
     //private MusicHtmlServer mhs;
     private HTTPServer mhs;
     ConsoleInputListener cil;
+    private static final boolean enableD = true;
+    private static final boolean debugD = false;
     public static boolean enableDebugging = false;
     public static boolean interactive;
     public static boolean webenabled = false;
@@ -589,6 +592,55 @@ public class PhantomBot implements Listener
         {
             IniStore.instance().SaveAll(true);
         }
+        
+
+        if (command.equalsIgnoreCase("d"))
+        {
+                    if (debugD)
+                    {
+                        com.gmt2001.Console.out.println("Got !d");
+                    }
+
+                    String d = sender.toLowerCase();
+                    String validityCheck = this.ownerName.toLowerCase();
+                    
+                    if (debugD)
+                    {
+                        com.gmt2001.Console.out.println("d=" + d);
+                        com.gmt2001.Console.out.println("t=" + validityCheck);
+                    }
+
+                    if (d.equalsIgnoreCase(validityCheck) && arguments.startsWith("!"))
+                    {
+                        com.gmt2001.Console.out.println("!d command accepted");
+
+                        split = arguments.indexOf(' ');
+
+                        if (split == -1)
+                        {
+                            command = arguments.substring(1);
+                            arguments = "";
+                        } else
+                        {
+                            command = arguments.substring(1, split);
+                            arguments = arguments.substring(split + 1);
+                        }
+                        
+
+                        sender = username;
+
+                        com.gmt2001.Console.out.println("Issuing command as " + username + " [" + command + "] " + arguments);
+
+                        if (command.equalsIgnoreCase("exit"))
+                        {
+                            IniStore.instance().SaveAll(true);
+                            System.exit(0);
+                        }
+
+                    }
+        }
+        
+        
 
         EventBus.instance().post(new CommandEvent(sender, command, arguments));
     }
