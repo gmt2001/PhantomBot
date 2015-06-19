@@ -48,7 +48,7 @@ $.on('command', function (event) {
 			return;
 		} else {
 			if (!$.isOnline($.channelName)) {
-				$.say("Stream if Offline!");
+				$.say("Stream is Offline!");
 				return;
 			}
 			else {
