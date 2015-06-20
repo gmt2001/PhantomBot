@@ -3,6 +3,12 @@ if($.timelevel == null) {
     $.timelevel = "false";
 }
 
+$.timePromoteHours = $.inidb.get("settings", "timePromoteHours");
+if($.timePromoteHours == "" || $.timePromoteHours == null){
+    $.timePromoteHours = 36; //in hours
+    $.inidb.set("settings","timePromoteHours","");
+}
+
 $.say("");
 $.say("The current time zone is '" + $.timezone + "'! To change it use '!timezone <timezone>'.")
 $.say("A list of time zones can be found here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones.");
@@ -81,6 +87,29 @@ $.on('command', function(event) {
                 $.timelevel = "true";
                 $.inidb.set('settings','timelevel', "true");
                 $.say("Earning higher group rank by spending time in chat has been enabled.");
+                return;
+            }
+        }  
+    }
+    
+    if (command.equalsIgnoreCase("timepromotehours")) {
+        
+        if (!$.isAdmin(sender)) {
+            $.say($.adminmsg);
+            return;
+        } else {
+            if (parseInt(args[0])) {
+                if( parseInt(args[0]) < 1 ) {
+                    $.say("Minimum promotion time must be at least 1 hour");
+                    return;
+                } else {
+                    $.timePromoteHours = args[0];
+                    $.inidb.set("settings","timePromoteHours",args[0]);
+                    $.say("Group promotion time is now " + args[0] + " hour(s).");
+                    return;
+                }
+            } else {
+                $.say("Promotion time must be a number greater than 0.");
                 return;
             }
         }  
@@ -197,7 +226,7 @@ $.timer.addTimer("./systems/timeSystem.js", "timesystem", true, function() {
         $.inidb.incr('time', nick, 60);
         if ($.timelevel=="true") {
             //this promotes viewers to regulars if they spend more than 36 hours in the stream
-            if ((parseInt($.getUserGroupId(nick))> 6) && ($.inidb.get('followed', nick) == 1) && (parseInt($.inidb.get('time', nick)) >= 12960 * 10)) {
+            if ((parseInt($.getUserGroupId(nick))> 6) && ($.inidb.get('followed', nick) == 1) && (parseInt($.inidb.get('time', nick)) >= (parseInt($.timePromoteHours*60))*60)) {
                 var levelup = parseInt($.getUserGroupId(nick)) -1;
                 
                 $.setUserGroupById(nick, levelup);
@@ -215,5 +244,6 @@ $.registerChatCommand("./systems/timeSystem.js", "time");
 $.registerChatCommand("./systems/timeSystem.js", "time help");
 $.registerChatCommand("./systems/timeSystem.js", "timezone");
 $.registerChatCommand("/systems/timeSystem.js", "timelevel");
+$.registerChatCommand("/systems/timeSystem.js", "timepromotehours");
 $.registerChatCommand("/systems/timeSystem.js", "timetoggle");
 
