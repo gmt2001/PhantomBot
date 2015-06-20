@@ -102,7 +102,7 @@ $.on('command', function(event) {
             if ($.inidb.exists('settings', 'hostreward')) {
                 $.say("The current host reward is " + $.inidb.get('settings', 'hostreward') + " " + $.pointname + "! To change it use '!hostreward <amount>'");
             } else {
-                $.say("The current host reward is " + $.hostreward + " " + $.pointname + "! To change it use '!hostreward <amount>'");
+                $.say("The current host reward is " + $.hostreward + " " + $.pointname + "! To change it use '!hostreward (amount)'");
             }
         } else {
             if (!parseInt(argsString) < 0) {
