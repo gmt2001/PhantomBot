@@ -114,7 +114,7 @@ $.on('command', function(event) {
             
             $.inidb.set('settings', 'hostreward', argsString);
             $.hostreward = parseInt(argsString);
-            $.say("New host reward set!");
+            $.say("New hoster reward set to: " + argsString);
         }
     }
 	
