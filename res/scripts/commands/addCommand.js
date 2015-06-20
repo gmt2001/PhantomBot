@@ -81,7 +81,7 @@ $.on('command', function(event) {
         var customcommands = "";
         var keys = $.inidb.GetKeyList("command", "");
         for (var i = 0 ; i < keys.length; i++) {
-            customcommands +="!"
+            customcommands +="!";
             customcommands +=keys[i];
             customcommands += " ";
             

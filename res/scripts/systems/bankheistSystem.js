@@ -377,6 +377,10 @@ $.on('command', function(event) {
             var modValue = argsString.substring(argsString.indexOf(args[0]) + $.strlen(args[0]) + 1);
             
             if(args[0].equalsIgnoreCase("signupMinutes")){
+                    if(!$.isAdmin(sender) || !$.isMod(sender)){
+                        $.say("You must be a moderator to use this command.");
+                        return;
+                    }
                     $.signupMinutes = modValue;
                     $.inidb.set("bankheist_timers","signupMinutes",modValue);
                     $.say("The value for signupMinutes has been set to " + modValue);
@@ -384,6 +388,10 @@ $.on('command', function(event) {
             }
             
             if(args[0].equalsIgnoreCase("heistMinutes")){
+                    if(!$.isAdmin(sender) || !$.isMod(sender)){
+                        $.say("You must be a moderator to use this command.");
+                        return;
+                    }
                     $.heistMinutes = modValue;
                     $.inidb.set("bankheist_timers","heistMinutes",modValue);
                     $.say("The value for heistMinutes has been set to " + modValue);
@@ -391,6 +399,10 @@ $.on('command', function(event) {
             }
 
             if(args[0].equalsIgnoreCase("stringChancesAre")){
+                    if(!$.isAdmin(sender) || !$.isMod(sender)){
+                        $.say("You must be a moderator to use this command.");
+                        return;
+                    }
                     $.stringChancesAre = modValue;
                     $.inidb.set("bankheist_strings","stringChancesAre",modValue);
                     $.say("The value for stringChancesAre has been set to " + modValue);
@@ -398,6 +410,10 @@ $.on('command', function(event) {
             }
             
             if(args[0].equalsIgnoreCase("heistCancelled")){
+                    if(!$.isAdmin(sender) || !$.isMod(sender)){
+                        $.say("You must be a moderator to use this command.");
+                        return;
+                    }
                     $.heistCancelled = modValue;
                     $.inidb.set("bankheist_strings","heistCancelled",modValue);
                     $.say("The value for heistCancelled has been set to " + modValue);
@@ -405,6 +421,10 @@ $.on('command', function(event) {
             }
             
             if(args[0].equalsIgnoreCase("banksOpen")){
+                    if(!$.isAdmin(sender) || !$.isMod(sender)){
+                        $.say("You must be a moderator to use this command.");
+                        return;
+                    }
                     $.banksOpen = modValue;
                     $.inidb.set("bankheist_strings","banksOpen",modValue);
                     $.say("The value for banksOpen has been set to " + modValue);
@@ -412,6 +432,10 @@ $.on('command', function(event) {
             }
             
             if(args[0].equalsIgnoreCase("stringNumberInvolved")){
+                    if(!$.isAdmin(sender) || !$.isMod(sender)){
+                        $.say("You must be a moderator to use this command.");
+                        return;
+                    }
                     $.stringNumberInvolved = modValue;
                     $.inidb.set("bankheist_strings","stringNumberInvolved",modValue);
                     $.say("The value for stringNumberInvolved has been set to " + modValue);
@@ -419,6 +443,10 @@ $.on('command', function(event) {
             }
             
             if(args[0].equalsIgnoreCase("startedHeist")){
+                    if(!$.isAdmin(sender) || !$.isMod(sender)){
+                        $.say("You must be a moderator to use this command.");
+                        return;
+                    }
                     $.startedHeist = modValue;
                     $.inidb.set("bankheist_strings","startedHeist",modValue);
                     $.say("The value for startedHeist has been set to " + modValue);
@@ -426,6 +454,10 @@ $.on('command', function(event) {
             }
             
             if(args[0].equalsIgnoreCase("stringStarting")){
+                    if(!$.isAdmin(sender) || !$.isMod(sender)){
+                        $.say("You must be a moderator to use this command.");
+                        return;
+                    }
                     $.stringStarting = modValue;
                     $.inidb.set("bankheist_strings","stringStarting",modValue);
                     $.say("The value for stringStarting has been set to " + modValue);
@@ -433,6 +465,10 @@ $.on('command', function(event) {
             }
             
             if(args[0].equalsIgnoreCase("stringNoJoin")){
+                    if(!$.isAdmin(sender) || !$.isMod(sender)){
+                        $.say("You must be a moderator to use this command.");
+                        return;
+                    }
                     $.stringNoJoin = modValue;
                     $.inidb.set("bankheist_strings","stringNoJoin",modValue);
                     $.say("The value for stringNoJoin has been set to " + modValue);
@@ -440,6 +476,10 @@ $.on('command', function(event) {
             }
             
             if(args[0].equalsIgnoreCase("entryTimeEnd")){
+                    if(!$.isAdmin(sender) || !$.isMod(sender)){
+                        $.say("You must be a moderator to use this command.");
+                        return;
+                    }
                     $.entryTimeEnd = modValue;
                     $.inidb.set("bankheist_strings","entryTimeEnd",modValue);
                     $.say("The value for entryTimeEnd has been set to " + modValue);
@@ -447,6 +487,10 @@ $.on('command', function(event) {
             }
             
             if(args[0].equalsIgnoreCase("banksClosed")){
+                    if(!$.isAdmin(sender) || !$.isMod(sender)){
+                        $.say("You must be a moderator to use this command.");
+                        return;
+                    }
                     $.banksClosed = modValue;
                     $.inidb.set("bankheist_strings","banksClosed",modValue);
                     $.say("The value for banksClosed has been set to " + modValue);
@@ -454,6 +498,10 @@ $.on('command', function(event) {
             }
             
             if(args[0].equalsIgnoreCase("stringAllDead")){
+                    if(!$.isAdmin(sender) || !$.isMod(sender)){
+                        $.say("You must be a moderator to use this command.");
+                        return;
+                    }
                     $.stringAllDead = modValue;
                     $.inidb.set("bankheist_strings","stringAllDead",modValue);
                     $.say("The value for stringAllDead has been set to " + modValue);
@@ -461,6 +509,10 @@ $.on('command', function(event) {
             }
             
             if(args[0].equalsIgnoreCase("affordBet")){
+                    if(!$.isAdmin(sender) || !$.isMod(sender)){
+                        $.say("You must be a moderator to use this command.");
+                        return;
+                    }
                     $.affordBet = modValue;
                     $.inidb.set("bankheist_strings","affordBet",modValue);
                     $.say("The value for affordBet has been set to " + modValue);
@@ -468,6 +520,10 @@ $.on('command', function(event) {
             }
             
             if(args[0].equalsIgnoreCase("alreadyBet")){
+                    if(!$.isAdmin(sender) || !$.isMod(sender)){
+                        $.say("You must be a moderator to use this command.");
+                        return;
+                    }
                     $.alreadyBet = modValue;
                     $.inidb.set("bankheist_strings","alreadyBet",modValue);
                     $.say("The value for alreadyBet has been set to " + modValue);
@@ -475,6 +531,10 @@ $.on('command', function(event) {
             }
             
             if(args[0].equalsIgnoreCase("joinedHeist")){
+                    if(!$.isAdmin(sender) || !$.isMod(sender)){
+                        $.say("You must be a moderator to use this command.");
+                        return;
+                    }
                     $.joinedHeist = modValue;
                     $.inidb.set("bankheist_strings","joinedHeist",modValue);
                     $.say("The value for joinedHeist has been set to " + modValue);
@@ -482,6 +542,10 @@ $.on('command', function(event) {
             }
             
             if(args[0].equalsIgnoreCase("enterABet")){
+                    if(!$.isAdmin(sender) || !$.isMod(sender)){
+                        $.say("You must be a moderator to use this command.");
+                        return;
+                    }
                     $.enterABet = modValue;
                     $.inidb.set("bankheist_strings","enterABet",modValue);
                     $.say("The value for enterABet has been set to " + modValue);
@@ -489,6 +553,10 @@ $.on('command', function(event) {
             }
             
             if(args[0].equalsIgnoreCase("stringSurvivorsAre")){
+                    if(!$.isAdmin(sender) || !$.isMod(sender)){
+                        $.say("You must be a moderator to use this command.");
+                        return;
+                    }
                     $.stringSurvivorsAre = modValue;
                     $.inidb.set("bankheist_strings","stringSurvivorsAre",modValue);
                     $.say("The value for stringSurvivorsAre has been set to " + modValue);
@@ -496,6 +564,10 @@ $.on('command', function(event) {
             }
             
             if(args[0].equalsIgnoreCase("chances50")){
+                    if(!$.isAdmin(sender) || !$.isMod(sender)){
+                        $.say("You must be a moderator to use this command.");
+                        return;
+                    }
                     $.chances50 = modValue;
                     $.inidb.set("bankheist_chances","chances50",modValue);
                     $.say("The value for chances50 has been set to " + modValue);
@@ -503,6 +575,10 @@ $.on('command', function(event) {
             }
             
             if(args[0].equalsIgnoreCase("chances40")){
+                    if(!$.isAdmin(sender) || !$.isMod(sender)){
+                        $.say("You must be a moderator to use this command.");
+                        return;
+                    }
                     $.chances40 = modValue;
                     $.inidb.set("bankheist_chances","chances40",modValue);
                     $.say("The value for chances40 has been set to " + modValue);
@@ -510,6 +586,10 @@ $.on('command', function(event) {
             }
             
             if(args[0].equalsIgnoreCase("chances30")){
+                    if(!$.isAdmin(sender) || !$.isMod(sender)){
+                        $.say("You must be a moderator to use this command.");
+                        return;
+                    }
                     $.chances30 = modValue;
                     $.inidb.set("bankheist_chances","chances30",modValue);
                     $.say("The value for chances30 has been set to " + modValue);
@@ -517,6 +597,10 @@ $.on('command', function(event) {
             }
             
             if(args[0].equalsIgnoreCase("chances20")){
+                    if(!$.isAdmin(sender) || !$.isMod(sender)){
+                        $.say("You must be a moderator to use this command.");
+                        return;
+                    }
                     $.chances20 = modValue;
                     $.inidb.set("bankheist_chances","chances20",modValue);
                     $.say("The value for chances20 has been set to " + modValue);
@@ -524,6 +608,10 @@ $.on('command', function(event) {
             }
             
             if(args[0].equalsIgnoreCase("chances10")){
+                    if(!$.isAdmin(sender) || !$.isMod(sender)){
+                        $.say("You must be a moderator to use this command.");
+                        return;
+                    }
                     $.chances10 = modValue;
                     $.inidb.set("bankheist_chances","chances10",modValue);
                     $.say("The value for chances10 has been set to " + modValue);
@@ -531,6 +619,10 @@ $.on('command', function(event) {
             }
             
             if(args[0].equalsIgnoreCase("ratio50")){
+                    if(!$.isAdmin(sender) || !$.isMod(sender)){
+                        $.say("You must be a moderator to use this command.");
+                        return;
+                    }
                     $.ratio50 = modValue;
                     $.inidb.set("bankheist_ratios","ratio50",modValue);
                     $.say("The value for ratio50 has been set to " + modValue);
@@ -538,6 +630,10 @@ $.on('command', function(event) {
             }
             
             if(args[0].equalsIgnoreCase("ratio40")){
+                    if(!$.isAdmin(sender) || !$.isMod(sender)){
+                        $.say("You must be a moderator to use this command.");
+                        return;
+                    }
                     $.ratio40 = modValue;
                     $.inidb.set("bankheist_ratios","ratio40",modValue);
                     $.say("The value for ratio40 has been set to " + modValue);
@@ -545,6 +641,10 @@ $.on('command', function(event) {
             }
             
             if(args[0].equalsIgnoreCase("ratio30")){
+                    if(!$.isAdmin(sender) || !$.isMod(sender)){
+                        $.say("You must be a moderator to use this command.");
+                        return;
+                    }
                     $.ratio30 = modValue;
                     $.inidb.set("bankheist_ratios","ratio30",modValue);
                     $.say("The value for ratio30 has been set to " + modValue);
@@ -552,6 +652,10 @@ $.on('command', function(event) {
             }
             
             if(args[0].equalsIgnoreCase("ratio20")){
+                    if(!$.isAdmin(sender) || !$.isMod(sender)){
+                        $.say("You must be a moderator to use this command.");
+                        return;
+                    }
                     $.ratio20 = modValue;
                     $.inidb.set("bankheist_ratios","ratio20",modValue);
                     $.say("The value for ratio20 has been set to " + modValue);
@@ -559,6 +663,10 @@ $.on('command', function(event) {
             }
             
             if(args[0].equalsIgnoreCase("ratio10")){
+                    if(!$.isAdmin(sender) || !$.isMod(sender)){
+                        $.say("You must be a moderator to use this command.");
+                        return;
+                    }
                     $.ratio10 = modValue;
                     $.inidb.set("bankheist_ratios","ratio10",modValue);
                     $.say("The value for ratio10 has been set to " + modValue);
