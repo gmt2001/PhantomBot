@@ -162,7 +162,7 @@ $.on('command', function (event) {
     }
     
     if(command.equalsIgnoreCase("nextround")) {
-        if(!$.isAdmin(sender) || !$.isMod(sender)){
+        if(!$.isMod(sender)){
             $.say("You must be a moderator to use this command.");
             return;
         }
