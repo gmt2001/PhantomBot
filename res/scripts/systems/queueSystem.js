@@ -5,8 +5,8 @@
  */
 
 
-$var.playerqueue = [];
-$var.playrequestusers = {};
+$.playerqueue = [];
+$.playrequestusers = {};
 
 $.play_limit = $.inidb.get("settings", "play_limit");
 if($.play_limit == "" || $.play_limit == null){
@@ -17,22 +17,7 @@ if($.play_limit == "" || $.play_limit == null){
 $.play_cost = $.inidb.get("pricecom", "letmeplay");
 if($.play_cost == "" || $.play_cost == null){
     $.play_cost = 5; //amount of times a player can queue
-    $.inidb.set("settings","play_cost","");
-}
-
-function occurrences(string, subString, allowOverlapping){
-
-    string+=""; subString+="";
-    if(subString.length<=0) return string.length+1;
-
-    var n=0, pos=0;
-    var step=(allowOverlapping)?(1):(subString.length);
-
-    while(true){
-        pos=string.indexOf(subString,pos);
-        if(pos>=0){ n++; pos+=step; } else break;
-    }
-    return(n);
+    $.inidb.set("pricecom","letmeplay","");
 }
 
 function PlayRequest(user, gametag) {
@@ -41,32 +26,35 @@ function PlayRequest(user, gametag) {
 
     this.request = function () {
         if (!this.canRequest()) {
-            $.say("You can only queue up to " + $.play_limit + " times " + username + "!");
+            $.say("You can only queue up to " + $.play_limit + " times " + user + "!");
             return;
         }
+        if ($.playrequestusers[user] != null) {
+            $.playrequestusers[user]++;
 
-        $var.playerqueue.push(this);
-
-        if ($var.playrequestusers[user] != null) {
-            $var.playrequestusers[user]++;
 
         } else {
-            $var.playrequestusers[user] = 1;
+            $.playrequestusers[user] = 1;
+
         }
+        $.playerqueue.push(this);
+
     }
 
     this.canRequest = function () {
         var requestLimit = $.play_limit;
-        if ($var.playrequestusers[user] == null) return true;        
-        return $var.playrequestusers[user] < parseInt(requestLimit);
+        if ($.playrequestusers[user] == null) {
+            return true;
+        }
+        return $.playrequestusers[user] < parseInt(requestLimit);
     }
 
     this.play = function () {
-        $var.playrequestusers[user]--;
+        $.playrequestusers[user]--;
     }
     this.decreaseRequestAmount = function (amount,user) {
-        if(($var.playrequestusers[user] - amount) >= 1 ){
-            $var.playrequestusers[user] = $var.playrequestusers[user] - amount;            
+        if(($.playrequestusers[user] - amount) >= 1 ){
+            $.playrequestusers[user] = $.playrequestusers[user] - amount;            
         }
 
     }
@@ -85,7 +73,6 @@ $.on('command', function (event) {
     if(command.equalsIgnoreCase("letmeplay")) {
         if(args[0]!=null)
         {
-            
             if($.play_cost!=null ) {
                 if(points < parseInt($.play_cost)) {
                     $.say("You don't have enough " + $.pointname + " to do that! Current cost to play: " + $.play_cost);
@@ -94,10 +81,6 @@ $.on('command', function (event) {
             }
             var gametag = args[0];
             $.playrequest = new PlayRequest(username, gametag);
-            if(!$.playrequest.canRequest()){
-                $.say("You can only queue up to " + $.play_limit + " times " + username + "!");
-                return;
-            }
             $.playrequest.request();
             $.say("You have been added to the waiting list " + username + "!");
             return;
@@ -110,11 +93,11 @@ $.on('command', function (event) {
     }
     
     if(command.equalsIgnoreCase("currentplayer")) {
-        if($var.playerqueue[0]==null){
+        if($.playerqueue[0]==null){
            $.say("There are no viewers in game currently.");
            return;
         }
-        $.say("Current player playing: " + $var.playerqueue[0].user + " [Gamertag: " + $var.playerqueue[0].gametag + "]");
+        $.say("Current player playing: " + $.playerqueue[0].user + " [Gamertag: " + $.playerqueue[0].gametag + "]");
     }
     
     if (command.equalsIgnoreCase("waitinglist")) {
@@ -139,8 +122,15 @@ $.on('command', function (event) {
             
         }
         
-        var list = $var.playerqueue;
+        var list = $.playerqueue;
         $.queuelist = "";
+        
+        if(list==null )
+        {
+            $.say("There are currently no players in queue.");
+            return;
+        }
+        
         for(var i=1; i< list.length; i++){
             $.playrequester = list[i].user;
             $.queuelist +=$.playrequester;
@@ -158,14 +148,14 @@ $.on('command', function (event) {
             }*/
         }
         
-        if($.queuelist.substr($.queuelist.length - 1)==" ") {
-            $.queuelist = $.queuelist.substring(0, $.queuelist.length - 1);
-        }
-        
-        if($.queuelist=="" || $.queuelist==null)
+        if($.queuelist=="" || $.queuelist==null )
         {
             $.say("There are currently no players in queue.");
             return;
+        }
+        
+        if($.queuelist.substr($.queuelist.length - 1)==" ") {
+            $.queuelist = $.queuelist.substring(0, $.queuelist.length - 1);
         }
         
         $.say("Currently waiting to play: " + $.queuelist);
@@ -176,10 +166,12 @@ $.on('command', function (event) {
             $.say("You must be a moderator to use this command.");
             return;
         }
-        $.playrequest.decreaseRequestAmount(1,$.playrequest.user);
-        $var.playerqueue.shift();
-        if($var.playerqueue[0]!=null){
-            $.say($var.playerqueue[0].user + " it's your turn! [Gamertag: " + $var.playerqueue[0].gametag + "]");
+        if($.playrequest!=null) {
+            $.playrequest.decreaseRequestAmount(1,$.playrequest.user);            
+        }
+        $.playerqueue.shift();
+        if($.playerqueue[0]!=null){
+            $.say($.playerqueue[0].user + " it's your turn! [Gamertag: " + $.playerqueue[0].gametag + "]");
         } else {
             $.say("There are no more viewers waiting to play.");
         }
