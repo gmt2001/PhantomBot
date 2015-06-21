@@ -166,29 +166,41 @@ public class IniStore implements ActionListener
         if (!nextSave.after(new Date()) || force)
         {
             Object[] n = changed.keySet().toArray();
-            if(n!=null)
+            if (n != null)
             {
 
-            if (force)
-            {
-                n = files.keySet().toArray();
-            }
-
-            com.gmt2001.Console.out.println(">>>Saving " + n.length + " files");
-
-            for (int i = 0; i < n.length; i++)
-            {
-                if (force || changed.get((String) n[i]).after(nextSave) || changed.get((String) n[i]).equals(nextSave))
+                if (force)
                 {
-                    SaveFile((String) n[i], files.get((String) n[i]));
+                    n = files.keySet().toArray();
                 }
-            }
 
-            nextSave.setTime(new Date().getTime() + saveInterval);
+                com.gmt2001.Console.out.println(">>>Saving " + n.length + " files");
 
-            com.gmt2001.Console.out.println(">>>Save complete");
-            } else {
-               com.gmt2001.Console.out.println(">>>Object null, nothing to save."); 
+                for (int i = 0; i < n.length; i++)
+                {
+                    try
+                    {
+                        if (force || changed.get((String) n[i]).after(nextSave) || changed.get((String) n[i]).equals(nextSave))
+                        {
+                            SaveFile((String) n[i], files.get((String) n[i]));
+                        }
+                    } catch (java.lang.NullPointerException e)
+                    {
+                        try
+                        {
+                            SaveFile((String) n[i], files.get((String) n[i]));
+                        } catch (java.lang.NullPointerException e2)
+                        {
+                        }
+                    }
+                }
+
+                nextSave.setTime(new Date().getTime() + saveInterval);
+
+                com.gmt2001.Console.out.println(">>>Save complete");
+            } else
+            {
+                com.gmt2001.Console.out.println(">>>Object null, nothing to save.");
             }
         }
     }
