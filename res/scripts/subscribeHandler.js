@@ -15,11 +15,16 @@ $.on('twitchSubscribe', function(event) {
     var subscribed = $.inidb.get('subscribed', subscriber);
     
     if (subscribed == null || subscribed == undefined || subscribed.isEmpty()) {
-        if (!$.subscribemode.equalsIgnoreCase("twitchnotify")) {
-            $.inidb.set('subscribed', subscriber, 1);
-        }
-        
-        if ($.announceSubscribes) {
+            $.inidb.set('subscribed', subscriber, 1);      
+    } 
+    
+    if (subscribed.equalsIgnoreCase("0")) {
+        $.inidb.set('subscribed', subscriber, 1);
+    }
+    $.inidb.set("tempgroup", subscriber, $.inidb.get("group",subscriber));
+    $.inidb.set("group", subscriber, 3);
+    
+    if ($.announceSubscribes) {
             var s = $.inidb.get('settings', 'subscribemessage');
             var p = parseInt($.inidb.get('settings', 'subscribereward'));
             
@@ -55,9 +60,7 @@ $.on('twitchSubscribe', function(event) {
         if ($.moduleEnabled("./systems/pointSystem.js") && p > 0) {
             $.inidb.incr('points', subscriber, p);
         }
-    } else if (subscribed.equalsIgnoreCase("0") && !$.subscribemode.equalsIgnoreCase("twitchnotify")) {
-        $.inidb.set('subscribed', subscriber, 1);
-    }
+ 
 });
 
 $.on('twitchUnsubscribe', function(event) {
@@ -73,6 +76,8 @@ $.on('twitchUnsubscribe', function(event) {
     if (subscribed.equalsIgnoreCase("1")) {
         $.inidb.set('subscribed', subscriber, 0);
     }
+    $.inidb.set("group", subscriber, $.inidb.get("tempgroup", subscriber));
+
 });
 
 $.on('twitchSubscribesInitialized', function(event) {
