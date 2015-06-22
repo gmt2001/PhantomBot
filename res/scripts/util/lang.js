@@ -9,20 +9,20 @@ if ($.inidb.exists("settings", "lang")) {
 $.lang.data = new Array();
 
 $.lang.load = function() {
-    $.loadScript("./lang/lang-english.js");
+    $.loadScriptForce("./lang/lang-english.js");
     
     var list = $.findFiles("./scripts/lang", "lang-english-");
     
     for (i = 0; i < list.length; i++) {
-        $.loadScript("./lang/" + list[i]);
+        $.loadScriptForce("./lang/" + list[i]);
     }
     
-    $.loadScript("./lang/lang-" + $.lang.curlang + ".js");
+    $.loadScriptForce("./lang/lang-" + $.lang.curlang + ".js");
     
     list = $.findFiles("./scripts/lang", "lang-" + $.lang.curlang + "-");
     
     for (i = 0; i < list.length; i++) {
-        $.loadScript("./lang/" + list[i]);
+        $.loadScriptForce("./lang/" + list[i]);
     }
 }
 
@@ -66,8 +66,8 @@ $.on('command', function(event) {
                 return; 
             } else {
                 $.inidb.set("settings", "lang", args[0].toLowerCase());
-                $.lang.load(args[0].toLowerCase());
                 $.lang.curlang = args[0].toLowerCase();
+                $.lang.load();
                 
                 $.say($.lang.get("net.phantombot.lang.lang-changed", new Array(args[0].toLowerCase())));
             }

@@ -117,6 +117,24 @@ $.getModule = function(scriptFile) {
     return null;
 }
 
+$.loadScriptForce = function(scriptFile) {
+    try {
+        var script = $api.loadScriptR($script, scriptFile);
+        var senabled = $.inidb.get('modules', scriptFile + '_enabled');
+        var enabled = true;
+        
+        if (senabled) {
+            enabled = senabled.equalsIgnoreCase("1");
+        }
+        
+        modules.push(new Array(scriptFile, enabled, script));
+    } catch (e) {
+        if ($.isModuleLoaded("./util/misc.js")) {
+            $.logError("init.js", 132, "(loadScriptForce, " + scriptFile + ") " + e);
+        }
+    }
+}
+
 $.loadScript = function(scriptFile) {
     if (!$.isModuleLoaded(scriptFile)) {
         try {
