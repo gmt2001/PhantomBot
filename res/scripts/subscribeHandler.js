@@ -21,7 +21,7 @@ $.on('twitchSubscribe', function(event) {
     if (subscribed.equalsIgnoreCase("0")) {
         $.inidb.set('subscribed', subscriber, 1);
     }
-    $.inidb.set("tempgroup", subscriber, $.inidb.get("group",subscriber));
+    $.inidb.set("tempsubgroup", subscriber, $.inidb.get("group",subscriber));
     $.inidb.set("group", subscriber, 3);
     
     if ($.announceSubscribes) {
@@ -76,7 +76,7 @@ $.on('twitchUnsubscribe', function(event) {
     if (subscribed.equalsIgnoreCase("1")) {
         $.inidb.set('subscribed', subscriber, 0);
     }
-    $.inidb.set("group", subscriber, $.inidb.get("tempgroup", subscriber));
+    $.inidb.set("group", subscriber, $.inidb.get("tempsubgroup", subscriber));
 
 });
 
