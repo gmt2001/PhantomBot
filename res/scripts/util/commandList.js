@@ -295,6 +295,7 @@ $.on('command', function(event) {
 });
 
 $.registerChatCommand("./util/commandList.js", "commandsperpage", "admin");
+$.registerChatCommand("./util/commandList.js", "commands", "mod");
 
 var commandsPerPage = $.inidb.get("command", "_commandsPerPage");
 
