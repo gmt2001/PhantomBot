@@ -30,7 +30,7 @@ $.on('command', function (event) {
     
     var streamhours = Math.floor(streamSeconds / 3600);
     var seconds = streamSeconds % 3600;
-    var streamminutes = Math.floor(streamSeconds / 60);
+    var streamminutes = Math.floor(seconds / 60);
     seconds %= 60;
     var curSTime = streamhours + ":" + streamminutes + ":" + seconds;
 	
