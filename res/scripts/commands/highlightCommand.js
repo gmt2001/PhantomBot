@@ -59,7 +59,7 @@ $.on('command', function (event) {
 		}
     } else if (command.equalsIgnoreCase("uptime")) {
 		if (!$.isOnline($.channelName)) {
-			$.say("Stream if Offline!");
+			$.say("Stream is Offline!");
 			return;
 		}
 		else {
