@@ -10,7 +10,20 @@ $.lang.data = new Array();
 
 $.lang.load = function() {
     $.loadScript("./lang/lang-english.js");
+    
+    var list = $.findFiles("./scripts/lang", "lang-english-");
+    
+    for (i = 0; i < list.length; i++) {
+        $.loadScript("./lang/" + list[i]);
+    }
+    
     $.loadScript("./lang/lang-" + $.lang.curlang + ".js");
+    
+    list = $.findFiles("./scripts/lang", "lang-" + $.lang.curlang + "-");
+    
+    for (i = 0; i < list.length; i++) {
+        $.loadScript("./lang/" + list[i]);
+    }
 }
 
 $.lang.get = function(str_name, args) {
