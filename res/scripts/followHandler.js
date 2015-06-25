@@ -90,9 +90,17 @@ $.on('command', function(event) {
     var username = $.username.resolve(sender);
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
+    var args = event.getArgs();
 	
     if (command.equalsIgnoreCase("follow")) {
+        if (args[0] != null) {
+                if($.inidb.get("followed",args[0].toLowerCase())==1){
+                    $.say($.username.resolve(args[0]) + " is following the channel.");
+                    return;                    
+                }
+        }
         $.say("!followmessage <message>, !followreward <amount>");
+        
     }
 	
     if (command.equalsIgnoreCase("followmessage")) {
