@@ -97,6 +97,9 @@ $.on('command', function(event) {
                 if($.inidb.get("followed",args[0].toLowerCase())==1){
                     $.say($.username.resolve(args[0]) + " is following the channel.");
                     return;                    
+                } else {
+                    $.say($.username.resolve(args[0]) + " is not following the channel.");
+                    return;    
                 }
         }
         $.say("!followmessage <message>, !followreward <amount>");
