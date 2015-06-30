@@ -7,6 +7,12 @@ $.userPoints = "";
 $.userPointsId = "";
 $.bankheistToggle = false;
 
+$.bankheistMaxBet = $.inidb.get("settings", "bankheistmaxbet");
+if($.bankheistMaxBet == "" || $.bankheistMaxBet == null){
+    $.bankheistMaxBet = 100; //in minute
+    $.inidb.set("settings","bankheistmaxbet","");
+}
+
 $.signupMinutes = $.inidb.get("bankheist_timers", "signupMinutes");
 if($.signupMinutes == "" || $.signupMinutes == null){
     $.signupMinutes = 1; //in minute
@@ -107,6 +113,12 @@ $.heistCancelled = $.inidb.get("bankheist_strings", "heistCancelled");
 if($.heistCancelled == "" || $.heistCancelled == null){
     $.heistCancelled  = " has cleared all previous bankheists. A new bankheist will start in " + $.signupMinutes + " minute(s)";
     $.inidb.set("bankheist_strings","heistCancelled","");
+}
+
+$.betTooLarge = $.inidb.get("bankheist_strings", "betTooLarge");
+if($.betTooLarge == "" || $.betTooLarge == null){
+    $.betTooLarge = "The maximum amount allowed is ";
+    $.inidb.set("bankheist_strings","stringNoJoin","");
 }
 
 $.chances50 = $.inidb.get("bankheist_chances", "chances50");
@@ -350,13 +362,14 @@ $.on('command', function(event) {
                     } else if( parseInt(betAmount) > $.userPoints  || parseInt(betAmount)==0 ){
                         $.say( $.affordBet + "[Points available: " + $.userPoints.toString());
                         return;
+                    } else  if(parseInt(betAmount) > $.bankheistMaxBet){
+                        $.say($.betTooLarge + $.bankheistMaxBet + ".");
+                        return;
                     } else {
                         if($.inidb.exists("bankheist_roster", sender))
                         {
                             $.senderId = $.inidb.get("bankheist_roster", sender);
                             $.senderBet = $.inidb.get("bankheist_bets", $.senderId);
-                        }
-                        if ( $.senderId!=null && parseInt($.senderId)==$.userPointsId ) {
                             $.say(username + $.alreadyBet + $.senderBet.toString());
                             return;
                         } else {
@@ -562,6 +575,16 @@ $.on('command', function(event) {
                     $.say("The value for stringSurvivorsAre has been set to " + modValue);
                     return;
             }
+            if(args[0].equalsIgnoreCase("betTooLarge")){
+                    if(!$.isAdmin(sender) || !$.isMod(sender)){
+                        $.say("You must be a moderator to use this command.");
+                        return;
+                    }
+                    $.betTooLarge = modValue;
+                    $.inidb.set("bankheist_strings","betTooLarge",modValue);
+                    $.say("The value for betTooLarge has been set to " + modValue);
+                    return;
+            }
             
             if(args[0].equalsIgnoreCase("chances50")){
                     if(!$.isAdmin(sender) || !$.isMod(sender)){
@@ -670,6 +693,17 @@ $.on('command', function(event) {
                     $.ratio10 = modValue;
                     $.inidb.set("bankheist_ratios","ratio10",modValue);
                     $.say("The value for ratio10 has been set to " + modValue);
+                    return;
+            }
+            
+            if(args[0].equalsIgnoreCase("maxbet")){
+                    if(!$.isAdmin(sender) || !$.isMod(sender)){
+                        $.say("You must be a moderator to use this command.");
+                        return;
+                    }
+                    $.bankheistMaxBet = modValue;
+                    $.inidb.set("settings","bankheistmaxbet",modValue);
+                    $.say("The max bet amount has been set to " + modValue);
                     return;
             }
             
