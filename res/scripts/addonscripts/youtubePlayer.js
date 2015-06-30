@@ -788,6 +788,20 @@ $.on('command', function (event) {
 
 });
 
+$var.ytstoredSong = $.findSize("addons/youtubePlayer/currentsong.txt");
+
+$.timer.addTimer("./addonscripts/youtubePlayer.js", "currsongyt", true, function() {
+$var.ytcurrSong = $.findSize("addons/youtubePlayer/currentsong.txt");
+if ($var.ytstoredSong!=$var.ytcurrSong && !musicPlayerConnected) {
+  $var.ytstoredSong = $var.ytcurrSong;
+  if ($.song_toggle == 1) {
+  $.say("[\u266B] Now Playing -- " + $.readFile("addons/youtubePlayer/currentsong.txt"));
+  } else if ($.song_toggle == 2) {
+  println("[\u266B] Now Playing -- " + $.readFile("addons/youtubePlayer/currentsong.txt"));
+  }
+}
+}, 10* 1000);
+
 $.registerChatCommand("./youtubePlayer.js", "addsong");
 $.registerChatCommand("./youtubePlayer.js", "skipsong");
 $.registerChatCommand("./youtubePlayer.js", "vetosong");
