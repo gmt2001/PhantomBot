@@ -162,7 +162,8 @@ public class HTTPServer extends Thread
                         if (args.containsKey("password"))
                         {
                             String password = URLDecoder.decode(args.get("password"), "UTF-8");
-                            pass = pass.replace("oauth:", "");
+                            //pass = pass.replace("oauth:", "");
+                            pass = URLDecoder.decode(pass.replace("oauth:", ""), "UTF-8");
                             
                             if(password==pass) {
                             
