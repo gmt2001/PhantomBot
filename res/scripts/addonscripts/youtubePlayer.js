@@ -788,6 +788,7 @@ $.on('command', function (event) {
 
 });
 
+if ($.moduleEnabled("./scripts/addonscripts/youtubePlayer.js")) {
 
 $.timer.addTimer("./addonscripts/youtubePlayer.js", "currsongyt", true, function() {
     
@@ -805,7 +806,7 @@ if (($var.ytcurrSong.toString() != $var.ytstoredSong.toString()) && !musicPlayer
 }
 }, 10* 1000);
 
-if ($.moduleEnabled("./scripts/addonscripts/youtubePlayer.js")) {
+
 $.registerChatCommand("./youtubePlayer.js", "addsong");
 $.registerChatCommand("./youtubePlayer.js", "skipsong");
 $.registerChatCommand("./youtubePlayer.js", "vetosong");
