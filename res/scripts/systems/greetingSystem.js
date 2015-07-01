@@ -2,9 +2,8 @@ $.on('ircChannelJoin', function(event) {
     var sender = event.getUser().toLowerCase();
     var username = $.username.resolve(sender);
     var s = $.inidb.get("greeting", sender);
-    
-        println("[Join] " + username + " has joined the channel.");
-        $.inidb.set("visited", sender.toLowerCase(), "visited");
+
+    $.inidb.set("visited", sender.toLowerCase(), "visited");
     
     if ($.inidb.get("greeting", sender + "_enabled") == "1") {
 
@@ -12,34 +11,25 @@ $.on('ircChannelJoin', function(event) {
             s = $.inidb.get("greeting", "_default");
             
             if (s == null || s == undefined || s.isEmpty()) {
-                s = "<name> has entered the channel!";
+                s = "(name) has entered the channel!";
             }
         }
         
-        $.say(s.replace("<name>", username));
+        $.say(s.replace("(name)", username));
         
     } else if ($.inidb.get("greeting", "autogreet") == "true") {
         if (s == null || s == undefined || s.isEmpty()) {
             s = $.inidb.get("greeting", "_default");
             
             if (s == null || s == undefined || s.isEmpty()) {
-                s = "<name> has entered the channel!";
+                s = "(name) has entered the channel!";
             }
         }
         
-        $.say(s.replace("<name>", username));
+        $.say(s.replace("(name)", username));
            
-    } else if ($.inidb.get("greeting", "autogreet") == null || $.inidb.get("greeting", "autogreet") == "false") {
-        if (s == null || s == undefined || s.isEmpty()) {
-            s = $.inidb.get("greeting", "_default");
-            
-            if (s == null || s == undefined || s.isEmpty()) {
-                s = "<name> has entered the channel.";
-            }
-        }
-        if ($.inidb.get("greeting", sender + "_enabled") == "0" ) {
-            println(s.replace("[Join] <name>", username));
-        }
+    } else {
+        println("[Join] " + username + " has joined the channel.");
     } 
 });
 
@@ -99,8 +89,8 @@ $.on('command', function(event) {
                 $.say("Greeting deleted");
             }
             
-            if (message.indexOf("<name>") == -1) {
-                $.say("You must include '<name>' in your new greeting so I know where to insert your name, " + username + ". Example: !greeting set <name> sneaks into the channel!");
+            if (message.indexOf("(name)") == -1) {
+                $.say("You must include '(name)' in your new greeting so I know where to insert your name, " + username + ". Example: !greeting set (name) sneaks into the channel!");
                 return;
             }
             
@@ -113,8 +103,8 @@ $.on('command', function(event) {
                 return;
             }
             
-            if (message.indexOf("<name>") == -1) {
-                $.say("You must include '<name>' in the new greeting so I know where to insert the viewers name, " + username + ". Example: !greeting setdefault <name> sneaks into the channel!");
+            if (message.indexOf("(name)") == -1) {
+                $.say("You must include '(name)' in the new greeting so I know where to insert the viewers name, " + username + ". Example: !greeting setdefault (name) sneaks into the channel!");
                 return;
             }
             
@@ -124,7 +114,7 @@ $.on('command', function(event) {
             
             $.say("Default greeting changed");
         } else if (args[0].isEmpty()){
-            $.say('Usage: !greeting enable, !greeting disable, !greeting set <message>, !greeting setdefault <message>');
+            $.say('Usage: !greeting enable, !greeting disable, !greeting set (message), !greeting setdefault (message)');
         }
     }
     
@@ -135,11 +125,11 @@ $.on('command', function(event) {
             s = $.inidb.get("greeting", "_default");
             
             if (s == null || s == undefined || s.isEmpty()) {
-                s = "<name> has entered the channel!";
+                s = "(name) has entered the channel!";
             }
         }
         
-        $.say(s.replace("<name>", username));
+        $.say(s.replace("(name)", username));
     } 
 });
 

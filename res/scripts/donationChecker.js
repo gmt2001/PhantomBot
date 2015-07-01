@@ -42,12 +42,13 @@ $.on('command', function (event) {
     
 });
 
-$var.storedDonation = $.findSize($.checkerstorepath);
-
 $.timer.addTimer("./donationChecker.js", "currdonation", true, function() {
-$var.currDonation = $.findSize($.checkerstorepath);
-if ($var.storedDonation!=$var.currDonation) {
-  $var.storedDonation = $var.currDonation;
+$var.previousDonation = $.inidb.get("settings", "lastdonation");
+$var.currDonation = $.readFile($.checkerstorepath);
+if ($var.currDonation.toString() != $var.previousDonation.toString()) {
+    
+  $.inidb.set("donationalert", "settings", $.readFile($.checkerstorepath));
+
   if ($.song_toggle == 1) {
   $.say($.username.resolve($.ownerName) + " has received a donation from: " + $.readFile($.checkerstorepath));
   } else if ($.song_toggle == 2) {
