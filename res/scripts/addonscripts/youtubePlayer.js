@@ -788,12 +788,18 @@ $.on('command', function (event) {
 
 });
 
-if ($.moduleEnabled("./scripts/addonscripts/youtubePlayer.js")) {
+if ($.moduleEnabled("./addonscripts/youtubePlayer.js")) {
 
 $.timer.addTimer("./addonscripts/youtubePlayer.js", "currsongyt", true, function() {
     
 $var.ytstoredSong = $.inidb.get("settings", "lastsong");
 $var.ytcurrSong = $.readFile("addons/youtubePlayer/currentsong.txt");
+
+if(!$var.ytstoredSong) {
+   $.inidb.set("settings", "lastsong", $.readFile("addons/youtubePlayer/currentsong.txt"));
+   $var.ytstoredSong = $.inidb.get("settings", "lastsong");
+}
+
 if (($var.ytcurrSong.toString() != $var.ytstoredSong.toString()) && !musicPlayerConnected) {
     
   $.inidb.set("settings", "lastsong", $.readFile("addons/youtubePlayer/currentsong.txt"));

@@ -42,12 +42,20 @@ $.on('command', function (event) {
     
 });
 
+if ($.moduleEnabled("./donationChecker.js")) {
+
 $.timer.addTimer("./donationChecker.js", "currdonation", true, function() {
-$var.previousDonation = $.inidb.get("settings", "lastdonation");
+$var.previousDonation = $.inidb.get("donationalert", "lastdonation");
 $var.currDonation = $.readFile($.checkerstorepath);
+
+if(!$var.previousDonation) {
+   $.inidb.set("donationalert", "lastdonation", $.readFile($.checkerstorepath));
+   $var.previousDonation = $.inidb.get("donationalert", "lastdonation");
+}
+
 if ($var.currDonation.toString() != $var.previousDonation.toString()) {
     
-  $.inidb.set("donationalert", "settings", $.readFile($.checkerstorepath));
+  $.inidb.set("donationalert", "lastdonation", $.readFile($.checkerstorepath));
 
   if ($.song_toggle == 1) {
   $.say($.username.resolve($.ownerName) + " has received a donation from: " + $.readFile($.checkerstorepath));
@@ -56,5 +64,7 @@ if ($var.currDonation.toString() != $var.previousDonation.toString()) {
   }
 }
 }, 10* 1000);
+
+}
 
 $.registerChatCommand("./donationChecker.js", "donationalert", "mod");
