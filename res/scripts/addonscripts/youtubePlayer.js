@@ -792,24 +792,22 @@ if ($.moduleEnabled("./addonscripts/youtubePlayer.js")) {
 
 $.timer.addTimer("./addonscripts/youtubePlayer.js", "currsongyt", true, function() {
     
-$var.ytstoredSong = $.inidb.get("settings", "lastsong");
 $var.ytcurrSong = $.readFile("addons/youtubePlayer/currentsong.txt");
 
-if(!$var.ytstoredSong) {
-   $.inidb.set("settings", "lastsong", $.readFile("addons/youtubePlayer/currentsong.txt"));
-   $var.ytstoredSong = $.inidb.get("settings", "lastsong");
-}
-
-if (($var.ytcurrSong.toString() != $var.ytstoredSong.toString()) && !musicPlayerConnected) {
+if($var.ytstoredSong) {
     
-  $.inidb.set("settings", "lastsong", $.readFile("addons/youtubePlayer/currentsong.txt"));
+    if (($var.ytcurrSong.toString() != $.inidb.get("settings", "lastsong")) && !musicPlayerConnected) {
+    
+        $.inidb.set("settings", "lastsong", $.readFile("addons/youtubePlayer/currentsong.txt"));
 
-  if ($.song_toggle == 1) {
-  $.say("[\u266B] Now Playing -- " + $.readFile("addons/youtubePlayer/currentsong.txt"));
-  } else if ($.song_toggle == 2) {
-  println("[\u266B] Now Playing -- " + $.readFile("addons/youtubePlayer/currentsong.txt"));
-  }
+        if ($.song_toggle == 1) {
+            $.say("[\u266B] Now Playing -- " + $.readFile("addons/youtubePlayer/currentsong.txt"));
+        } else {
+            println("[\u266B] Now Playing -- " + $.readFile("addons/youtubePlayer/currentsong.txt"));
+        }
+    }
 }
+
 }, 10* 1000);
 
 
