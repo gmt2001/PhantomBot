@@ -805,6 +805,7 @@ if (($var.ytcurrSong.toString() != $var.ytstoredSong.toString()) && !musicPlayer
 }
 }, 10* 1000);
 
+if ($.moduleEnabled("./scripts/addonscripts/youtubePlayer.js")) {
 $.registerChatCommand("./youtubePlayer.js", "addsong");
 $.registerChatCommand("./youtubePlayer.js", "skipsong");
 $.registerChatCommand("./youtubePlayer.js", "vetosong");
@@ -813,6 +814,7 @@ $.registerChatCommand("./youtubePlayer.js", "nextsong");
 $.registerChatCommand("./youtubePlayer.js", "stealsong", "admin");
 $.registerChatCommand("./youtubePlayer.js", "delsong", "mod");
 $.registerChatCommand("./youtubePlayer.js", "volume", "mod");
+}
 
 $.on('musicPlayerCurrentVolume', function (event) {
     $.say("[\u266B] Music volume is currently: " + parseInt(event.getVolume()) + "%");
