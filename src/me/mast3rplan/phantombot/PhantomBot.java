@@ -250,7 +250,7 @@ public class PhantomBot implements Listener
         if(!webenable.equalsIgnoreCase("false"))
         {
             webenabled = true;
-            mhs = new HTTPServer(baseport);
+            mhs = new HTTPServer(baseport,oauth);
             mhs.start();
             if(!musicenable.equalsIgnoreCase("false"))
             {

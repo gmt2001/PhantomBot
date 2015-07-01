@@ -40,12 +40,14 @@ public class HTTPServer extends Thread
 {
 
     int port;
+    String pass;
     ServerSocket socket;
     Boolean dorun = true;
 
-    HTTPServer(int p)
+    HTTPServer(int p, String oauth)
     {
         port = p;
+        pass = oauth;
 
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
@@ -157,26 +159,30 @@ public class HTTPServer extends Thread
                     {
                         InetAddress rmt = conn.getInetAddress();
 
-                        if (rmt.getHostAddress().equals("127.0.0.1") || rmt.getHostAddress().equals("0:0:0:0:0:0:0:1"))
+                        if (args.containsKey("password"))
                         {
-                            if (!args.containsKey("user") || !args.containsKey("message"))
-                            {
-                                out.print("HTTP/1.0 400 Bad Request\n"
-                                        + "ContentType: " + "text/text" + "\n"
-                                        + "Date: " + new Date() + "\n"
-                                        + "Server: basic HTTP server\n"
-                                        + "Content-Length: " + "17" + "\n"
-                                        + "\n"
-                                        + "missing parameter"
-                                        + "\n");
-                            } else
-                            {
-                                String user = URLDecoder.decode(args.get("user"), "UTF-8");
-                                String message = URLDecoder.decode(args.get("message"), "UTF-8");
+                            String password = URLDecoder.decode(args.get("password"), "UTF-8");
+                            
+                            if(password==pass) {
+                            
+                                if (!args.containsKey("user") || !args.containsKey("message"))
+                                {
+                                    out.print("HTTP/1.0 400 Bad Request\n"
+                                            + "ContentType: " + "text/text" + "\n"
+                                            + "Date: " + new Date() + "\n"
+                                            + "Server: basic HTTP server\n"
+                                            + "Content-Length: " + "17" + "\n"
+                                            + "\n"
+                                            + "missing parameter"
+                                            + "\n");
+                                } else
+                                {
+                                    String user = URLDecoder.decode(args.get("user"), "UTF-8");
+                                    String message = URLDecoder.decode(args.get("message"), "UTF-8");
 
-                                EventBus.instance().post(new IrcChannelMessageEvent(PhantomBot.instance().getSession(), user, message, PhantomBot.instance().getChannel()));
+                                    EventBus.instance().post(new IrcChannelMessageEvent(PhantomBot.instance().getSession(), user, message, PhantomBot.instance().getChannel()));
 
-                                out.print("HTTP/1.0 200 OK\n"
+                                    out.print("HTTP/1.0 200 OK\n"
                                         + "ContentType: " + "text/text" + "\n"
                                         + "Date: " + new Date() + "\n"
                                         + "Server: basic HTTP server\n"
@@ -184,7 +190,12 @@ public class HTTPServer extends Thread
                                         + "\n"
                                         + "event posted"
                                         + "\n");
+                                }
+                            } else {
+                                com.gmt2001.Console.out.println("Invalid password recieved for remote http PUT request. Recieved: " + password + " Expected: " + pass);
                             }
+                        } else {
+                                com.gmt2001.Console.out.println("No password recieved for remote http PUT request.");
                         }
                     }
                 }
