@@ -20,7 +20,7 @@ if ($.hostreward == null || $.hostreward == undefined) {
 $.on('twitchHosted', function(event) {
     var username = $.username.resolve(event.getHoster());
     
-    if ($.announceHosts && $.moduleEnabled("./hostHandler.js")
+    if ($.announceHosts && $.moduleEnabled("./handlers/hostHandler.js")
         && ($.hostlist[event.getHoster()] == null || $.hostlist[event.getHoster()] == undefined
             || $.hostlist[event.getHoster()] < System.currentTimeMillis())) {
         var s = $.inidb.get('settings', 'hostmessage');
@@ -166,8 +166,8 @@ $.on('command', function(event) {
 	
 });
 
-$.registerChatCommand("./hostHandler.js", "hostmessage", "admin");
-$.registerChatCommand("./hostHandler.js", "hostreward");
-$.registerChatCommand("./hostHandler.js", "hosttime");
-$.registerChatCommand("./hostHandler.js", "hostcount");
-$.registerChatCommand("./hostHandler.js", "hostlist");
+$.registerChatCommand("./handlers/hostHandler.js", "hostmessage", "admin");
+$.registerChatCommand("./handlers/hostHandler.js", "hostreward");
+$.registerChatCommand("./handlers/hostHandler.js", "hosttime");
+$.registerChatCommand("./handlers/hostHandler.js", "hostcount");
+$.registerChatCommand("./handlers/hostHandler.js", "hostlist");

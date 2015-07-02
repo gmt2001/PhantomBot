@@ -18,7 +18,7 @@ $.on('twitchFollow', function(event) {
             p = 100;
         }
         
-        if ($.announceFollows && $.moduleEnabled("./followHandler.js")) {
+        if ($.announceFollows && $.moduleEnabled("./handlers/followHandler.js")) {
             var s = $.inidb.get('settings', 'followmessage');
             
             if (s == null || s == undefined || $.strlen(s) == 0) {
@@ -47,8 +47,8 @@ $.on('twitchFollow', function(event) {
             $.followtrain++;
             $.lastfollow = System.currentTimeMillis();
             
-            if (!$.timer.hasTimer("./followHandler.js", "followtrain", true)) {
-                $.timer.addTimer("./followHandler.js", "followtrain", true, function() {
+            if (!$.timer.hasTimer("./handlers/followHandler.js", "followtrain", true)) {
+                $.timer.addTimer("./handlers/followHandler.js", "followtrain", true, function() {
                     $.checkFollowTrain();
                 }, 1000);
             }
@@ -159,13 +159,13 @@ $.on('command', function(event) {
     
 });
 
-$.registerChatCommand("./followHandler.js", "followmessage", "admin");
-$.registerChatCommand("./followHandler.js", "followreward", "admin");
-$.registerChatCommand("./followHandler.js", "followcount");
+$.registerChatCommand("./handlers/followHandler.js", "followmessage", "admin");
+$.registerChatCommand("./handlers/followHandler.js", "followreward", "admin");
+$.registerChatCommand("./handlers/followHandler.js", "followcount");
 
 $.checkFollowTrain = function() {
     if (System.currentTimeMillis() - $.lastfollow > 65 * 1000) {
-        $.timer.clearTimer("./followHandler.js", "followtrain", true);
+        $.timer.clearTimer("./handlers/followHandler.js", "followtrain", true);
         $.followtimer = null;
         
         if ($.followtrain > 1) {

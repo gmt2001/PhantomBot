@@ -173,12 +173,12 @@ public class PhantomBot implements Listener
 
         this.init();
 
-        try
+        /*try
         {
-            Thread.sleep(1000);
+            Thread.sleep(3000);
         } catch (InterruptedException ex)
         {
-        }
+        }*/
 
         String osname = System.getProperty("os.name");
 
@@ -642,7 +642,7 @@ public class PhantomBot implements Listener
         
         
 
-        EventBus.instance().post(new CommandEvent(sender, command, arguments));
+        EventBus.instance().postAsync(new CommandEvent(sender, command, arguments));
     }
 
     public static void main(String[] args) throws IOException

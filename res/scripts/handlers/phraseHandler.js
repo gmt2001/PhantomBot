@@ -46,5 +46,5 @@ $.on('command', function (event) {
 
 });
 
-$.registerChatCommand("./commands/phraseTrigger.js", "addphrase");
-$.registerChatCommand("./commands/phraseTrigger.js", "delphrase");
+$.registerChatCommand("./handlers/phraseHandler.js", "addphrase");
+$.registerChatCommand("./handlers/phraseHandler.js", "delphrase");

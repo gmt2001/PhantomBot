@@ -788,38 +788,35 @@ $.on('command', function (event) {
 
 });
 
-if ($.moduleEnabled("./addonscripts/youtubePlayer.js")) {
+//Q: why is there a timeout delay here before a timer? seems redundant no?
+//A: the timeout sets a delay to start the timer, otherwise the timer won't detect if a module is disabled (because it hasnt loaded in yet)
+setTimeout(function(){ 
+if ($.moduleEnabled('./addonscripts/youtubePlayer.js')) {
 
 $.timer.addTimer("./addonscripts/youtubePlayer.js", "currsongyt", true, function() {
-    
-$var.ytcurrSong = $.readFile("addons/youtubePlayer/currentsong.txt");
+	$var.ytcurrSong = $.readFile("addons/youtubePlayer/currentsong.txt");
 
-if($var.ytstoredSong) {
-    
-    if (($var.ytcurrSong.toString() != $.inidb.get("settings", "lastsong")) && !musicPlayerConnected) {
-    
-        $.inidb.set("settings", "lastsong", $.readFile("addons/youtubePlayer/currentsong.txt"));
-
-        if ($.song_toggle == 1) {
-            $.say("[\u266B] Now Playing -- " + $.readFile("addons/youtubePlayer/currentsong.txt"));
-        } else {
-            println("[\u266B] Now Playing -- " + $.readFile("addons/youtubePlayer/currentsong.txt"));
-        }
-    }
-}
+	if (($var.ytcurrSong.toString() != $.inidb.get("settings", "lastsong")) && !musicPlayerConnected) {
+	  	$.inidb.set("settings", "lastsong", $var.ytcurrSong.toString());
+  		if ($.song_toggle == 1) {
+  			$.say("[\u266B] Now Playing -- " + $var.ytcurrSong.toString());
+  		} else {
+  			println("[\u266B] Now Playing -- " + $var.ytcurrSong.toString());
+  		}
+	}
 
 }, 10* 1000);
 
-
-$.registerChatCommand("./youtubePlayer.js", "addsong");
-$.registerChatCommand("./youtubePlayer.js", "skipsong");
-$.registerChatCommand("./youtubePlayer.js", "vetosong");
-$.registerChatCommand("./youtubePlayer.js", "currentsong");
-$.registerChatCommand("./youtubePlayer.js", "nextsong");
-$.registerChatCommand("./youtubePlayer.js", "stealsong", "admin");
-$.registerChatCommand("./youtubePlayer.js", "delsong", "mod");
-$.registerChatCommand("./youtubePlayer.js", "volume", "mod");
+$.registerChatCommand("./addonscripts/youtubePlayer.js", "addsong");
+$.registerChatCommand("./addonscripts/youtubePlayer.js", "skipsong");
+$.registerChatCommand("./addonscripts/youtubePlayer.js", "vetosong");
+$.registerChatCommand("./addonscripts/youtubePlayer.js", "currentsong");
+$.registerChatCommand("./addonscripts/youtubePlayer.js", "nextsong");
+$.registerChatCommand("./addonscripts/youtubePlayer.js", "stealsong", "admin");
+$.registerChatCommand("./addonscripts/youtubePlayer.js", "delsong", "mod");
+$.registerChatCommand("./addonscripts/youtubePlayer.js", "volume", "mod");
 }
+}, 10* 1000);
 
 $.on('musicPlayerCurrentVolume', function (event) {
     $.say("[\u266B] Music volume is currently: " + parseInt(event.getVolume()) + "%");

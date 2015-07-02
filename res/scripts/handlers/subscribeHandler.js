@@ -202,14 +202,14 @@ $.on('ircPrivateMessage', function(event) {
     } 
 });
 
-$.registerChatCommand("./subscribeHandler.js", "subscribemessage", "admin");
-$.registerChatCommand("./subscribeHandler.js", "subscribereward", "admin");
-$.registerChatCommand("./subscribeHandler.js", "subscribecount");
-$.registerChatCommand("./subscribeHandler.js", "subscribemode", "admin");
+$.registerChatCommand("./handlers/subscribeHandler.js", "subscribemessage", "admin");
+$.registerChatCommand("./handlers/subscribeHandler.js", "subscribereward", "admin");
+$.registerChatCommand("./handlers/subscribeHandler.js", "subscribecount");
+$.registerChatCommand("./handlers/subscribeHandler.js", "subscribemode", "admin");
 
 
-$.timer.addTimer("./subscribeHandler.js", "subscribehandler", true, function() {
-    if (!$.moduleEnabled("./subscribeHandler.js")) {
+$.timer.addTimer("./handlers/subscribeHandler.js", "subscribehandler", true, function() {
+    if (!$.moduleEnabled("./handlers/subscribeHandler.js")) {
         $.subscribers.doRun(false);
     } else {
         if ($.subscribemode.equalsIgnoreCase("twitchnotify")) {
