@@ -20,6 +20,32 @@ $.getGame = function(channel) {
     return channelData.getString("game");
 }
 
+$.getUptime = function(channel) {
+    var stream = $.twitch.GetStream(channel);
+    
+    //first get created_at from twitch
+    var createdAt = stream.getJSONObject("stream").getString("created_at");
+    
+    //initiate date formatter
+    var df = new java.text.SimpleDateFormat( "yyyy-MM-dd'T'hh:mm:ssz" );
+    //parse created_at from twitch, which is received in GMT
+    if ( createdAt.endsWith( "Z" ) ) {
+            createdAt = createdAt.substring( 0, createdAt.length() - 1) + "GMT-00:00";
+            //$.say(createdAt);
+        } else {
+            var inset = 6;
+            var s0 = createdAt.substring( 0, createdAt.length() - inset );
+            //$.say(s0);
+            var s1 = createdAt.substring( createdAt.length() - inset, createdAt.length() );
+            //$.say(s1);
+            createdAt = s0 + "GMT" + s1;     
+    }
+
+    var datefmt = new java.text.SimpleDateFormat("EEEE MMMM d, yyyy @ h:mm a z");
+    var timestamp = datefmt.format(df.parse( createdAt ));
+    return timestamp.toString();
+}
+
 $.getViewers = function(channel) {
     var stream = $.twitch.GetStream(channel);
 

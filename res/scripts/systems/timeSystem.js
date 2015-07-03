@@ -18,6 +18,50 @@ $.say("http://en.wikipedia.org/wiki/List_of_tz_database_time_zones.");
 $.say("");
 }
 
+$.displayTime = function(time) {
+    // Date object takes starting time in ms - multiply by 1000
+    var DateFormatter = new Date(time * 1000);
+
+    // Create a string to stuff the output into.
+    var output = "";
+
+    // If you've triggered, you want to trigger on every subsequent. 
+    // Not quite a switch case, which won't work here, but close.
+    var bFallThrough = false;
+
+    // Date object is defined using the Unix Epoch (1/1/1970 00:00:00.000) - Trim off the 1970
+    if (DateFormatter.getUTCFullYear() > 1970) {
+        output += (DateFormatter.getUTCFullYear() - 1970) + " years, ";
+        bFallThrough = true;
+    }
+    if (DateFormatter.getUTCMonth() > 0 || bFallThrough) {
+        output += DateFormatter.getUTCMonth() + " months, ";
+        bFallThrough = true;
+    }
+    if (DateFormatter.getUTCDate() > 1 || bFallThrough) {
+        output += DateFormatter.getUTCDate() + " days, ";
+        bFallThrough = true;
+    }
+    if (DateFormatter.getUTCHours() > 0 || bFallThrough) {
+        output += DateFormatter.getUTCHours() + " hours, ";
+        bFallThrough = true;
+    }
+    if (DateFormatter.getUTCMinutes() > 0 || bFallThrough) {
+        output += DateFormatter.getUTCMinutes() + " minutes, ";
+        bFallThrough = true;
+    }
+    if (DateFormatter.getUTCSeconds() > 0 || bFallThrough) {
+        if (bFallThrough) {
+            output += "and ";
+        }
+        output += DateFormatter.getUTCSeconds() + " seconds";
+    }
+
+    // Done with concatenation and the like, return the output.
+    return output;
+}
+
+
 $.setTimeZone = function (timezone) { 
     var validIDs = java.util.TimeZone.getAvailableIDs();
     for (var i=0; i < validIDs.length; i++) {
@@ -94,6 +138,15 @@ $.on('command', function(event) {
                 return;
             }
         }  
+    }
+    if (command.equalsIgnoreCase("streamertime")) {
+            var cal = java.util.Calendar.getInstance(java.util.TimeZone.getTimeZone($.timezone));
+            var now = cal.getTime();
+            var datefmt = new java.text.SimpleDateFormat("EEEE MMMM d, yyyy @ h:mm a z");
+            datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.timezone));
+            var timestamp = datefmt.format(now);
+            
+            $.say("It is currently " + timestamp + " where " + $.username.resolve($.ownerName) + " is located.");
     }
     
     if (command.equalsIgnoreCase("timepromotehours")) {
@@ -247,7 +300,8 @@ $.timer.addTimer("./systems/timeSystem.js", "autosave", true, function() {
 $.registerChatCommand("./systems/timeSystem.js", "time");
 $.registerChatCommand("./systems/timeSystem.js", "time help");
 $.registerChatCommand("./systems/timeSystem.js", "timezone");
-$.registerChatCommand("/systems/timeSystem.js", "timelevel");
-$.registerChatCommand("/systems/timeSystem.js", "timepromotehours");
-$.registerChatCommand("/systems/timeSystem.js", "timetoggle");
+$.registerChatCommand("/systems/timeSystem.js", "streamertime");
+$.registerChatCommand("/systems/timeSystem.js", "timelevel", "mod");
+$.registerChatCommand("/systems/timeSystem.js", "timepromotehours", "mod");
+$.registerChatCommand("/systems/timeSystem.js", "timetoggle", "mod");
 

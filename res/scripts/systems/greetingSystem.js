@@ -29,7 +29,7 @@ $.on('ircChannelJoin', function(event) {
         $.say(s.replace("(name)", username));
            
     } else {
-        println("[Join] " + username + " has joined the channel.");
+        //println("[Join] " + username + " has joined the channel.");
     } 
 });
 
@@ -37,7 +37,7 @@ $.on('ircChannelLeave', function(event) {
     var sender = event.getUser().toLowerCase();
     var username = $.username.resolve(sender);
     
-    println("[Leave] " + username + " has left the channel.");
+    //println("[Leave] " + username + " has left the channel.");
 });
 
 $.on('command', function(event) {
