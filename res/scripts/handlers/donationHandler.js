@@ -64,13 +64,15 @@ setTimeout(function(){
 if ($.moduleEnabled("./handlers/donationHandler.js")) {
     $.timer.addTimer("./handlers/donationHandler.js", "currdonation", true, function() {
         $var.currDonation = $.readFile($.checkerstorepath);
-        if ($var.currDonation.toString() != $.inidb.get("donationalert", "lastdonation")) {
-            $.inidb.set("donationalert", "lastdonation", $.readFile($.checkerstorepath));
+        if ($var.currDonation.toString() != $.inidb.get("settings", "lastdonation")) {
+        if ($var.currDonation.toString()!=null || $var.currDonation.toString()!="") {
+            $.inidb.set("settings", "lastdonation", $.readFile($.checkerstorepath));
             if ($.donation_toggle == 1) {
                 $.say($.username.resolve($.ownerName) + " has received a donation from: " + $.readFile($.checkerstorepath));
             } else if ($.donation_toggle == 0) {
                 println($.username.resolve($.ownerName) + " has received a donation from: " + $.readFile($.checkerstorepath));
             }
+        }
         }
 }, 10* 1000);
 

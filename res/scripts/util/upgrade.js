@@ -629,7 +629,8 @@ if ($.inidb.GetInteger("init", "upgrade", "version") < 14) {
     
     println("     Creating blank currentsong.txt");
     $.writeToFile("", "./addons/youtubePlayer/currentsong.txt", false);
-    
+    $.inidb.set('settings', "lastdonation", "");
+    $.inidb.set('settings', "lastsong", "");    
     println("   End version 13 upgrades...");
 }
 

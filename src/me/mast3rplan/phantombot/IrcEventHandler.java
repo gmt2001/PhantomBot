@@ -144,7 +144,7 @@ public class IrcEventHandler implements IRCEventListener
                     eventBus.postAsync(new IrcChannelUserModeEvent(session, cmessageEvent.getChannel(), cmessageEvent.getNick(), "O", true));
                 }
 
-                com.gmt2001.Console.out.println("Message from Channel [" + cmessageEvent.getChannel().getName() + "] " + cmessageEvent.getNick());
+                //com.gmt2001.Console.out.println("Message from Channel [" + cmessageEvent.getChannel().getName() + "] " + cmessageEvent.getNick());
                 Channel cchannel = cmessageEvent.getChannel();
                 String cusername = cmessageEvent.getNick();
                 String cmessage = cmessageEvent.getMessage();
@@ -156,7 +156,7 @@ public class IrcEventHandler implements IRCEventListener
 
                 if (ctcmessageEvent.getCtcpString().startsWith("ACTION"))
                 {
-                    com.gmt2001.Console.out.println("Message from Channel [" + ctcmessageEvent.getChannel().getName() + "] " + ctcmessageEvent.getNick());
+                    //com.gmt2001.Console.out.println("Message from Channel [" + ctcmessageEvent.getChannel().getName() + "] " + ctcmessageEvent.getNick());
                     Channel ctcchannel = ctcmessageEvent.getChannel();
                     String ctcusername = ctcmessageEvent.getNick();
                     String ctcmessage = ctcmessageEvent.getCtcpString().replace("ACTION", "/me");

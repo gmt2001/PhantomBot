@@ -9,10 +9,14 @@ if($.timePromoteHours == "" || $.timePromoteHours == null){
     $.inidb.set("settings","timePromoteHours","");
 }
 
+if($.firstrun) {
 $.say("");
-$.say("The current time zone is '" + $.timezone + "'! To change it use '!timezone <timezone>'.")
-$.say("A list of time zones can be found here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones.");
+$.say("The current time zone is '" + $.timezone + "'.");
+$.say("To change it use '!timezone (timezone)'.");
+$.say("A list of time zones can be found here: ");
+$.say("http://en.wikipedia.org/wiki/List_of_tz_database_time_zones.");
 $.say("");
+}
 
 $.setTimeZone = function (timezone) { 
     var validIDs = java.util.TimeZone.getAvailableIDs();

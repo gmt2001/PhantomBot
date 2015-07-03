@@ -795,15 +795,16 @@ if ($.moduleEnabled('./addonscripts/youtubePlayer.js')) {
 
 $.timer.addTimer("./addonscripts/youtubePlayer.js", "currsongyt", true, function() {
 	$var.ytcurrSong = $.readFile("addons/youtubePlayer/currentsong.txt");
-
 	if (($var.ytcurrSong.toString() != $.inidb.get("settings", "lastsong")) && !musicPlayerConnected) {
-	  	$.inidb.set("settings", "lastsong", $var.ytcurrSong.toString());
+        if ($var.ytcurrSong.toString()!=null || $var.ytcurrSong.toString()!="") {
+        $.inidb.set("settings", "lastsong", $var.ytcurrSong.toString());
   		if ($.song_toggle == 1) {
   			$.say("[\u266B] Now Playing -- " + $var.ytcurrSong.toString());
   		} else {
   			println("[\u266B] Now Playing -- " + $var.ytcurrSong.toString());
   		}
 	}
+        }
 
 }, 10* 1000);
 
