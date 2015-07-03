@@ -47,9 +47,11 @@ $.on('command', function (event) {
             if($.donation_toggle==1) {
                 $.inidb.set('settings','donation_toggle', 0);
                 $.donation_toggle = 0;
+                $.say('Donation alerts have been disabled.');
             } else {
                 $.inidb.set('settings','donation_toggle', 1);
                 $.donation_toggle = 1;
+                $.say('Donation alerts have been enabled.');
             }
         }
     }
