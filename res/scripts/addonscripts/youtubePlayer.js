@@ -295,9 +295,9 @@ function nextDefault() {
         println("[\u266B] Now Playing -- " + name + " - requested by @" + user);
     }
     if (user.equalsIgnoreCase("DJ " + $.username.resolve($.botname))) {
-        $.writeToFile(name, "addons/youtubePlayer/currentsong.txt", false);
+        $.writeToFile(name + " ", "addons/youtubePlayer/currentsong.txt", false);
     } else if (!user.equalsIgnoreCase("DJ " + $.username.resolve($.botname))){
-        $.writeToFile(name + " requested by: " + user, "addons/youtubePlayer/currentsong.txt", false);
+        $.writeToFile(name + " requested by: " + user + " ", "addons/youtubePlayer/currentsong.txt", false);
     }
 }
 
@@ -357,9 +357,9 @@ function next() {
         println(nextMsg);
     }
     if (user.equalsIgnoreCase("DJ " + $.username.resolve($.botname))) {
-        $.writeToFile(name, "addons/youtubePlayer/currentsong.txt", false);
+        $.writeToFile(name + " ", "addons/youtubePlayer/currentsong.txt", false);
     } else if (!user.equalsIgnoreCase("DJ " + $.username.resolve($.botname))){
-        $.writeToFile(name + " requested by: " + user, "addons/youtubePlayer/currentsong.txt", false);
+        $.writeToFile(name + " requested by: " + user + " ", "addons/youtubePlayer/currentsong.txt", false);
     }
 
 }

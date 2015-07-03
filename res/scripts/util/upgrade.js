@@ -618,6 +618,21 @@ if ($.inidb.GetInteger("init", "upgrade", "version") < 13) {
     println("   End version 13 upgrades...");
 }
 
+if ($.inidb.GetInteger("init", "upgrade", "version") < 14) {
+    println("   Starting version 14 upgrades...");
+    
+    println("     Updating subscribeHandler.js disable path");
+
+    if (!$.moduleEnabled("./subscribeHandler.js")) {
+        $.inidb.set('modules', "./handlers/subscribeHandler.js" + '_enabled', "0");
+    }
+    
+    println("     Creating blank currentsong.txt");
+    $.writeToFile("", "./addons/youtubePlayer/currentsong.txt", false);
+    
+    println("   End version 13 upgrades...");
+}
+
 println("   Saving...");
 
 $.inidb.SetInteger("init", "upgrade", "version", parseInt($.upgrade_version));

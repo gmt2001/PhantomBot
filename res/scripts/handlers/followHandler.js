@@ -27,7 +27,7 @@ $.on('twitchFollow', function(event) {
                 } else {
                     s = "Thanks for the follow (name)!";
                 }
-                $.writeToFile(username, "./web/latestfollower.txt", false);
+                $.writeToFile(username + " ", "./web/latestfollower.txt", false);
             }
             
             while (s.indexOf('(name)') != -1) {
@@ -52,8 +52,9 @@ $.on('twitchFollow', function(event) {
                     $.checkFollowTrain();
                 }, 1000);
             }
-
-            $.say(s);
+            if (!$.firstrun) {
+                $.say(s);
+            }
         }
         
         if ($.moduleEnabled("./systems/pointSystem.js") && p > 0) {
@@ -168,6 +169,7 @@ $.checkFollowTrain = function() {
         $.timer.clearTimer("./handlers/followHandler.js", "followtrain", true);
         $.followtimer = null;
         
+        if (!$.firstrun) {
         if ($.followtrain > 1) {
             if ($.followtrain == 3) {
                 $.say("Triple follow!!");
@@ -183,6 +185,7 @@ $.checkFollowTrain = function() {
                 $.say("Unbelievable follow train!! (" + $.followtrain + ")");
             }
         }
+    }
         
         $.followtrain = 0;
     }

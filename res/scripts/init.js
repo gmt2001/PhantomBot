@@ -465,10 +465,10 @@ $.loadScript('./util/lang.js');
 
 $.logEvent("init.js", 410, "Initializing...");
 
-var firstrun = false;
+$.firstrun = false;
 
 if ($.inidb.GetBoolean("init", "initialsettings", "loaded") == false) {
-    firstrun = true;
+    $.firstrun = true;
 }
 
 $.initialsettings_update = 1;
@@ -478,7 +478,7 @@ if ($.inidb.GetBoolean("init", "initialsettings", "loaded") == false
     $.loadScript('./util/initialsettings.js');
 }
 
-$.upgrade_version = 13;
+$.upgrade_version = 14;
 if ($.inidb.GetInteger("init", "upgrade", "version") < $.upgrade_version) {
     $.logEvent("init.js", 426, "Running upgrade from v" + $.inidb.GetInteger("init", "upgrade", "version") + " to v" + $.upgrade_version + "...");
     $.loadScript('./util/upgrade.js');
@@ -487,10 +487,8 @@ if ($.inidb.GetInteger("init", "upgrade", "version") < $.upgrade_version) {
 $.loadScript('./util/permissions.js');
 $.loadScript('./util/chatModerator.js');
 
-if (firstrun) {
-    var index = $.getModuleIndex("./handlers/subscribeHandler.js");
-    modules[index][1] = false;
-    $.inidb.set('modules', modules[index][0] + '_enabled', "0");
+if ($.firstrun && !$.moduleEnabled("./handlers/subscribeHandler.js")) {
+    $.inidb.set('modules', './handlers/subscribeHandler.js' + '_enabled', "0");
 }
 
 $.loadScriptsRecursive(".");
