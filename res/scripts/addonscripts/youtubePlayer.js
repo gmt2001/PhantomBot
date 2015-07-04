@@ -46,8 +46,25 @@ function youtubeParser(url){
     }
 }
 
+function stringParse(text) {
+//disallowed symbols: /\:*?"<>|
+    var s = text.toString();
+    s = s.replace("/", "");
+    s = s.replace("\\", "");
+    s = s.replace(":", "-");
+    s = s.replace("*", "");
+    s = s.replace("?", "");
+    s = s.replace("<", "");
+    s = s.replace(">", "");
+    s = s.replace('"', "");
+    s = s.replace("|", "");
+    s = s.replace("#", "");
+    return s;
+}
+
 function Song(name, user) {
     var x = 0;
+    var y = 0;
     var retries = 9;
     if (name==null || name=="") return;
     var search = new String(name);
@@ -68,7 +85,21 @@ function Song(name, user) {
 
         if (response != null) {
             this.name = response.getString("title");
-            this.length = 1;
+            while( y <= retries ) {
+		y++;
+		var ldata = $.youtube.GetVideoLength(this.id);
+		//ldata[1] = returns only highest integer of time
+		//ldata[2] = all integers of time separated by :
+		if (ldata[2]!="") {
+                    var duration = ldata[2];
+                    this.length = duration;
+                    break;
+		}
+            }
+            if( y > retries ){
+                y = 0;
+		return;
+            }
         } else {
             this.id = null;
             this.name = "";
@@ -78,7 +109,8 @@ function Song(name, user) {
     
         while( x <= retries ) {
             x++;
-            var data = $.youtube.SearchForVideo(youtubeParser(name));
+            var regexname = stringParse(name);
+            var data = $.youtube.SearchForVideo(youtubeParser(regexname));
             if (data[0]!="") {
                 this.id = data[0];
                 this.name = data[1];
@@ -101,6 +133,21 @@ function Song(name, user) {
                 
                 return;
         }
+        while( y <= retries ) {
+            y++;
+            ldata = $.youtube.GetVideoLength(this.id);
+            //ldata[1] = returns only highest integer of time
+            //ldata[2] = all integers of time separated by :
+            if (ldata[2]!="") {
+                duration = ldata[2];
+		this.length = duration;
+		break;
+            }
+	}
+	if( y > retries ){
+            y = 0;
+            return;
+        }
     }
 
     
@@ -109,20 +156,7 @@ function Song(name, user) {
     }
     
     this.getLength = function () {
-        while( x <= retries ) {
-            x++;
-            var ldata = $.youtube.GetVideoLength(this.id);
-            if (ldata[1]!="") {
-                this.length = ldata[1];
-                return parseInt(this.length);
-                break;
-            }
-        }
-        if( x > retries )
-        {
-                x = 0;
-                return;
-        }
+        return this.length;
     }
 
     this.cue = function () {
@@ -634,8 +668,8 @@ $.on('command', function (event) {
                 return;
             }           
             
-            if ( (video.getLength() > 8.0)) {
-                $.say("Song >> " + video.getName() + " is " + video.getLength().toString() + " minutes long, maximum length is 7 minutes.");
+            if ( (video.getLength() > 480.0)) {
+                $.say("Song >> " + video.getName() + " is over " + parseInt(video.length/60) + " minutes long, maximum length is 8 minutes.");
                 return;
             }
 
