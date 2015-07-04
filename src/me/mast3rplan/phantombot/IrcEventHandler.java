@@ -74,7 +74,9 @@ public class IrcEventHandler implements IRCEventListener
                 {
                     String[] tags = cmessageTags.split(";");
 
-                    for (int i = 0; i < tags.length; i++)
+                    boolean triggerSub = false;
+                    boolean triggerMod = false;
+                    for (int i = 0; i < tags.length && !triggerSub && !triggerMod; i++)
                     {
                         if (PhantomBot.enableDebugging)
                         {
@@ -98,18 +100,19 @@ public class IrcEventHandler implements IRCEventListener
                             com.gmt2001.Console.out.println(">>>[DEBUG] Split[1] " + kv[1]);
                         }
 
-                        if (kv[0].equalsIgnoreCase("subscriber") && kv.length == 2 && kv[1].equalsIgnoreCase("1"))
+                        if (!triggerSub && kv[0].equalsIgnoreCase("subscriber") && kv.length == 2 && kv[1].equalsIgnoreCase("1"))
                         {
                             if (PhantomBot.enableDebugging)
                             {
                                 com.gmt2001.Console.out.println(">>>[DEBUG] Dectected Subscriber");
                             }
 
-                            eventBus.postAsync(new IrcPrivateMessageEvent(session, "jtv", "SPECIALUSER " + cmessageEvent.getNick() + " subscriber"));
                             com.gmt2001.Console.out.println(">>Next message marked Subscriber by IRCv3");
+                            eventBus.postAsync(new IrcPrivateMessageEvent(session, "jtv", "SPECIALUSER " + cmessageEvent.getNick() + " subscriber"));
+                            triggerSub = true;
                         }
 
-                        if (kv[0].equalsIgnoreCase("user-type") && !cmessageEvent.getChannel().getName().replaceAll("#", "").equalsIgnoreCase(cmessageEvent.getNick()))
+                        if (!triggerMod && kv[0].equalsIgnoreCase("user-type") && !cmessageEvent.getChannel().getName().replaceAll("#", "").equalsIgnoreCase(cmessageEvent.getNick()))
                         {
                             if (PhantomBot.enableDebugging)
                             {
@@ -133,6 +136,7 @@ public class IrcEventHandler implements IRCEventListener
                                 
                                 com.gmt2001.Console.out.println(">>Next message marked Moderator/Staff by IRCv3");
                                 eventBus.postAsync(new IrcChannelUserModeEvent(session, cmessageEvent.getChannel(), cmessageEvent.getNick(), "O", true));
+                                triggerMod = true;
                             }
                         }
                     }
@@ -202,16 +206,18 @@ public class IrcEventHandler implements IRCEventListener
                     if (eventTags.length() > 0)
                     {
                         String[] tags = eventTags.split(";");
-                        for (int i = 0; i < tags.length; i++)
+                        boolean triggerMod = false;
+                        for (int i = 0; i < tags.length && !triggerMod; i++)
                         {
                             String[] kv = tags[i].split("=");
 
-                            if (kv[0].equalsIgnoreCase("user-type"))
+                            if (!triggerMod && kv[0].equalsIgnoreCase("user-type"))
                             {
                                 if (kv.length > 1 && !kv[1].isEmpty())
                                 {
                                     com.gmt2001.Console.out.println(">>Userstate marked bot Moderator/Staff by IRCv3");
                                     eventBus.postAsync(new IrcChannelUserModeEvent(session, session.getChannel(event.arg(0)), PhantomBot.instance().getSession().getNick(), "O", true));
+                                    triggerMod = true;
                                 }
                             }
                         }
