@@ -1197,31 +1197,19 @@ $.on('ircChannelMessage', function(event) {
         if (permitted == false) {
             $.logEvent("chatModerator.js", 1154, "Automatic link punishment triggered by " + username + ". Link: " + $.getLastLink() + "      Message: " + omessage);
                 
-            autoPurgeUser(username, linksmessage);
+        autoPurgeUser(username, linksmessage);
         }
     } else if (capsallowed == false && capsRatio > capstriggerratio && msglen > capstriggerlength && !$.isMod(sender) && (!$.isSub(sender) || !subsallowed) && (!$.isReg(sender) || !regsallowed)) {
-        timeoutUser(sender, 1);
-        
-        $.say(username + " -> " + capsmessage + " [Purged] Message Length: " + $.strlen(message) + "    Caps Limit: " + $.inidb.get("settings", "capstriggerratio"));
-        
+        autoPurgeUser(username, capsmessage + " [Purged] Message Length: " + $.strlen(message) + "    Caps Limit: " + $.inidb.get("settings", "capstriggerratio"));
         $.logEvent("chatModerator.js", 1163, "Automatic caps punishment triggered by " + username + ". Message Length: " + $.strlen(message) + "    Caps Ratio: " + capsRatio + "    Message: " + omessage);
     } else if (!symbolsallowed && !$.isMod(sender) && (!$.isSub(sender) || !subsallowed) && (!$.isReg(sender) || !regsallowed) && (numsymbols > symbolslimit || rptsymbols > symbolsrepeatlimit)) {
-        timeoutUser(sender, 1);
-        
-        $.say(username + " -> " + symbolsmessage + " [Purged] Symbol limit: " + $.inidb.get("settings", "symbolslimit") + ". Total symbols: " + numsymbols);
-        
+        autoPurgeUser(username, symbolsmessage + " [Purged] Symbol limit: " + $.inidb.get("settings", "symbolslimit") + ". Total symbols: " + numsymbols);
         $.logEvent("chatModerator.js", 1193, "Automatic symbols punishment triggered by " + username + ". Longest symbol sequence: " + rptsymbols + ". Total symbols: " + numsymbols + ". Message: " + omessage);
     } else if (!repeatallowed && !$.isMod(sender) && (!$.isSub(sender) || !subsallowed) && (!$.isReg(sender) || !regsallowed) && (numrepeat > repeatlimit || rptrepeat > repeatlimit) && rptrepeat > 6) {
-        timeoutUser(sender, 1);
-        
-        $.say(username + " -> " + repeatmessage + " [Purged]  Repeating Character limit: " + $.inidb.get("settings", "repeatlimit") + ". Total Characters: " + numrepeat);
-        
+        autoPurgeUser(username, repeatmessage + " [Purged]  Repeating Character limit: " + $.inidb.get("settings", "repeatlimit") + ". Total Characters: " + numrepeat);
         $.logEvent("chatModerator.js", 1199, "Automatic repeat punishment triggered by " + username + ". Longest repeat sequence: " + rptrepeat + ". Total repeat sequences: " + numrepeat + ". Message: " + omessage);
     } else if (!graphemeallowed && !$.isMod(sender) && (!$.isSub(sender) || !subsallowed) && (!$.isReg(sender) || !regsallowed) && grapheme > graphemelimit) {
-        timeoutUser(sender, 1);
-        
-        $.say(username + " -> " + graphememessage + " [Purged] Grapheme limit: " + $.inidb.get("settings", "graphemelimit"));
-        
+        autoPurgeUser(username, graphememessage +  " [Purged] Grapheme limit: " + $.inidb.get("settings", "graphemelimit"));
         $.logEvent("chatModerator.js", 1205, "Automatic grapheme punishment triggered by " + username + ". Longest grapheme sequence: " + grapheme + ". Message: " + omessage);
     } else if (!spamallowed && !$.isMod(sender) && (!$.isSub(sender) || !subsallowed) && (!$.isReg(sender) || !regsallowed) ) {
         var idx = -1;
@@ -1242,7 +1230,6 @@ $.on('ircChannelMessage', function(event) {
         
         if ($.spamtracker[idx][1] >= spamlimit) {
             timeoutUserFor(sender, 30);
-            
             $.say(username + " -> " + spammessage + " [Timed Out (30)]");
             
             $.logEvent("chatModerator.js", 1186, "Automatic spam punishment triggered by " + username + ". Messages in the last 30 seconds: " + $.spamtracker[idx][1]);
