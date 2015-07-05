@@ -20,6 +20,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -133,8 +137,21 @@ public class IniStore implements ActionListener
                 }
             }
 
-            FileUtils.writeStringToFile(new File("./inistore/" + fName + ".ini"), wdata);
-
+            //FileUtils.writeStringToFile(new File("./inistore/" + fName + ".ini"), wdata);
+            /*File f = new File("./inistore/" + fName + ".ini");
+            
+            if (!f.exists()) {
+                f.createNewFile();
+            }
+            
+            try (Writer w = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8")))
+            {
+                w.write(wdata);
+            }*/
+            
+            Files.write(Paths.get("./inistore/" + fName + ".ini"), wdata.getBytes(StandardCharsets.UTF_8),
+                    StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+            
             changed.remove(fName);
         } catch (IOException ex)
         {
