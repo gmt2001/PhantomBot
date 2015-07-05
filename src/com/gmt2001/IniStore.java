@@ -137,18 +137,6 @@ public class IniStore implements ActionListener
                 }
             }
 
-            //FileUtils.writeStringToFile(new File("./inistore/" + fName + ".ini"), wdata);
-            /*File f = new File("./inistore/" + fName + ".ini");
-            
-            if (!f.exists()) {
-                f.createNewFile();
-            }
-            
-            try (Writer w = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8")))
-            {
-                w.write(wdata);
-            }*/
-            
             Files.write(Paths.get("./inistore/" + fName + ".ini"), wdata.getBytes(StandardCharsets.UTF_8),
                     StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
             

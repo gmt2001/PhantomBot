@@ -25,6 +25,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.security.SecureRandom;
 import java.security.NoSuchAlgorithmException;
 import java.util.TreeMap;
@@ -531,7 +535,8 @@ public class PhantomBot implements Listener
                 data += "webenable=" + webenable + "\r\n";
                 data += "musicenable=" + musicenable;
 
-                FileUtils.writeStringToFile(new File("./botlogin.txt"), data);
+                Files.write(Paths.get("./botlogin.txt"), data.getBytes(StandardCharsets.UTF_8),
+                    StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
                 
                 //Commented out since you need to restart the bot for port changes anyway
                 /*if(webenabled)
@@ -927,7 +932,9 @@ public class PhantomBot implements Listener
             data += "youtubekey=" + youtubekey + "\r\n";
             data += "webenable=" + webenable + "\r\n";
             data += "musicenable=" + musicenable;
-            FileUtils.writeStringToFile(new File("./botlogin.txt"), data);
+            
+            Files.write(Paths.get("./botlogin.txt"), data.getBytes(StandardCharsets.UTF_8),
+                    StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
         }
 
         PhantomBot.instance = new PhantomBot(user, oauth, apioauth, clientid, channel, owner, baseport, hostname, port, msglimit30, youtubekey, webenable, musicenable);
