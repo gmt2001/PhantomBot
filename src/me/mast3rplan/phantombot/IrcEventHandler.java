@@ -40,16 +40,19 @@ public class IrcEventHandler implements IRCEventListener
     {
         EventBus eventBus = EventBus.instance();
         Session session = event.getSession();
+        boolean triggerSub = false;
+        boolean triggerMod = false;
+        boolean triggerViewer = false;
 
         switch (event.getType())
         {
             case CONNECT_COMPLETE:
                 com.gmt2001.Console.out.println("Connected to IRC " + session.getNick() + "@" + session.getConnectedHostName());
-                eventBus.post(new IrcConnectCompleteEvent(session));
+                eventBus.postAsync(new IrcConnectCompleteEvent(session));
                 break;
             case JOIN_COMPLETE:
                 com.gmt2001.Console.out.println("Channel Joined [" + ((JoinCompleteEvent) event).getChannel().getName() + "]");
-                eventBus.post(new IrcJoinCompleteEvent(session, ((JoinCompleteEvent) event).getChannel()));
+                eventBus.postAsync(new IrcJoinCompleteEvent(session, ((JoinCompleteEvent) event).getChannel()));
                 break;
             case JOIN:
                 JoinEvent joinEvent = (JoinEvent) event;
@@ -69,15 +72,14 @@ public class IrcEventHandler implements IRCEventListener
                 {
                     com.gmt2001.Console.out.println(">>>[DEBUG] cmessageTags " + cmessageTags);
                 }
-
+                
                 if (cmessageTags.length() > 0)
                 {
                     String[] tags = cmessageTags.split(";");
 
-                    boolean triggerSub = false;
-                    boolean triggerMod = false;
-                    for (int i = 0; i < tags.length && !triggerSub && !triggerMod; i++)
+                    for (int i = 0; i < tags.length && !triggerSub && !triggerMod && !triggerViewer; i++)
                     {
+                    
                         if (PhantomBot.enableDebugging)
                         {
                             com.gmt2001.Console.out.println(">>>[DEBUG] Splitting Tag " + tags[i]);
@@ -108,7 +110,7 @@ public class IrcEventHandler implements IRCEventListener
                             }
 
                             com.gmt2001.Console.out.println(">>Next message marked Subscriber by IRCv3");
-                            eventBus.postAsync(new IrcPrivateMessageEvent(session, "jtv", "SPECIALUSER " + cmessageEvent.getNick() + " subscriber"));
+                            eventBus.post(new IrcPrivateMessageEvent(session, "jtv", "SPECIALUSER " + cmessageEvent.getNick() + " subscriber"));
                             triggerSub = true;
                         }
 
@@ -125,8 +127,8 @@ public class IrcEventHandler implements IRCEventListener
                                 {
                                     com.gmt2001.Console.out.println(">>>[DEBUG] User is not a moderator");
                                 }
-                                
-                                eventBus.postAsync(new IrcChannelUserModeEvent(session, cmessageEvent.getChannel(), cmessageEvent.getNick(), "O", false));
+                                eventBus.post(new IrcChannelUserModeEvent(session, cmessageEvent.getChannel(), cmessageEvent.getNick(), "O", false));
+                                triggerViewer = true;
                             } else
                             {
                                 if (PhantomBot.enableDebugging)
@@ -135,7 +137,7 @@ public class IrcEventHandler implements IRCEventListener
                                 }
                                 
                                 com.gmt2001.Console.out.println(">>Next message marked Moderator/Staff by IRCv3");
-                                eventBus.postAsync(new IrcChannelUserModeEvent(session, cmessageEvent.getChannel(), cmessageEvent.getNick(), "O", true));
+                                eventBus.post(new IrcChannelUserModeEvent(session, cmessageEvent.getChannel(), cmessageEvent.getNick(), "O", true));
                                 triggerMod = true;
                             }
                         }
@@ -145,7 +147,8 @@ public class IrcEventHandler implements IRCEventListener
                 if (cmessageEvent.getChannel().getName().replaceAll("#", "").equalsIgnoreCase(cmessageEvent.getNick()))
                 {
                     com.gmt2001.Console.out.println(">>Next message marked Moderator (Broadcaster)");
-                    eventBus.postAsync(new IrcChannelUserModeEvent(session, cmessageEvent.getChannel(), cmessageEvent.getNick(), "O", true));
+                    eventBus.post(new IrcChannelUserModeEvent(session, cmessageEvent.getChannel(), cmessageEvent.getNick(), "O", true));
+                    triggerMod = true;
                 }
 
                 //com.gmt2001.Console.out.println("Message from Channel [" + cmessageEvent.getChannel().getName() + "] " + cmessageEvent.getNick());
@@ -153,7 +156,8 @@ public class IrcEventHandler implements IRCEventListener
                 String cusername = cmessageEvent.getNick();
                 String cmessage = cmessageEvent.getMessage();
 
-                eventBus.postAsync(new IrcChannelMessageEvent(session, cusername, cmessage, cchannel));
+                eventBus.post(new IrcChannelMessageEvent(session, cusername, cmessage, cchannel));
+                triggerViewer = true;
                 break;
             case CTCP_EVENT:
                 CtcpEvent ctcmessageEvent = (CtcpEvent) event;
@@ -165,7 +169,7 @@ public class IrcEventHandler implements IRCEventListener
                     String ctcusername = ctcmessageEvent.getNick();
                     String ctcmessage = ctcmessageEvent.getCtcpString().replace("ACTION", "/me");
 
-                    eventBus.postAsync(new IrcChannelMessageEvent(session, ctcusername, ctcmessage, ctcchannel));
+                    eventBus.post(new IrcChannelMessageEvent(session, ctcusername, ctcmessage, ctcchannel));
                 }
                 break;
             case PRIVATE_MESSAGE:
@@ -173,7 +177,7 @@ public class IrcEventHandler implements IRCEventListener
                 String pusername = pmessageEvent.getNick();
                 String pmessage = pmessageEvent.getMessage();
 
-                eventBus.postAsync(new IrcPrivateMessageEvent(session, pusername, pmessage));
+                eventBus.post(new IrcPrivateMessageEvent(session, pusername, pmessage));
                 break;
             case MODE_EVENT:
                 ModeEvent modeEvent = (ModeEvent) event;
@@ -192,7 +196,7 @@ public class IrcEventHandler implements IRCEventListener
 
                         if (adj.getArgument().length() > 0)
                         {
-                            eventBus.postAsync(new IrcChannelUserModeEvent(session, modeEvent.getChannel(), adj.getArgument(),
+                            eventBus.post(new IrcChannelUserModeEvent(session, modeEvent.getChannel(), adj.getArgument(),
                                     String.valueOf(adj.getMode()), adj.getAction() == ModeAdjustment.Action.PLUS));
                         }
                     }
@@ -206,8 +210,8 @@ public class IrcEventHandler implements IRCEventListener
                     if (eventTags.length() > 0)
                     {
                         String[] tags = eventTags.split(";");
-                        boolean triggerMod = false;
-                        for (int i = 0; i < tags.length && !triggerMod; i++)
+  
+                        for (int i = 0; i < tags.length && !triggerSub && !triggerMod && !triggerViewer; i++)
                         {
                             String[] kv = tags[i].split("=");
 
@@ -216,7 +220,7 @@ public class IrcEventHandler implements IRCEventListener
                                 if (kv.length > 1 && !kv[1].isEmpty())
                                 {
                                     com.gmt2001.Console.out.println(">>Userstate marked bot Moderator/Staff by IRCv3");
-                                    eventBus.postAsync(new IrcChannelUserModeEvent(session, session.getChannel(event.arg(0)), PhantomBot.instance().getSession().getNick(), "O", true));
+                                    eventBus.post(new IrcChannelUserModeEvent(session, session.getChannel(event.arg(0)), PhantomBot.instance().getSession().getNick(), "O", true));
                                     triggerMod = true;
                                 }
                             }
@@ -226,7 +230,8 @@ public class IrcEventHandler implements IRCEventListener
                     if (event.arg(0).replaceAll("#", "").equalsIgnoreCase(PhantomBot.instance().getSession().getNick()))
                     {
                         com.gmt2001.Console.out.println(">>Userstate marked bot Moderator (Broadcaster)");
-                        eventBus.postAsync(new IrcChannelUserModeEvent(session, session.getChannel(event.arg(0)), PhantomBot.instance().getSession().getNick(), "O", true));
+                        eventBus.post(new IrcChannelUserModeEvent(session, session.getChannel(event.arg(0)), PhantomBot.instance().getSession().getNick(), "O", true));
+                        triggerMod = true;
                     }
                 }
                 break;
