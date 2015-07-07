@@ -136,6 +136,9 @@ public class IniStore implements ActionListener
                     wdata += ((String) akdata[b]) + "=" + ((String) avdata[b]) + "\r\n";
                 }
             }
+            if(!Files.isDirectory(Paths.get("./inistore/"))) {
+                Files.createDirectory(Paths.get("./inistore/"));
+            }
 
             Files.write(Paths.get("./inistore/" + fName + ".ini"), wdata.getBytes(StandardCharsets.UTF_8),
                     StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
