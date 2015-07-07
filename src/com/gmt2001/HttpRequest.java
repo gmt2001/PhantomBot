@@ -71,6 +71,7 @@ public class HttpRequest
                 h.setUseCaches(false);
                 h.setDefaultUseCaches(false);
                 h.setConnectTimeout(timeout);
+                h.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.52 Safari/537.36 PhantomBotJ/2015");
 
                 if (!post.isEmpty())
                 {
@@ -108,6 +109,7 @@ public class HttpRequest
                 h.setUseCaches(false);
                 h.setDefaultUseCaches(false);
                 h.setConnectTimeout(timeout);
+                h.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.52 Safari/537.36 PhantomBotJ/2015");
 
                 if (!post.isEmpty())
                 {

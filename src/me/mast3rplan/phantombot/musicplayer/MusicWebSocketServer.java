@@ -49,13 +49,13 @@ public class MusicWebSocketServer extends WebSocketServer
     @Override
     public void onOpen(WebSocket webSocket, ClientHandshake clientHandshake)
     {
-        EventBus.instance().post(new MusicPlayerConnectEvent());
+        EventBus.instance().postAsync(new MusicPlayerConnectEvent());
     }
 
     @Override
     public void onClose(WebSocket webSocket, int i, String s, boolean b)
     {
-        EventBus.instance().post(new MusicPlayerDisconnectEvent());
+        EventBus.instance().postAsync(new MusicPlayerDisconnectEvent());
     }
 
     @Override
@@ -65,19 +65,19 @@ public class MusicWebSocketServer extends WebSocketServer
         if (m[0].equals("state"))
         {
             MusicPlayerState mps = MusicPlayerState.getStateFromId(Integer.parseInt(m[1]));
-            EventBus.instance().post(new MusicPlayerStateEvent(mps));
+            EventBus.instance().postAsync(new MusicPlayerStateEvent(mps));
         }
         if (m[0].equals("ready"))
         {
-            EventBus.instance().post(new MusicPlayerStateEvent(MusicPlayerState.NEW));
+            EventBus.instance().postAsync(new MusicPlayerStateEvent(MusicPlayerState.NEW));
         }
         if (m[0].equals("currentid"))
         {
-            EventBus.instance().post(new MusicPlayerCurrentIdEvent(m[1]));
+            EventBus.instance().postAsync(new MusicPlayerCurrentIdEvent(m[1]));
         }
         if (m[0].equals("currentvolume"))
         {
-            EventBus.instance().post(new MusicPlayerCurrentVolumeEvent(Double.parseDouble(m[1])));
+            EventBus.instance().postAsync(new MusicPlayerCurrentVolumeEvent(Double.parseDouble(m[1])));
         }
     }
 

@@ -1,100 +1,81 @@
-var streamSeconds = 0; // stream uptime in seconds
-var botSeconds = 0;
+var seconds = 0; // stream uptime in seconds
 $.timer.addTimer("./commands/highlightCommand.js", "highlightcommand", true, function() {
         if (!$.isOnline($.channelName)) {
-                        streamSeconds=0;
-                        botSeconds++;
+                        seconds=0;
 			return;
         }
         else {
-			streamSeconds++;
-                        botSeconds++;
+			seconds++;
 			return;
         }
 
 }, 1000);
 
 $.on('command', function (event) {
-    var sender = event.getSender().toLowerCase();
-    var username = $.username.resolve(sender).toLowerCase();
-    var command = event.getCommand();
-    var argsString = event.getArguments().trim();
-    var argsString2 = argsString.substring(argsString.indexOf(" ") + 1, argsString.length());
-    var args = event.getArgs();
-    var action = args[0];
-    
-    var botmessage = ("Bot Up Time: " + botSeconds + " seconds.");
-    var botminutes = Math.floor(botSeconds / 60);
-    var bothours = Math.floor(botSeconds / 3600);
-    var botdays = Math.floor(botminutes / 86400);
-    
-    var streamhours = Math.floor(streamSeconds / 3600);
-    var seconds = streamSeconds % 3600;
-    var streamminutes = Math.floor(streamSeconds / 60);
-    seconds %= 60;
-    var curSTime = streamhours + ":" + streamminutes + ":" + seconds;
+	var sender = event.getSender();
+	var command = event.getCommand();
+	var argsString = event.getArguments().trim();
+        var cal = java.util.Calendar.getInstance(java.util.TimeZone.getTimeZone($.timezone));
+        var now = cal.getTime();
+        var datefmt = new java.text.SimpleDateFormat("MM-dd-yyyy");
+        datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.timezone));
+        var timestamp = datefmt.format(now);
 	
-    var message = ("Highlight saved! \"" + argsString + "\" @ " + curSTime);
+	var hlSec  = null; // Stream Current Seconds
+	var hlMin  = null; // Stream Current Minutes
+	var hlHour = null; // Stream Current Hours
+	var hlDay = null; // Stream Current Hours
+	var hlTxt  = null; // Stream Current Time
+		
+	hlSec  = seconds % 60;
+	hlMin  = seconds / 60;
+	hlHour = hlMin / 60;
+        hlDay  = hlHour / 24;
+				
+	hlMin  = Math.floor(hlMin) % 60;
+	hlHour = Math.floor(hlHour);
+        hlDay  = Math.floor(hlDay);
 	
-    if (command.equalsIgnoreCase("highlight")) {
+	if (hlSec  < 10) { hlSec  = "0" + hlSec;  }
+	if (hlMin  < 10) { hlMin  = "0" + hlMin;  }
+	if (hlHour < 10) { hlHour = "0" + hlHour; }
+        
+        hlTxt = hlDay  + "D:" + hlHour + "H:" + hlMin  + "M:" + hlSec  + "S";
+	
+	//hlTxt = hlHour + ":" + hlMin  + ":" + hlSec;
+		
+	if (command.equalsIgnoreCase("highlight")) {
+		if (!$.isMod(sender)) {
+			$.say($.modmsg);
+		} else if (argsString.isEmpty()) { 
+			$.say("Usage: !highlight (note)");
+		} else if (!$.isOnline($.channelName)) {
+			$.say("Stream is Offline!");
+		} else {
+                        timestamp+=" - ";
+                        timestamp+=hlTxt;
+			$.inidb.set("highlights", timestamp, argsString);
+			$.say("Highlight saved! \"" + 
+				argsString + "\" @ " + timestamp + ".");
+		}
+		return;
+	}
+	
+	if (command.equalsIgnoreCase("clearhighlights")) {
+		
 		if (!$.isMod(sender)) {
 			$.say($.modmsg);
 			return;
 		}
 		
-		if (argsString.isEmpty())
-		{
-			$.say("Usage: !highlight <note>");
-			return;
-		} else {
-			if (!$.isOnline($.channelName)) {
-				$.say("Stream if Offline!");
-				return;
-			}
-			else {
-				$.inidb.set("highlights", curSTime, argsString);
-				$.say(message);
-				return;
-			}
-		}
-    } else if (command.equalsIgnoreCase("uptime")) {
-		if (!$.isOnline($.channelName)) {
-			$.say("Stream if Offline!");
-			return;
-		}
-		else {
-			$.say("Stream has been live for " + curSTime);
-			return;
-		}
-	} else if (command.equalsIgnoreCase("clearhighlights")) {
-        if (!isAdmin(sender)) {
-            $.say($.adminmsg);
-            return;
-        }		
 		// TODO: Delete Highlights
 		$.inidb.RemoveFile("highlights");
 		$.inidb.ReloadFile("highlights");
 		$.say("All Highlights have been erased!");
-                
-	} else if (command.equalsIgnoreCase("botuptime") && argsString.isEmpty()) {
-            
-            if (botSeconds >= 60) {
-                botmessage = ("Bot Up Time: " + botminutes + " minutes.");
-            }
-            if (botminutes >= 60) {
-                botmessage = ("Bot Up Time: " + bothours + " hours.");
-            }
-            if (bothours >= 24) {
-                botmessage = ("Bot Up Time: " + botdays + " days.");
-            }
-       
-            $.say(botmessage);
-            return;
-        } 
-
+	}
+	
+	return;
 });
 
 $.registerChatCommand("./commands/highlightCommand.js", "highlight");
-$.registerChatCommand("./commands/highlightCommand.js", "uptime");
 $.registerChatCommand("./commands/highlightCommand.js", "clearhighlights");
-$.registerChatCommand("./commands/highlightCommand.js", "botuptime");

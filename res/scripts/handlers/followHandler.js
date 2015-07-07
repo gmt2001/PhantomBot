@@ -18,7 +18,7 @@ $.on('twitchFollow', function(event) {
             p = 100;
         }
         
-        if ($.announceFollows && $.moduleEnabled("./followHandler.js")) {
+        if ($.announceFollows && $.moduleEnabled("./handlers/followHandler.js")) {
             var s = $.inidb.get('settings', 'followmessage');
             
             if (s == null || s == undefined || $.strlen(s) == 0) {
@@ -27,7 +27,7 @@ $.on('twitchFollow', function(event) {
                 } else {
                     s = "Thanks for the follow (name)!";
                 }
-                $.writeToFile(username, "./web/latestfollower.txt", false);
+                $.writeToFile(username + " ", "./web/latestfollower.txt", false);
             }
             
             while (s.indexOf('(name)') != -1) {
@@ -47,13 +47,14 @@ $.on('twitchFollow', function(event) {
             $.followtrain++;
             $.lastfollow = System.currentTimeMillis();
             
-            if (!$.timer.hasTimer("./followHandler.js", "followtrain", true)) {
-                $.timer.addTimer("./followHandler.js", "followtrain", true, function() {
+            if (!$.timer.hasTimer("./handlers/followHandler.js", "followtrain", true)) {
+                $.timer.addTimer("./handlers/followHandler.js", "followtrain", true, function() {
                     $.checkFollowTrain();
                 }, 1000);
             }
-
-            $.say(s);
+            if (!$.firstrun) {
+                $.say(s);
+            }
         }
         
         if ($.moduleEnabled("./systems/pointSystem.js") && p > 0) {
@@ -90,9 +91,20 @@ $.on('command', function(event) {
     var username = $.username.resolve(sender);
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
+    var args = event.getArgs();
 	
     if (command.equalsIgnoreCase("follow")) {
+        if (args[0] != null) {
+                if($.inidb.get("followed",args[0].toLowerCase())==1){
+                    $.say($.username.resolve(args[0]) + " is following the channel.");
+                    return;                    
+                } else {
+                    $.say($.username.resolve(args[0]) + " is not following the channel.");
+                    return;    
+                }
+        }
         $.say("!followmessage <message>, !followreward <amount>");
+        
     }
 	
     if (command.equalsIgnoreCase("followmessage")) {
@@ -148,15 +160,16 @@ $.on('command', function(event) {
     
 });
 
-$.registerChatCommand("./followHandler.js", "followmessage", "admin");
-$.registerChatCommand("./followHandler.js", "followreward", "admin");
-$.registerChatCommand("./followHandler.js", "followcount");
+$.registerChatCommand("./handlers/followHandler.js", "followmessage", "admin");
+$.registerChatCommand("./handlers/followHandler.js", "followreward", "admin");
+$.registerChatCommand("./handlers/followHandler.js", "followcount");
 
 $.checkFollowTrain = function() {
     if (System.currentTimeMillis() - $.lastfollow > 65 * 1000) {
-        $.timer.clearTimer("./followHandler.js", "followtrain", true);
+        $.timer.clearTimer("./handlers/followHandler.js", "followtrain", true);
         $.followtimer = null;
         
+        if (!$.firstrun) {
         if ($.followtrain > 1) {
             if ($.followtrain == 3) {
                 $.say("Triple follow!!");
@@ -172,6 +185,7 @@ $.checkFollowTrain = function() {
                 $.say("Unbelievable follow train!! (" + $.followtrain + ")");
             }
         }
+    }
         
         $.followtrain = 0;
     }

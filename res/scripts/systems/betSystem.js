@@ -109,7 +109,7 @@ $.on('command', function (event) {
                 $.say("You have set the maximum amount someone could bet to: " + args[1] + " " + $.pointname + ".");
                 }
 
-			}
+            }
             
             if (action.equalsIgnoreCase("results")) {
          
@@ -224,7 +224,7 @@ $.on('command', function (event) {
                 if (sender == betstarter || $.isMod(sender)) {
                     
                 } else {
-                    $.say("@" + $.username.resolve(betstarter) + " opened this bet and is the only that can close it with '!bet win <option>'");
+                    $.say("@" + $.username.resolve(betstarter) + " opened this bet and is the only that can close it with '!bet win (option)'");
                     return;
                 }
 
@@ -329,7 +329,7 @@ $.on('command', function (event) {
 
                     $var.bet_table = {};
                     $var.bet_running = true;
-                    $.say("/me Betting is now open for: " + optionString + " >> You have " + (betlength / 1000) + " seconds to wager your " + $.pointname + " with '!bet < amount > < 1p / 2p >'");
+                    $.say("/me Betting is now open for: " + optionString + " >> You have " + (betlength / 1000) + " seconds to wager your " + $.pointname + " with '!bet (amount) ( 1p / 2p )'");
                     $var.bet_optionsString = optionString;
                     $.inidb.set('bets', 'date', date);
                     $.inidb.set('bets', 'options', optionString); //
@@ -420,7 +420,7 @@ $.on('command', function (event) {
                 } else {
 
                     var betmessage = "";
-                    betmessage = ", the options are: " + $var.bet_optionsString + "! Type '!bet < amount > < option >' to enter!";
+                    betmessage = ", the options are: " + $var.bet_optionsString + "! Type '!bet (amount) (option)' to enter!";
 
                     if (argsString.isEmpty()) {
                         $.say("/me [Current Pot] >> " + pot + " " + $.pointname + " << " + username + " " + betmessage);
@@ -429,7 +429,7 @@ $.on('command', function (event) {
 
             } else {
                 if (argsString.isEmpty()) {
-                    $.say("Usage: '!bet open' - '!bet open < options >' - '!bet time < seconds >' - '!bet results' - '!bet win < option >' - '!bet < amount > < option >'");
+                    $.say("Usage: '!bet open' - '!bet open (options)' - '!bet time (seconds)' - '!bet results' - '!bet win (option)' - '!bet (amount) (option)'");
 
                 }
 

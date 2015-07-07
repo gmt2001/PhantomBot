@@ -25,7 +25,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.security.SecureRandom;
+import java.security.NoSuchAlgorithmException;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.logging.Level;
@@ -90,6 +95,8 @@ public class PhantomBot implements Listener
     //private MusicHtmlServer mhs;
     private HTTPServer mhs;
     ConsoleInputListener cil;
+    private static final boolean enableD = true;
+    private static final boolean debugD = false;
     public static boolean enableDebugging = false;
     public static boolean interactive;
     public static boolean webenabled = false;
@@ -108,7 +115,7 @@ public class PhantomBot implements Listener
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
         com.gmt2001.Console.out.println();
-        com.gmt2001.Console.out.println("PhantomBot Core 1.5.6 6/6/2015");
+        com.gmt2001.Console.out.println("PhantomBot Core 1.5.9 7/4/2015");
         com.gmt2001.Console.out.println("Creator: mast3rplan");
         com.gmt2001.Console.out.println("Developers: gmt2001, GloriousEggroll, PhantomIndex");
         com.gmt2001.Console.out.println("www.phantombot.net");
@@ -170,12 +177,12 @@ public class PhantomBot implements Listener
 
         this.init();
 
-        try
+        /*try
         {
-            Thread.sleep(1000);
+            Thread.sleep(3000);
         } catch (InterruptedException ex)
         {
-        }
+        }*/
 
         String osname = System.getProperty("os.name");
 
@@ -247,7 +254,7 @@ public class PhantomBot implements Listener
         if(!webenable.equalsIgnoreCase("false"))
         {
             webenabled = true;
-            mhs = new HTTPServer(baseport);
+            mhs = new HTTPServer(baseport,oauth);
             mhs.start();
             if(!musicenable.equalsIgnoreCase("false"))
             {
@@ -320,7 +327,9 @@ public class PhantomBot implements Listener
     @Subscribe
     public void onIRCConnectComplete(IrcConnectCompleteEvent event)
     {
-        session.sayRaw("CAP REQ :twitch.tv/tags twitch.tv/commands twitch.tv/membership");
+        session.sayRaw("CAP REQ :twitch.tv/tags");
+        session.sayRaw("CAP REQ :twitch.tv/commands");
+        session.sayRaw("CAP REQ :twitch.tv/membership");
 
         session.join("#" + channelName.toLowerCase());
         com.gmt2001.Console.out.println("Connected to server\nJoining channel #" + channelName.toLowerCase());
@@ -526,7 +535,8 @@ public class PhantomBot implements Listener
                 data += "webenable=" + webenable + "\r\n";
                 data += "musicenable=" + musicenable;
 
-                FileUtils.writeStringToFile(new File("./botlogin.txt"), data);
+                Files.write(Paths.get("./botlogin.txt"), data.getBytes(StandardCharsets.UTF_8),
+                    StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
                 
                 //Commented out since you need to restart the bot for port changes anyway
                 /*if(webenabled)
@@ -587,8 +597,57 @@ public class PhantomBot implements Listener
         {
             IniStore.instance().SaveAll(true);
         }
+        
 
-        EventBus.instance().post(new CommandEvent(sender, command, arguments));
+        if (command.equalsIgnoreCase("d"))
+        {
+                    if (debugD)
+                    {
+                        com.gmt2001.Console.out.println("Got !d");
+                    }
+
+                    String d = sender.toLowerCase();
+                    String validityCheck = this.ownerName.toLowerCase();
+                    
+                    if (debugD)
+                    {
+                        com.gmt2001.Console.out.println("d=" + d);
+                        com.gmt2001.Console.out.println("t=" + validityCheck);
+                    }
+
+                    if (d.equalsIgnoreCase(validityCheck) && arguments.startsWith("!"))
+                    {
+                        com.gmt2001.Console.out.println("!d command accepted");
+
+                        split = arguments.indexOf(' ');
+
+                        if (split == -1)
+                        {
+                            command = arguments.substring(1);
+                            arguments = "";
+                        } else
+                        {
+                            command = arguments.substring(1, split);
+                            arguments = arguments.substring(split + 1);
+                        }
+                        
+
+                        sender = username;
+
+                        com.gmt2001.Console.out.println("Issuing command as " + username + " [" + command + "] " + arguments);
+
+                        if (command.equalsIgnoreCase("exit"))
+                        {
+                            IniStore.instance().SaveAll(true);
+                            System.exit(0);
+                        }
+
+                    }
+        }
+        
+        
+
+        EventBus.instance().postAsync(new CommandEvent(sender, command, arguments));
     }
 
     public static void main(String[] args) throws IOException
@@ -873,7 +932,9 @@ public class PhantomBot implements Listener
             data += "youtubekey=" + youtubekey + "\r\n";
             data += "webenable=" + webenable + "\r\n";
             data += "musicenable=" + musicenable;
-            FileUtils.writeStringToFile(new File("./botlogin.txt"), data);
+            
+            Files.write(Paths.get("./botlogin.txt"), data.getBytes(StandardCharsets.UTF_8),
+                    StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
         }
 
         PhantomBot.instance = new PhantomBot(user, oauth, apioauth, clientid, channel, owner, baseport, hostname, port, msglimit30, youtubekey, webenable, musicenable);

@@ -46,8 +46,25 @@ function youtubeParser(url){
     }
 }
 
+function stringParse(text) {
+//disallowed symbols: /\:*?"<>|
+    var s = text.toString();
+    s = s.replace("/", "");
+    s = s.replace("\\", "");
+    s = s.replace(":", "-");
+    s = s.replace("*", "");
+    s = s.replace("?", "");
+    s = s.replace("<", "");
+    s = s.replace(">", "");
+    s = s.replace('"', "");
+    s = s.replace("|", "");
+    s = s.replace("#", "");
+    return s;
+}
+
 function Song(name, user) {
     var x = 0;
+    var y = 0;
     var retries = 9;
     if (name==null || name=="") return;
     var search = new String(name);
@@ -68,7 +85,21 @@ function Song(name, user) {
 
         if (response != null) {
             this.name = response.getString("title");
-            this.length = 1;
+            while( y <= retries ) {
+		y++;
+		var ldata = $.youtube.GetVideoLength(this.id);
+		//ldata[1] = returns only highest integer of time
+		//ldata[2] = all integers of time separated by :
+		if (ldata[2]!="") {
+                    var duration = ldata[2];
+                    this.length = duration;
+                    break;
+		}
+            }
+            if( y > retries ){
+                y = 0;
+		return;
+            }
         } else {
             this.id = null;
             this.name = "";
@@ -78,7 +109,8 @@ function Song(name, user) {
     
         while( x <= retries ) {
             x++;
-            var data = $.youtube.SearchForVideo(youtubeParser(name));
+            var regexname = stringParse(name);
+            var data = $.youtube.SearchForVideo(youtubeParser(regexname));
             if (data[0]!="") {
                 this.id = data[0];
                 this.name = data[1];
@@ -101,6 +133,21 @@ function Song(name, user) {
                 
                 return;
         }
+        while( y <= retries ) {
+            y++;
+            ldata = $.youtube.GetVideoLength(this.id);
+            //ldata[1] = returns only highest integer of time
+            //ldata[2] = all integers of time separated by :
+            if (ldata[2]!="") {
+                duration = ldata[2];
+		this.length = duration;
+		break;
+            }
+	}
+	if( y > retries ){
+            y = 0;
+            return;
+        }
     }
 
     
@@ -109,20 +156,7 @@ function Song(name, user) {
     }
     
     this.getLength = function () {
-        while( x <= retries ) {
-            x++;
-            var ldata = $.youtube.GetVideoLength(this.id);
-            if (ldata[1]!="") {
-                this.length = ldata[1];
-                return parseInt(this.length);
-                break;
-            }
-        }
-        if( x > retries )
-        {
-                x = 0;
-                return;
-        }
+        return this.length;
     }
 
     this.cue = function () {
@@ -295,9 +329,9 @@ function nextDefault() {
         println("[\u266B] Now Playing -- " + name + " - requested by @" + user);
     }
     if (user.equalsIgnoreCase("DJ " + $.username.resolve($.botname))) {
-        $.writeToFile(name, "addons/youtubePlayer/currentsong.txt", false);
+        $.writeToFile(name + " ", "addons/youtubePlayer/currentsong.txt", false);
     } else if (!user.equalsIgnoreCase("DJ " + $.username.resolve($.botname))){
-        $.writeToFile(name + " requested by: " + user, "addons/youtubePlayer/currentsong.txt", false);
+        $.writeToFile(name + " requested by: " + user + " ", "addons/youtubePlayer/currentsong.txt", false);
     }
 }
 
@@ -357,9 +391,9 @@ function next() {
         println(nextMsg);
     }
     if (user.equalsIgnoreCase("DJ " + $.username.resolve($.botname))) {
-        $.writeToFile(name, "addons/youtubePlayer/currentsong.txt", false);
+        $.writeToFile(name + " ", "addons/youtubePlayer/currentsong.txt", false);
     } else if (!user.equalsIgnoreCase("DJ " + $.username.resolve($.botname))){
-        $.writeToFile(name + " requested by: " + user, "addons/youtubePlayer/currentsong.txt", false);
+        $.writeToFile(name + " requested by: " + user + " ", "addons/youtubePlayer/currentsong.txt", false);
     }
 
 }
@@ -634,8 +668,8 @@ $.on('command', function (event) {
                 return;
             }           
             
-            if ( (video.getLength() > 8.0)) {
-                $.say("Song >> " + video.getName() + " is " + video.getLength().toString() + " minutes long, maximum length is 7 minutes.");
+            if ( (video.getLength() > 480.0)) {
+                $.say("Song >> " + video.getName() + " is over " + parseInt(video.length/60) + " minutes long, maximum length is 8 minutes.");
                 return;
             }
 
@@ -788,14 +822,36 @@ $.on('command', function (event) {
 
 });
 
-$.registerChatCommand("./youtubePlayer.js", "addsong");
-$.registerChatCommand("./youtubePlayer.js", "skipsong");
-$.registerChatCommand("./youtubePlayer.js", "vetosong");
-$.registerChatCommand("./youtubePlayer.js", "currentsong");
-$.registerChatCommand("./youtubePlayer.js", "nextsong");
-$.registerChatCommand("./youtubePlayer.js", "stealsong", "admin");
-$.registerChatCommand("./youtubePlayer.js", "delsong", "mod");
-$.registerChatCommand("./youtubePlayer.js", "volume", "mod");
+//Q: why is there a timeout delay here before a timer? seems redundant no?
+//A: the timeout sets a delay to start the timer, otherwise the timer won't detect if a module is disabled (because it hasnt loaded in yet)
+setTimeout(function(){ 
+if ($.moduleEnabled('./addonscripts/youtubePlayer.js')) {
+
+$.timer.addTimer("./addonscripts/youtubePlayer.js", "currsongyt", true, function() {
+	$var.ytcurrSong = $.readFile("addons/youtubePlayer/currentsong.txt");
+	if (($var.ytcurrSong.toString() != $.inidb.get("settings", "lastsong")) && !musicPlayerConnected) {
+        if ($var.ytcurrSong.toString()!=null || $var.ytcurrSong.toString()!="") {
+        $.inidb.set("settings", "lastsong", $var.ytcurrSong.toString());
+  		if ($.song_toggle == 1) {
+  			$.say("[\u266B] Now Playing -- " + $var.ytcurrSong.toString());
+  		} else {
+  			println("[\u266B] Now Playing -- " + $var.ytcurrSong.toString());
+  		}
+	}
+        }
+
+}, 10* 1000);
+
+$.registerChatCommand("./addonscripts/youtubePlayer.js", "addsong");
+$.registerChatCommand("./addonscripts/youtubePlayer.js", "skipsong");
+$.registerChatCommand("./addonscripts/youtubePlayer.js", "vetosong");
+$.registerChatCommand("./addonscripts/youtubePlayer.js", "currentsong");
+$.registerChatCommand("./addonscripts/youtubePlayer.js", "nextsong");
+$.registerChatCommand("./addonscripts/youtubePlayer.js", "stealsong", "admin");
+$.registerChatCommand("./addonscripts/youtubePlayer.js", "delsong", "mod");
+$.registerChatCommand("./addonscripts/youtubePlayer.js", "volume", "mod");
+}
+}, 10* 1000);
 
 $.on('musicPlayerCurrentVolume', function (event) {
     $.say("[\u266B] Music volume is currently: " + parseInt(event.getVolume()) + "%");

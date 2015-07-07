@@ -249,7 +249,7 @@ public class ChannelUsersCache implements Runnable
 
         this.cache = newCache;
 
-        for (String joined : join)
+        /*for (String joined : join)
         {
             EventBus.instance().post(new IrcChannelJoinEvent(PhantomBot.instance().getSession(), PhantomBot.instance().getChannel(), joined));
         }
@@ -257,7 +257,7 @@ public class ChannelUsersCache implements Runnable
         for (String parted : part)
         {
             EventBus.instance().post(new IrcChannelLeaveEvent(PhantomBot.instance().getSession(), PhantomBot.instance().getChannel(), parted, "Left"));
-        }
+        }*/
     }
 
     public void setCache(Map<String, String> cache)

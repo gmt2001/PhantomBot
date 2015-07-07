@@ -20,7 +20,7 @@ if ($.hostreward == null || $.hostreward == undefined) {
 $.on('twitchHosted', function(event) {
     var username = $.username.resolve(event.getHoster());
     
-    if ($.announceHosts && $.moduleEnabled("./hostHandler.js")
+    if ($.announceHosts && $.moduleEnabled("./handlers/hostHandler.js")
         && ($.hostlist[event.getHoster()] == null || $.hostlist[event.getHoster()] == undefined
             || $.hostlist[event.getHoster()] < System.currentTimeMillis())) {
         var s = $.inidb.get('settings', 'hostmessage');
@@ -37,7 +37,8 @@ $.on('twitchHosted', function(event) {
         while (s.indexOf('(name)') != -1) {
             s = s.replace('(name)', username);
         }
-
+        $.inidb.set("temphostgroup", username.toLowerCase(), $.inidb.get("group",username.toLowerCase()));
+        $.inidb.set("group", username.toLowerCase(), 5);
         $.say(s);
     }
     
@@ -54,6 +55,7 @@ $.on('twitchUnhosted', function(event) {
     for (var i = 0; i < $.hostlist.length; i++) {
         if ($.hostlist[i].equalsIgnoreCase(username)) {
             $.hostlist.splice(i, 1);
+            $.inidb.set("group", username.toLowerCase(), $.inidb.get("temphostgroup", username.toLowerCase()));
             break;
         }
     }
@@ -102,7 +104,7 @@ $.on('command', function(event) {
             if ($.inidb.exists('settings', 'hostreward')) {
                 $.say("The current host reward is " + $.inidb.get('settings', 'hostreward') + " " + $.pointname + "! To change it use '!hostreward <amount>'");
             } else {
-                $.say("The current host reward is " + $.hostreward + " " + $.pointname + "! To change it use '!hostreward <amount>'");
+                $.say("The current host reward is " + $.hostreward + " " + $.pointname + "! To change it use '!hostreward (amount)'");
             }
         } else {
             if (!parseInt(argsString) < 0) {
@@ -114,7 +116,7 @@ $.on('command', function(event) {
             
             $.inidb.set('settings', 'hostreward', argsString);
             $.hostreward = parseInt(argsString);
-            $.say("New host reward set!");
+            $.say("New hoster reward set to: " + argsString);
         }
     }
 	
@@ -164,8 +166,8 @@ $.on('command', function(event) {
 	
 });
 
-$.registerChatCommand("./hostHandler.js", "hostmessage", "admin");
-$.registerChatCommand("./hostHandler.js", "hostreward");
-$.registerChatCommand("./hostHandler.js", "hosttime");
-$.registerChatCommand("./hostHandler.js", "hostcount");
-$.registerChatCommand("./hostHandler.js", "hostlist");
+$.registerChatCommand("./handlers/hostHandler.js", "hostmessage", "admin");
+$.registerChatCommand("./handlers/hostHandler.js", "hostreward");
+$.registerChatCommand("./handlers/hostHandler.js", "hosttime");
+$.registerChatCommand("./handlers/hostHandler.js", "hostcount");
+$.registerChatCommand("./handlers/hostHandler.js", "hostlist");

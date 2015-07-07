@@ -206,7 +206,7 @@ $.on('command', function (event) {
 
 })
 
-$.registerChatCommand("./notice.js", "notice");
+$.registerChatCommand("./handlers/noticeHandler.js", "notice");
 
 var messageCount = 0
 var messageTime = 0
@@ -241,8 +241,8 @@ $.on('ircChannelMessage', function (event) {
     messageCount++;
 });
 
-$.timer.addTimer("./notices.js", "notices", true, function() {
-    if (!$.moduleEnabled("./notices.js") || ($.notices_toggle != undefined && $.notices_toggle != null && !$.notices_toggle)) {
+$.timer.addTimer("./handlers/noticeHandler.js", "notices", true, function() {
+    if (!$.moduleEnabled("./handlers/noticeHandler.js") || ($.notices_toggle != undefined && $.notices_toggle != null && !$.notices_toggle)) {
         return;
     }
 

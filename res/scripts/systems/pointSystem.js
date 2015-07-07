@@ -361,7 +361,7 @@ $.on('command', function (event) {
                 if ($.inidb.get("visited", username.toLowerCase()) == "visited") {
                 $.inidb.decr('points', sender.toLowerCase(), parseInt(args[1]));
                 $.inidb.incr('points', username.toLowerCase(), parseInt(args[1]));
-                $.say("Transferred " + args[1] + " " + $.pointname + " to " + $.username.resolve(args[0]) + " who now has: " + $.inidb.get('points', args[0]) + " " + $.pointname + ". " + $.username.resolve(sender) + ", you're left with: " + $.inidb.get('points', sender.toLowerCase()) + " " + $.pointname + ".");
+                $.say("Transferred " + args[1] + " " + $.pointname + " to " + $.username.resolve(args[0]) + " who now has: " + $.inidb.get('points', $.username.resolve(args[0]).toLowerCase()) + " " + $.pointname + ". " + $.username.resolve(sender) + ", you're left with: " + $.inidb.get('points', sender.toLowerCase()) + " " + $.pointname + ".");
                 } else {
                     $.say("This person has never visited this channel, thus doesn't have an account.");
                     return;

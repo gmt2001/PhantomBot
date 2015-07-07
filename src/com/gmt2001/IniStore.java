@@ -20,6 +20,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -132,9 +136,13 @@ public class IniStore implements ActionListener
                     wdata += ((String) akdata[b]) + "=" + ((String) avdata[b]) + "\r\n";
                 }
             }
+            if(!Files.isDirectory(Paths.get("./inistore/"))) {
+                Files.createDirectory(Paths.get("./inistore/"));
+            }
 
-            FileUtils.writeStringToFile(new File("./inistore/" + fName + ".ini"), wdata);
-
+            Files.write(Paths.get("./inistore/" + fName + ".ini"), wdata.getBytes(StandardCharsets.UTF_8),
+                    StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+            
             changed.remove(fName);
         } catch (IOException ex)
         {
@@ -166,25 +174,42 @@ public class IniStore implements ActionListener
         if (!nextSave.after(new Date()) || force)
         {
             Object[] n = changed.keySet().toArray();
-
-            if (force)
+            if (n != null)
             {
-                n = files.keySet().toArray();
-            }
 
-            com.gmt2001.Console.out.println(">>>Saving " + n.length + " files");
-
-            for (int i = 0; i < n.length; i++)
-            {
-                if (force || changed.get((String) n[i]).after(nextSave) || changed.get((String) n[i]).equals(nextSave))
+                if (force)
                 {
-                    SaveFile((String) n[i], files.get((String) n[i]));
+                    n = files.keySet().toArray();
                 }
+
+                com.gmt2001.Console.out.println(">>>Saving " + n.length + " files");
+
+                for (int i = 0; i < n.length; i++)
+                {
+                    try
+                    {
+                        if (force || changed.get((String) n[i]).after(nextSave) || changed.get((String) n[i]).equals(nextSave))
+                        {
+                            SaveFile((String) n[i], files.get((String) n[i]));
+                        }
+                    } catch (java.lang.NullPointerException e)
+                    {
+                        try
+                        {
+                            SaveFile((String) n[i], files.get((String) n[i]));
+                        } catch (java.lang.NullPointerException e2)
+                        {
+                        }
+                    }
+                }
+
+                nextSave.setTime(new Date().getTime() + saveInterval);
+
+                com.gmt2001.Console.out.println(">>>Save complete");
+            } else
+            {
+                com.gmt2001.Console.out.println(">>>Object null, nothing to save.");
             }
-
-            nextSave.setTime(new Date().getTime() + saveInterval);
-
-            com.gmt2001.Console.out.println(">>>Save complete");
         }
     }
 

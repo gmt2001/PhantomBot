@@ -117,6 +117,24 @@ $.getModule = function(scriptFile) {
     return null;
 }
 
+$.loadScriptForce = function(scriptFile) {
+    try {
+        var script = $api.loadScriptR($script, scriptFile);
+        var senabled = $.inidb.get('modules', scriptFile + '_enabled');
+        var enabled = true;
+        
+        if (senabled) {
+            enabled = senabled.equalsIgnoreCase("1");
+        }
+        
+        modules.push(new Array(scriptFile, enabled, script));
+    } catch (e) {
+        if ($.isModuleLoaded("./util/misc.js")) {
+            $.logError("init.js", 132, "(loadScriptForce, " + scriptFile + ") " + e);
+        }
+    }
+}
+
 $.loadScript = function(scriptFile) {
     if (!$.isModuleLoaded(scriptFile)) {
         try {
@@ -127,7 +145,7 @@ $.loadScript = function(scriptFile) {
             if (senabled) {
                 enabled = senabled.equalsIgnoreCase("1");
             }
-        
+            
             modules.push(new Array(scriptFile, enabled, script));
         } catch (e) {
             if ($.isModuleLoaded("./util/misc.js")) {
@@ -148,10 +166,7 @@ $.loadScriptsRecursive = function(path) {
     
     for (i = 0; i < list.length; i++) {
         if (path.equalsIgnoreCase(".")) {
-            if (list[i].equalsIgnoreCase("util") || list[i].equalsIgnoreCase("init.js")) {
-                continue;
-            }
-            if (list[i].equalsIgnoreCase("addonscripts")) {
+            if (list[i].equalsIgnoreCase("util") || list[i].equalsIgnoreCase("lang") || list[i].equalsIgnoreCase("init.js")) {
                 continue;
             }
         }
@@ -450,10 +465,10 @@ $.loadScript('./util/lang.js');
 
 $.logEvent("init.js", 410, "Initializing...");
 
-var firstrun = false;
+$.firstrun = false;
 
 if ($.inidb.GetBoolean("init", "initialsettings", "loaded") == false) {
-    firstrun = true;
+    $.firstrun = true;
 }
 
 $.initialsettings_update = 1;
@@ -463,7 +478,7 @@ if ($.inidb.GetBoolean("init", "initialsettings", "loaded") == false
     $.loadScript('./util/initialsettings.js');
 }
 
-$.upgrade_version = 13;
+$.upgrade_version = 14;
 if ($.inidb.GetInteger("init", "upgrade", "version") < $.upgrade_version) {
     $.logEvent("init.js", 426, "Running upgrade from v" + $.inidb.GetInteger("init", "upgrade", "version") + " to v" + $.upgrade_version + "...");
     $.loadScript('./util/upgrade.js');
@@ -472,13 +487,11 @@ if ($.inidb.GetInteger("init", "upgrade", "version") < $.upgrade_version) {
 $.loadScript('./util/permissions.js');
 $.loadScript('./util/chatModerator.js');
 
-$.loadScriptsRecursive(".");
-
-if (firstrun) {
-    var index = $.getModuleIndex("./subscribeHandler.js");
-    modules[index][1] = false;
-    $.inidb.set('modules', modules[index][0] + '_enabled', "0");
+if ($.firstrun && !$.moduleEnabled("./handlers/subscribeHandler.js")) {
+    $.inidb.set('modules', './handlers/subscribeHandler.js' + '_enabled', "0");
 }
+
+$.loadScriptsRecursive(".");
 
 $api.on(initscript, 'ircChannelMessage', function(event) {
     var sender = event.getSender();
@@ -642,7 +655,6 @@ $api.on(initscript, 'command', function(event) {
 });
 
 $.logEvent("init.js", 596, "Bot Online");
-$.loadScriptsRecursive('./addonscripts');
 $.registerChatCommand('./init.js', 'setconnectedmessage', 'admin');
 $.registerChatCommand('./init.js', 'reconnect', 'mod');
 $.registerChatCommand('./init.js', 'module', 'admin');

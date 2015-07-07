@@ -76,6 +76,23 @@ $.on('command', function(event) {
             return;
         }
     }
+    if (command.equalsIgnoreCase("customcommands")) {
+
+        var customcommands = "";
+        var keys = $.inidb.GetKeyList("command", "");
+        for (var i = 0 ; i < keys.length; i++) {
+            customcommands +="!";
+            customcommands +=keys[i];
+            customcommands += " ";
+            
+        }
+        
+        if(customcommands.substr(customcommands.length - 1)==" ") {
+                    customcommands = customcommands.substring(0, customcommands.length - 1);
+        }
+        
+        $.say("Current custom commands: " + customcommands);
+    }
     
     if (command.equalsIgnoreCase("aliascom")) {
         if (!$.isMod(sender)) {
@@ -425,6 +442,7 @@ $.registerChatCommand("./commands/addCommand.js", "delalias", "mod");
 $.registerChatCommand("./commands/addCommand.js", "delcom", "mod");
 $.registerChatCommand("./commands/addCommand.js", "permcom", "admin");
 $.registerChatCommand("./commands/addCommand.js", "helpcom", "mod");
+$.registerChatCommand("./commands/addCommand.js", "customcommands");
 
 var commands = $.inidb.GetKeyList("command", "");
 
