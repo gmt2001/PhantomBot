@@ -266,10 +266,10 @@ $.on('command', function (event) {
                 optionsStr = "";
                 l = options.length - 2;
                 for (var i = 0; i < l; ++i) {
-                    optionsStr += i.toString() + "." + options[i] + " | ";
+                    optionsStr += (i+1).toString() + "." + options[i] + " | ";
                 }
 
-                $.displayOptions = optionsStr + l.toString() + "." + options[l] + " | " + ( l + 1 ).toString() + "." + options[l + 1];
+                $.displayOptions = optionsStr + (l+1).toString() + "." + options[l] + " | " + (l+2).toString() + "." + options[l+1];
 
                 $.say("Polls are open! Vote with '!vote (option)'. The options are: " + $.displayOptions);
                 $.inidb.set('polls', 'vote_options', $.displayOptions);
