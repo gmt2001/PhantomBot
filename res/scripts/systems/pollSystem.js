@@ -2,14 +2,26 @@ $var.pollID = 0;
 var results = [];
 var high = 0;
 var length = 0;
-var options = []
+var options = [];
 var current = "";
 var optionsStr = "";
 var l = 0;
 var count = 0;
 
 function makeVote(option) {
+    options = $var.pollOptions;
+    if(!parseInt(option)) {
+            option = option.toLowerCase();
+    } else {
+        if((parseInt(option) > 0) && (parseInt(option) <= parseInt(options.length))) {
+            var option2 = parseInt(option) - 1;
+            option = options[option2].toLowerCase();
+        } else {
+            return false;
+        }
+    }
     current = $.pollResults.get(option);
+
     if (current != null) {
         var n = current.intValue() + 1;
         $.pollResults.put(option, n);
@@ -105,7 +117,7 @@ $.on('command', function (event) {
             $.say(username + ", you have already voted.");
             return;
         }
-        if (!makeVote(args[0].toLowerCase())) {
+        if (!makeVote(args[0])) {
             $.say("'" + args[0] + "' is not a valid option!");
         } else {
             $.pollVoters.add(sender);
@@ -202,7 +214,7 @@ $.on('command', function (event) {
                 options = []
 
                 if (args.length < 2) {
-                    $.say("Usage: '!poll open -t <seconds> <option 1> <option 2>' -- '!poll results' -- '!poll close'");
+                    $.say("Usage: '!poll open -t (seconds) (option 1) (option 2)' -- '!poll results' -- '!poll close'");
                     return;
                 }
 
@@ -254,12 +266,12 @@ $.on('command', function (event) {
                 optionsStr = "";
                 l = options.length - 2;
                 for (var i = 0; i < l; ++i) {
-                    optionsStr += options[i] + ", ";
+                    optionsStr += options[i] + " | ";
                 }
 
-                $.displayOptions = optionsStr + options[l] + " and " + options[l + 1];
+                $.displayOptions = optionsStr + options[l] + " | " + options[l + 1];
 
-                $.say("Polls are open! Vote with '!vote <option>'. The options are: " + $.displayOptions);
+                $.say("Polls are open! Vote with '!vote (option)'. The options are: " + $.displayOptions);
                 $.inidb.set('polls', 'vote_options', $.displayOptions);
                 $.inidb.set('polls', 'date', date);
             }
@@ -283,7 +295,7 @@ $.on('command', function (event) {
 
         } else {
             if (argsString.isEmpty()) {
-                $.say("Usage: '!poll open [-t <seconds>] <option 1> <option 2>' -- '!poll results' -- '!poll close'");
+                $.say("Usage: '!poll open [-t (seconds)] (option 1) (option 2)' -- '!poll results' -- '!poll close'");
             }
 
         }
