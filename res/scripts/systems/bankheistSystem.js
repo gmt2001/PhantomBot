@@ -317,7 +317,7 @@ $.on('command', function(event) {
             }
         } else if(args[0].equalsIgnoreCase("start")) {
             
-            if(!$.isAdmin(sender) || !$.isMod(sender)){
+            if(!$.isMod(sender)){
                 $.say("You must be a moderator to use this command.");
                 return;
             }          
