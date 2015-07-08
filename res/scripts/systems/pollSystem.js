@@ -242,7 +242,7 @@ $.on('command', function (event) {
             }
 
             if ($.runPoll(function (result) {
-                if (result.length) {
+                if (result.length && $.pollResults.get(result[0]).intValue()> 0 ) {
                     $.say("Polls are closed! The winner is \"" + result + "\" with " + $.pollResults.get(result[0]).intValue() + " out of " + parseInt($var.pollTotalVotes) + " votes.");
                     $.inidb.set('polls', 'total_votes', parseInt($var.pollTotalVotes));
                     $.inidb.set('polls', 'winning_result', result);
@@ -266,10 +266,10 @@ $.on('command', function (event) {
                 optionsStr = "";
                 l = options.length - 2;
                 for (var i = 0; i < l; ++i) {
-                    optionsStr += options[i] + " | ";
+                    optionsStr += i.toString() + "." + options[i] + " | ";
                 }
 
-                $.displayOptions = optionsStr + options[l] + " | " + options[l + 1];
+                $.displayOptions = optionsStr + l.toString() + "." + options[l] + " | " + ( l + 1 ).toString() + "." + options[l + 1];
 
                 $.say("Polls are open! Vote with '!vote (option)'. The options are: " + $.displayOptions);
                 $.inidb.set('polls', 'vote_options', $.displayOptions);
