@@ -1162,9 +1162,7 @@ $.on('ircChannelMessage', function(event) {
             && !$.isMod(sender) && phlen > 0) {
             $.logEvent("chatModerator.js", 1123, "Autopurge triggered by " + username + ". Message: " + omessage);
             
-            timeoutUser(sender, 1);
-            
-            $.say (username + " auto-purged for using banned phrase #" + i);
+            autoPurgeUser(username, username + " auto-purged for using banned phrase #" + i);            
             return;
         }
     }
