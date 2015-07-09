@@ -223,7 +223,7 @@ public class IrcEventHandler implements IRCEventListener
                                 }
                             }
 
-                            eventBus.post(new IrcChannelUserModeEvent(session, modeEvent.getChannel(), adj.getArgument(),
+                            eventBus.postAsync(new IrcChannelUserModeEvent(session, modeEvent.getChannel(), adj.getArgument(),
                                     String.valueOf(adj.getMode()), adj.getAction() == ModeAdjustment.Action.PLUS));
                         }
                     }

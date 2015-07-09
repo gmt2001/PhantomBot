@@ -21,30 +21,45 @@ $.on('command', function (event) {
     var sender = event.getSender();
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
-    var message = argsString.substring(argsString.indexOf(" \"") + 2, argsString.length() - 1);
+    var message = argsString.substring(argsString.indexOf(" "), argsString.length());
     var args = event.getArgs();
-    var emote = "";
-    
+    var triggerphrase = "";
+    var response = "";
+
     if (command.equalsIgnoreCase("addphrase")) {
         if (!$.isMod(sender)) {
             $.say($.modmsg);
             return;
         }
-        emote = new String(args[0].toLowerCase().trim());
-        emote = emote.replace(/[^a-zA-Z0-9\s]+/g,'');
+        if((argsString.indexOf('"')==1))
+        {
+            triggerphrase = argsString.substring(2, argsString.indexOf('" '));
+        } else {
+            triggerphrase = args[0].toString();
+        }
+        triggerphrase = new String(triggerphrase.trim());
+        triggerphrase = triggerphrase.replace(/[^a-zA-Z0-9\s]+/g,'');
+        
+        if(argsString.indexOf('" "')!=-1)
+        {
+            response = argsString.substring(argsString.indexOf('" "') + 3, argsString.length() - 1);
+        } else {
+            response = args[1].toString();
+        }
+         
 
-        $.inidb.set('phrases', emote, message);
-        $.say("Phrase trigger: " + emote + ", Message: \"" + message + "\" was added!");
+        $.inidb.set('phrases', triggerphrase, response);
+        $.say("Phrase trigger: " + triggerphrase + ", Message: \"" + response + "\" was added!");
     }
     if (command.equalsIgnoreCase("delphrase")) {
         if (!$.isMod(sender)) {
             $.say($.modmsg);
             return;
         }
-        emote = args[0];
+        triggerphrase = args[0];
 
-        $.inidb.del('phrases', emote);
-        $.say("Phrase trigger: " + emote + " was removed!");
+        $.inidb.del('phrases', triggerphrase);
+        $.say("Phrase trigger: " + triggerphrase + " was removed!");
     }
 
 });
