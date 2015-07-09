@@ -129,9 +129,7 @@ $.on('command', function(event) {
             $.inidb.set('aliases', message, commandString);
             
             $.registerCustomChatCommand("./commands/addCommand.js", message);
-            
-            $.setCustomChatCommandGroup(message, $.getCommandGroup(commandString));
-            
+                        
             $.say(username + ", the command !" + commandString + " was successfully aliased to !" + message);
             return;
         }
@@ -222,88 +220,35 @@ $.on('command', function(event) {
         }
         
         if (args.length == 0) {
-            $.say("Usage: !permcom (command name) [user, caster, mod, admin]. Restricts usage of a custom command to viewers with a certain permission level");
+            $.say("Usage: !permcom (command name) (group name) (1/2). Restricts usage of a command to viewers with a certain permission level. 1 specifies only a single group, multiple single groups can be added for the same command. 2 specifies recursive (all groups higher than the group specified).");
             return;
         }
-        
-        if (args.length == 1) {
-            if (!$.inidb.exists("command", args[0].toLowerCase())) {
-                $.say("The command !" + args[0] + " does not exist!");
-                return;
-            }
-            
-            if (!$.inidb.exists("commandperm", args[0].toLowerCase())) {
-                $.say("The command !" + args[0] + " can be used by all viewers");
-            } else if ($.inidb.get("commandperm", args[0].toLowerCase()).equalsIgnoreCase("caster")) {
-                $.say("The command !" + args[0] + " can only be used by Casters");
-            } else if ($.inidb.get("commandperm", args[0].toLowerCase()).equalsIgnoreCase("mod")) {
-                $.say("The command !" + args[0] + " can only be used by Moderators");
-            } else if ($.inidb.get("commandperm", args[0].toLowerCase()).equalsIgnoreCase("admin")) {
-                $.say("The command !" + args[0] + " can only be used by Administrators");
-            }
-        }
-        
+                
         if (args.length >= 2) {
-            if (!$.inidb.exists("command", args[0].toLowerCase())) {
+            if (!$.inidb.exists("command", args[0].toLowerCase()) && !$.commandExists(args[0].toLowerCase())) {
                 $.say("The command !" + args[0] + " does not exist!");
                 return;
             }
             
-            var newgroup = "";
-            
-            if (args[1].equalsIgnoreCase("caster") || args[1].equalsIgnoreCase("casters")) {
-                $.logEvent("addCommand.js", 142, username + " set the command !" + args[0] + " to casters only");
-                newgroup = "caster";
-                $.inidb.set("commandperm", args[0].toLowerCase(), "caster");
-                $.say("The command !" + args[0] + " can now only be used by Casters");
-            } else if (args[1].equalsIgnoreCase("mod") || args[1].equalsIgnoreCase("mods")
-                || args[1].equalsIgnoreCase("moderator") || args[1].equalsIgnoreCase("moderators")) {
-                $.logEvent("addCommand.js", 148, username + " set the command !" + args[0] + " to mods only");
-                newgroup = "mod";
-                $.inidb.set("commandperm", args[0].toLowerCase(), "mod");
-                $.say("The command !" + args[0] + " can now only be used by Moderators");
-            } else if (args[1].equalsIgnoreCase("admin") || args[1].equalsIgnoreCase("admins")
-                || args[1].equalsIgnoreCase("administrator") || args[1].equalsIgnoreCase("administrators")) {
-                $.logEvent("addCommand.js", 154, username + " set the command !" + args[0] + " to admins only");
-                newgroup = "admin";
-                $.inidb.set("commandperm", args[0].toLowerCase(), "admin");
-                $.say("The command !" + args[0] + " can now only be used by Administrators");
-            } else if (args[1].equalsIgnoreCase("sub") || args[1].equalsIgnoreCase("subs")
-                || args[1].equalsIgnoreCase("subscriber") || args[1].equalsIgnoreCase("subscriber")) {
-                $.logEvent("addCommand.js", 154, username + " set the command !" + args[0] + " to subscribers only");
-                newgroup = "subscriber";
-                $.inidb.set("commandperm", args[0].toLowerCase(), "subscriber");
-                $.say("The command !" + args[0] + " can now only be used by Subscribers");
-            } else if (args[1].equalsIgnoreCase("donator") || args[1].equalsIgnoreCase("donators")) {
-                $.logEvent("addCommand.js", 154, username + " set the command !" + args[0] + " to donators only");
-                newgroup = "donator";
-                $.inidb.set("commandperm", args[0].toLowerCase(), "donator");
-                $.say("The command !" + args[0] + " can now only be used by Donators");
-
-            } else if (args[1].equalsIgnoreCase("hoster") || args[1].equalsIgnoreCase("hosters")) {
-                $.logEvent("addCommand.js", 154, username + " set the command !" + args[0] + " to hosters only");
-                newgroup = "hoster";
-                $.inidb.set("commandperm", args[0].toLowerCase(), "hoster");
-                $.say("The command !" + args[0] + " can now only be used by Hosters");
-            } else if (args[1].equalsIgnoreCase("reg") || args[1].equalsIgnoreCase("regs")
-                || args[1].equalsIgnoreCase("regular") || args[1].equalsIgnoreCase("regular")) {
-                $.logEvent("addCommand.js", 154, username + " set the command !" + args[0] + " to regulars only");
-                newgroup = "regular";
-                $.inidb.set("commandperm", args[0].toLowerCase(), "regular");
-                $.say("The command !" + args[0] + " can now only be used by Regulars");
-            } else {
-                $.logEvent("addCommand.js", 159, username + " set the command !" + args[0] + " to allow all");
-                $.inidb.del("commandperm", args[0].toLowerCase());
-                $.say("The command !" + args[0] + " can now be used by all viewers");
+            var newgroup = args[1].toLowerCase();
+            if(!parseInt(args[2])) {
+                $.say("You must specify a permission mode of 1 or 2! 1 specifies only a single group, multiple single groups can be added for the same command. 2 specifies recursive (all groups higher than the group specified).");
+                return;
             }
             
-            $.setCustomChatCommandGroup(args[0].toLowerCase(), newgroup);
+            if(args[2]>1) {
+                var mode = "_recursive";
+            } else {
+                mode = "";
+            }
+                      
+            $.inidb.set("permcom", args[0].toLowerCase() + mode, newgroup);
             
             var acommands = $.inidb.GetKeyList("aliases", "");
 
             for (var i = 0; i < acommands.length; i++) {
                 if ($.inidb.get("aliases", acommands[i]).equalsIgnoreCase(args[0].toLowerCase())) {
-                    $.setCustomChatCommandGroup(acommands[i], newgroup);
+                    $.inidb.set("permcom", acommands[i] + mode, newgroup);
                 }
             }
         }
@@ -457,10 +402,6 @@ if ($.array.contains(commands, "commands")) {
 
 for (var i = 0; i < commands.length; i++) {
     $.registerCustomChatCommand("./commands/addCommand.js", commands[i]);
-    
-    if ($.inidb.exists("commandperm", commands[i])) {
-        $.setCustomChatCommandGroup(commands[i], $.inidb.get("commandperm", commands[i]));
-    }
 }
 
 $.timer.addTimer("./commands/addCommand.js", "registerAliases", false, function() {
@@ -468,6 +409,5 @@ $.timer.addTimer("./commands/addCommand.js", "registerAliases", false, function(
 
     for (i = 0; i < acommands.length; i++) {
         $.registerCustomChatCommand("./commands/addCommand.js", acommands[i]);
-        $.setCustomChatCommandGroup(acommands[i], $.getCommandGroup($.inidb.get("aliases", acommands[i])));
     }
 }, 2 * 1000);

@@ -341,9 +341,33 @@ $api.on($script, 'command', function(event) {
             if(parseInt($.inidb.get("pricecom", command.toLowerCase()))>0)
             {
                 $.inidb.decr("points", sender, parseInt($.inidb.get("pricecom", command.toLowerCase())));
-                $.println("[Paid]" + username + "s balance is now: " + $.inidb.get('points', sender) + " " + $.pointname + "");
+                $.println("[Paid]" + sender + "s balance is now: " + $.inidb.get('points', sender) + " " + $.pointname + "");
             }
         }
+    }
+    var keys = $.inidb.GetKeyList("commandperm", "");
+    var groupArray = [];
+    
+    for(var i=0;i<keys.length;i++) {
+        if(keys[i].indexOf(command.toLowerCase()) > -1) {
+
+            var permissionGroup = $.inidb.get("commandperm", keys[i]);
+            var senderGroup = $.getUserGroupName(sender);
+            
+            if($.inidb.get("commandperm", command.toLowerCase() + "_recursive")) {
+                if(($.getGroupIdByName(senderGroup)>$.getGroupIdByName(permissionGroup)) && !$.isAdmin(sender)) {
+                    $.say('The command ' + command.toLowerCase() + ' requires user group: ' + permissionGroup + " ID: " + $.getGroupIdByName(permissionGroup) + " or higher. Your current group is: " + senderGroup + " ID: " + $.getGroupIdByName(senderGroup) + ".");
+                    return;
+                }   
+            } else {
+                groupArray.push($.inidb.get("commandperm", keys[i]));
+                if((groupArray.indexOf(senderGroup)> -1) && !$.isAdmin(sender)) {
+                    $.say('The command ' + command.toLowerCase() + ' requires user group: ' + permissionGroup + ". Your current group is: " + senderGroup + ".");
+                    return;
+                }                
+            }
+        }
+        
     }
     
     $.hook.call('command', event, false);
