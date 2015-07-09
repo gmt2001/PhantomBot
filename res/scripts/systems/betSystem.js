@@ -386,6 +386,11 @@ $.on('command', function (event) {
                     $.say($.username.resolve(sender) + "," + " you don't have that amount of " + $.pointname + " to wager!");
                     return;
                 }
+                
+                if (amount < 1) {
+                    $.say($.username.resolve(sender) + "," + " your wager must be greater than 0!");
+                    return;
+                }
 
 
                 if (sender in $var.bet_table) {
