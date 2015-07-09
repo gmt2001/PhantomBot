@@ -165,9 +165,12 @@ $.on('command', function(event) {
     }
 	
 });
-
+setTimeout(function(){ 
+if ($.moduleEnabled('./handlers/hostHandler.js')) {
 $.registerChatCommand("./handlers/hostHandler.js", "hostmessage", "admin");
 $.registerChatCommand("./handlers/hostHandler.js", "hostreward");
 $.registerChatCommand("./handlers/hostHandler.js", "hosttime");
 $.registerChatCommand("./handlers/hostHandler.js", "hostcount");
 $.registerChatCommand("./handlers/hostHandler.js", "hostlist");
+}
+},10*1000);

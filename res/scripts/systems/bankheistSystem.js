@@ -712,5 +712,8 @@ $.on('command', function(event) {
         }
     }
 });
-
+setTimeout(function(){ 
+if ($.moduleEnabled('./systems/bankheistSystem.js')) {
 $.registerChatCommand("./systems/bankheistSystem.js", "bankheist");
+}
+},10*1000);

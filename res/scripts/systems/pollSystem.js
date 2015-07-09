@@ -305,5 +305,8 @@ $.on('command', function (event) {
 
 });
 
-
+setTimeout(function(){ 
+if ($.moduleEnabled('./systems/pollSystem.js')) {
 $.registerChatCommand("./systems/pollSystem.js", "poll", "mod");
+}
+},10*1000);

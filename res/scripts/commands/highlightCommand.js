@@ -76,6 +76,9 @@ $.on('command', function (event) {
 	
 	return;
 });
-
+setTimeout(function(){ 
+if ($.moduleEnabled('./commands/highlightCommand.js')) {
 $.registerChatCommand("./commands/highlightCommand.js", "highlight");
 $.registerChatCommand("./commands/highlightCommand.js", "clearhighlights");
+}
+}, 10*1000);

@@ -267,12 +267,17 @@ $.on('command', function(event) {
         }
     }
 });
+
+setTimeout(function(){ 
+if ($.moduleEnabled('./commands/streamCommand.js')) {
 $.registerChatCommand("./commands/streamCommands.js", "online");
 $.registerChatCommand("./commands/streamCommands.js", "game");
 $.registerChatCommand("./commands/streamCommands.js", "title");
 $.registerChatCommand("./commands/streamCommands.js", "commercial", "caster");
 $.registerChatCommand("./commands/streamCommands.js", "commercial help", "caster");
 $.registerChatCommand("./commands/streamCommands.js", "viewers");
+}
+},10*1000);
 
 var lastCommercial = $.inidb.get("settings", "lastCommercial");
 

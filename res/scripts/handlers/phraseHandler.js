@@ -48,6 +48,9 @@ $.on('command', function (event) {
     }
 
 });
-
+setTimeout(function(){ 
+if ($.moduleEnabled('./handlers/phraseHandler.js')) {
 $.registerChatCommand("./handlers/phraseHandler.js", "addphrase");
 $.registerChatCommand("./handlers/phraseHandler.js", "delphrase");
+}
+},10*1000);

@@ -407,8 +407,12 @@ $.timer.addTimer("./systems/pointSystem.js", "pointsystem", true, function() {
     $.lastpointinterval = System.currentTimeMillis();
 }, 60 * 1000);
 
+setTimeout(function(){ 
+if ($.moduleEnabled('./systems/pointSystem.js')) {
 $.registerChatCommand("./systems/pointSystem.js", "points");
 $.registerChatCommand("./systems/pointSystem.js", "info");
 $.registerChatCommand("./systems/pointSystem.js", "wallet");
 $.registerChatCommand("./systems/pointSystem.js", "bank");
+}
+},10*1000);
 

@@ -433,6 +433,8 @@ $.on('command', function(event) {
 
     }
 });
+setTimeout(function(){ 
+if ($.moduleEnabled('./commands/addCommand.js')) {
 
 $.registerChatCommand("./commands/addCommand.js", "addcom", "mod");
 $.registerChatCommand("./commands/addCommand.js", "editcom", "mod");
@@ -443,6 +445,8 @@ $.registerChatCommand("./commands/addCommand.js", "delcom", "mod");
 $.registerChatCommand("./commands/addCommand.js", "permcom", "admin");
 $.registerChatCommand("./commands/addCommand.js", "helpcom", "mod");
 $.registerChatCommand("./commands/addCommand.js", "customcommands");
+}
+}, 10* 1000);
 
 var commands = $.inidb.GetKeyList("command", "");
 

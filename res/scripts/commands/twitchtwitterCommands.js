@@ -211,7 +211,10 @@ $.on('command', function(event) {
         }
     }
 });
-
+setTimeout(function(){ 
+if ($.moduleEnabled('./commands/twitchtwitterCommand.js')) {
 //$.registerChatCommand("./commands/twitchtwitterCommands.js", "twitch", "caster");
 $.registerChatCommand("./commands/twitchtwitterCommands.js", "tweet", "caster");
 $.registerChatCommand("./commands/twitchtwitterCommands.js", "twitchopt", "admin");
+}
+},10*1000);

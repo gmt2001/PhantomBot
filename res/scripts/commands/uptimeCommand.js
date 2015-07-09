@@ -34,6 +34,9 @@ $.on('command', function (event) {
 	}	
 	return;
 });
-
+setTimeout(function(){ 
+if ($.moduleEnabled('./commands/uptimeCommand.js')) {
 $.registerChatCommand("./commands/uptimeCommand.js", "uptime");
 $.registerChatCommand("./commands/uptimeCommand.js", "botuptime");
+}
+},10*1000);

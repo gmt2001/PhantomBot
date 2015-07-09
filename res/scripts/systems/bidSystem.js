@@ -153,5 +153,8 @@ $.on('command', function(event) {
 	}
 
 });
-
+setTimeout(function(){ 
+if ($.moduleEnabled('./systems/bidSystem.js')) {
 $.registerChatCommand("./systems/bidSystem.js", "bid");
+}
+},10*1000);

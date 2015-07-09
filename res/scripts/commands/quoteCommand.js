@@ -105,7 +105,11 @@ $.on('command', function(event) {
     }
 });
 
+setTimeout(function(){ 
+if ($.moduleEnabled('./commands/quoteCommand.js')) {
 $.registerChatCommand("./commands/quoteCommand.js", "quote");
 $.registerChatCommand("./commands/quoteCommand.js", "addquote", "mod");
 $.registerChatCommand("./commands/quoteCommand.js", "editquote", "mod");
 $.registerChatCommand("./commands/quoteCommand.js", "delquote", "mod");
+}
+},10*1000);

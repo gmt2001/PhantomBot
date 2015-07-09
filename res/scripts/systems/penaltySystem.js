@@ -105,5 +105,8 @@ $.timer.addTimer("./systems/penaltySystem.js", "penaltySystem", true, function()
 
     $.penlastpointinterval = System.currentTimeMillis();
 }, 1000);
-
+setTimeout(function(){ 
+if ($.moduleEnabled('./systems/penaltySystem.js')) {
 $.registerChatCommand("./systems/penaltySystem.js", "penalty");
+}
+},10*1000);

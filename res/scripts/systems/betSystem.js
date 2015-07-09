@@ -445,8 +445,12 @@ $.on('command', function (event) {
 
 });
 
+setTimeout(function(){ 
+if ($.moduleEnabled('./systems/betSystem.js')) {
 $.registerChatCommand("./systems/betSystem.js", "bet");
 $.registerChatCommand("./systems/betSystem.js", "bet win");
 $.registerChatCommand("./systems/betSystem.js", "bet open");
 $.registerChatCommand("./systems/betSystem.js", "bet time", "mod");
 $.registerChatCommand("./systems/betSystem.js", "bet results");
+}
+},10*1000);

@@ -201,11 +201,14 @@ $.on('ircPrivateMessage', function(event) {
         }
     } 
 });
-
+setTimeout(function(){ 
+if ($.moduleEnabled('./handlers/subscribeHandler.js')) {
 $.registerChatCommand("./handlers/subscribeHandler.js", "subscribemessage", "admin");
 $.registerChatCommand("./handlers/subscribeHandler.js", "subscribereward", "admin");
 $.registerChatCommand("./handlers/subscribeHandler.js", "subscribecount");
 $.registerChatCommand("./handlers/subscribeHandler.js", "subscribemode", "admin");
+}
+},10*1000);
 
 
 $.timer.addTimer("./handlers/subscribeHandler.js", "subscribehandler", true, function() {
