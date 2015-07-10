@@ -609,22 +609,11 @@ $.on('command', function (event) {
     }
 
     if (command.equalsIgnoreCase("addsong")) {
-
-        if (!$.isReg(sender))
-        {
             if ($.inidb.get('blacklist', sender) == "true") {
                 //blacklisted, deny
                 $.say("You are denied access to song request features!");
                 return;
             }
-            if( parseInt($.inidb.get("pricecom", "addsong"))==0 || $.inidb.get("pricecom", "addsong")==null )
-            {
-                //if no price and not regular, deny.
-                $.say("There is currently no cost for song requests, howerver you must be a channel regular.");
-                return;   
-            }
-        }         
-        
         
         //start arguments check
         if (args.length == 0) {
