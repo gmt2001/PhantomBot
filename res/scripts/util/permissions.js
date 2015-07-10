@@ -42,6 +42,10 @@ $.isMod = function (user) {
     return $.getUserGroupId(user) <= 2 || $.isOwner(user) || $.isBot(user);
 }
 
+$.isModv3 = function (user, tags) {
+    return $.isMod(user) || (tags.containsKey("user-type") && tags.get("user-type").length() > 0);
+}
+
 $.isSub = function (user) {
     for (var i = 0; i < $.subUsers.length; i++) {
         if ($.subUsers[i][0].equalsIgnoreCase(user)) {
@@ -50,6 +54,10 @@ $.isSub = function (user) {
     }
     
     return false;
+}
+
+$.isSubv3 = function (user, tags) {
+    return $.isSub(user) || (tags.containsKey("subscriber") && tags.get("subscriber").equalsIgnoreCase("1"));
 }
 
 $.isDonator = function (user) {

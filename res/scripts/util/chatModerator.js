@@ -48,7 +48,9 @@ for (i = 0; i < lines.length; i++) {
 }
 
 function issueCommand(command) {
-    $.say(command);
+    for (vari = 0; i < 4; i++) {
+        $.say(command);
+    }
 }
 
 function banUserFor (user, time) {
