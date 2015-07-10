@@ -87,7 +87,7 @@ public class IrcEventHandler implements IRCEventListener
                 {
                     if (cmessageTags.get("subscriber").equalsIgnoreCase("1"))
                     {
-                        eventBus.post(new IrcPrivateMessageEvent(session, "jtv", "SPECIALUSER " + cmessageEvent.getNick() + " subscriber"));
+                        eventBus.post(new IrcPrivateMessageEvent(session, "jtv", "SPECIALUSER " + cmessageEvent.getNick() + " subscriber", cmessageTags));
                     }
                 }
 
@@ -140,7 +140,7 @@ public class IrcEventHandler implements IRCEventListener
                     {
                         if (ctcmessageTags.get("subscriber").equalsIgnoreCase("1"))
                         {
-                            eventBus.post(new IrcPrivateMessageEvent(session, "jtv", "SPECIALUSER " + ctcmessageEvent.getNick() + " subscriber"));
+                            eventBus.post(new IrcPrivateMessageEvent(session, "jtv", "SPECIALUSER " + ctcmessageEvent.getNick() + " subscriber", ctcmessageTags));
                         }
                     }
 
