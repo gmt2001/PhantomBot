@@ -16,6 +16,7 @@
  */
 package me.mast3rplan.phantombot.event.irc.message;
 
+import java.util.Map;
 import me.mast3rplan.phantombot.jerklib.Channel;
 import me.mast3rplan.phantombot.jerklib.Session;
 
@@ -27,6 +28,12 @@ public class IrcChannelMessageEvent extends IrcMessageEvent
     public IrcChannelMessageEvent(Session session, String sender, String message, Channel channel)
     {
         super(session, sender, message);
+        this.channel = channel;
+    }
+    
+    public IrcChannelMessageEvent(Session session, String sender, String message, Channel channel, Map<String, String> tags)
+    {
+        super(session, sender, message, tags);
         this.channel = channel;
     }
 

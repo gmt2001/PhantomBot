@@ -16,6 +16,8 @@
  */
 package me.mast3rplan.phantombot.event.irc.message;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 import me.mast3rplan.phantombot.event.irc.IrcEvent;
 import me.mast3rplan.phantombot.jerklib.Session;
@@ -26,6 +28,7 @@ public abstract class IrcMessageEvent extends IrcEvent
 
     private String sender;
     private String message;
+    private Map<String, String> tags;
     public static Pattern addressPtn = Pattern.compile(
             "(http://)?(www\\.)?(\\w+\\.)+(a(c|ac(ademy|tor)|d|e|ero|f|g|gency|i|l|m|n|o|q|r|rpa|s|sia|t|u|w|x|z)"
             + "|b(a|ar|argains|b|d|e|erlin|est|f|g|h|i|id|ike|iz|j|lue|m|n|o|outique|r|s|t|uil(d|ers)|uzz|v|w|y|z)"
@@ -49,6 +52,15 @@ public abstract class IrcMessageEvent extends IrcEvent
         super(session);
         this.sender = sender;
         this.message = message;
+        this.tags = new HashMap<>();
+    }
+    
+    protected IrcMessageEvent(Session session, String sender, String message, Map<String, String> tags)
+    {
+        super(session);
+        this.sender = sender;
+        this.message = message;
+        this.tags = tags;
     }
 
     public String getSender()
@@ -59,6 +71,11 @@ public abstract class IrcMessageEvent extends IrcEvent
     public String getMessage()
     {
         return message;
+    }
+
+    public Map<String, String> getTags()
+    {
+        return tags;
     }
 
     public int getCapsCount()

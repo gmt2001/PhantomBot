@@ -17,7 +17,9 @@
 package me.mast3rplan.phantombot.jerklib.events;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A Class to parse a line of IRC text
@@ -44,8 +46,9 @@ public class EventToken
 {
 
     private final String data;
-    private String tags = "", prefix = "", command = "";
-    private List<String> arguments = new ArrayList<String>();
+    private String tagsString = "", argumentsString = "", prefix = "", command = "";
+    private List<String> arguments = new ArrayList<>();
+    private Map<String, String> tags = new HashMap<>();
     private int offset = 0;
 
     /**
@@ -75,7 +78,7 @@ public class EventToken
             extractTags(data);
             incTillChar();
         }
-        
+
         //see if message has prefix
         if (data.substring(offset).startsWith(":"))
         {
@@ -105,6 +108,13 @@ public class EventToken
     private void extractArguments()
     {
         String argument = "";
+        argumentsString = data.substring(offset);
+
+        if (argumentsString.startsWith(":"))
+        {
+            argumentsString = argumentsString.substring(1);
+        }
+
         for (int i = offset; i < data.length(); i++)
         {
             if (!Character.isWhitespace(data.charAt(i)))
@@ -164,14 +174,59 @@ public class EventToken
         //increment offset , +1 is for : removed
         offset += prefix.length() + 1;
     }
-    
+
     private void extractTags(String data)
     {
-        //set tags - @ is at 0
-        tags = data.substring(offset + 1, data.indexOf(" ", offset + 1));
+        //set tagsString - @ is at 0
+        tagsString = data.substring(offset + 1, data.indexOf(" ", offset + 1));
 
         //increment offset , +1 is for @ removed
-        offset += tags.length() + 1;
+        offset += tagsString.length() + 1;
+        
+        if (data.charAt(offset) == '@')
+        {
+            offset++;
+        }
+
+        String tag = "";
+        String value = "";
+        boolean onTag = true;
+
+        for (int i = offset; i < data.length(); i++)
+        {
+            if (!Character.isWhitespace(data.charAt(i)) && data.charAt(i) != ';')
+            {
+                if (onTag)
+                {
+                    if (data.charAt(i) != '=')
+                    {
+                        tag += data.charAt(i);
+                    } else {
+                        onTag = false;
+                    }
+                } else {
+                    value += data.charAt(i);
+                }
+
+                offset++;
+            } else
+            {
+                if (tag.length() > 0)
+                {
+                    tags.put(tag, value);
+                    tag = "";
+                    value = "";
+                    onTag = true;
+                }
+
+                offset++;
+            }
+
+            if (Character.isWhitespace(data.charAt(i)))
+            {
+                break;
+            }
+        }
     }
 
     /**
@@ -222,8 +277,13 @@ public class EventToken
         }
         return "";
     }
-    
-    public String tags()
+
+    public String tagsString()
+    {
+        return tagsString;
+    }
+
+    public Map<String, String> tags()
     {
         return tags;
     }
