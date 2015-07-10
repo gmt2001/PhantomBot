@@ -229,6 +229,9 @@ public class IrcEventHandler implements IRCEventListener
                     }
                 }
                 break;
+            case NOTICE:
+                eventBus.post(new IrcPrivateMessageEvent(session, "jtv", ((NoticeEvent) event).getNoticeMessage()));
+                break;
             case DEFAULT:
                 if (event.command().equalsIgnoreCase("USERSTATE"))
                 {
