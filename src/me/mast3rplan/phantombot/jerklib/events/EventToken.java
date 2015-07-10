@@ -181,7 +181,7 @@ public class EventToken
         tagsString = data.substring(offset + 1, data.indexOf(" ", offset + 1));
 
         //increment offset , +1 is for @ removed
-        offset += tagsString.length() + 1;
+        //offset += tagsString.length() + 1;
         
         if (data.charAt(offset) == '@')
         {

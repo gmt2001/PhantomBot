@@ -73,6 +73,7 @@ public class IrcEventHandler implements IRCEventListener
                 if (PhantomBot.enableDebugging)
                 {
                     com.gmt2001.Console.out.println(">>Channel Message Tags");
+                    com.gmt2001.Console.out.println(">>>>Raw: " + cmessageEvent.tagsString());
                     
                     for (Map.Entry<String, String> tag: cmessageTags.entrySet())
                     {
