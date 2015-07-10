@@ -65,7 +65,7 @@ import org.apache.commons.io.FileUtils;
 public class PhantomBot implements Listener
 {
 
-    private final String username;
+    public final String username;
     private final String oauth;
     private String apioauth;
     private String clientid;
@@ -219,6 +219,8 @@ public class PhantomBot implements Listener
         }
 
         this.session = connectionManager.requestConnection(this.hostname, this.port, oauth);
+        //TwitchGroupChatHandler(this.oauth,this.connectionManager);
+        
 
         if (clientid.length() == 0)
         {
@@ -247,6 +249,15 @@ public class PhantomBot implements Listener
     public Channel getChannel()
     {
         return channel;
+    }
+    
+    public void TwitchGroupChatHandler(String oauth, ConnectionManager connManager)
+    {
+        int port = 80;
+        String hostname = "199.9.248.248";
+        
+        this.session = connManager.requestConnection(hostname, port, oauth);
+                    
     }
 
     public final void init()
