@@ -160,9 +160,13 @@ $.on('command', function(event) {
     
 });
 
+setTimeout(function(){ 
+if ($.moduleEnabled('./handlers/followHandler.js')) {
 $.registerChatCommand("./handlers/followHandler.js", "followmessage", "admin");
 $.registerChatCommand("./handlers/followHandler.js", "followreward", "admin");
 $.registerChatCommand("./handlers/followHandler.js", "followcount");
+}
+},10*1000);
 
 $.checkFollowTrain = function() {
     if (System.currentTimeMillis() - $.lastfollow > 65 * 1000) {

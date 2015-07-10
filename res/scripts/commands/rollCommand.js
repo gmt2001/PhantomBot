@@ -292,5 +292,8 @@ $.on('command', function (event) {
 
     }
 });
-
+setTimeout(function(){ 
+if ($.moduleEnabled('./commands/rollCommand.js')) {
 $.registerChatCommand("./commands/rollCommand.js", "roll");
+}
+},10*1000);

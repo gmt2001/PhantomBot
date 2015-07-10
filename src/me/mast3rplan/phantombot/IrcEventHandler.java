@@ -112,7 +112,7 @@ public class IrcEventHandler implements IRCEventListener
                                 com.gmt2001.Console.out.println(">>>[DEBUG] Dectected Subscriber");
                             }
 
-                            com.gmt2001.Console.out.println(">>Next message marked Subscriber by IRCv3");
+                            //com.gmt2001.Console.out.println(">>Next message marked Subscriber by IRCv3");
                             eventBus.post(new IrcPrivateMessageEvent(session, "jtv", "SPECIALUSER " + cmessageEvent.getNick() + " subscriber"));
                             triggerSub = true;
                         }
@@ -148,7 +148,7 @@ public class IrcEventHandler implements IRCEventListener
                                     }
 
                                     mods.add(cmessageEvent.getNick().toLowerCase());
-                                    com.gmt2001.Console.out.println(">>Next message marked Moderator/Staff by IRCv3");
+                                    //com.gmt2001.Console.out.println(">>Next message marked Moderator/Staff by IRCv3");
                                     eventBus.post(new IrcChannelUserModeEvent(session, cmessageEvent.getChannel(), cmessageEvent.getNick(), "O", true));
                                 }
                                 
@@ -163,7 +163,7 @@ public class IrcEventHandler implements IRCEventListener
                     if (!mods.contains(cmessageEvent.getNick().toLowerCase()))
                     {
                         mods.add(cmessageEvent.getNick().toLowerCase());
-                        com.gmt2001.Console.out.println(">>Next message marked Moderator (Broadcaster)");
+                        //com.gmt2001.Console.out.println(">>Next message marked Moderator (Broadcaster)");
                         eventBus.post(new IrcChannelUserModeEvent(session, cmessageEvent.getChannel(), cmessageEvent.getNick(), "O", true));
                     }
                 }
@@ -223,7 +223,7 @@ public class IrcEventHandler implements IRCEventListener
                                 }
                             }
 
-                            eventBus.post(new IrcChannelUserModeEvent(session, modeEvent.getChannel(), adj.getArgument(),
+                            eventBus.postAsync(new IrcChannelUserModeEvent(session, modeEvent.getChannel(), adj.getArgument(),
                                     String.valueOf(adj.getMode()), adj.getAction() == ModeAdjustment.Action.PLUS));
                         }
                     }
@@ -252,7 +252,7 @@ public class IrcEventHandler implements IRCEventListener
                                     if (!mods.contains(PhantomBot.instance().getSession().getNick().toLowerCase()))
                                     {
                                         mods.add(PhantomBot.instance().getSession().getNick().toLowerCase());
-                                        com.gmt2001.Console.out.println(">>Userstate marked bot Moderator/Staff by IRCv3");
+                                        //com.gmt2001.Console.out.println(">>Userstate marked bot Moderator/Staff by IRCv3");
                                         eventBus.post(new IrcChannelUserModeEvent(session, session.getChannel(event.arg(0)), PhantomBot.instance().getSession().getNick(), "O", true));
                                     }
 
@@ -267,7 +267,7 @@ public class IrcEventHandler implements IRCEventListener
                         if (!mods.contains(PhantomBot.instance().getSession().getNick().toLowerCase()))
                         {
                             mods.add(PhantomBot.instance().getSession().getNick().toLowerCase());
-                            com.gmt2001.Console.out.println(">>Userstate marked bot Moderator (Broadcaster)");
+                            //com.gmt2001.Console.out.println(">>Userstate marked bot Moderator (Broadcaster)");
                             eventBus.post(new IrcChannelUserModeEvent(session, session.getChannel(event.arg(0)), PhantomBot.instance().getSession().getNick(), "O", true));
                         }
                     }

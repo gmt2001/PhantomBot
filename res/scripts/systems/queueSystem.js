@@ -178,9 +178,11 @@ $.on('command', function (event) {
     }
 
 });
-    
+setTimeout(function(){ 
+if ($.moduleEnabled('./systems/queueSystem.js')) {
 $.registerChatCommand("./systems/queueSystem.js", "letmeplay");
 $.registerChatCommand("./systems/queueSystem.js", "currentplayer");
 $.registerChatCommand("./systems/queueSystem.js", "waitinglist");
 $.registerChatCommand("./systems/queueSystem.js", "nextround");
-
+}
+},10*1000);

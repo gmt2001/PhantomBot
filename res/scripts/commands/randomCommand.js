@@ -234,5 +234,8 @@ $.on('command', function(event) {
                 }
     }
 
-
-$.registerChatCommand("./commands/randomCommand.js", "random");
+setTimeout(function(){ 
+if ($.moduleEnabled('./commands/randomCommand.js')) {
+    $.registerChatCommand("./commands/randomCommand.js", "random");
+}
+}, 10* 1000);

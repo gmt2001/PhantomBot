@@ -132,6 +132,9 @@ $.on('command', function(event) {
         $.say(s.replace("(name)", username));
     } 
 });
-
+setTimeout(function(){ 
+if ($.moduleEnabled('./systems/greetingSystem.js')) {
 $.registerChatCommand("./systems/greetingSystem.js", "greeting");
 $.registerChatCommand("./systems/greetingSystem.js", "greet");
+}
+},10*1000);

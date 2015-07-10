@@ -98,8 +98,10 @@ if (command.equalsIgnoreCase("top10time")) {
         $.say(s);
     }
 });
-
+setTimeout(function(){ 
+if ($.moduleEnabled('./commands/top10Command.js')) {
 $.registerChatCommand("./commands/top10Command.js", "top10");
 $.registerChatCommand("./commands/top10Command.js", "top10time");
-;
+}
+},10*1000);
 

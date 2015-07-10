@@ -296,7 +296,8 @@ $.timer.addTimer("./systems/timeSystem.js", "timesystem", true, function() {
 $.timer.addTimer("./systems/timeSystem.js", "autosave", true, function() {
     $.inidb.SaveAll(true);
 }, 300* 1000);
-
+setTimeout(function(){ 
+if ($.moduleEnabled('./systems/timeSystem.js')) {
 $.registerChatCommand("./systems/timeSystem.js", "time");
 $.registerChatCommand("./systems/timeSystem.js", "time help");
 $.registerChatCommand("./systems/timeSystem.js", "timezone");
@@ -304,4 +305,6 @@ $.registerChatCommand("/systems/timeSystem.js", "streamertime");
 $.registerChatCommand("/systems/timeSystem.js", "timelevel", "mod");
 $.registerChatCommand("/systems/timeSystem.js", "timepromotehours", "mod");
 $.registerChatCommand("/systems/timeSystem.js", "timetoggle", "mod");
+}
+},10*1000);
 

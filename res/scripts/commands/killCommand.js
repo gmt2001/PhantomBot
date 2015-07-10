@@ -215,5 +215,8 @@ $.on('command', function(event) {
                 }
     }
 
-
+setTimeout(function(){ 
+if ($.moduleEnabled('./commands/killCommand.js')) {
 $.registerChatCommand("./commands/killCommand.js", "kill");
+}
+},10*1000);

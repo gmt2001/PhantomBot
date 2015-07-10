@@ -1,12 +1,12 @@
 $.on('ircChannelMessage', function(event) {
     
-    var message = event.getMessage();
-    var sender = event.getSender().toLowerCase();
+    var message = new String(event.getMessage().toLowerCase().trim());
+    message = message.replace(/[^a-zA-Z0-9\s]+/g,'');
     var emoteKey = $.inidb.GetKeyList("phrases", "");
 
 
     for (i = 0; i < emoteKey.length; i++) {
-        if (message.indexOf(emoteKey[i]) != -1) {
+        if (message.indexOf(emoteKey[i].toLowerCase()) != -1) {
         
             $.say($.inidb.get('phrases', emoteKey[i]));
             return;
@@ -20,31 +20,50 @@ $.on('command', function (event) {
     var sender = event.getSender();
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
-    var message = argsString.substring(argsString.indexOf(" ") + 1, argsString.length());
     var args = event.getArgs();
+    var triggerphrase = "";
+    var response = "";
 
     if (command.equalsIgnoreCase("addphrase")) {
         if (!$.isMod(sender)) {
             $.say($.modmsg);
             return;
         }
-        emote = args[0];
+        if((argsString.indexOf('"')==1))
+        {
+            triggerphrase = argsString.substring(2, argsString.indexOf('" ')).toLowerCase();
+        } else {
+            triggerphrase = args[0].toString().toLowerCase();
+        }
+        triggerphrase = new String(triggerphrase.trim());
+        triggerphrase = triggerphrase.replace(/[^a-zA-Z0-9\s]+/g,'');
+        
+        if(argsString.indexOf('" "')!=-1)
+        {
+            response = argsString.substring(argsString.indexOf('" "') + 3, argsString.length() - 1);
+        } else {
+            response = args[1].toString();
+        }
+         
 
-        $.inidb.set('phrases', emote, message);
-        $.say("Phrase trigger: " + emote + ", Message: \"" + message + "\" was added!");
+        $.inidb.set('phrases', triggerphrase, response);
+        $.say("Phrase trigger: " + triggerphrase + ", Message: \"" + response + "\" was added!");
     }
     if (command.equalsIgnoreCase("delphrase")) {
         if (!$.isMod(sender)) {
             $.say($.modmsg);
             return;
         }
-        emote = args[0];
+        triggerphrase = args[0];
 
-        $.inidb.del('phrases', emote);
-        $.say("Phrase trigger: " + emote + " was removed!");
+        $.inidb.del('phrases', triggerphrase);
+        $.say("Phrase trigger: " + triggerphrase + " was removed!");
     }
 
 });
-
+setTimeout(function(){ 
+if ($.moduleEnabled('./handlers/phraseHandler.js')) {
 $.registerChatCommand("./handlers/phraseHandler.js", "addphrase");
 $.registerChatCommand("./handlers/phraseHandler.js", "delphrase");
+}
+},10*1000);

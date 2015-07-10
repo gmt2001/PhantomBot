@@ -386,6 +386,11 @@ $.on('command', function (event) {
                     $.say($.username.resolve(sender) + "," + " you don't have that amount of " + $.pointname + " to wager!");
                     return;
                 }
+                
+                if (amount < 1) {
+                    $.say($.username.resolve(sender) + "," + " your wager must be greater than 0!");
+                    return;
+                }
 
 
                 if (sender in $var.bet_table) {
@@ -440,8 +445,12 @@ $.on('command', function (event) {
 
 });
 
+setTimeout(function(){ 
+if ($.moduleEnabled('./systems/betSystem.js')) {
 $.registerChatCommand("./systems/betSystem.js", "bet");
 $.registerChatCommand("./systems/betSystem.js", "bet win");
 $.registerChatCommand("./systems/betSystem.js", "bet open");
 $.registerChatCommand("./systems/betSystem.js", "bet time", "mod");
 $.registerChatCommand("./systems/betSystem.js", "bet results");
+}
+},10*1000);
