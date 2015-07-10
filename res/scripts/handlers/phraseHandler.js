@@ -2,12 +2,11 @@ $.on('ircChannelMessage', function(event) {
     
     var message = new String(event.getMessage().toLowerCase().trim());
     message = message.replace(/[^a-zA-Z0-9\s]+/g,'');
-    var sender = event.getSender().toLowerCase();
     var emoteKey = $.inidb.GetKeyList("phrases", "");
 
 
     for (i = 0; i < emoteKey.length; i++) {
-        if (message.indexOf(emoteKey[i]) != -1) {
+        if (message.indexOf(emoteKey[i].toLowerCase()) != -1) {
         
             $.say($.inidb.get('phrases', emoteKey[i]));
             return;
@@ -21,7 +20,6 @@ $.on('command', function (event) {
     var sender = event.getSender();
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
-    var message = argsString.substring(argsString.indexOf(" "), argsString.length());
     var args = event.getArgs();
     var triggerphrase = "";
     var response = "";
@@ -33,9 +31,9 @@ $.on('command', function (event) {
         }
         if((argsString.indexOf('"')==1))
         {
-            triggerphrase = argsString.substring(2, argsString.indexOf('" '));
+            triggerphrase = argsString.substring(2, argsString.indexOf('" ')).toLowerCase();
         } else {
-            triggerphrase = args[0].toString();
+            triggerphrase = args[0].toString().toLowerCase();
         }
         triggerphrase = new String(triggerphrase.trim());
         triggerphrase = triggerphrase.replace(/[^a-zA-Z0-9\s]+/g,'');

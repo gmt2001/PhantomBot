@@ -223,6 +223,8 @@ $.on('command', function(event) {
             $.say("Usage: !permcom (command name) (group name) (1/2). Restricts usage of a command to viewers with a certain permission level. 1 specifies only a single group, multiple single groups can be added for the same command. 2 specifies recursive (all groups higher than the group specified).");
             return;
         }
+        
+        
                 
         if (args.length >= 2) {
             if (!$.inidb.exists("command", args[0].toLowerCase()) && !$.commandExists(args[0].toLowerCase())) {
@@ -231,25 +233,53 @@ $.on('command', function(event) {
             }
             
             var newgroup = args[1].toLowerCase();
+            var acommands = $.inidb.GetKeyList("aliases", "");
+            var commandpermarr = $.inidb.GetKeyList("commandperm", "");
+            
             if(!parseInt(args[2])) {
                 $.say("You must specify a permission mode of 1 or 2! 1 specifies only a single group, multiple single groups can be added for the same command. 2 specifies recursive (all groups higher than the group specified).");
                 return;
             }
             
-            if(args[2]>1) {
+            if(parseInt(args[2])>1) {
                 var mode = "_recursive";
             } else {
                 mode = "";
             }
+            
+            if(newgroup.equalsIgnoreCase("delete")) {
+                for (var i = 0; i < commandpermarr.length; i++) {
+                    if ($.inidb.get("commandperm", commandpermarr[i] + mode).equalsIgnoreCase(args[0].toLowerCase() + mode)) {
+                        $.inidb.del("commandperm", commandpermarr[i] + mode);
+                    }
+                }
+                for (var i = 0; i < acommands.length; i++) {
+                    if ($.inidb.get("aliases", acommands[i]).equalsIgnoreCase(args[0].toLowerCase())) {
+                        $.inidb.del("commandperm", acommands[i] + mode);
+                    }
+                }
+                
+                if(mode=="_recursive") {
+                    $.say("All recursive permissions for the command: " + args[0] + " and any of its aliases have been removed.");
+                } else {
+                    $.say("All permissions for the command: " + args[0] + " and any of its aliases have been removed.");
+                }
+                return;
+            }
                       
             $.inidb.set("permcom", args[0].toLowerCase() + mode, newgroup);
             
-            var acommands = $.inidb.GetKeyList("aliases", "");
 
             for (var i = 0; i < acommands.length; i++) {
                 if ($.inidb.get("aliases", acommands[i]).equalsIgnoreCase(args[0].toLowerCase())) {
-                    $.inidb.set("permcom", acommands[i] + mode, newgroup);
+                    $.inidb.set("commandperm", acommands[i] + mode, newgroup);
                 }
+            }
+            
+            if(mode=="_recursive") {
+                $.say('Permissions for command: ' + args[0] + ' set for group: ' + args[1] + ' and higher.');
+            } else {
+                $.say('Permissions for command: ' + args[0] + ' set for group: ' + args[1]);
             }
         }
     }
