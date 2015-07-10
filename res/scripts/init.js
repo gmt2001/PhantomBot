@@ -325,6 +325,36 @@ $.hook.call = function(hook, arg, alwaysrun) {
     }
 }
 
+$.permCom = function(user, command) {
+    var keys = $.inidb.GetKeyList("permcom", "");
+    var groupArray = [];
+    if($.inidb.exists('aliases', command.toLowerCase())) {
+        command = $.inidb.get('aliases', command.toLowerCase());
+    }
+    
+    for(var i=0;i<keys.length;i++) {
+        if(keys[i].indexOf(command.toLowerCase()) > -1) {
+            var permGroupID = $.getGroupIdByName($.inidb.get("permcom", keys[i]));
+            var permissionGroup = $.getGroupNameById(permGroupID);
+            var userGroup = $.getUserGroupName(user);
+
+            if($.inidb.get("permcom", command.toLowerCase() + "_recursive")) {
+                if(($.getGroupIdByName(userGroup)>permGroupID) && !$.isAdmin(user)) {
+                    $.say("Your user group : " + userGroup + " does not have permission to use the command: "+ command +".");
+                    return false;
+                }   
+            } else {
+                groupArray.push(permissionGroup);
+                if((groupArray.indexOf(userGroup) == -1) && !$.isAdmin(user)) {
+                    $.say("Your user group : " + userGroup + " does not have permission to use the command: "+ command +".");
+                    return false;
+                }                
+            }
+        }    
+    }
+    return true;
+};
+
 $api.on($script, 'command', function(event) {
     var sender = event.getSender();
     if ($.inidb.exists('aliases', event.getCommand().toLowerCase())) {
@@ -332,6 +362,9 @@ $api.on($script, 'command', function(event) {
     }
     
     var command = event.getCommand();
+    if(!$.permCom(sender, command)) {
+        return;
+    };
     
     if ($.moduleEnabled("./systems/pointSystem.js") && !$.isMod(sender) && $.inidb.exists("pricecom", command.toLowerCase())) {
         if (parseInt($.inidb.get("points", sender)) < parseInt($.inidb.get("pricecom", command.toLowerCase()))) {
@@ -344,30 +377,6 @@ $api.on($script, 'command', function(event) {
                 $.println("[Paid]" + sender + "s balance is now: " + $.inidb.get('points', sender) + " " + $.pointname + "");
             }
         }
-    }
-    var keys = $.inidb.GetKeyList("commandperm", "");
-    var groupArray = [];
-    
-    for(var i=0;i<keys.length;i++) {
-        if(keys[i].indexOf(command.toLowerCase()) > -1) {
-
-            var permissionGroup = $.inidb.get("commandperm", keys[i]);
-            var senderGroup = $.getUserGroupName(sender);
-            
-            if($.inidb.get("commandperm", command.toLowerCase() + "_recursive")) {
-                if(($.getGroupIdByName(senderGroup)>$.getGroupIdByName(permissionGroup)) && !$.isAdmin(sender)) {
-                    $.say('The command ' + command.toLowerCase() + ' requires user group: ' + permissionGroup + " ID: " + $.getGroupIdByName(permissionGroup) + " or higher. Your current group is: " + senderGroup + " ID: " + $.getGroupIdByName(senderGroup) + ".");
-                    return;
-                }   
-            } else {
-                groupArray.push($.inidb.get("commandperm", keys[i]));
-                if((groupArray.indexOf(senderGroup)> -1) && !$.isAdmin(sender)) {
-                    $.say('The command ' + command.toLowerCase() + ' requires user group: ' + permissionGroup + ". Your current group is: " + senderGroup + ".");
-                    return;
-                }                
-            }
-        }
-        
     }
     
     $.hook.call('command', event, false);

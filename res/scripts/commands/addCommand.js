@@ -233,8 +233,8 @@ $.on('command', function(event) {
             }
             
             var newgroup = args[1].toLowerCase();
-            var acommands = $.inidb.GetKeyList("aliases", "");
-            var commandpermarr = $.inidb.GetKeyList("commandperm", "");
+            var permcommArray = $.inidb.GetKeyList("permcom", "");
+            var alias = "";
             
             if(!parseInt(args[2])) {
                 $.say("You must specify a permission mode of 1 or 2! 1 specifies only a single group, multiple single groups can be added for the same command. 2 specifies recursive (all groups higher than the group specified).");
@@ -248,16 +248,17 @@ $.on('command', function(event) {
             }
             
             if(newgroup.equalsIgnoreCase("delete")) {
-                for (var i = 0; i < commandpermarr.length; i++) {
-                    if ($.inidb.get("commandperm", commandpermarr[i] + mode).equalsIgnoreCase(args[0].toLowerCase() + mode)) {
-                        $.inidb.del("commandperm", commandpermarr[i] + mode);
+                for (var i = 0; i < permcommArray.length; i++) {
+                    if (permcommArray[i].equalsIgnoreCase(args[0] + mode)) {
+                        $.inidb.del("permcom", permcommArray[i]);
                     }
                 }
-                for (var i = 0; i < acommands.length; i++) {
-                    if ($.inidb.get("aliases", acommands[i]).equalsIgnoreCase(args[0].toLowerCase())) {
-                        $.inidb.del("commandperm", acommands[i] + mode);
-                    }
+
+                if ($.inidb.exists('aliases', args[0].toLowerCase())) {
+                    alias = $.inidb.get('aliases', args[0].toLowerCase());
+                    $.inidb.del("permcom", alias + mode);
                 }
+
                 
                 if(mode=="_recursive") {
                     $.say("All recursive permissions for the command: " + args[0] + " and any of its aliases have been removed.");
@@ -270,11 +271,12 @@ $.on('command', function(event) {
             $.inidb.set("permcom", args[0].toLowerCase() + mode, newgroup);
             
 
-            for (var i = 0; i < acommands.length; i++) {
-                if ($.inidb.get("aliases", acommands[i]).equalsIgnoreCase(args[0].toLowerCase())) {
-                    $.inidb.set("commandperm", acommands[i] + mode, newgroup);
+
+                if ($.inidb.exists('aliases', args[0].toLowerCase())) {
+                    alias = $.inidb.get('aliases', args[0].toLowerCase());
+                    $.inidb.set("permcom", alias + mode, newgroup);
                 }
-            }
+
             
             if(mode=="_recursive") {
                 $.say('Permissions for command: ' + args[0] + ' set for group: ' + args[1] + ' and higher.');
@@ -295,23 +297,6 @@ $.on('command', function(event) {
     }
     
     if ($.inidb.exists('command', command.toLowerCase())) {
-        if ($.inidb.exists("commandperm", command.toLowerCase())) {
-            if ($.inidb.get("commandperm", command.toLowerCase()).equalsIgnoreCase("caster") && !$.isCaster(sender)) {
-                return;
-            } else if ($.inidb.get("commandperm", command.toLowerCase()).equalsIgnoreCase("mod") && !$.isMod(sender)) {
-                return;
-            } else if ($.inidb.get("commandperm", command.toLowerCase()).equalsIgnoreCase("admin") && !$.isAdmin(sender)) {
-                return;
-            } else if ($.inidb.get("commandperm", command.toLowerCase()).equalsIgnoreCase("subscriber") && !$.isSub(sender)) {
-                return;
-            } else if ($.inidb.get("commandperm", command.toLowerCase()).equalsIgnoreCase("donator") && !$.isDonator(sender)) {
-                return;
-            } else if ($.inidb.get("commandperm", command.toLowerCase()).equalsIgnoreCase("hoster") && !$.isHoster(sender)) {
-                return;				
-			} else if ($.inidb.get("commandperm", command.toLowerCase()).equalsIgnoreCase("regular") && !$.isReg(sender)) {
-                return;
-            }
-        }
 
         var messageCommand = $.inidb.get('command', command.toLowerCase());
         
