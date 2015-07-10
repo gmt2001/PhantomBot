@@ -269,10 +269,10 @@ $.on('command', function(event) {
 });
 
 setTimeout(function(){ 
-if ($.moduleEnabled('./commands/streamCommand.js')) {
-$.registerChatCommand("./commands/streamCommands.js", "online");
-$.registerChatCommand("./commands/streamCommands.js", "game");
-$.registerChatCommand("./commands/streamCommands.js", "title");
+if ($.moduleEnabled('./commands/streamCommands.js')) {
+$.registerChatCommand("./commands/streamCommands.js", "online", "caster");
+$.registerChatCommand("./commands/streamCommands.js", "game", "caster");
+$.registerChatCommand("./commands/streamCommands.js", "title", "caster");
 $.registerChatCommand("./commands/streamCommands.js", "commercial", "caster");
 $.registerChatCommand("./commands/streamCommands.js", "commercial help", "caster");
 $.registerChatCommand("./commands/streamCommands.js", "viewers");
