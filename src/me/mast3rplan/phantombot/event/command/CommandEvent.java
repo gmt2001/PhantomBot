@@ -16,8 +16,10 @@
  */
 package me.mast3rplan.phantombot.event.command;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import me.mast3rplan.phantombot.event.Event;
 
 public class CommandEvent extends Event
@@ -27,12 +29,28 @@ public class CommandEvent extends Event
     private String command;
     private String arguments;
     private String[] args;
+    private Map<String, String> tags;
 
     public CommandEvent(String sender, String command, String arguments)
     {
         this.sender = sender;
         this.command = command;
         this.arguments = arguments;
+        this.tags = new HashMap<>();
+        parse();
+    }
+    
+    public CommandEvent(String sender, String command, String arguments, Map<String, String> tags)
+    {
+        this.sender = sender;
+        this.command = command;
+        this.arguments = arguments;
+        this.tags = tags;
+        parse();
+    }
+    
+    private void parse()
+    {
         List<String> tmpArgs = new LinkedList<>();
         boolean inquote = false;
         String tmpStr = "";
@@ -89,5 +107,10 @@ public class CommandEvent extends Event
     public String getArguments()
     {
         return arguments;
+    }
+    
+    public Map<String, String> getTags()
+    {
+        return tags;
     }
 }
