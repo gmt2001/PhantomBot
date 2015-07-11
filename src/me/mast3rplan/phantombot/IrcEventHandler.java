@@ -262,12 +262,9 @@ public class IrcEventHandler implements IRCEventListener
                 }
                 if (event.command().equalsIgnoreCase("WHISPER"))
                 {
-                    Map<String, String> weventTags = event.tags();
-                    
-                    com.gmt2001.Console.out.println(event.args());
+                    Map<String, String> weventTags = event.tags();                    
                     String wusername = event.getNick();
-                    String message = event.arg(1);
-                    
+                    String message = event.arg(1);                    
                     eventBus.postAsync(new IrcPrivateMessageEvent(session, wusername, message, weventTags));
                 }
                 break;
