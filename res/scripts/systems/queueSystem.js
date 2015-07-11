@@ -64,7 +64,7 @@ function PlayRequest(user, gametag) {
 
 $.on('command', function (event) {
     var sender = event.getSender().toLowerCase();
-    var username = $.username.resolve(sender);
+    var username = $.username.resolve(sender, event.getTags());
     var points = $.inidb.get('points', sender);
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
@@ -94,8 +94,8 @@ $.on('command', function (event) {
     
     if(command.equalsIgnoreCase("currentplayer")) {
         if($.playerqueue[0]==null){
-           $.say("There are no viewers in game currently.");
-           return;
+            $.say("There are no viewers in game currently.");
+            return;
         }
         $.say("Current player playing: " + $.playerqueue[0].user + " [Gamertag: " + $.playerqueue[0].gametag + "]");
     }
@@ -103,7 +103,7 @@ $.on('command', function (event) {
     if (command.equalsIgnoreCase("waitinglist")) {
         if(args[0]!=null)
         {
-            if(!$.isAdmin(sender) || !$.isMod(sender)){
+            if(!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())){
                 $.say("You must be a moderator to use this command.");
                 return;
             }
@@ -137,8 +137,8 @@ $.on('command', function (event) {
             $.queuelist += " ";
             
         
-            //unfinished: optional export queue list to external file
-            /*if ($.titles==1){
+        //unfinished: optional export queue list to external file
+        /*if ($.titles==1){
                 $.songurl = '<a href="https://www.youtube.com/watch?v=' + $.songid + '" target="new">' + $.songid + "</a> " + $.songname + " - " + $.songrequester + "</br>";
                 $.writeToFile($.songurl, $.storepath + "queue.php", true);
             }
@@ -162,7 +162,7 @@ $.on('command', function (event) {
     }
     
     if(command.equalsIgnoreCase("nextround")) {
-        if(!$.isMod(sender)){
+        if(!$.isModv3(sender, event.getTags())){
             $.say("You must be a moderator to use this command.");
             return;
         }
@@ -179,10 +179,10 @@ $.on('command', function (event) {
 
 });
 setTimeout(function(){ 
-if ($.moduleEnabled('./systems/queueSystem.js')) {
-$.registerChatCommand("./systems/queueSystem.js", "letmeplay");
-$.registerChatCommand("./systems/queueSystem.js", "currentplayer");
-$.registerChatCommand("./systems/queueSystem.js", "waitinglist");
-$.registerChatCommand("./systems/queueSystem.js", "nextround");
-}
+    if ($.moduleEnabled('./systems/queueSystem.js')) {
+        $.registerChatCommand("./systems/queueSystem.js", "letmeplay");
+        $.registerChatCommand("./systems/queueSystem.js", "currentplayer");
+        $.registerChatCommand("./systems/queueSystem.js", "waitinglist");
+        $.registerChatCommand("./systems/queueSystem.js", "nextround");
+    }
 },10*1000);

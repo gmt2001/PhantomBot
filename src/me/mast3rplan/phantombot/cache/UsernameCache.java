@@ -20,7 +20,9 @@ import com.gmt2001.TwitchAPIv3;
 import com.google.common.collect.Maps;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
+import me.mast3rplan.phantombot.PhantomBot;
 import org.json.JSONObject;
 
 public class UsernameCache
@@ -44,18 +46,35 @@ public class UsernameCache
 
     public String resolve(String username)
     {
-        String lusername = username.toLowerCase();
+        return resolve(username, new HashMap<String, String>());
+    }
 
-        if (username.equalsIgnoreCase("jtv") || username.equalsIgnoreCase("twitchnotify") || new Date().before(timeoutExpire))
-        {
-            return username;
-        }
+    public String resolve(String username, Map<String, String> tags)
+    {
+        String lusername = username.toLowerCase();
 
         if (cache.containsKey(lusername))
         {
             return cache.get(lusername);
         } else
         {
+            if (tags.containsKey("display-name") && tags.get("display-name").equalsIgnoreCase(lusername))
+            {
+                cache.put(lusername, tags.get("display-name"));
+                
+                if (PhantomBot.enableDebugging)
+                {
+                    com.gmt2001.Console.out.println(">>UsernameCache detected using v3: " + tags.get("dispaly-name"));
+                }
+                
+                return tags.get("display-name");
+            }
+            
+            if (username.equalsIgnoreCase("jtv") || username.equalsIgnoreCase("twitchnotify") || new Date().before(timeoutExpire))
+            {
+                return username;
+            }
+
             try
             {
                 JSONObject user = TwitchAPIv3.instance().GetUser(lusername);

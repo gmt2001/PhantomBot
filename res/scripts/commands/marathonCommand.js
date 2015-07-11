@@ -333,9 +333,9 @@ $.on('command', function(event) {
 });
 
 setTimeout(function(){ 
-if ($.moduleEnabled('./commands/marathonCommand.js')) {
-$.registerChatCommand("./commands/marathonCommand.js", "marathon");
-}
+    if ($.moduleEnabled('./commands/marathonCommand.js')) {
+        $.registerChatCommand("./commands/marathonCommand.js", "marathon");
+    }
 },10*1000);
 
 cal.set(java.util.Calendar.MINUTE, 0);

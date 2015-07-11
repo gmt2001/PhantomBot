@@ -1,6 +1,6 @@
 $.on('command', function(event) {
     var sender = event.getSender();
-    var username = $.username.resolve(sender);
+    var username = $.username.resolve(sender, event.getTags());
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
     var args = event.getArgs();
@@ -137,7 +137,7 @@ $.on('command', function(event) {
 
  
         if (action.equalsIgnoreCase("start")) {
-            if (!$.isMod(sender)) {
+            if (!$.isModv3(sender, event.getTags())) {
                 $.say(username + ", " + $.getUserGroupName(sender) + "s aren't allowed to start raffles! Moderators only.");
                 return;
             }
@@ -215,7 +215,7 @@ $.on('command', function(event) {
             
             $var.raffle_running = true;
         } else if (action.equalsIgnoreCase("end")) {
-            if (!$.isMod(sender)) {
+            if (!$.isModv3(sender, event.getTags())) {
                 $.say($.modmsg);
                 return;
             }
@@ -275,7 +275,7 @@ $.on('command', function(event) {
             $.inidb.set('raffles', 'date', date);
 
         } else if (action.equalsIgnoreCase("repick")) {
-            if (!$.isMod(sender)) {
+            if (!$.isModv3(sender, event.getTags())) {
                 $.say($.modmsg);
                 return;
             }
@@ -331,15 +331,15 @@ $.on('command', function(event) {
 
 $.on('ircChannelMessage', function(event) {
     var sender = event.getSender();
-    var username = $.username.resolve(sender);
+    var username = $.username.resolve(sender, event.getTags());
     var message = event.getMessage();
     
     if ($var.raffle_running) {
         if (message.toLowerCase().indexOf($var.raffle_keyword.toLowerCase()) == -1 || $.array.contains($var.raffle_entrants, sender)) {
-			if (message.toLowerCase().contains($var.raffle_keyword.toLowerCase())) {
-				$.say("You have already entered the raffle!");
-				return;
-			}
+            if (message.toLowerCase().contains($var.raffle_keyword.toLowerCase())) {
+                $.say("You have already entered the raffle!");
+                return;
+            }
             return;
         }
         
@@ -370,7 +370,7 @@ $.on('ircChannelMessage', function(event) {
     }
 });
 setTimeout(function(){ 
-if ($.moduleEnabled('./systems/raffleSystem.js')) {
-$.registerChatCommand("./systems/raffleSystem.js", "raffle");
-}
+    if ($.moduleEnabled('./systems/raffleSystem.js')) {
+        $.registerChatCommand("./systems/raffleSystem.js", "raffle");
+    }
 },10*1000);

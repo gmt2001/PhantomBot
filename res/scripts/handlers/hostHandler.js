@@ -69,7 +69,7 @@ $.on('twitchHostsInitialized', function(event) {
 
 $.on('command', function(event) {
     var sender = event.getSender();
-    var username = $.username.resolve(sender);
+    var username = $.username.resolve(sender, event.getTags());
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
     var args = event.getArgs();
@@ -166,11 +166,11 @@ $.on('command', function(event) {
 	
 });
 setTimeout(function(){ 
-if ($.moduleEnabled('./handlers/hostHandler.js')) {
-$.registerChatCommand("./handlers/hostHandler.js", "hostmessage", "admin");
-$.registerChatCommand("./handlers/hostHandler.js", "hostreward");
-$.registerChatCommand("./handlers/hostHandler.js", "hosttime");
-$.registerChatCommand("./handlers/hostHandler.js", "hostcount");
-$.registerChatCommand("./handlers/hostHandler.js", "hostlist");
-}
+    if ($.moduleEnabled('./handlers/hostHandler.js')) {
+        $.registerChatCommand("./handlers/hostHandler.js", "hostmessage", "admin");
+        $.registerChatCommand("./handlers/hostHandler.js", "hostreward");
+        $.registerChatCommand("./handlers/hostHandler.js", "hosttime");
+        $.registerChatCommand("./handlers/hostHandler.js", "hostcount");
+        $.registerChatCommand("./handlers/hostHandler.js", "hostlist");
+    }
 },10*1000);

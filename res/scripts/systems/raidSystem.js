@@ -1,12 +1,12 @@
 $.on('command', function(event) {
     var sender = event.getSender();
-    var username = $.username.resolve(sender);
+    var username = $.username.resolve(sender, event.getTags());
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
     var args = event.getArgs();
     
     if (command.equalsIgnoreCase("raider")) {
-        if (!$.isMod(sender)) {
+        if (!$.isModv3(sender, event.getTags())) {
             $.say($.modmsg);
             return;
         }
@@ -51,7 +51,7 @@ $.on('command', function(event) {
     }
 });
 setTimeout(function(){ 
-if ($.moduleEnabled('./systems/raidSystem.js')) {
-$.registerChatCommand("./systems/raidSystem.js", "raider", "mod");
-}
+    if ($.moduleEnabled('./systems/raidSystem.js')) {
+        $.registerChatCommand("./systems/raidSystem.js", "raider", "mod");
+    }
 },10*1000);

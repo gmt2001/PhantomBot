@@ -10,12 +10,12 @@ if($.timePromoteHours == "" || $.timePromoteHours == null){
 }
 
 if($.firstrun) {
-$.say("");
-$.say("The current time zone is '" + $.timezone + "'.");
-$.say("To change it use '!timezone (timezone)'.");
-$.say("A list of time zones can be found here: ");
-$.say("http://en.wikipedia.org/wiki/List_of_tz_database_time_zones.");
-$.say("");
+    $.say("");
+    $.say("The current time zone is '" + $.timezone + "'.");
+    $.say("To change it use '!timezone (timezone)'.");
+    $.say("A list of time zones can be found here: ");
+    $.say("http://en.wikipedia.org/wiki/List_of_tz_database_time_zones.");
+    $.say("");
 }
 
 $.displayTime = function(time) {
@@ -80,7 +80,7 @@ $.setTimeZone = function (timezone) {
 
 $.on('command', function(event) {
     var sender = event.getSender().toLowerCase();
-    var username = $.username.resolve(sender).toLowerCase();
+    var username = $.username.resolve(sender, event.getTags()).toLowerCase();
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
     var args;
@@ -140,13 +140,13 @@ $.on('command', function(event) {
         }  
     }
     if (command.equalsIgnoreCase("streamertime")) {
-            var cal = java.util.Calendar.getInstance(java.util.TimeZone.getTimeZone($.timezone));
-            var now = cal.getTime();
-            var datefmt = new java.text.SimpleDateFormat("EEEE MMMM d, yyyy @ h:mm a z");
-            datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.timezone));
-            var timestamp = datefmt.format(now);
+        var cal = java.util.Calendar.getInstance(java.util.TimeZone.getTimeZone($.timezone));
+        var now = cal.getTime();
+        var datefmt = new java.text.SimpleDateFormat("EEEE MMMM d, yyyy @ h:mm a z");
+        datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.timezone));
+        var timestamp = datefmt.format(now);
             
-            $.say("It is currently " + timestamp + " where " + $.username.resolve($.ownerName) + " is located.");
+        $.say("It is currently " + timestamp + " where " + $.username.resolve($.ownerName) + " is located.");
     }
     
     if (command.equalsIgnoreCase("timepromotehours")) {
@@ -204,7 +204,7 @@ $.on('command', function(event) {
             time = parseInt(args[2]);
 
             if(action.equalsIgnoreCase("give")) {
-                $.logEvent("timeSystem.js", 28, $.username.resolve(sender) + " gave " + time + " time to " + username);
+                $.logEvent("timeSystem.js", 28, $.username.resolve(sender, event.getTags()) + " gave " + time + " time to " + username);
 
 
 
@@ -214,7 +214,7 @@ $.on('command', function(event) {
 
 
             } else if(action.equalsIgnoreCase("take")) {
-                $.logEvent("timeSystem.js", 32, $.username.resolve(sender) + " took " + time + " time from " + username);
+                $.logEvent("timeSystem.js", 32, $.username.resolve(sender, event.getTags()) + " took " + time + " time from " + username);
 
 
 
@@ -223,7 +223,7 @@ $.on('command', function(event) {
                 $.say($.username.resolve(username) + "'s time was deducted by " + time + " seconds.");
 
             } else if(action.equalsIgnoreCase("set")) {
-                $.logEvent("timeSystem.js", 36, $.username.resolve(sender) + " set " + username + "'s time to " + time);
+                $.logEvent("timeSystem.js", 36, $.username.resolve(sender, event.getTags()) + " set " + username + "'s time to " + time);
 
 
 
@@ -255,17 +255,17 @@ $.on('command', function(event) {
             var minutes = parseInt((time / 60) % 60);
             var hours = parseInt(time / 3600);
             
-        var timeString = "";
-        if (hours>0)
-        {
-            timeString+=hours.toString();
-            timeString+=" Hrs ";
-        }
-        if (minutes>0)
-        {
-            timeString+=minutes.toString();
-            timeString+=" Min"
-        }
+            var timeString = "";
+            if (hours>0)
+            {
+                timeString+=hours.toString();
+                timeString+=" Hrs ";
+            }
+            if (minutes>0)
+            {
+                timeString+=minutes.toString();
+                timeString+=" Min"
+            }
 			
             $.say($.username.resolve(points_user) + " has been in this channel for a total of " + timeString);
         }
@@ -297,14 +297,14 @@ $.timer.addTimer("./systems/timeSystem.js", "autosave", true, function() {
     $.inidb.SaveAll(true);
 }, 300* 1000);
 setTimeout(function(){ 
-if ($.moduleEnabled('./systems/timeSystem.js')) {
-$.registerChatCommand("./systems/timeSystem.js", "time");
-$.registerChatCommand("./systems/timeSystem.js", "time help");
-$.registerChatCommand("./systems/timeSystem.js", "timezone");
-$.registerChatCommand("/systems/timeSystem.js", "streamertime");
-$.registerChatCommand("/systems/timeSystem.js", "timelevel", "mod");
-$.registerChatCommand("/systems/timeSystem.js", "timepromotehours", "mod");
-$.registerChatCommand("/systems/timeSystem.js", "timetoggle", "mod");
-}
+    if ($.moduleEnabled('./systems/timeSystem.js')) {
+        $.registerChatCommand("./systems/timeSystem.js", "time");
+        $.registerChatCommand("./systems/timeSystem.js", "time help");
+        $.registerChatCommand("./systems/timeSystem.js", "timezone");
+        $.registerChatCommand("/systems/timeSystem.js", "streamertime");
+        $.registerChatCommand("/systems/timeSystem.js", "timelevel", "mod");
+        $.registerChatCommand("/systems/timeSystem.js", "timepromotehours", "mod");
+        $.registerChatCommand("/systems/timeSystem.js", "timetoggle", "mod");
+    }
 },10*1000);
 

@@ -13,7 +13,7 @@ $.on('command', function(event) {
     
     if(command.equalsIgnoreCase("kill") && args.length > 0) {
 
-                num = $.rand(num_kills);
+        num = $.rand(num_kills);
 
 
         if (isNaN(num_kills) || num_kills == 0) {
@@ -27,38 +27,38 @@ $.on('command', function(event) {
         } 
         
     } else if (command.equalsIgnoreCase("kill") && args.length == " "){
-		var self = new Array(0)
-            sender = $.username.resolve(sender);
+        var self = new Array(0)
+        sender = $.username.resolve(sender, event.getTags());
  
-            self.push(sender + " has somehow managed to kill himself.");
-            self.push(sender + " died from unknown causes.");
-            self.push(sender + " was sliced in half by Boulder (or something along those lines).");
-            self.push(sender + " exploded.");
-            self.push(sender + " forgot how to breathe.");
-            self.push(sender + " learned that cellular respiration uses oxygen, not sand.")
-            self.push(sender + " died.");
-            self.push(sender + " tried to befriend a wild grizzly bear.");
-            self.push(sender + " suffocated.");
-            self.push(sender + " tested the bounds of time and space and lost.");
-            self.push(sender + " imploded.");
-            self.push(sender + " drowned.");
-            self.push(sender + " ceased to be.");
-            self.push(sender + " went kablewy!");
-            self.push(sender + " figured out how to divide by 0!");
-            self.push(sender + " took a long walk off a short pier.");
+        self.push(sender + " has somehow managed to kill himself.");
+        self.push(sender + " died from unknown causes.");
+        self.push(sender + " was sliced in half by Boulder (or something along those lines).");
+        self.push(sender + " exploded.");
+        self.push(sender + " forgot how to breathe.");
+        self.push(sender + " learned that cellular respiration uses oxygen, not sand.")
+        self.push(sender + " died.");
+        self.push(sender + " tried to befriend a wild grizzly bear.");
+        self.push(sender + " suffocated.");
+        self.push(sender + " tested the bounds of time and space and lost.");
+        self.push(sender + " imploded.");
+        self.push(sender + " drowned.");
+        self.push(sender + " ceased to be.");
+        self.push(sender + " went kablewy!");
+        self.push(sender + " figured out how to divide by 0!");
+        self.push(sender + " took a long walk off a short pier.");
  
-            do {
-                s = $.randElement(self);
-            } while (s.replace(sender, "").equalsIgnoreCase($var.lastRandom) && self.length > 1);
+        do {
+            s = $.randElement(self);
+        } while (s.replace(sender, "").equalsIgnoreCase($var.lastRandom) && self.length > 1);
  
-            $var.lastRandom = s.replace(sender, "");
+        $var.lastRandom = s.replace(sender, "");
  
-            $.say(s);
+        $.say(s);
        
-	}
+    }
     
     if (command.equalsIgnoreCase("addkill")) {
-         if (!$.isMod(sender)) {
+        if (!$.isModv3(sender, event.getTags())) {
             $.say($.modmsg);
             return;
         }
@@ -80,18 +80,18 @@ $.on('command', function(event) {
         
         $.say("kill message added! There are now " + (num_kills + 1) + " kill messages!");
     }
- if (command.equalsIgnoreCase("getkill")) {
-	 if (!$.inidb.get("kills", "kill_" + parseInt(args[0])) == " ") {
-          $.say($.inidb.get("kills", "kill_" + parseInt(args[0])));
-	 } else {
-		   $.say("There are " + num_kills + " kill messages. Message IDs go from 0 to " + (num_kills) + " and " + args[0] + " isn't one of them");
+    if (command.equalsIgnoreCase("getkill")) {
+        if (!$.inidb.get("kills", "kill_" + parseInt(args[0])) == " ") {
+            $.say($.inidb.get("kills", "kill_" + parseInt(args[0])));
+        } else {
+            $.say("There are " + num_kills + " kill messages. Message IDs go from 0 to " + (num_kills) + " and " + args[0] + " isn't one of them");
             return;
-	 }
+        }
                     
                 
-            }
-     if (command.equalsIgnoreCase("editkill")) {
-        if (!$.isMod(sender)) {
+    }
+    if (command.equalsIgnoreCase("editkill")) {
+        if (!$.isModv3(sender, event.getTags())) {
             $.say($.modmsg);
             return;
         }
@@ -117,7 +117,7 @@ $.on('command', function(event) {
     }
 
     if (command.equalsIgnoreCase("delkill")) {
-        if (!$.isMod(sender)) {
+        if (!$.isModv3(sender, event.getTags())) {
             $.say($.modmsg);
             return;
         }
@@ -160,11 +160,11 @@ $.on('command', function(event) {
         }
 
         while (messageCommand.contains('(sender)')) {
-            messageCommand = messageCommand.replace('(sender)', $.username.resolve(sender));
+            messageCommand = messageCommand.replace('(sender)', $.username.resolve(sender, event.getTags()));
         }
 
         while (messageCommand.contains('(user)')) {
-            messageCommand = messageCommand.replace('(user)', $.username.resolve(sender));
+            messageCommand = messageCommand.replace('(user)', $.username.resolve(sender, event.getTags()));
         }
 
         while (messageCommand.indexOf('(count)') != -1) {
@@ -181,42 +181,42 @@ $.on('command', function(event) {
         $.say(messageCommand);
     }
 });
-    var ar = new Array(0);
-                ar.push("(sender) murdered (1) with a unicorn's horn!");
-                ar.push("(1) was killed by a (sender)!");
-                ar.push("(1) was mauled by (sender) dressed up as a chicken.");
-                ar.push("(1) was ripped apart by (sender), Daaaaaaamn!");
-                ar.push("(1) was brutally murdered by (sender) with a car!");
-                ar.push("(sender) covered (1) in meat sauce and threw them in a cage with a starved tiger.");
-                ar.push("(sender) genetically modified a Venus flytrap so it grows really big and trapped (1) in a room with it.");
-                ar.push("(sender) shanked (1)'s butt, over and over again.");
-                ar.push("(sender) just wrote (1)'s name in their Death Note.");
-                ar.push("(sender) put (1) out of their misery.");
-                ar.push("(sender) destroyed (1)!");
-                ar.push("(sender) atacó a (1) con un consolador grande!");
-                ar.push("(1) was poked a bit too hard by (sender) with a spoon!");
-                ar.push("(sender) got his hands on a steamroller and steam rolled (1) flat! So, yeah (1) did die from that.")
-                ar.push("(sender) attacked (1) with a rusty spoon as the weapon...and managed to (1) with very little effort.");
-                ar.push("(sender) used anal beads on (1) incorrectly and thus killing (1) almost instantly.");
-                ar.push("(sender) tickled (1) to death!");
-                ar.push("(1)'s skull was crushed by (sender)!");
-                ar.push("(1) is in several pieces after a tragic accident involving (sender) and spoons.");
-                ar.push("(sender) licked (1) until (sender) was squishy, yeah.. squishy.");
-                ar.push("(sender) catapulted a huge load of rusty spoons on to (1). (1) died.");
-                ar.push("(sender) ran out of rusty spoons and unicorn horns to kill (1) with and so instead used a rusty hanger.");
-                ar.push("(sender) came in like a mystical being of awesomeness and destroyed (1)!");
+var ar = new Array(0);
+ar.push("(sender) murdered (1) with a unicorn's horn!");
+ar.push("(1) was killed by a (sender)!");
+ar.push("(1) was mauled by (sender) dressed up as a chicken.");
+ar.push("(1) was ripped apart by (sender), Daaaaaaamn!");
+ar.push("(1) was brutally murdered by (sender) with a car!");
+ar.push("(sender) covered (1) in meat sauce and threw them in a cage with a starved tiger.");
+ar.push("(sender) genetically modified a Venus flytrap so it grows really big and trapped (1) in a room with it.");
+ar.push("(sender) shanked (1)'s butt, over and over again.");
+ar.push("(sender) just wrote (1)'s name in their Death Note.");
+ar.push("(sender) put (1) out of their misery.");
+ar.push("(sender) destroyed (1)!");
+ar.push("(sender) atacó a (1) con un consolador grande!");
+ar.push("(1) was poked a bit too hard by (sender) with a spoon!");
+ar.push("(sender) got his hands on a steamroller and steam rolled (1) flat! So, yeah (1) did die from that.")
+ar.push("(sender) attacked (1) with a rusty spoon as the weapon...and managed to (1) with very little effort.");
+ar.push("(sender) used anal beads on (1) incorrectly and thus killing (1) almost instantly.");
+ar.push("(sender) tickled (1) to death!");
+ar.push("(1)'s skull was crushed by (sender)!");
+ar.push("(1) is in several pieces after a tragic accident involving (sender) and spoons.");
+ar.push("(sender) licked (1) until (sender) was squishy, yeah.. squishy.");
+ar.push("(sender) catapulted a huge load of rusty spoons on to (1). (1) died.");
+ar.push("(sender) ran out of rusty spoons and unicorn horns to kill (1) with and so instead used a rusty hanger.");
+ar.push("(sender) came in like a mystical being of awesomeness and destroyed (1)!");
 
 
-    if ($.inidb.get("kills", "num_kills") == null || $.inidb.get("kills", "num_kills") == 0 ) {
+if ($.inidb.get("kills", "num_kills") == null || $.inidb.get("kills", "num_kills") == 0 ) {
         
-		$.inidb.set("kills", "num_kills", ar.length);
-                for (var i=0; i< ar.length; ++i) {
-                    $.inidb.set('kills', 'kill_' + i, ar[i]);
-                }
+    $.inidb.set("kills", "num_kills", ar.length);
+    for (var i=0; i< ar.length; ++i) {
+        $.inidb.set('kills', 'kill_' + i, ar[i]);
     }
+}
 
 setTimeout(function(){ 
-if ($.moduleEnabled('./commands/killCommand.js')) {
-$.registerChatCommand("./commands/killCommand.js", "kill");
-}
+    if ($.moduleEnabled('./commands/killCommand.js')) {
+        $.registerChatCommand("./commands/killCommand.js", "kill");
+    }
 },10*1000);

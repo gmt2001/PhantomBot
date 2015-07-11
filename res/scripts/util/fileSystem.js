@@ -25,7 +25,7 @@ $.moveFile = function(file,path) {
     var path = new java.io.File(path);
     if((file!=null && path!=null)|| (file!="" && path!=""))
     {
-    org.apache.commons.io.FileUtils.moveFileToDirectory(file, path, true);
+        org.apache.commons.io.FileUtils.moveFileToDirectory(file, path, true);
     }
 }
 

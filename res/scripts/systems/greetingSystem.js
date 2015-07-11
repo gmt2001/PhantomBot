@@ -29,7 +29,7 @@ $.on('ircChannelJoin', function(event) {
         $.say(s.replace("(name)", username));
            
     } else {
-        //println("[Join] " + username + " has joined the channel.");
+    //println("[Join] " + username + " has joined the channel.");
     } 
 });
 
@@ -37,12 +37,12 @@ $.on('ircChannelLeave', function(event) {
     var sender = event.getUser().toLowerCase();
     var username = $.username.resolve(sender);
     
-    //println("[Leave] " + username + " has left the channel.");
+//println("[Leave] " + username + " has left the channel.");
 });
 
 $.on('command', function(event) {
     var sender = event.getSender().toLowerCase();
-    var username = $.username.resolve(sender);
+    var username = $.username.resolve(sender, event.getTags());
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
     var args = event.getArgs();
@@ -62,7 +62,7 @@ $.on('command', function(event) {
         }
         
         if (subCommand.equalsIgnoreCase("toggle")) {
-            if (!$.isMod(sender)) {
+            if (!$.isModv3(sender, event.getTags())) {
                 $.say($.modmsg);
                 return;
             }
@@ -98,7 +98,7 @@ $.on('command', function(event) {
             
             $.say("Greeting changed");
         } else if (subCommand.equalsIgnoreCase("setdefault")) {
-            if (!$.isMod(sender)) {
+            if (!$.isModv3(sender, event.getTags())) {
                 $.say($modmsg);
                 return;
             }
@@ -133,8 +133,8 @@ $.on('command', function(event) {
     } 
 });
 setTimeout(function(){ 
-if ($.moduleEnabled('./systems/greetingSystem.js')) {
-$.registerChatCommand("./systems/greetingSystem.js", "greeting");
-$.registerChatCommand("./systems/greetingSystem.js", "greet");
-}
+    if ($.moduleEnabled('./systems/greetingSystem.js')) {
+        $.registerChatCommand("./systems/greetingSystem.js", "greeting");
+        $.registerChatCommand("./systems/greetingSystem.js", "greet");
+    }
 },10*1000);

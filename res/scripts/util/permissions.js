@@ -201,7 +201,7 @@ $.getGroupPointMultiplier = function(playername) {
 
 $.on('command', function(event) {
     var sender = event.getSender().toLowerCase();
-    var username = $.username.resolve(sender);
+    var username = $.username.resolve(sender, event.getTags());
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
 	
@@ -224,7 +224,7 @@ $.on('command', function(event) {
             var groupid = $.getGroupIdByName(name);
             var groupname = $.getGroupNameById(groupid);
 			
-            if (!$.isMod(sender)) {
+            if (!$.isModv3(sender, event.getTags())) {
                 $.say($.modmsg);
                 return;                
             }
@@ -258,16 +258,16 @@ $.on('command', function(event) {
                 else {
                     if( (parseInt($.getUserGroupId(sender))< $.parseInt($.getUserGroupId($.username.resolve(args[1])))) )
                     {
-                    if( parseInt($.getUserGroupId(sender)) < parseInt($.getGroupIdByName(name)) )
-                    {
-                    $.setUserGroupByName(args[1], name);
-                    $.say("Group for " + $.username.resolve(args[1]) + " changed to " + $.getUserGroupName($.username.resolve(args[1])) + "!");
-                    $.logEvent("permissions.js", 200, username + " changed " + args[1] + "'s group to " + $.getUserGroupName($.username.resolve(args[1])));
-                    return;
-                    } else {
-                        $.say("You cannot promote others to the same rank as you.");
-                        return;
-                    }
+                        if( parseInt($.getUserGroupId(sender)) < parseInt($.getGroupIdByName(name)) )
+                        {
+                            $.setUserGroupByName(args[1], name);
+                            $.say("Group for " + $.username.resolve(args[1]) + " changed to " + $.getUserGroupName($.username.resolve(args[1])) + "!");
+                            $.logEvent("permissions.js", 200, username + " changed " + args[1] + "'s group to " + $.getUserGroupName($.username.resolve(args[1])));
+                            return;
+                        } else {
+                            $.say("You cannot promote others to the same rank as you.");
+                            return;
+                        }
                     }
                     else {
                         $.say("You must be a higher rank than the person you are trying to promote!");
@@ -318,7 +318,7 @@ $.on('command', function(event) {
             }
 
         } else {
-            $.say($.username.resolve(sender) + ", you're in the " + $.getUserGroupName(username) + " group.");
+            $.say($.username.resolve(sender, event.getTags()) + ", you're in the " + $.getUserGroupName(username) + " group.");
             return;
         }
     }

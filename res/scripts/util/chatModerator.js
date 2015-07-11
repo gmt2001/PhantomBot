@@ -210,7 +210,7 @@ function autoPurgeUser(user, warnmessage) {
 
 $.on('command', function(event) {
     var sender = event.getSender();
-    var username = $.username.resolve(sender);
+    var username = $.username.resolve(sender, event.getTags());
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
     var args = event.getArgs ();
@@ -219,7 +219,7 @@ $.on('command', function(event) {
     var found;
 	
     if (command.equalsIgnoreCase("whitelist")) {
-        if (!$.isMod(sender)) {
+        if (!$.isModv3(sender, event.getTags())) {
             $.say ($.modmsg);
             return;
         }
@@ -237,7 +237,7 @@ $.on('command', function(event) {
     if (command.equalsIgnoreCase("chat") && username.equalsIgnoreCase($.botname)) {
         $.say (argsString);
     } else if (command.equalsIgnoreCase("purge")) {
-        if ($.isMod(sender)) {
+        if ($.isModv3(sender, event.getTags())) {
             if (args.length == 1) {
                 $.logEvent("chatModerator.js", 225, username + " purged " + args[0]);
                 
@@ -326,7 +326,7 @@ $.on('command', function(event) {
             $.say ($.adminmsg);
         }
     } else if (command.equalsIgnoreCase("timeout")) {
-        if ($.isMod(sender)) {
+        if ($.isModv3(sender, event.getTags())) {
             if (args.length == 1) {
                 $.logEvent("chatModerator.js", 326, username + " timed out " + args[0] + " for 600 second(s)");
                 
@@ -342,7 +342,7 @@ $.on('command', function(event) {
             $.say ($.adminmsg);
         }
     } else if (command.equalsIgnoreCase("permit")) {
-        if ($.isMod(sender)) {
+        if ($.isModv3(sender, event.getTags())) {
             if ($.strlen(argsString) > 0 && linksallowed == false) {
                 permitList.push(new Array(argsString, System.currentTimeMillis() + (permittime * 1000)));
                 
@@ -354,7 +354,7 @@ $.on('command', function(event) {
             $.say ($.modmsg);
         }	
     } else if (command.equalsIgnoreCase("ban")) {
-        if ($.isMod(sender)) {
+        if ($.isModv3(sender, event.getTags())) {
             if (args.length == 2) {
                 var time = parseInt(args[1]);
                 
@@ -382,7 +382,7 @@ $.on('command', function(event) {
             $.say ($.modmsg);
         }
     } else if (command.equalsIgnoreCase("unban")) {
-        if ($.isMod(sender)) {
+        if ($.isModv3(sender, event.getTags())) {
             $.logEvent("chatModerator.js", 381, username + " unbanned " + args[0]);
 			
             unbanUser (args[0]);
@@ -392,7 +392,7 @@ $.on('command', function(event) {
             $.say ($.modmsg);
         }
     } else if (command.equalsIgnoreCase("clear")) {
-        if ($.isMod(sender)) {
+        if ($.isModv3(sender, event.getTags())) {
             $.logEvent("chatModerator.js", 391, username + " cleared chat");
             
             clearChat();
@@ -404,7 +404,7 @@ $.on('command', function(event) {
             $.say ("Only a Moderator can use this command! " + username);
         }	
     } else if (command.equalsIgnoreCase("autoban")) {
-        if ($.isMod(sender)) {
+        if ($.isModv3(sender, event.getTags())) {
             if ($.strlen(argsString) > 0) {
                 $.logEvent("chatModerator.js", 404, username + " added a phrase to the autoban list: " + argsString);
                 
@@ -425,7 +425,7 @@ $.on('command', function(event) {
             $.say ($.modmsg);
         }	
     } else if (command.equalsIgnoreCase("autopurge")) {
-        if ($.isMod(sender)) {
+        if ($.isModv3(sender, event.getTags())) {
             if ($.strlen(argsString) > 0) {
                 $.logEvent("chatModerator.js", 404, username + " added a phrase to the autopurge list: " + argsString);
                 
@@ -446,7 +446,7 @@ $.on('command', function(event) {
             $.say ($.modmsg);
         }	
     } else if (command.equalsIgnoreCase("chatmod")) {
-        if ($.isMod(sender)) {
+        if ($.isModv3(sender, event.getTags())) {
             if (args.length < 1 || args[0].equalsIgnoreCase("help")) {
                 $.say("Usage: !chatmod <option> [new value]");
                 $.say("-Options: warningcountresettime, timeouttype, autopurgemessage, capsallowed, capstriggerratio, capstriggerlength, "
@@ -1118,7 +1118,7 @@ $.on('command', function(event) {
 
 $.on('ircChannelMessage', function(event) {
     var sender = event.getSender().toLowerCase();
-    var chatName = $.username.resolve(sender);
+    var chatName = $.username.resolve(sender, event.getTags());
     var username = chatName.toLowerCase();
     var message = event.getMessage();
     var omessage = message;
@@ -1147,7 +1147,7 @@ $.on('ircChannelMessage', function(event) {
         phlen = $.strlen(autoBanPhrases[i]);
 
         if (autoBanPhrases[i] != null && autoBanPhrases[i] != undefined && message.indexOf(autoBanPhrases[i].toLowerCase()) != -1
-            && !$.isMod(sender) && phlen > 0) {
+            && !$.isModv3(sender, event.getTags()) && phlen > 0) {
             $.logEvent("chatModerator.js", 1123, "Autoban triggered by " + username + ". Message: " + omessage);
             
             banUser(username);
@@ -1161,7 +1161,7 @@ $.on('ircChannelMessage', function(event) {
         phlen = $.strlen(autoPurgePhrases[i]);
 
         if (autoPurgePhrases[i] != null && autoPurgePhrases[i] != undefined && message.indexOf(autoPurgePhrases[i].toLowerCase()) != -1
-            && !$.isMod(sender) && phlen > 0) {
+            && !$.isModv3(sender, event.getTags()) && phlen > 0) {
             $.logEvent("chatModerator.js", 1123, "Autopurge triggered by " + username + ". Message: " + omessage);
             
             autoPurgeUser(username, username + " auto-purged for using banned phrase #" + i);            
@@ -1170,7 +1170,7 @@ $.on('ircChannelMessage', function(event) {
     }
 	
     //Change the second parameter to true to use aggressive link detection
-    if (linksallowed == false && $.hasLinks(event, false) && !$.isMod(sender) && (!$.isSub(sender) || !subsallowed) && (!$.isReg(sender) || !regsallowed)) {
+    if (linksallowed == false && $.hasLinks(event, false) && !$.isModv3(sender, event.getTags()) && (!$.isSubv3(sender, event.getTags()) || !subsallowed) && (!$.isReg(sender) || !regsallowed)) {
         var permitted = false;
             
         for (i = 0; i < permitList.length; i++) {
@@ -1197,21 +1197,21 @@ $.on('ircChannelMessage', function(event) {
         if (permitted == false) {
             $.logEvent("chatModerator.js", 1154, "Automatic link punishment triggered by " + username + ". Link: " + $.getLastLink() + "      Message: " + omessage);
                 
-        autoPurgeUser(username, linksmessage);
+            autoPurgeUser(username, linksmessage);
         }
-    } else if (capsallowed == false && capsRatio > capstriggerratio && msglen > capstriggerlength && !$.isMod(sender) && (!$.isSub(sender) || !subsallowed) && (!$.isReg(sender) || !regsallowed)) {
+    } else if (capsallowed == false && capsRatio > capstriggerratio && msglen > capstriggerlength && !$.isModv3(sender, event.getTags()) && (!$.isSubv3(sender, event.getTags()) || !subsallowed) && (!$.isReg(sender) || !regsallowed)) {
         autoPurgeUser(username, capsmessage + " Message Length: " + $.strlen(message) + "    Caps Limit: " + $.inidb.get("settings", "capstriggerratio"));
         $.logEvent("chatModerator.js", 1163, "Automatic caps punishment triggered by " + username + ". Message Length: " + $.strlen(message) + "    Caps Ratio: " + capsRatio + "    Message: " + omessage);
-    } else if (!symbolsallowed && !$.isMod(sender) && (!$.isSub(sender) || !subsallowed) && (!$.isReg(sender) || !regsallowed) && (numsymbols > symbolslimit || rptsymbols > symbolsrepeatlimit)) {
+    } else if (!symbolsallowed && !$.isModv3(sender, event.getTags()) && (!$.isSubv3(sender, event.getTags()) || !subsallowed) && (!$.isReg(sender) || !regsallowed) && (numsymbols > symbolslimit || rptsymbols > symbolsrepeatlimit)) {
         autoPurgeUser(username, symbolsmessage + " Symbol limit: " + $.inidb.get("settings", "symbolslimit") + ". Total symbols: " + numsymbols);
         $.logEvent("chatModerator.js", 1193, "Automatic symbols punishment triggered by " + username + ". Longest symbol sequence: " + rptsymbols + ". Total symbols: " + numsymbols + ". Message: " + omessage);
-    } else if (!repeatallowed && !$.isMod(sender) && (!$.isSub(sender) || !subsallowed) && (!$.isReg(sender) || !regsallowed) && (numrepeat > repeatlimit || rptrepeat > repeatlimit) && rptrepeat > 6) {
+    } else if (!repeatallowed && !$.isModv3(sender, event.getTags()) && (!$.isSubv3(sender, event.getTags()) || !subsallowed) && (!$.isReg(sender) || !regsallowed) && (numrepeat > repeatlimit || rptrepeat > repeatlimit) && rptrepeat > 6) {
         autoPurgeUser(username, repeatmessage + " Repeating Character limit: " + $.inidb.get("settings", "repeatlimit") + ". Total Characters: " + numrepeat);
         $.logEvent("chatModerator.js", 1199, "Automatic repeat punishment triggered by " + username + ". Longest repeat sequence: " + rptrepeat + ". Total repeat sequences: " + numrepeat + ". Message: " + omessage);
-    } else if (!graphemeallowed && !$.isMod(sender) && (!$.isSub(sender) || !subsallowed) && (!$.isReg(sender) || !regsallowed) && grapheme > graphemelimit) {
+    } else if (!graphemeallowed && !$.isModv3(sender, event.getTags()) && (!$.isSubv3(sender, event.getTags()) || !subsallowed) && (!$.isReg(sender) || !regsallowed) && grapheme > graphemelimit) {
         autoPurgeUser(username, graphememessage +  " Grapheme limit: " + $.inidb.get("settings", "graphemelimit"));
         $.logEvent("chatModerator.js", 1205, "Automatic grapheme punishment triggered by " + username + ". Longest grapheme sequence: " + grapheme + ". Message: " + omessage);
-    } else if (!spamallowed && !$.isMod(sender) && (!$.isSub(sender) || !subsallowed) && (!$.isReg(sender) || !regsallowed) ) {
+    } else if (!spamallowed && !$.isModv3(sender, event.getTags()) && (!$.isSubv3(sender, event.getTags()) || !subsallowed) && (!$.isReg(sender) || !regsallowed) ) {
         var idx = -1;
         
         for (i = 0; i < $.spamtracker.length; i++) {

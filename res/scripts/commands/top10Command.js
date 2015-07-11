@@ -1,6 +1,6 @@
 $.on('command', function(event) {
     var sender = event.getSender().toLowerCase();
-    var username = $.username.resolve(sender).toLowerCase();
+    var username = $.username.resolve(sender, event.getTags()).toLowerCase();
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
     var args = event.getArgs();
@@ -9,10 +9,10 @@ $.on('command', function(event) {
         if (!$.moduleEnabled("./systems/pointSystem.js")) {
             return;
         }
-		if (!$.isMod(sender)) {
-			$.say($.modmsg);
-			return;
-		}
+        if (!$.isModv3(sender, event.getTags())) {
+            $.say($.modmsg);
+            return;
+        }
         
         var keys = $.inidb.GetKeyList("points", "");
         var top10 = new Array(new Array("Nobody", -1), new Array("Nobody", -2), new Array("Nobody", -3),
@@ -51,14 +51,14 @@ $.on('command', function(event) {
         
         $.say(s);
     }
-if (command.equalsIgnoreCase("top10time")) {
+    if (command.equalsIgnoreCase("top10time")) {
         if (!$.moduleEnabled("./systems/timeSystem.js")) {
             return;
         }
-		if (!$.isMod(sender)) {
-			$.say($.modmsg);
-			return;
-		}
+        if (!$.isModv3(sender, event.getTags())) {
+            $.say($.modmsg);
+            return;
+        }
         
         var keys = $.inidb.GetKeyList("time", "");
         var top10time = new Array(new Array("Nobody", -1), new Array("Nobody", -2), new Array("Nobody", -3),
@@ -99,9 +99,9 @@ if (command.equalsIgnoreCase("top10time")) {
     }
 });
 setTimeout(function(){ 
-if ($.moduleEnabled('./commands/top10Command.js')) {
-$.registerChatCommand("./commands/top10Command.js", "top10");
-$.registerChatCommand("./commands/top10Command.js", "top10time");
-}
+    if ($.moduleEnabled('./commands/top10Command.js')) {
+        $.registerChatCommand("./commands/top10Command.js", "top10");
+        $.registerChatCommand("./commands/top10Command.js", "top10time");
+    }
 },10*1000);
 

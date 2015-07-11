@@ -11,7 +11,7 @@ var count = 0;
 function makeVote(option) {
     options = $var.pollOptions;
     if(!parseInt(option)) {
-            option = option.toLowerCase();
+        option = option.toLowerCase();
     } else {
         if((parseInt(option) > 0) && (parseInt(option) <= parseInt(options.length))) {
             var option2 = parseInt(option) - 1;
@@ -97,7 +97,7 @@ $.runPoll = function (callback, options, time, pollMaster) {
 
 $.on('command', function (event) {
     var sender = event.getSender().toLowerCase();
-    var username = $.username.resolve(sender);
+    var username = $.username.resolve(sender, event.getTags());
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
     var args = event.getArgs();
@@ -206,7 +206,7 @@ $.on('command', function (event) {
 
         if (args.length >= 2) {
             if (action.equalsIgnoreCase("open")) {
-                if (!$.isMod(sender)) {
+                if (!$.isModv3(sender, event.getTags())) {
                     $.say($.modmsg);
                     return;
                 }
@@ -282,7 +282,7 @@ $.on('command', function (event) {
                 
             }
 
-            if (!$.isMod(sender)) {
+            if (!$.isModv3(sender, event.getTags())) {
                 if ($var.pollMaster != sender) {
                     $.say($.modmsg);
                 }
@@ -306,7 +306,7 @@ $.on('command', function (event) {
 });
 
 setTimeout(function(){ 
-if ($.moduleEnabled('./systems/pollSystem.js')) {
-$.registerChatCommand("./systems/pollSystem.js", "poll", "mod");
-}
+    if ($.moduleEnabled('./systems/pollSystem.js')) {
+        $.registerChatCommand("./systems/pollSystem.js", "poll", "mod");
+    }
 },10*1000);

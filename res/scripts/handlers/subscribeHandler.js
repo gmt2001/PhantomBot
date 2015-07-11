@@ -15,7 +15,7 @@ $.on('twitchSubscribe', function(event) {
     var subscribed = $.inidb.get('subscribed', subscriber);
     
     if (subscribed == null || subscribed == undefined || subscribed.isEmpty()) {
-            $.inidb.set('subscribed', subscriber, 1);      
+        $.inidb.set('subscribed', subscriber, 1);      
     } 
     
     if (subscribed.equalsIgnoreCase("0")) {
@@ -25,41 +25,41 @@ $.on('twitchSubscribe', function(event) {
     $.inidb.set("group", subscriber, 3);
     
     if ($.announceSubscribes) {
-            var s = $.inidb.get('settings', 'subscribemessage');
-            var p = parseInt($.inidb.get('settings', 'subscribereward'));
+        var s = $.inidb.get('settings', 'subscribemessage');
+        var p = parseInt($.inidb.get('settings', 'subscribereward'));
             
-            if (s == null || s == undefined || $.strlen(s) == 0) {
-                if ($.moduleEnabled("./systems/pointSystem.js")) {
-                    s = "Thanks for the subscription (name)! +(reward) (pointname)!";
-                } else {
-                    s = "Thanks for the subscription (name)!";
-                }
-            }
-            
-            if (isNaN(p)) {
-                p = 100;
-            }
-            
-            while (s.indexOf('(name)') != -1) {
-                s = s.replace('(name)', username);
-            }
-            
+        if (s == null || s == undefined || $.strlen(s) == 0) {
             if ($.moduleEnabled("./systems/pointSystem.js")) {
-                while (s.indexOf('(pointname)') != -1) {
-                    s = s.replace('(pointname)', $.pointname);
-                }
-                
-                while (s.indexOf('(reward)') != -1) {
-                    s = s.replace('(reward)', p);
-                }
+                s = "Thanks for the subscription (name)! +(reward) (pointname)!";
+            } else {
+                s = "Thanks for the subscription (name)!";
             }
+        }
+            
+        if (isNaN(p)) {
+            p = 100;
+        }
+            
+        while (s.indexOf('(name)') != -1) {
+            s = s.replace('(name)', username);
+        }
+            
+        if ($.moduleEnabled("./systems/pointSystem.js")) {
+            while (s.indexOf('(pointname)') != -1) {
+                s = s.replace('(pointname)', $.pointname);
+            }
+                
+            while (s.indexOf('(reward)') != -1) {
+                s = s.replace('(reward)', p);
+            }
+        }
 
-            $.say(s);
-        }
+        $.say(s);
+    }
         
-        if ($.moduleEnabled("./systems/pointSystem.js") && p > 0) {
-            $.inidb.incr('points', subscriber, p);
-        }
+    if ($.moduleEnabled("./systems/pointSystem.js") && p > 0) {
+        $.inidb.incr('points', subscriber, p);
+    }
  
 });
 
@@ -88,7 +88,7 @@ $.on('twitchSubscribesInitialized', function(event) {
 
 $.on('command', function(event) {
     var sender = event.getSender();
-    var username = $.username.resolve(sender);
+    var username = $.username.resolve(sender, event.getTags());
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
     
@@ -202,12 +202,12 @@ $.on('ircPrivateMessage', function(event) {
     } 
 });
 setTimeout(function(){ 
-if ($.moduleEnabled('./handlers/subscribeHandler.js')) {
-$.registerChatCommand("./handlers/subscribeHandler.js", "subscribemessage", "admin");
-$.registerChatCommand("./handlers/subscribeHandler.js", "subscribereward", "admin");
-$.registerChatCommand("./handlers/subscribeHandler.js", "subscribecount");
-$.registerChatCommand("./handlers/subscribeHandler.js", "subscribemode", "admin");
-}
+    if ($.moduleEnabled('./handlers/subscribeHandler.js')) {
+        $.registerChatCommand("./handlers/subscribeHandler.js", "subscribemessage", "admin");
+        $.registerChatCommand("./handlers/subscribeHandler.js", "subscribereward", "admin");
+        $.registerChatCommand("./handlers/subscribeHandler.js", "subscribecount");
+        $.registerChatCommand("./handlers/subscribeHandler.js", "subscribemode", "admin");
+    }
 },10*1000);
 
 

@@ -366,7 +366,7 @@ $api.on($script, 'command', function(event) {
         return;
     };
     
-    if ($.moduleEnabled("./systems/pointSystem.js") && !$.isMod(sender) && $.inidb.exists("pricecom", command.toLowerCase())) {
+    if ($.moduleEnabled("./systems/pointSystem.js") && !$.isModv3(sender, event.getTags()) && $.inidb.exists("pricecom", command.toLowerCase())) {
         if (parseInt($.inidb.get("points", sender)) < parseInt($.inidb.get("pricecom", command.toLowerCase()))) {
             $.say("That command costs " + $.inidb.get("pricecom", command.toLowerCase()) + " " + $.pointname + ", which you don't have.");
             return;
@@ -528,7 +528,7 @@ $.loadScriptsRecursive(".");
 
 $api.on(initscript, 'ircChannelMessage', function(event) {
     var sender = event.getSender();
-    var username = $.username.resolve(sender);
+    var username = $.username.resolve(sender, event.getTags());
     var message = event.getMessage();
 
     println(username + ": " + message);
@@ -536,7 +536,7 @@ $api.on(initscript, 'ircChannelMessage', function(event) {
 
 $api.on(initscript, 'command', function(event) {
     var sender = event.getSender();
-    var username = $.username.resolve(sender);
+    var username = $.username.resolve(sender, event.getTags());
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
     var args = event.getArgs();
@@ -555,7 +555,7 @@ $api.on(initscript, 'command', function(event) {
     }
    
     if (command.equalsIgnoreCase("reconnect")) {
-        if (!$.isMod(sender)) {
+        if (!$.isModv3(sender, event.getTags())) {
             $.say($.modmsg);
             return;
         }

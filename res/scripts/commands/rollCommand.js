@@ -15,7 +15,7 @@ if ($.rolltimer === undefined || $.rolltimer === null || isNaN($.rolltimer) || $
 
 $.on('command', function (event) {
     var sender = event.getSender().toLowerCase();
-    var username = $.username.resolve(sender);
+    var username = $.username.resolve(sender, event.getTags());
     var points = $.inidb.get('points', sender);
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
@@ -106,24 +106,24 @@ $.on('command', function (event) {
                 } while (s.equalsIgnoreCase($var.lastRandomWin) && win.length > 1);
 
                 $.say(username + " rolled Doubles >> " + die1 + " & " + die2 + "! " + "You won " + ((die1 + die2) * $.rollbonus) + " " + $.pointname + "!" + " " + s);
-				if (die1 == 1) {
-					$.say(username + " gets Snacky Snakes for snake eyes!")
-				}
-				if (die1 == 2) {
-					$.say("Double deuces!")
-				}
-				if (die1 == 3) {
-					$.say("Tripple threat!")
-				}
-				if (die1 == 4) {
-					$.say("Octo Quad!")
-				}
-				if (die1 == 5) {
-					$.say("Double nickels!")
-				}
-				if (die1 == 6) {
-					$.say("Boxcars!")
-				}
+                if (die1 == 1) {
+                    $.say(username + " gets Snacky Snakes for snake eyes!")
+                }
+                if (die1 == 2) {
+                    $.say("Double deuces!")
+                }
+                if (die1 == 3) {
+                    $.say("Tripple threat!")
+                }
+                if (die1 == 4) {
+                    $.say("Octo Quad!")
+                }
+                if (die1 == 5) {
+                    $.say("Double nickels!")
+                }
+                if (die1 == 6) {
+                    $.say("Boxcars!")
+                }
                 $.inidb.incr('points', sender, (die1 + die2) * $.rollbonus);
             } else {
                 do {
@@ -141,7 +141,7 @@ $.on('command', function (event) {
         if (args.length >= 2) {
 
             if (action.equalsIgnoreCase("bonus") && !argsString.isEmpty()) {
-                if (!$.isMod(sender)) {
+                if (!$.isModv3(sender, event.getTags())) {
                     $.say($.modmsg);
                     return;
                 }
@@ -152,7 +152,7 @@ $.on('command', function (event) {
             }
 
             if (action.equalsIgnoreCase("time") && !argsString.isEmpty()) {
-                if (!$.isMod(sender)) {
+                if (!$.isModv3(sender, event.getTags())) {
                     $.say($.modmsg);
                     return;
                 }
@@ -171,26 +171,26 @@ $.on('command', function (event) {
 
         }
 		
-		    var found = false;
-			var i;
+        var found = false;
+        var i;
 		
-            for (i = 0; i < arrRollLimiter.length; i++) {
-                if (arrRollLimiter[i][0].equalsIgnoreCase(username)) {
-                    if (arrRollLimiter[i][1] < System.currentTimeMillis()) {
-                        arrRollLimiter[i][1] = System.currentTimeMillis() + ($.rolltimer * 1000);
-                        break;
-                    } else {
-                        $.say(username + ", you can only use !roll once every " + $.rolltimer + " seconds!");
-                        return;
-                    }
-
-                    found = true;
+        for (i = 0; i < arrRollLimiter.length; i++) {
+            if (arrRollLimiter[i][0].equalsIgnoreCase(username)) {
+                if (arrRollLimiter[i][1] < System.currentTimeMillis()) {
+                    arrRollLimiter[i][1] = System.currentTimeMillis() + ($.rolltimer * 1000);
+                    break;
+                } else {
+                    $.say(username + ", you can only use !roll once every " + $.rolltimer + " seconds!");
+                    return;
                 }
-            }
 
-            if (found === false) {
-                arrRollLimiter.push(new Array(username, System.currentTimeMillis() + ($.rolltimer * 1000)));
+                found = true;
             }
+        }
+
+        if (found === false) {
+            arrRollLimiter.push(new Array(username, System.currentTimeMillis() + ($.rolltimer * 1000)));
+        }
  		
         if ((args.length == 1 && action.equalsIgnoreCase("help")) || !$.moduleEnabled("./systems/pointSystem.js")) {
             $.say("To do a DnD roll, say '!roll <dice definition> [ + <dice definition or number>]. For example: '!roll 2d6 + d20 + 2'. Limit 7 dice definitions or numbers per !roll command. A dice definition is [#]d<sides>. Valid number of sides: 4, 6, 8, 10, 12, 20, 100");
@@ -241,10 +241,10 @@ $.on('command', function (event) {
 
                     dsides = parseInt(s.substring(pos + 1));
 					
-					if (numd > 30) {
-						$.say(username + " do you really need to roll " + numd + " d" + dsides + " ?");
-						return;
-					}
+                    if (numd > 30) {
+                        $.say(username + " do you really need to roll " + numd + " d" + dsides + " ?");
+                        return;
+                    }
 					
 
                     for (var r = 0; r < numd; r++) {
@@ -293,7 +293,7 @@ $.on('command', function (event) {
     }
 });
 setTimeout(function(){ 
-if ($.moduleEnabled('./commands/rollCommand.js')) {
-$.registerChatCommand("./commands/rollCommand.js", "roll");
-}
+    if ($.moduleEnabled('./commands/rollCommand.js')) {
+        $.registerChatCommand("./commands/rollCommand.js", "roll");
+    }
 },10*1000);

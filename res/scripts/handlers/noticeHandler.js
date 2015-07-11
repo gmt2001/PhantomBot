@@ -207,9 +207,9 @@ $.on('command', function (event) {
 })
 
 setTimeout(function(){ 
-if ($.moduleEnabled('./handlers/noticeHandler.js')) {
-$.registerChatCommand("./handlers/noticeHandler.js", "notice");
-}
+    if ($.moduleEnabled('./handlers/noticeHandler.js')) {
+        $.registerChatCommand("./handlers/noticeHandler.js", "notice");
+    }
 },10*1000);
 
 var messageCount = 0
@@ -227,9 +227,9 @@ function sendMessage() {
         return;
     }
 	
-	if ($.inidb.get('notices', 'message_' + messageIndex) ==  null || $.inidb.get('notices', 'message_' + messageIndex) ==  " ") {
-		return;
-	}
+    if ($.inidb.get('notices', 'message_' + messageIndex) ==  null || $.inidb.get('notices', 'message_' + messageIndex) ==  " ") {
+        return;
+    }
 
     var message = $.inidb.get('notices', 'message_' + messageIndex);
 

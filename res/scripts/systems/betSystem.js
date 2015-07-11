@@ -19,7 +19,7 @@ if ($.bet_maximum === undefined || $.bet_maximum === null || isNaN($.bet_maximum
 
 $.on('command', function (event) {
     var sender = event.getSender();
-    var username = $.username.resolve(sender);
+    var username = $.username.resolve(sender, event.getTags());
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
     var args = event.getArgs();
@@ -39,7 +39,7 @@ $.on('command', function (event) {
             
         if (args.length >= 1) {
 			
-            if (action.equalsIgnoreCase("min") && $.isMod(sender)) {
+            if (action.equalsIgnoreCase("min") && $.isModv3(sender, event.getTags())) {
                 
                 if (args[1] == 0) {
                     $.say ("You have disabled the minimum bet amount!");
@@ -59,24 +59,24 @@ $.on('command', function (event) {
                         return;
                     }
                 
-                $.say("Current Bet Maximum: " + $.bet_maximum + " " + $.pointname + ", Current Bet Minimum: " + $.bet_minimum + " " + $.pointname + ".");
-                return;
+                    $.say("Current Bet Maximum: " + $.bet_maximum + " " + $.pointname + ", Current Bet Minimum: " + $.bet_minimum + " " + $.pointname + ".");
+                    return;
                 }  
                 
                 if (parseInt(args[1]) < 0 || parseInt(args[1]) > $.bet_maximum && !$.bet_maximum == 0) {
-                $.say("You can't set the minimum bet amount below 0 or higher than the bet maximum!");
-                return;
+                    $.say("You can't set the minimum bet amount below 0 or higher than the bet maximum!");
+                    return;
                 
                 } else {
-                $.inidb.set('settings', 'bet_minimum', args[1]);
-                $.bet_minimum = args[1];
-                $.say("You have set the minimum amount someone could bet to: " + args[1] + " " + $.pointname + ".");
+                    $.inidb.set('settings', 'bet_minimum', args[1]);
+                    $.bet_minimum = args[1];
+                    $.say("You have set the minimum amount someone could bet to: " + args[1] + " " + $.pointname + ".");
                 }
                 
             }
 
 			
-            if (action.equalsIgnoreCase("max") && $.isMod(sender)) {
+            if (action.equalsIgnoreCase("max") && $.isModv3(sender, event.getTags())) {
                 
                 if (args[1] == 0) {
                     $.say ("You have disabled the maximum bet amount!");
@@ -96,17 +96,17 @@ $.on('command', function (event) {
                         return;
                     }
                     
-                $.say("Current Bet Maximum: " + $.bet_maximum + " " + $.pointname + ", Current Bet Minimum: " + $.bet_minimum + " " + $.pointname + ".");
-                return;
-            }
+                    $.say("Current Bet Maximum: " + $.bet_maximum + " " + $.pointname + ", Current Bet Minimum: " + $.bet_minimum + " " + $.pointname + ".");
+                    return;
+                }
 				
                 if (parseInt(args[1]) < $.bet_minimum) {
-                $.say("You can't set the maximum bet amount below the minimum amount!");
-                return;
+                    $.say("You can't set the maximum bet amount below the minimum amount!");
+                    return;
                 } else {
-                $.bet_maximum = args[1];
-                $.inidb.set('settings', 'bet_maximum', args[1]);
-                $.say("You have set the maximum amount someone could bet to: " + args[1] + " " + $.pointname + ".");
+                    $.bet_maximum = args[1];
+                    $.inidb.set('settings', 'bet_maximum', args[1]);
+                    $.say("You have set the maximum amount someone could bet to: " + args[1] + " " + $.pointname + ".");
                 }
 
             }
@@ -203,7 +203,7 @@ $.on('command', function (event) {
 
 
             } else if (action.equalsIgnoreCase("time") && !$var.bet_running) {
-                if (!$.isMod(sender)) {
+                if (!$.isModv3(sender, event.getTags())) {
                     $.say($.modmsg);
                     return;
                 }
@@ -221,7 +221,7 @@ $.on('command', function (event) {
 
 
             } else if (action.equalsIgnoreCase("win") || action.equalsIgnoreCase("close") || action.equalsIgnoreCase("end")) {
-                if (sender == betstarter || $.isMod(sender)) {
+                if (sender == betstarter || $.isModv3(sender, event.getTags())) {
                     
                 } else {
                     $.say("@" + $.username.resolve(betstarter) + " opened this bet and is the only that can close it with '!bet win (option)'");
@@ -232,7 +232,7 @@ $.on('command', function (event) {
                 var winning = args.slice(1).join(" ").trim().toLowerCase();
 
                 if (!$.array.contains($var.bet_options, winning)) {
-                    $.say($.username.resolve(sender) + ", " + winning + " doesn't match any of the options.");
+                    $.say($.username.resolve(sender, event.getTags()) + ", " + winning + " doesn't match any of the options.");
                     return;
                 }
 
@@ -355,12 +355,12 @@ $.on('command', function (event) {
 				
 				
                 if (betstart + betlength < System.currentTimeMillis()) {
-                    $.say("Sorry, betting is closed, " + $.username.resolve(sender) + "!")
+                    $.say("Sorry, betting is closed, " + $.username.resolve(sender, event.getTags()) + "!")
                     return;
                 }
 
                 if (!$.array.contains($var.bet_options, option)) {
-                    $.say(option + " is not a valid option, " + $.username.resolve(sender) + "!");
+                    $.say(option + " is not a valid option, " + $.username.resolve(sender, event.getTags()) + "!");
                     return;
                 }
 
@@ -383,12 +383,12 @@ $.on('command', function (event) {
                 else points = parseInt(points);
 
                 if (amount > points) {
-                    $.say($.username.resolve(sender) + "," + " you don't have that amount of " + $.pointname + " to wager!");
+                    $.say($.username.resolve(sender, event.getTags()) + "," + " you don't have that amount of " + $.pointname + " to wager!");
                     return;
                 }
                 
                 if (amount < 1) {
-                    $.say($.username.resolve(sender) + "," + " your wager must be greater than 0!");
+                    $.say($.username.resolve(sender, event.getTags()) + "," + " your wager must be greater than 0!");
                     return;
                 }
 
@@ -409,7 +409,7 @@ $.on('command', function (event) {
                     potmessage = pot;
                 }
 
-                    $.say("/me " + $.username.resolve(sender) + " wagers " + args[0] + " " + $.pointname + " on " + option + "! [Pot: " + potmessage + " " + $.pointname + "]");
+                $.say("/me " + $.username.resolve(sender, event.getTags()) + " wagers " + args[0] + " " + $.pointname + " on " + option + "! [Pot: " + potmessage + " " + $.pointname + "]");
 
                 
                 $.inidb.set('bets', 'pot', parseInt(pot)); //
@@ -441,16 +441,16 @@ $.on('command', function (event) {
             }
         }
     
-		}
+    }
 
 });
 
 setTimeout(function(){ 
-if ($.moduleEnabled('./systems/betSystem.js')) {
-$.registerChatCommand("./systems/betSystem.js", "bet");
-$.registerChatCommand("./systems/betSystem.js", "bet win");
-$.registerChatCommand("./systems/betSystem.js", "bet open");
-$.registerChatCommand("./systems/betSystem.js", "bet time", "mod");
-$.registerChatCommand("./systems/betSystem.js", "bet results");
-}
+    if ($.moduleEnabled('./systems/betSystem.js')) {
+        $.registerChatCommand("./systems/betSystem.js", "bet");
+        $.registerChatCommand("./systems/betSystem.js", "bet win");
+        $.registerChatCommand("./systems/betSystem.js", "bet open");
+        $.registerChatCommand("./systems/betSystem.js", "bet time", "mod");
+        $.registerChatCommand("./systems/betSystem.js", "bet results");
+    }
 },10*1000);

@@ -56,7 +56,7 @@ $.getPoints = function (user) {
         timeString+=" Min"
     }
     if ($.inidb.get('settings', 'timetoggle') == "false") {
-    	timeString = "";
+        timeString = "";
     }
     	
     $.say($.username.resolve(user) + " has " + points + " " + $.pointname + timeString);
@@ -65,7 +65,7 @@ $.getPoints = function (user) {
 
 $.on('command', function (event) {
     var sender = event.getSender().toLowerCase();
-    var username = $.username.resolve(sender);
+    var username = $.username.resolve(sender, event.getTags());
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
     var argsString2 = argsString.substring(argsString.indexOf(" ") + 1, argsString.length());
@@ -96,7 +96,7 @@ $.on('command', function (event) {
 
             if (action.equalsIgnoreCase("give") || action.equalsIgnoreCase("send") || action.equalsIgnoreCase("add")) {
                 if ($var.perm_toggle == true) {
-                    if (!$.isMod(sender)) {
+                    if (!$.isModv3(sender, event.getTags())) {
                         $.say($.modmsg);
                         return;
                     }
@@ -111,20 +111,20 @@ $.on('command', function (event) {
                 points = parseInt(args[2]);
             
                 if (points < 0){
-                    $.say($.username.resolve(sender) + ", you can't send a negative amount.");
+                    $.say($.username.resolve(sender, event.getTags()) + ", you can't send a negative amount.");
                     return;
                 } else {
-                if ($.inidb.get("visited", username.toLowerCase()) == "visited") {
-                    $.inidb.incr('points', username.toLowerCase(), points);
-                    $.say(points + " " + $.pointname + " was sent to " + $.username.resolve(username) + ". New balance is: " + $.inidb.get('points', username.toLowerCase()) + " " + $.pointname + ".");
-                } else {
-                   $.say("This person has never visited this channel, thus doesn't have an account.");
-                   return;
+                    if ($.inidb.get("visited", username.toLowerCase()) == "visited") {
+                        $.inidb.incr('points', username.toLowerCase(), points);
+                        $.say(points + " " + $.pointname + " was sent to " + $.username.resolve(username) + ". New balance is: " + $.inidb.get('points', username.toLowerCase()) + " " + $.pointname + ".");
+                    } else {
+                        $.say("This person has never visited this channel, thus doesn't have an account.");
+                        return;
+                    }
                 }
-            }
             } else if (action.equalsIgnoreCase("take") || action.equalsIgnoreCase("withdraw")) {
                 if ($var.perm_toggle == true) {
-                    if (!$.isMod(sender)) {
+                    if (!$.isModv3(sender, event.getTags())) {
                         $.say($.modmsg);
                         return;
                     }
@@ -139,20 +139,20 @@ $.on('command', function (event) {
                 points = parseInt(args[2]);
             
                 if (points > $.inidb.get('points', username.toLowerCase())) {
-                    $.say($.username.resolve(sender) + ", why are you trying to take more than what " + $.username.resolve(username) + " has in " + $.pointname + "?");
+                    $.say($.username.resolve(sender, event.getTags()) + ", why are you trying to take more than what " + $.username.resolve(username) + " has in " + $.pointname + "?");
                 } else {
-                if ($.inidb.get("visited", username.toLowerCase()) == "visited")  {
-                    $.inidb.decr('points', username.toLowerCase(), points);
-                    $.say(points + " " + $.pointname + " was withdrawn from " + $.username.resolve(username) + ". New balance is: " + $.inidb.get('points', username.toLowerCase()) + " " + $.pointname + ".");
-                } else {
-                   $.say("This person has never visited this channel, thus doesn't have an account.");
-                   return;
-                }
+                    if ($.inidb.get("visited", username.toLowerCase()) == "visited")  {
+                        $.inidb.decr('points', username.toLowerCase(), points);
+                        $.say(points + " " + $.pointname + " was withdrawn from " + $.username.resolve(username) + ". New balance is: " + $.inidb.get('points', username.toLowerCase()) + " " + $.pointname + ".");
+                    } else {
+                        $.say("This person has never visited this channel, thus doesn't have an account.");
+                        return;
+                    }
                 }
 
             } else if (action.equalsIgnoreCase("set")) {
                 if ($var.perm_toggle == true) {
-                    if (!$.isMod(sender)) {
+                    if (!$.isModv3(sender, event.getTags())) {
                         $.say($.modmsg);
                         return;
                     }
@@ -167,16 +167,16 @@ $.on('command', function (event) {
                 points = parseInt(args[2]);
             
                 if (points < 0) {
-                    $.say($.username.resolve(sender) + ", you know very well you can't set someone's " + $.pointname + " to a negative number.");
+                    $.say($.username.resolve(sender, event.getTags()) + ", you know very well you can't set someone's " + $.pointname + " to a negative number.");
                 } else {
-                 if ($.inidb.get("visited", username.toLowerCase()) == "visited")  {
-                    $.inidb.set('points', username.toLowerCase(), points);
-                    $.say($.username.resolve(username) + "'s " + $.pointname + " were set to " + points + " " + $.pointname + ". New balance is: " + $.inidb.get('points', username.toLowerCase()) + " " + $.pointname + ".");
-                } else {
-                   $.say("This person has never visited this channel, thus doesn't have an account.");
-                   return;
+                    if ($.inidb.get("visited", username.toLowerCase()) == "visited")  {
+                        $.inidb.set('points', username.toLowerCase(), points);
+                        $.say($.username.resolve(username) + "'s " + $.pointname + " were set to " + points + " " + $.pointname + ". New balance is: " + $.inidb.get('points', username.toLowerCase()) + " " + $.pointname + ".");
+                    } else {
+                        $.say("This person has never visited this channel, thus doesn't have an account.");
+                        return;
+                    }
                 }
-            }
             } else if (action.equalsIgnoreCase("gain")) {
                 if (!$.isAdmin(sender)) {
                     $.say($.adminmsg);
@@ -209,7 +209,7 @@ $.on('command', function (event) {
                 }
             } else if (action.equalsIgnoreCase("all")) {
                 if ($var.perm_toggle == true) {
-                    if (!$.isMod(sender)) {
+                    if (!$.isModv3(sender, event.getTags())) {
                         $.say($.modmsg);
                         return;
                     }
@@ -221,7 +221,7 @@ $.on('command', function (event) {
                 }
 
                 if (args[1] < 0) {
-                    $.say($.username.resolve(sender) + " seems like you want to give everyone negative " + $.pointname + "!");
+                    $.say($.username.resolve(sender, event.getTags()) + " seems like you want to give everyone negative " + $.pointname + "!");
                     return;
                 } else {
                     var name;
@@ -287,7 +287,7 @@ $.on('command', function (event) {
                 }
 
                 if (args[1] < 0 || args[1] == null) {
-					$.say("Usage: !points mingift <amount> - Sets the minimum amount of points that can be gifted to others. Must be 0 or higher.");
+                    $.say("Usage: !points mingift <amount> - Sets the minimum amount of points that can be gifted to others. Must be 0 or higher.");
                     return;
                 } else {
                     $.inidb.set('settings', 'mingift', args[1]);
@@ -347,21 +347,21 @@ $.on('command', function (event) {
         }
 
         if (points > $.inidb.get('points', sender)) {
-            $.say($.username.resolve(sender) + ", you don't have that much " + $.pointname + " to transfer " + $.username.resolve(username) + "!");
+            $.say($.username.resolve(sender, event.getTags()) + ", you don't have that much " + $.pointname + " to transfer " + $.username.resolve(username) + "!");
             return;
 
         } else {
             if (parseInt(args[1]) < $.mingift) {
-                $.say($.username.resolve(sender) + ", you can't transfer " + $.pointname + " that's lower than the minimum amount! Minimum: " + $.mingift + " " + $.pointname + ".");
+                $.say($.username.resolve(sender, event.getTags()) + ", you can't transfer " + $.pointname + " that's lower than the minimum amount! Minimum: " + $.mingift + " " + $.pointname + ".");
                 return;
             } else if (points < parseInt(args[1])){
-                $.say($.username.resolve(sender) + ", you can't transfer " + $.pointname + " what you don't have.");
+                $.say($.username.resolve(sender, event.getTags()) + ", you can't transfer " + $.pointname + " what you don't have.");
                 return;
             } else {
                 if ($.inidb.get("visited", username.toLowerCase()) == "visited") {
-                $.inidb.decr('points', sender.toLowerCase(), parseInt(args[1]));
-                $.inidb.incr('points', username.toLowerCase(), parseInt(args[1]));
-                $.say("Transferred " + args[1] + " " + $.pointname + " to " + $.username.resolve(args[0]) + " who now has: " + $.inidb.get('points', $.username.resolve(args[0]).toLowerCase()) + " " + $.pointname + ". " + $.username.resolve(sender) + ", you're left with: " + $.inidb.get('points', sender.toLowerCase()) + " " + $.pointname + ".");
+                    $.inidb.decr('points', sender.toLowerCase(), parseInt(args[1]));
+                    $.inidb.incr('points', username.toLowerCase(), parseInt(args[1]));
+                    $.say("Transferred " + args[1] + " " + $.pointname + " to " + $.username.resolve(args[0]) + " who now has: " + $.inidb.get('points', $.username.resolve(args[0]).toLowerCase()) + " " + $.pointname + ". " + $.username.resolve(sender) + ", you're left with: " + $.inidb.get('points', sender.toLowerCase()) + " " + $.pointname + ".");
                 } else {
                     $.say("This person has never visited this channel, thus doesn't have an account.");
                     return;
@@ -408,11 +408,11 @@ $.timer.addTimer("./systems/pointSystem.js", "pointsystem", true, function() {
 }, 60 * 1000);
 
 setTimeout(function(){ 
-if ($.moduleEnabled('./systems/pointSystem.js')) {
-$.registerChatCommand("./systems/pointSystem.js", "points");
-$.registerChatCommand("./systems/pointSystem.js", "info");
-$.registerChatCommand("./systems/pointSystem.js", "wallet");
-$.registerChatCommand("./systems/pointSystem.js", "bank");
-}
+    if ($.moduleEnabled('./systems/pointSystem.js')) {
+        $.registerChatCommand("./systems/pointSystem.js", "points");
+        $.registerChatCommand("./systems/pointSystem.js", "info");
+        $.registerChatCommand("./systems/pointSystem.js", "wallet");
+        $.registerChatCommand("./systems/pointSystem.js", "bank");
+    }
 },10*1000);
 

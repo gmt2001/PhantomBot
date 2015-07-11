@@ -25,7 +25,7 @@ $.on('command', function (event) {
     var response = "";
 
     if (command.equalsIgnoreCase("addphrase")) {
-        if (!$.isMod(sender)) {
+        if (!$.isModv3(sender, event.getTags())) {
             $.say($.modmsg);
             return;
         }
@@ -50,7 +50,7 @@ $.on('command', function (event) {
         $.say("Phrase trigger: " + triggerphrase + ", Message: \"" + response + "\" was added!");
     }
     if (command.equalsIgnoreCase("delphrase")) {
-        if (!$.isMod(sender)) {
+        if (!$.isModv3(sender, event.getTags())) {
             $.say($.modmsg);
             return;
         }
@@ -62,8 +62,8 @@ $.on('command', function (event) {
 
 });
 setTimeout(function(){ 
-if ($.moduleEnabled('./handlers/phraseHandler.js')) {
-$.registerChatCommand("./handlers/phraseHandler.js", "addphrase");
-$.registerChatCommand("./handlers/phraseHandler.js", "delphrase");
-}
+    if ($.moduleEnabled('./handlers/phraseHandler.js')) {
+        $.registerChatCommand("./handlers/phraseHandler.js", "addphrase");
+        $.registerChatCommand("./handlers/phraseHandler.js", "delphrase");
+    }
 },10*1000);

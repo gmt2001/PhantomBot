@@ -61,24 +61,24 @@ $.on('command', function (event) {
 //Q: why is there a timeout delay here before a timer? seems redundant no?
 //A: the timeout sets a delay to start the timer, otherwise the timer won't detect if a module is disabled (because it hasnt loaded in yet)
 setTimeout(function(){ 
-if ($.moduleEnabled("./handlers/donationHandler.js")) {
-    $.timer.addTimer("./handlers/donationHandler.js", "currdonation", true, function() {
-        $var.currDonation = $.readFile($.checkerstorepath);
-        if ($var.currDonation.toString() != $.inidb.get("settings", "lastdonation")) {
-        if ($var.currDonation.toString()!=null || $var.currDonation.toString()!="") {
-            $.inidb.set("settings", "lastdonation", $.readFile($.checkerstorepath));
-            if ($.donation_toggle == 1) {
-                $.say($.username.resolve($.ownerName) + " has received a donation from: " + $.readFile($.checkerstorepath));
-            } else if ($.donation_toggle == 0) {
-                println($.username.resolve($.ownerName) + " has received a donation from: " + $.readFile($.checkerstorepath));
+    if ($.moduleEnabled("./handlers/donationHandler.js")) {
+        $.timer.addTimer("./handlers/donationHandler.js", "currdonation", true, function() {
+            $var.currDonation = $.readFile($.checkerstorepath);
+            if ($var.currDonation.toString() != $.inidb.get("settings", "lastdonation")) {
+                if ($var.currDonation.toString()!=null || $var.currDonation.toString()!="") {
+                    $.inidb.set("settings", "lastdonation", $.readFile($.checkerstorepath));
+                    if ($.donation_toggle == 1) {
+                        $.say($.username.resolve($.ownerName) + " has received a donation from: " + $.readFile($.checkerstorepath));
+                    } else if ($.donation_toggle == 0) {
+                        println($.username.resolve($.ownerName) + " has received a donation from: " + $.readFile($.checkerstorepath));
+                    }
+                }
             }
-        }
-        }
-}, 10* 1000);
+        }, 10* 1000);
 
-}
+    }
 
-$.registerChatCommand("./handlers/donationHandler.js", "donationalert", "mod");
+    $.registerChatCommand("./handlers/donationHandler.js", "donationalert", "mod");
 }, 10* 1000);
 
 

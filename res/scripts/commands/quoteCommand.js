@@ -29,7 +29,7 @@ $.on('command', function(event) {
     }
     
     if (command.equalsIgnoreCase("addquote")) {
-        if (!$.isMod(sender)) {
+        if (!$.isModv3(sender, event.getTags())) {
             $.say($.modmsg);
             return;
         }
@@ -50,7 +50,7 @@ $.on('command', function(event) {
     }
 
     if (command.equalsIgnoreCase("editquote")) {
-        if (!$.isMod(sender)) {
+        if (!$.isModv3(sender, event.getTags())) {
             $.say($.modmsg);
             return;
         }
@@ -74,7 +74,7 @@ $.on('command', function(event) {
     }
     
     if (command.equalsIgnoreCase("delquote")) {
-        if (!$.isMod(sender)) {
+        if (!$.isModv3(sender, event.getTags())) {
             $.say($.modmsg);
             return;
         }
@@ -106,10 +106,10 @@ $.on('command', function(event) {
 });
 
 setTimeout(function(){ 
-if ($.moduleEnabled('./commands/quoteCommand.js')) {
-$.registerChatCommand("./commands/quoteCommand.js", "quote");
-$.registerChatCommand("./commands/quoteCommand.js", "addquote", "mod");
-$.registerChatCommand("./commands/quoteCommand.js", "editquote", "mod");
-$.registerChatCommand("./commands/quoteCommand.js", "delquote", "mod");
-}
+    if ($.moduleEnabled('./commands/quoteCommand.js')) {
+        $.registerChatCommand("./commands/quoteCommand.js", "quote");
+        $.registerChatCommand("./commands/quoteCommand.js", "addquote", "mod");
+        $.registerChatCommand("./commands/quoteCommand.js", "editquote", "mod");
+        $.registerChatCommand("./commands/quoteCommand.js", "delquote", "mod");
+    }
 },10*1000);

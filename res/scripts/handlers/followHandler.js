@@ -88,20 +88,20 @@ $.on('twitchFollowsInitialized', function(event) {
 
 $.on('command', function(event) {
     var sender = event.getSender();
-    var username = $.username.resolve(sender);
+    var username = $.username.resolve(sender, event.getTags());
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
     var args = event.getArgs();
 	
     if (command.equalsIgnoreCase("follow")) {
         if (args[0] != null) {
-                if($.inidb.get("followed",args[0].toLowerCase())==1){
-                    $.say($.username.resolve(args[0]) + " is following the channel.");
-                    return;                    
-                } else {
-                    $.say($.username.resolve(args[0]) + " is not following the channel.");
-                    return;    
-                }
+            if($.inidb.get("followed",args[0].toLowerCase())==1){
+                $.say($.username.resolve(args[0]) + " is following the channel.");
+                return;                    
+            } else {
+                $.say($.username.resolve(args[0]) + " is not following the channel.");
+                return;    
+            }
         }
         $.say("!followmessage <message>, !followreward <amount>");
         
@@ -161,11 +161,11 @@ $.on('command', function(event) {
 });
 
 setTimeout(function(){ 
-if ($.moduleEnabled('./handlers/followHandler.js')) {
-$.registerChatCommand("./handlers/followHandler.js", "followmessage", "admin");
-$.registerChatCommand("./handlers/followHandler.js", "followreward", "admin");
-$.registerChatCommand("./handlers/followHandler.js", "followcount");
-}
+    if ($.moduleEnabled('./handlers/followHandler.js')) {
+        $.registerChatCommand("./handlers/followHandler.js", "followmessage", "admin");
+        $.registerChatCommand("./handlers/followHandler.js", "followreward", "admin");
+        $.registerChatCommand("./handlers/followHandler.js", "followcount");
+    }
 },10*1000);
 
 $.checkFollowTrain = function() {
@@ -174,22 +174,22 @@ $.checkFollowTrain = function() {
         $.followtimer = null;
         
         if (!$.firstrun) {
-        if ($.followtrain > 1) {
-            if ($.followtrain == 3) {
-                $.say("Triple follow!!");
-            } else if ($.followtrain == 4) {
-                $.say("Quadra follow!!");
-            } else if ($.followtrain == 5) {
-                $.say("Penta follow!!");
-            } else if ($.followtrain > 5 && $.followtrain <= 10) {
-                $.say("Mega follow train!! (" + $.followtrain + ")");
-            } else if ($.followtrain > 10 && $.followtrain <= 20) {
-                $.say("Ultra follow train!! (" + $.followtrain + ")");
-            } else if ($.followtrain > 20) {
-                $.say("Unbelievable follow train!! (" + $.followtrain + ")");
+            if ($.followtrain > 1) {
+                if ($.followtrain == 3) {
+                    $.say("Triple follow!!");
+                } else if ($.followtrain == 4) {
+                    $.say("Quadra follow!!");
+                } else if ($.followtrain == 5) {
+                    $.say("Penta follow!!");
+                } else if ($.followtrain > 5 && $.followtrain <= 10) {
+                    $.say("Mega follow train!! (" + $.followtrain + ")");
+                } else if ($.followtrain > 10 && $.followtrain <= 20) {
+                    $.say("Ultra follow train!! (" + $.followtrain + ")");
+                } else if ($.followtrain > 20) {
+                    $.say("Unbelievable follow train!! (" + $.followtrain + ")");
+                }
             }
         }
-    }
         
         $.followtrain = 0;
     }

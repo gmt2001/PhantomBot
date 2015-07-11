@@ -47,7 +47,7 @@ function youtubeParser(url){
 }
 
 function stringParse(text) {
-//disallowed symbols: /\:*?"<>|
+    //disallowed symbols: /\:*?"<>|
     var s = text.toString();
     s = s.replace("/", "");
     s = s.replace("\\", "");
@@ -86,19 +86,19 @@ function Song(name, user) {
         if (response != null) {
             this.name = response.getString("title");
             while( y <= retries ) {
-		y++;
-		var ldata = $.youtube.GetVideoLength(this.id);
-		//ldata[1] = returns only highest integer of time
-		//ldata[2] = all integers of time separated by :
-		if (ldata[2]!="") {
+                y++;
+                var ldata = $.youtube.GetVideoLength(this.id);
+                //ldata[1] = returns only highest integer of time
+                //ldata[2] = all integers of time separated by :
+                if (ldata[2]!="") {
                     var duration = ldata[2];
                     this.length = duration;
                     break;
-		}
+                }
             }
             if( y > retries ){
                 y = 0;
-		return;
+                return;
             }
         } else {
             this.id = null;
@@ -119,19 +119,19 @@ function Song(name, user) {
         }
         if( x > retries )
         {
-                x = 0;
-                $.say("Song >> " + name + " not searchable due to API error. Please try again.");
-                //failed search, return user's points
-                if ($.inidb.exists("pricecom", "addsong") && parseInt($.inidb.get("pricecom", "addsong"))> 0 ){
-                    if(!$.isMod(user)){
-                        var cost = $.inidb.get("pricecom", "addsong");
-                        $.say("The command cost of " + cost + " " + $.pointname + " has been returned to " + $.username.resolve(user));
-                        $.inidb.incr("points", user.toLowerCase(), cost);
-                        $.inidb.SaveAll();
-                    }
+            x = 0;
+            $.say("Song >> " + name + " not searchable due to API error. Please try again.");
+            //failed search, return user's points
+            if ($.inidb.exists("pricecom", "addsong") && parseInt($.inidb.get("pricecom", "addsong"))> 0 ){
+                if(!$.isMod(user)){
+                    var cost = $.inidb.get("pricecom", "addsong");
+                    $.say("The command cost of " + cost + " " + $.pointname + " has been returned to " + $.username.resolve(user));
+                    $.inidb.incr("points", user.toLowerCase(), cost);
+                    $.inidb.SaveAll();
                 }
+            }
                 
-                return;
+            return;
         }
         while( y <= retries ) {
             y++;
@@ -140,11 +140,11 @@ function Song(name, user) {
             //ldata[2] = all integers of time separated by :
             if (ldata[2]!="") {
                 duration = ldata[2];
-		this.length = duration;
-		break;
+                this.length = duration;
+                break;
             }
-	}
-	if( y > retries ){
+        }
+        if( y > retries ){
             y = 0;
             return;
         }
@@ -432,7 +432,7 @@ $.on('musicPlayerDisconnect', function (event) {
 
 $.on('command', function (event) {
     var sender = event.getSender();
-    var username = $.username.resolve(sender);
+    var username = $.username.resolve(sender, event.getTags());
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
     var argsString2 = argsString.substring(argsString.indexOf(" ") + 1, argsString.length());
@@ -609,11 +609,11 @@ $.on('command', function (event) {
     }
 
     if (command.equalsIgnoreCase("addsong")) {
-            if ($.inidb.get('blacklist', sender) == "true") {
-                //blacklisted, deny
-                $.say("You are denied access to song request features!");
-                return;
-            }
+        if ($.inidb.get('blacklist', sender) == "true") {
+            //blacklisted, deny
+            $.say("You are denied access to song request features!");
+            return;
+        }
         
         //start arguments check
         if (args.length == 0) {
@@ -625,9 +625,9 @@ $.on('command', function (event) {
             if (!musicPlayerConnected) {
                 if ($.inidb.exists("pricecom", "addsong") && parseInt($.inidb.get("pricecom", "addsong"))> 0 ){
                     $.say("Music player disabled.");
-                    if(!$.isMod(sender)){
+                    if(!$.isModv3(sender, event.getTags())){
                         var cost = $.inidb.get("pricecom", "addsong");
-                        $.say("The command cost of " + cost + " " + $.pointname + " has been returned to " + $.username.resolve(sender));
+                        $.say("The command cost of " + cost + " " + $.pointname + " has been returned to " + $.username.resolve(sender, event.getTags()));
                         $.inidb.incr("points", sender.toLowerCase(), cost);
                         $.inidb.SaveAll();
                     }
@@ -644,12 +644,12 @@ $.on('command', function (event) {
                 return;
             }
             
-             if ( video.getLength()=="" || video.getLength()==null || !video.getLength()) {
+            if ( video.getLength()=="" || video.getLength()==null || !video.getLength()) {
                 $.say("Song >> " + video.getName() + " length not retrievable due to API error. Please try again.");
                 if ($.inidb.exists("pricecom", "addsong") && parseInt($.inidb.get("pricecom", "addsong"))> 0 ){
-                    if(!$.isMod(sender)){
+                    if(!$.isModv3(sender, event.getTags())){
                         var cost = $.inidb.get("pricecom", "addsong");
-                        $.say("The command cost of " + cost + " " + $.pointname + " has been returned to " + $.username.resolve(sender));
+                        $.say("The command cost of " + cost + " " + $.pointname + " has been returned to " + $.username.resolve(sender, event.getTags()));
                         $.inidb.incr("points", sender.toLowerCase(), cost);
                         $.inidb.SaveAll();
                     }
@@ -697,7 +697,7 @@ $.on('command', function (event) {
 
         for (i in $var.songqueue) {
             if (id + "" === $var.songqueue[i].song.id + "") {
-                if ($var.songqueue[i].user === username || $.isMod(sender)) {
+                if ($var.songqueue[i].user === username || $.isModv3(sender, event.getTags())) {
                     $.say("[\u266B] Song -- " + $var.songqueue[i].song.getName() + " has been removed from the queue!");
                     $var.songqueue.splice(i, 1);
                     return;
@@ -713,7 +713,7 @@ $.on('command', function (event) {
     }
 
     if (command.equalsIgnoreCase("volume")) {
-        if (!$.isMod(sender)) {
+        if (!$.isModv3(sender, event.getTags())) {
             $.say($.modmsg);
             return;
         }
@@ -729,7 +729,7 @@ $.on('command', function (event) {
     if (command.equalsIgnoreCase("skipsong")) {
         song = $.musicplayer.currentId();
 
-        if ($.isMod(sender)) {
+        if ($.isModv3(sender, event.getTags())) {
             next();
             return;
         }
@@ -814,32 +814,32 @@ $.on('command', function (event) {
 //Q: why is there a timeout delay here before a timer? seems redundant no?
 //A: the timeout sets a delay to start the timer, otherwise the timer won't detect if a module is disabled (because it hasnt loaded in yet)
 setTimeout(function(){ 
-if ($.moduleEnabled('./addonscripts/youtubePlayer.js')) {
+    if ($.moduleEnabled('./addonscripts/youtubePlayer.js')) {
 
-$.timer.addTimer("./addonscripts/youtubePlayer.js", "currsongyt", true, function() {
-	$var.ytcurrSong = $.readFile("addons/youtubePlayer/currentsong.txt");
-	if (($var.ytcurrSong.toString() != $.inidb.get("settings", "lastsong")) && !musicPlayerConnected) {
-        if ($var.ytcurrSong.toString()!=null || $var.ytcurrSong.toString()!="") {
-        $.inidb.set("settings", "lastsong", $var.ytcurrSong.toString());
-  		if ($.song_toggle == 1) {
-  			$.say("[\u266B] Now Playing -- " + $var.ytcurrSong.toString());
-  		} else {
-  			println("[\u266B] Now Playing -- " + $var.ytcurrSong.toString());
-  		}
-	}
-        }
+        $.timer.addTimer("./addonscripts/youtubePlayer.js", "currsongyt", true, function() {
+            $var.ytcurrSong = $.readFile("addons/youtubePlayer/currentsong.txt");
+            if (($var.ytcurrSong.toString() != $.inidb.get("settings", "lastsong")) && !musicPlayerConnected) {
+                if ($var.ytcurrSong.toString()!=null || $var.ytcurrSong.toString()!="") {
+                    $.inidb.set("settings", "lastsong", $var.ytcurrSong.toString());
+                    if ($.song_toggle == 1) {
+                        $.say("[\u266B] Now Playing -- " + $var.ytcurrSong.toString());
+                    } else {
+                        println("[\u266B] Now Playing -- " + $var.ytcurrSong.toString());
+                    }
+                }
+            }
 
-}, 10* 1000);
+        }, 10* 1000);
 
-$.registerChatCommand("./addonscripts/youtubePlayer.js", "addsong");
-$.registerChatCommand("./addonscripts/youtubePlayer.js", "skipsong");
-$.registerChatCommand("./addonscripts/youtubePlayer.js", "vetosong");
-$.registerChatCommand("./addonscripts/youtubePlayer.js", "currentsong");
-$.registerChatCommand("./addonscripts/youtubePlayer.js", "nextsong");
-$.registerChatCommand("./addonscripts/youtubePlayer.js", "stealsong", "admin");
-$.registerChatCommand("./addonscripts/youtubePlayer.js", "delsong", "mod");
-$.registerChatCommand("./addonscripts/youtubePlayer.js", "volume", "mod");
-}
+        $.registerChatCommand("./addonscripts/youtubePlayer.js", "addsong");
+        $.registerChatCommand("./addonscripts/youtubePlayer.js", "skipsong");
+        $.registerChatCommand("./addonscripts/youtubePlayer.js", "vetosong");
+        $.registerChatCommand("./addonscripts/youtubePlayer.js", "currentsong");
+        $.registerChatCommand("./addonscripts/youtubePlayer.js", "nextsong");
+        $.registerChatCommand("./addonscripts/youtubePlayer.js", "stealsong", "admin");
+        $.registerChatCommand("./addonscripts/youtubePlayer.js", "delsong", "mod");
+        $.registerChatCommand("./addonscripts/youtubePlayer.js", "volume", "mod");
+    }
 }, 10* 1000);
 
 $.on('musicPlayerCurrentVolume', function (event) {

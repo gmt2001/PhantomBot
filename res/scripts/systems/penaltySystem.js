@@ -3,14 +3,14 @@ $.penofflineinterval = parseInt($.inidb.get('settings', 'offlineinterval'));
 
 $.on('command', function(event) {
     var sender = event.getSender().toLowerCase();
-    var username = $.username.resolve(sender);
+    var username = $.username.resolve(sender, event.getTags());
     var command = event.getCommand();
     var args = event.getArgs();
 
 	
     if (command.equalsIgnoreCase("penalty")) {
 
-        if ($.isMod(sender)) {
+        if ($.isModv3(sender, event.getTags())) {
             var amount = parseInt($.inidb.get('penalty', args[0] + "_points")); 
        
             if (!args.length > 0) {
@@ -106,7 +106,7 @@ $.timer.addTimer("./systems/penaltySystem.js", "penaltySystem", true, function()
     $.penlastpointinterval = System.currentTimeMillis();
 }, 1000);
 setTimeout(function(){ 
-if ($.moduleEnabled('./systems/penaltySystem.js')) {
-$.registerChatCommand("./systems/penaltySystem.js", "penalty");
-}
+    if ($.moduleEnabled('./systems/penaltySystem.js')) {
+        $.registerChatCommand("./systems/penaltySystem.js", "penalty");
+    }
 },10*1000);

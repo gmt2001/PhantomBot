@@ -1,6 +1,6 @@
 $.on('command', function(event) {
     var sender = event.getSender();
-    var username = $.username.resolve(sender);
+    var username = $.username.resolve(sender, event.getTags());
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
     var args = event.getArgs();
@@ -13,7 +13,7 @@ $.on('command', function(event) {
 
     if(args.length >= 2 && !command.equalsIgnoreCase("pricecom")) {
         if(command.equalsIgnoreCase("addcom") ) {
-            if (!$.isMod(sender)) {
+            if (!$.isModv3(sender, event.getTags())) {
                 $.say($.modmsg);
                 return;
             }
@@ -36,10 +36,10 @@ $.on('command', function(event) {
             
             $.registerCustomChatCommand("./commands/addCommand.js", commandString);
             
-			if (sender == $.botname) {
-				println("You have successfully created the command: !" + commandString + "");
-				return;
-			}
+            if (sender == $.botname) {
+                println("You have successfully created the command: !" + commandString + "");
+                return;
+            }
             $.say(username + ", has successfully created the command: !" + commandString + "");
             return;
 			
@@ -49,7 +49,7 @@ $.on('command', function(event) {
     }
     
     if (command.equalsIgnoreCase("delalias")) {
-        if (!$.isMod(sender)) {
+        if (!$.isModv3(sender, event.getTags())) {
             $.say($.modmsg);
             return;
         }
@@ -88,14 +88,14 @@ $.on('command', function(event) {
         }
         
         if(customcommands.substr(customcommands.length - 1)==" ") {
-                    customcommands = customcommands.substring(0, customcommands.length - 1);
+            customcommands = customcommands.substring(0, customcommands.length - 1);
         }
         
         $.say("Current custom commands: " + customcommands);
     }
     
     if (command.equalsIgnoreCase("aliascom")) {
-        if (!$.isMod(sender)) {
+        if (!$.isModv3(sender, event.getTags())) {
             $.say($.modmsg);
             return;
         }
@@ -137,7 +137,7 @@ $.on('command', function(event) {
     
     if(command.equalsIgnoreCase("delcom")) {
         if(args.length >= 1) {
-            if (!$.isMod(sender)) {
+            if (!$.isModv3(sender, event.getTags())) {
                 $.say($.modmsg);
                 return;
             }
@@ -164,11 +164,11 @@ $.on('command', function(event) {
             $.inidb.del('commandcount', commandString);
             
             $.unregisterCustomChatCommand(commandString);
-			if (sender == $.botname) {
-				println("You have successfully removed the command: !" + commandString + "");
-				return;
-			}
-            $.say($.username.resolve(sender) + ", has successfully removed the command !" + commandString + "");
+            if (sender == $.botname) {
+                println("You have successfully removed the command: !" + commandString + "");
+                return;
+            }
+            $.say($.username.resolve(sender, event.getTags()) + ", has successfully removed the command !" + commandString + "");
             return;
         }
         $.say("Usage: !delcom (command)");
@@ -177,7 +177,7 @@ $.on('command', function(event) {
 	
     if (command.equalsIgnoreCase("editcom")) {
         if(args.length >= 1) {
-            if (!$.isMod(sender)) {
+            if (!$.isModv3(sender, event.getTags())) {
                 $.say($.modmsg);
                 return;
             }
@@ -201,10 +201,10 @@ $.on('command', function(event) {
 	
         
             $.inidb.set('command', commandString, message);
-			if (sender == $.botname) {
-				println("You have modified the command: !" + commandString + "");
-				return;
-			}
+            if (sender == $.botname) {
+                println("You have modified the command: !" + commandString + "");
+                return;
+            }
             $.say(username + " has modified the command: !" + commandString + "");
             return;
         }
@@ -272,10 +272,10 @@ $.on('command', function(event) {
             
 
 
-                if ($.inidb.exists('aliases', args[0].toLowerCase())) {
-                    alias = $.inidb.get('aliases', args[0].toLowerCase());
-                    $.inidb.set("permcom", alias + mode, newgroup);
-                }
+            if ($.inidb.exists('aliases', args[0].toLowerCase())) {
+                alias = $.inidb.get('aliases', args[0].toLowerCase());
+                $.inidb.set("permcom", alias + mode, newgroup);
+            }
 
             
             if(mode=="_recursive") {
@@ -307,7 +307,7 @@ $.on('command', function(event) {
         }
         
         while (messageCommand.contains('(sender)')) {
-            messageCommand = messageCommand.replace('(sender)', $.username.resolve(sender));
+            messageCommand = messageCommand.replace('(sender)', $.username.resolve(sender, event.getTags()));
         }
         
         if (messageCommand.contains('(count)')) {
@@ -394,18 +394,18 @@ $.on('command', function(event) {
     }
 });
 setTimeout(function(){ 
-if ($.moduleEnabled('./commands/addCommand.js')) {
+    if ($.moduleEnabled('./commands/addCommand.js')) {
 
-$.registerChatCommand("./commands/addCommand.js", "addcom", "mod");
-$.registerChatCommand("./commands/addCommand.js", "editcom", "mod");
-$.registerChatCommand("./commands/addCommand.js", "pricecom", "mod");
-$.registerChatCommand("./commands/addCommand.js", "aliascom", "mod");
-$.registerChatCommand("./commands/addCommand.js", "delalias", "mod");
-$.registerChatCommand("./commands/addCommand.js", "delcom", "mod");
-$.registerChatCommand("./commands/addCommand.js", "permcom", "admin");
-$.registerChatCommand("./commands/addCommand.js", "helpcom", "mod");
-$.registerChatCommand("./commands/addCommand.js", "customcommands");
-}
+        $.registerChatCommand("./commands/addCommand.js", "addcom", "mod");
+        $.registerChatCommand("./commands/addCommand.js", "editcom", "mod");
+        $.registerChatCommand("./commands/addCommand.js", "pricecom", "mod");
+        $.registerChatCommand("./commands/addCommand.js", "aliascom", "mod");
+        $.registerChatCommand("./commands/addCommand.js", "delalias", "mod");
+        $.registerChatCommand("./commands/addCommand.js", "delcom", "mod");
+        $.registerChatCommand("./commands/addCommand.js", "permcom", "admin");
+        $.registerChatCommand("./commands/addCommand.js", "helpcom", "mod");
+        $.registerChatCommand("./commands/addCommand.js", "customcommands");
+    }
 }, 10* 1000);
 
 var commands = $.inidb.GetKeyList("command", "");

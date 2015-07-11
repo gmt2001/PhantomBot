@@ -1,6 +1,6 @@
 $.on('command', function(event) {
     var sender = event.getSender();
-    var username = $.username.resolve(sender);
+    var username = $.username.resolve(sender, event.getTags());
     var command = event.getCommand();
     var args = event.getArgs();
     var argsString = event.getArguments().trim();
@@ -14,7 +14,7 @@ $.on('command', function(event) {
         }
         
         if ($.inidb.get("twitchtwitter", "perm").equalsIgnoreCase("mod")) {
-            if (!$.isMod(sender)) {
+            if (!$.isModv3(sender, event.getTags())) {
                 $.say($.modmsg);
                 return;
             }
@@ -212,9 +212,9 @@ $.on('command', function(event) {
     }
 });
 setTimeout(function(){ 
-if ($.moduleEnabled('./commands/twitchtwitterCommand.js')) {
-//$.registerChatCommand("./commands/twitchtwitterCommands.js", "twitch", "caster");
-$.registerChatCommand("./commands/twitchtwitterCommands.js", "tweet", "caster");
-$.registerChatCommand("./commands/twitchtwitterCommands.js", "twitchopt", "admin");
-}
+    if ($.moduleEnabled('./commands/twitchtwitterCommand.js')) {
+        //$.registerChatCommand("./commands/twitchtwitterCommands.js", "twitch", "caster");
+        $.registerChatCommand("./commands/twitchtwitterCommands.js", "tweet", "caster");
+        $.registerChatCommand("./commands/twitchtwitterCommands.js", "twitchopt", "admin");
+    }
 },10*1000);
