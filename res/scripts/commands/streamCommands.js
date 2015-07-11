@@ -30,15 +30,15 @@ $.getUptime = function(channel) {
     var df = new java.text.SimpleDateFormat( "yyyy-MM-dd'T'hh:mm:ssz" );
     //parse created_at from twitch, which is received in GMT
     if ( createdAt.endsWith( "Z" ) ) {
-        createdAt = createdAt.substring( 0, createdAt.length() - 1) + "GMT-00:00";
-    //$.say(createdAt);
-    } else {
-        var inset = 6;
-        var s0 = createdAt.substring( 0, createdAt.length() - inset );
-        //$.say(s0);
-        var s1 = createdAt.substring( createdAt.length() - inset, createdAt.length() );
-        //$.say(s1);
-        createdAt = s0 + "GMT" + s1;     
+            createdAt = createdAt.substring( 0, createdAt.length() - 1) + "GMT-00:00";
+            //$.say(createdAt);
+        } else {
+            var inset = 6;
+            var s0 = createdAt.substring( 0, createdAt.length() - inset );
+            //$.say(s0);
+            var s1 = createdAt.substring( createdAt.length() - inset, createdAt.length() );
+            //$.say(s1);
+            createdAt = s0 + "GMT" + s1;     
     }
 
     var datefmt = new java.text.SimpleDateFormat("EEEE MMMM d, yyyy @ h:mm a z");
@@ -58,7 +58,7 @@ $.getViewers = function(channel) {
 
 $.on('command', function(event) {
     var sender = event.getSender();
-    var username = $.username.resolve(sender, event.getTags());
+    var username = $.username.resolve(sender);
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
     var args = event.getArgs();
@@ -269,14 +269,14 @@ $.on('command', function(event) {
 });
 
 setTimeout(function(){ 
-    if ($.moduleEnabled('./commands/streamCommand.js')) {
-        $.registerChatCommand("./commands/streamCommands.js", "online");
-        $.registerChatCommand("./commands/streamCommands.js", "game");
-        $.registerChatCommand("./commands/streamCommands.js", "title");
-        $.registerChatCommand("./commands/streamCommands.js", "commercial", "caster");
-        $.registerChatCommand("./commands/streamCommands.js", "commercial help", "caster");
-        $.registerChatCommand("./commands/streamCommands.js", "viewers");
-    }
+if ($.moduleEnabled('./commands/streamCommands.js')) {
+$.registerChatCommand("./commands/streamCommands.js", "online", "caster");
+$.registerChatCommand("./commands/streamCommands.js", "game", "caster");
+$.registerChatCommand("./commands/streamCommands.js", "title", "caster");
+$.registerChatCommand("./commands/streamCommands.js", "commercial", "caster");
+$.registerChatCommand("./commands/streamCommands.js", "commercial help", "caster");
+$.registerChatCommand("./commands/streamCommands.js", "viewers");
+}
 },10*1000);
 
 var lastCommercial = $.inidb.get("settings", "lastCommercial");
