@@ -86,6 +86,8 @@ public class PhantomBot implements Listener
     private Profile profile;
     private ConnectionManager connectionManager;
     private Session session;
+    public static Session tgcSession;
+    private int sessionIndicator;
     private Channel channel;
     private FollowersCache followersCache;
     private ChannelHostCache hostCache;
@@ -136,6 +138,7 @@ public class PhantomBot implements Listener
         this.ownerName = owner;
         this.baseport = baseport;
         this.youtubekey = youtubekey;
+        this.sessionIndicator = 0;
         if (!youtubekey.isEmpty())
         {
             YouTubeAPIv3.instance().SetAPIKey(youtubekey);
@@ -219,7 +222,7 @@ public class PhantomBot implements Listener
         }
 
         this.session = connectionManager.requestConnection(this.hostname, this.port, oauth);
-        //TwitchGroupChatHandler(this.oauth,this.connectionManager);
+        TwitchGroupChatHandler(this.oauth,this.connectionManager);
         
 
         if (clientid.length() == 0)
@@ -253,10 +256,11 @@ public class PhantomBot implements Listener
     
     public void TwitchGroupChatHandler(String oauth, ConnectionManager connManager)
     {
-        int port = 80;
-        String hostname = "199.9.248.248";
+        int port = 6667;
+        String hostname = "199.9.253.119";
         
-        this.session = connManager.requestConnection(hostname, port, oauth);
+        tgcSession = connManager.requestConnection(hostname, port, oauth);
+        tgcSession.addIRCEventListener(new IrcEventHandler());
                     
     }
 
@@ -338,22 +342,31 @@ public class PhantomBot implements Listener
     @Subscribe
     public void onIRCConnectComplete(IrcConnectCompleteEvent event)
     {
+        if(sessionIndicator==0) {       
         session.sayRaw("CAP REQ :twitch.tv/tags");
         session.sayRaw("CAP REQ :twitch.tv/commands");
         session.sayRaw("CAP REQ :twitch.tv/membership");
-
         session.join("#" + channelName.toLowerCase());
-        com.gmt2001.Console.out.println("Connected to server\nJoining channel #" + channelName.toLowerCase());
+        sessionIndicator++;
+        } else {
+            tgcSession.sayRaw("CAP REQ :twitch.tv/tags");
+            tgcSession.sayRaw("CAP REQ :twitch.tv/commands");
+            tgcSession.sayRaw("CAP REQ :twitch.tv/membership");
+            sessionIndicator++;
+        }
+        
+        
+        
+        //com.gmt2001.Console.out.println("Connected to server\nJoining channel #" + channelName.toLowerCase());
     }
 
     @Subscribe
     public void onIRCJoinComplete(IrcJoinCompleteEvent event)
     {
         this.channel = event.getChannel();
-
         this.channel.setMsgInterval((long) ((30.0 / this.msglimit30) * 1000));
 
-        com.gmt2001.Console.out.println("Joined channel: " + event.getChannel().getName());
+        //com.gmt2001.Console.out.println("Joined channel: " + event.getChannel().getName());
 
         session.sayChannel(this.channel, ".mods");
     }
@@ -377,6 +390,8 @@ public class PhantomBot implements Listener
                     }
                 }
             }
+        } else {
+            com.gmt2001.Console.out.println("PMSG: " + event.getSender() + ": " + event.getMessage());
         }
     }
 
