@@ -673,7 +673,7 @@ public class PhantomBot implements Listener
         
         
 
-        EventBus.instance().postAsync(new CommandEvent(sender, command, arguments));
+        EventBus.instance().post(new CommandEvent(sender, command, arguments));
     }
 
     public static void main(String[] args) throws IOException

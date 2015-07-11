@@ -126,7 +126,7 @@ public class IrcEventHandler implements IRCEventListener
                 String cusername = cmessageEvent.getNick();
                 String cmessage = cmessageEvent.getMessage();
 
-                eventBus.postAsync(new IrcChannelMessageEvent(session, cusername, cmessage, cchannel, cmessageTags));
+                eventBus.post(new IrcChannelMessageEvent(session, cusername, cmessage, cchannel, cmessageTags));
                 break;
             case CTCP_EVENT:
                 CtcpEvent ctcmessageEvent = (CtcpEvent) event;
@@ -178,7 +178,7 @@ public class IrcEventHandler implements IRCEventListener
                     String ctcusername = ctcmessageEvent.getNick();
                     String ctcmessage = ctcmessageEvent.getCtcpString().replace("ACTION", "/me");
 
-                    eventBus.postAsync(new IrcChannelMessageEvent(session, ctcusername, ctcmessage, ctcchannel, ctcmessageTags));
+                    eventBus.post(new IrcChannelMessageEvent(session, ctcusername, ctcmessage, ctcchannel, ctcmessageTags));
                 }
                 break;
             case PRIVATE_MESSAGE:
