@@ -385,7 +385,7 @@ public class Channel
      * @param message - what to say
      */
     public void say(String message)
-    {
+    {                   
         if (message.startsWith(".timeout ") || message.startsWith(".ban ")
                 || message.startsWith(".unban ") || message.equals(".clear") || message.equals(".mods"))
         {
@@ -412,6 +412,12 @@ public class Channel
             }
         } else
         {
+            if(message.startsWith("/w "))
+            {
+                message = message.replace("/w ", "PRIVMSG #jtv :/w ");
+                me.mast3rplan.phantombot.PhantomBot.tgcSession.sayRaw(message);
+                return;
+            }
             if (message.length() + 14 + name.length() < 512)
             {
                 messages.add(message);

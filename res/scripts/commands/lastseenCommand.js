@@ -30,16 +30,17 @@ $.on('ircChannelJoin', function(event) {
     $.inidb.set("lastseen", username, timestamp);
 });
 
-$.on('ircChannelMessage', function(event) {
-    var sender = event.getSender().toLowerCase();
+$.on('ircChannelLeave', function(event) {
+    var username = event.getUser().toLowerCase();
     
     var datefmt = new java.text.SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss Z");
     datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.timezone));
     
     var timestamp = datefmt.format(new java.util.Date());
     
-    $.inidb.set("lastseen", sender, timestamp);
+    $.inidb.set("lastseen", username, timestamp);
 });
+
 
 setTimeout(function(){ 
     if ($.moduleEnabled('./commands/lastseenCommand.js')) {
