@@ -177,7 +177,8 @@ public class IrcEventHandler implements IRCEventListener
                     Channel ctcchannel = ctcmessageEvent.getChannel();
                     String ctcusername = ctcmessageEvent.getNick();
                     String ctcmessage = ctcmessageEvent.getCtcpString().replace("ACTION", "/me");
-
+                    
+                    //Don't change this to postAsync. It cannot be processed in async or messages will be delayed
                     eventBus.post(new IrcChannelMessageEvent(session, ctcusername, ctcmessage, ctcchannel, ctcmessageTags));
                 }
                 break;

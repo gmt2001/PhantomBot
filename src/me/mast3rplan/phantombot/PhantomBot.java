@@ -672,7 +672,7 @@ public class PhantomBot implements Listener
         }
         
         
-
+        //Don't change this to postAsync. It cannot be processed in async or commands will be delayed
         EventBus.instance().post(new CommandEvent(sender, command, arguments));
     }
 
