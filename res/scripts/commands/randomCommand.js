@@ -150,12 +150,11 @@
     }
 });
     var ar = new Array(0);
-        ar.push("(sender) was welcomed to the JAM so now it's time for (sender) to get SLAMMED!");
-        ar.push("(sender) was thrown into a large pit of PJSalt.");
+        ar.push("(sender) was thrown into a large pit of PJSalt");
         ar.push("Oh my, (sender) you make me just want to *SLURP SLURP SLURP*");
         ar.push("(sender) was thrown into a pit of tentacle pleasure.");
 		ar.push("(sender) was thrown into a pit of genetically modified super lions.");
-		ar.push("(sender) was thrown into a pit of explosive prinnys.");
+		ar.push("(sender) was thrown into a pit of explosive prinnies.");
         ar.push("I want you (sender).");
         ar.push("/me threw (sender) into a pit of PJSalt!" );
         ar.push("Dango, dango, dango, dango, big (sender) family~\u266B");
@@ -189,7 +188,7 @@
 		ar.push("I’m not just a pervert…I’M A SUPER PERVERT");
 		ar.push("When you meet with scary people, you must always protect your wallet and asshole!");
 		ar.push("Women’s minds and Autumn Winds Change Often.");
-		ar.push("I’m literally hemorrhage generosity.");
+		ar.push("I’m literally haemorrhaging generosity.");
 		ar.push("They were traps? I thought they were attractions.");
 		ar.push("Okay, here’s the plan: We go in, start hitting people, and see where it takes us.");
 		ar.push("The key in turning people on is a girl with a lolita face and big breasts.");
@@ -251,7 +250,7 @@
 		ar.push("Some Spanish government employees are Seville servants.");
 		ar.push("He drove his expensive car into a tree and found out how the Mercedes bends.");
 		ar.push("Show me someone in denial and I'll show you a person in Egypt up to their ankles.");
-		ar.push("Two peanuts were walking in a tough neighborhood and one of them was a-salted.");
+		ar.push("Two peanuts were walking in a tough neighbourhood and one of them was a-salted.");
 		ar.push("When cannibals ate a missionary they got a taste of religion.");
 		ar.push("When an actress saw her first strands of gray hair she thought she'd dye.");
 		ar.push("He often broke into song because he couldn't find the key.");
