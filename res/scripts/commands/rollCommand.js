@@ -1,299 +1,383 @@
-var arrRollLimiter = new Array();
-$var.lastRandomWin = "";
-$var.lastRandomLost = "";
-
-$.rollbonus = parseInt($.inidb.get('settings', 'roll_bonus'));
-$.rolltimer = parseInt($.inidb.get('settings', 'roll_timer'));
-
-if ($.rollbonus === undefined || $.rollbonus === null || isNaN($.rollbonus) || $.rollbonus < 0) {
-    $.rollbonus = 2;
-}
-
-if ($.rolltimer === undefined || $.rolltimer === null || isNaN($.rolltimer) || $.rolltimer < 0) {
-    $.rolltimer = 30;
-}
-
-$.on('command', function (event) {
-    var sender = event.getSender().toLowerCase();
-    var username = $.username.resolve(sender, event.getTags());
-    var points = $.inidb.get('points', sender);
-    var command = event.getCommand();
-    var argsString = event.getArguments().trim();
-    var args = event.getArgs();
-    var s;
-    var action = args[0];
-
-    if (command.equalsIgnoreCase("roll") && argsString.isEmpty()) {
-
-        var found = false;
-        var i;
-
-        if (command.equalsIgnoreCase("roll") && argsString.isEmpty()) {
-
-
-
-            for (i = 0; i < arrRollLimiter.length; i++) {
-                if (arrRollLimiter[i][0].equalsIgnoreCase(username)) {
-                    if (arrRollLimiter[i][1] < System.currentTimeMillis()) {
-                        arrRollLimiter[i][1] = System.currentTimeMillis() + ($.rolltimer * 1000);
-                        break;
-                    } else {
-                        $.say(username + ", you can only use !roll once every " + $.rolltimer + " seconds!");
-                        return;
-                    }
-
-                    found = true;
-                }
-            }
-
-
-            if (found === false) {
-                arrRollLimiter.push(new Array(username, System.currentTimeMillis() + ($.rolltimer * 1000)));
-            }
-        }
-        if (args.length === 0 && $.moduleEnabled("./systems/pointSystem.js")) {
-            var d1 = $.randRange(1, 6);
-            var d2 = $.randRange(1, 6);
-            var die1 = d1;
-            var die2 = d2;
-
-            var lost = new Array(0);
-            lost.push("Better luck next time!");
-            lost.push("Man you suck at this!");
-            lost.push("Dreamin', don't give it up " + sender );
-            lost.push("This is sad.");
-            lost.push("Can you like.. win? please?");
-            lost.push("Good job! Keep breaking the record for longest losing streak.");
-            lost.push("Don't looooose your waaaaaaay!");
-            lost.push("You just weren't good enough.");
-            lost.push("Will " + username + " finally win? Find out on the next episode of DragonBall Z!");
-            lost.push( sender + " has lost something great today!");
-            lost.push("Perhaps if you trained in the mountains in solitude, you could learn the art to rolling doubles.");
-            lost.push("Believe in the heart of the cards!");
-            lost.push("Believe in me who believes in you!");
-            lost.push("That one roll was full of hope and dreams, too bad you got nothing.");
-            lost.push("The gods have forsaken you!");
-            lost.push("To win you must gain sight beyond sight!");
-            lost.push("You're great at losing! Don't let anyone tell you otherwise.");
-            lost.push("I am known as Valentinez Alkalinella Xifax Sicidabohertz Gombigobilla Blue Stradivari Talentrent Pierre Andri Charton-Haymoss Ivanovici Baldeus George Doitzel Kaiser III, and I came to tell you that you didn't win.");
-            lost.push("So tell me, what’s it like living in a constant haze of losses?");
-			
-			
-            var win = new Array(0);
-            win.push("Congratulations!");
-            win.push("Damn you won..");
-            win.push("YATZEE!");
-            win.push("This double will pierce through the heavens!");
-            win.push("Was hoping you'd lose there.");
-            win.push("You got lucky.");
-            win.push("You have been blessed by the gods!");
-            win.push("This shit is rigged!");
-            win.push("Train keepa' rollin' all night long!");
-            win.push("GOOOOOOOOOOOOAAAAAAAAAAAAAAL!");
-            win.push("Oh my, you did it! HNNG!");
-            win.push("Now you think you're number one, shining bright for everyone!");
-            win.push("X GON GIVE IT TO YA!");
-            win.push("Why am I crying in french?!");
-            win.push("If there were many clumsy, perverted and fun people like you the world would be a better place.");
-			
-            if (points === null) {
-                points = 0;
-            }
-
-            if (d1 == d2) {
-                do {
-                    s = $.randElement(win);
-                } while (s.equalsIgnoreCase($var.lastRandomWin) && win.length > 1);
-
-                $.say(username + " rolled Doubles >> " + die1 + " & " + die2 + "! " + "You won " + ((die1 + die2) * $.rollbonus) + " " + $.pointname + "!" + " " + s);
-                if (die1 == 1) {
-                    $.say(username + " gets Snacky Snakes for snake eyes!")
-                }
-                if (die1 == 2) {
-                    $.say("Double deuces!")
-                }
-                if (die1 == 3) {
-                    $.say("Tripple threat!")
-                }
-                if (die1 == 4) {
-                    $.say("Octo Quad!")
-                }
-                if (die1 == 5) {
-                    $.say("Double nickels!")
-                }
-                if (die1 == 6) {
-                    $.say("Boxcars!")
-                }
-                $.inidb.incr('points', sender, (die1 + die2) * $.rollbonus);
-            } else {
-                do {
-                    s = $.randElement(lost);
-                } while (s.equalsIgnoreCase($var.lastRandomLost) && lost.length > 1);
-                
-
-               
-                $.say(username + " rolled a " + die1 + " & " + die2 + ". " + s);
-            }
-        } 
-    }
-
-    if (command.equalsIgnoreCase("roll") && !argsString.isEmpty()) {
-        if (args.length >= 2) {
-
-            if (action.equalsIgnoreCase("bonus") && !argsString.isEmpty()) {
-                if (!$.isModv3(sender, event.getTags())) {
-                    $.say($.modmsg);
-                    return;
-                }
-
-                $.inidb.set('settings', 'roll_bonus', args[1]);
-                $.rollbonus = parseInt(args[1]);
-                $.say("The bonus for each double rolled will now be multiplied by x" + $.rollbonus + "!");
-            }
-
-            if (action.equalsIgnoreCase("time") && !argsString.isEmpty()) {
-                if (!$.isModv3(sender, event.getTags())) {
-                    $.say($.modmsg);
-                    return;
-                }
-
-                $.inidb.set('settings', 'roll_timer', parseInt(args[1]));
-                $.rolltimer = parseInt(args[1]);
-                $.say("Roll limit set to once every " + $.rolltimer + " seconds!");
-
-            }
-        } else if (action.equalsIgnoreCase("bonus") || action.equalsIgnoreCase("time") || action.equalsIgnoreCase("config")) {
-            $.say("[Roll Settings] - [Roll Bonus: x" + $.rollbonus + "] - [Cooldown: " + $.rolltimer + " seconds]");
-        }
-        if (action.equalsIgnoreCase("commands") && !argsString.isEmpty()) {
-
-            $.say("'!roll' -- 'roll bonus <amount>' -- '!roll time <seconds>'");
-
-        }
-		
-        var found = false;
-        var i;
-		
-        for (i = 0; i < arrRollLimiter.length; i++) {
-            if (arrRollLimiter[i][0].equalsIgnoreCase(username)) {
-                if (arrRollLimiter[i][1] < System.currentTimeMillis()) {
-                    arrRollLimiter[i][1] = System.currentTimeMillis() + ($.rolltimer * 1000);
-                    break;
-                } else {
-                    $.say(username + ", you can only use !roll once every " + $.rolltimer + " seconds!");
-                    return;
-                }
-
-                found = true;
-            }
-        }
-
-        if (found === false) {
-            arrRollLimiter.push(new Array(username, System.currentTimeMillis() + ($.rolltimer * 1000)));
-        }
- 		
-        if ((args.length == 1 && action.equalsIgnoreCase("help")) || !$.moduleEnabled("./systems/pointSystem.js")) {
-            $.say("To do a DnD roll, say '!roll <dice definition> [ + <dice definition or number>]. For example: '!roll 2d6 + d20 + 2'. Limit 7 dice definitions or numbers per !roll command. A dice definition is [#]d<sides>. Valid number of sides: 4, 6, 8, 10, 12, 20, 100");
-        } else if (args.length < 14) {
-            var result = "";
-            var die = 0;
-            var dtotal = 0;
-            var numd = 0;
-            var dsides = 0;
-            var dstr = new Array();
-            var lookd = true;
-            var Pattern = java.util.regex.Pattern;
-            var Matcher = java.util.regex.Matcher;
-            var p = Pattern.compile("[0-9]*d{1}(4|6|8|10|12|20|100){1}");
-            var m;
-            var mes = "";
-            var pos;
-            var valid = true;
-
-            args = argsString.split("\\+");
-
-            dstr[4] = "<n>";
-            dstr[6] = "[n]";
-            dstr[8] = "<<n>>";
-            dstr[10] = "{n}";
-            dstr[12] = "<{n}>";
-            dstr[20] = "{(n)}";
-            dstr[100] = "**n**";
-
-            for (i = 0; i < args.length; i++) {
-                args[i] = args[i].trim();
-                lookd = true;
-
-                m = p.matcher(args[i]);
-
-                if (m.matches() === true && lookd) {
-                    lookd = false;
-
-                    s = args[i].substring(m.start(), m.end());
-
-                    pos = s.indexOf("d");
-
-                    if (pos == 0) {
-                        numd = 1;
-                    } else {
-                        numd = parseInt(s.substring(0, pos));
-                    }
-
-                    dsides = parseInt(s.substring(pos + 1));
-					
-                    if (numd > 30) {
-                        $.say(username + " do you really need to roll " + numd + " d" + dsides + " ?");
-                        return;
-                    }
-					
-
-                    for (var r = 0; r < numd; r++) {
-                        die = $.randRange(1, dsides);
-                        dtotal += die;
-
-                        if (!result.equals("")) {
-                            result = result + " + ";
-                        }
-
-                        result = result + dstr[dsides].replace("n", die);
-                    }
-                }
-
-                if (!isNaN(parseInt(args[i])) && lookd) {
-                    lookd = false;
-
-                    die = parseInt(args[i]);
-                    dtotal += die;
-
-                    if (!result.equals("")) {
-                        result = result + " + ";
-                    }
-
-                    result = result + die;
-                }
-
-                if (isNaN(parseInt(args[i])) && lookd) {
-                    valid = false;
-                }
-            }
-            if (dtotal == dsides) {
-                mes = " for a MASSIVE hit!!";
-            }
-            if (dtotal == 1) {
-                mes = " FAILURE.";
-            }
-            if (valid) {
-	
-                $.say(username + " rolled " + result + " = " + dtotal + mes);
-            } 
-        } else {
-            $.say("Dont spam rolls, " + username + "!");
-        }
-
-    }
+var objRoll = new Object({
+	limiter:new Array(),
+	temp:null,
+	timer:30000,
+	bonus:2,
+	wait:true,
+	stream:false,
 });
-setTimeout(function(){ 
-    if ($.moduleEnabled('./commands/rollCommand.js')) {
-        $.registerChatCommand("./commands/rollCommand.js", "roll");
-    }
-},10*1000);
+
+/* Default values are set in the objRoll variable,
+ * values from database will be loaded to objRoll.temp,
+ * validated, then set to the respective variable. */
+
+objRoll.temp = parseInt($.inidb.get("roll", "roll_timer"));
+if ((objRoll.temp === undefined) || (objRoll.temp === null) ||
+	isNaN(objRoll.temp) || (objRoll.temp < 1000)) {
+	$.inidb.set("roll", "roll_timer", objRoll.timer);
+} else {
+	objRoll.timer = objRoll.temp;
+}
+
+objRoll.temp = parseInt($.inidb.get("roll", "roll_bonus"));
+if ((objRoll.temp === undefined) || (objRoll.temp === null) ||
+	isNaN(objRoll.temp) || (objRoll.temp < 1000)) {
+	$.inidb.set("roll", "roll_bonus", objRoll.bonus);
+} else {
+	objRoll.bonus = objRoll.temp;
+}
+
+objRoll.temp = $.inidb.get("roll", "roll_wait");
+if ((objRoll.temp === undefined) || (objRoll.temp === null)) {
+	$.inidb.set("roll", "roll_wait", objRoll.wait);
+} else if (objRoll.temp.equalsIgnoreCase("true")) {
+	objRoll.wait = true;
+} else if (objRoll.temp.equalsIgnoreCase("false")) {
+	objRoll.wait = false;
+} else {
+	$.inidb.set("roll", "roll_wait", objRoll.wait);
+}
+
+objRoll.temp = $.inidb.get("roll", "roll_stream");
+if ((objRoll.temp === undefined) || (objRoll.temp === null)) {
+	$.inidb.set("roll", "roll_stream", objRoll.stream);
+} else if (objRoll.temp.equalsIgnoreCase("true")) {
+	objRoll.stream = true;
+} else if (objRoll.temp.equalsIgnoreCase("false")) {
+	objRoll.stream = false;
+} else {
+	$.inidb.set("roll", "roll_stream", objRoll.stream);
+}
+
+$.on('command', function(event) {
+	var sender = event.getSender().toLowerCase();
+	var username = $.username.resolve(sender);
+	var command = event.getCommand();
+	var args = event.getArgs();
+	var i = 0;
+	var found = false;
+	var curTime = 0;
+			
+	if (command.equalsIgnoreCase("roll")) {		
+		if (args.length == 0) {
+			var points = parseInt($.inidb.get('points', sender));
+			
+			if ((points === undefined) || (points === null) ||
+				isNaN(points) || (points < 0)) {
+				points = 0;
+				$.inidb.set('points', sender, points);
+			}
+			
+			if (objRoll.stream && !$.isOnline($.channelName)) {
+				$.say(username + " can only !roll while " +
+					$.username.resolve($.channelName) + "'s streaming!");
+				return;
+			}
+			
+			if (objRoll.wait) {
+				for (i = 0; i < objRoll.limiter.length; i++) {
+					if (!objRoll.limiter[i].user.equalsIgnoreCase(sender)) {
+						continue;
+					}
+					curTime = System.currentTimeMillis();
+					if (curTime < objRoll.limiter[i].time) {
+						$.say(username + " is waiting " +
+							Math.ceil((objRoll.limiter[i].time - curTime) /
+								1000) + " out of " +
+								Mail.ceil(objRoll.timer / 1000) +
+								" seconds for next \u001F!roll\u001F!");
+						return;
+					}
+					found = true;
+					objRoll.limiter[i].time = curTime + objRoll.timer;
+					break;
+				}
+		
+				if (!found) {
+					objRoll.limiter.push(new Object({
+						user:sender,
+						time:objRoll.timer + System.currentTimeMillis(),
+					}));
+				} 
+			}
+		
+			var die1 = (1 + Math.floor(Math.random() * 6));
+			var die2 = (1 + Math.floor(Math.random() * 6));
+			var d1 = null;
+			var d2 = null;
+			var newpoints = 0;
+			
+			if (die1 == 1) { d1 = "\u2776";	}
+			else if (die1 == 2) { d1 = "\u2777"; }
+			else if (die1 == 3) { d1 = "\u2778"; }
+			else if (die1 == 4) { d1 = "\u2779"; }
+			else if (die1 == 5) { d1 = "\u277A"; }
+			else if (die1 == 6) { d1 = "\u277B"; }
+			else { d1 = num1.toString(); }
+			
+			if (die2 == 1) { d2 = "\u2776";	}
+			else if (die2 == 2) { d2 = "\u2777"; }
+			else if (die2 == 3) { d2 = "\u2778"; }
+			else if (die2 == 4) { d2 = "\u2779"; }
+			else if (die2 == 5) { d2 = "\u277A"; }
+			else if (die2 == 6) { d2 = "\u277B"; }
+			else { d2 = num1.toString(); }
+			
+			if (die1 == die2) {
+				if ($.moduleEnabled("./systems/pointSystem.js")) {
+					newpoints = (die1 + die2) * objRoll.bonus;	
+					$.say(username + " rolled double \u0002" +
+						d1 + "\u0002s! You won " + newpoints + " " + 
+						$.pointname + "!");
+					$.inidb.set("points", sender, points + newpoints);
+				} else {
+					$.say(username + " rolled double \u0002" +
+						d1 + "\u0002s!");
+				}
+			} else {
+				$.say(username + " rolled \u0002" + d1 +
+					"\u0002 & \u0002" + d2 + "\u0002!");
+			}
+		} else if (args[0].equalsIgnoreCase("wait")) {
+			if (!$.isMod(username)) {
+				$.say($.modmsg);
+				return;
+			} else if (args.length == 1) {
+				objRoll.wait = !objRoll.wait;
+			} else if (args[1].equalsIgnoreCase("on") || 
+				args[1].equalsIgnoreCase("enable") ||
+				args[1].equalsIgnoreCase("true")) {
+				objRoll.wait = true;
+			} else if (args[1].equalsIgnoreCase("off") || 
+				args[1].equalsIgnoreCase("disable") ||
+				args[1].equalsIgnoreCase("false")) {
+				objRoll.wait = false;
+			}
+			$.say(username + ((objRoll.wait) ? " enabled" : " disabled") +
+				" the wait timer.");
+			$.inidb.set("roll", "roll_wait", objRoll.wait);
+		} else if (args[0].equalsIgnoreCase("bonus")) {
+			if (!$.isMod(username)) {
+				$.say($.modmsg);
+			} else if (args.length == 1) {
+				$.say(username + ", the roll bonus is " +
+					objRoll.bonus + ".");
+			} else {
+				var newbonus = parseInt(args[1]);
+				if ((newbonus === undefined) || (newbonus === null) ||
+					isNaN(newbonus) || (newbonus < 1)) {
+					$.say(username + " tried to set an invalid roll bonus, " +
+						"please enter a number 1 or greater.");
+				} else {
+					$.say(username + " changed roll bonus from " +
+						objRoll.bonus + " to " + newbonus + ".");
+					objRoll.bonus = newbonus;
+					$.inidb.set("roll", "roll_bonus", objRoll.bonus);
+				}
+			}
+		} else if (args[0].equalsIgnoreCase("time")) {
+			if (!$.isMod(username)) {
+				$.say($.modmsg);
+			} else if (args.length == 1) {
+				$.say(username + ", the roll wait time is " +
+					((objRoll.wait) ? "on" : "off") + " and set to " +
+					Math.ceil(objRoll.timer / 1000) + " seconds.");
+			} else {
+				var newtime = parseInt(args[1]);
+				if ((newtime === undefined) || (newtime === null) ||
+					isNaN(newtime) || (newtime < 1)) {
+					$.say(username + " tried to set an invalid roll timer, " +
+						"please enter a number 1 or greater.");
+				} else {
+					$.say(username + " changed roll timer from " +
+						Math.ceil(objRoll.timer / 1000) + " to " +
+						newtime + " seconds.");
+					objRoll.timer = newtime * 1000;
+					$.inidb.set("roll", "roll_timer", objRoll.timer);
+				}
+			}
+		} else if (args[0].equalsIgnoreCase("stream")) {
+			if (!$.isMod(username)) {
+				$.say($.modmsg);
+				return;
+			} else if (args.length == 1) {
+				objRoll.stream = !objRoll.stream;
+			} else if (args[1].equalsIgnoreCase("on") || 
+				args[1].equalsIgnoreCase("enable") ||
+				args[1].equalsIgnoreCase("true")) {
+				objRoll.stream = true;
+			} else if (args[1].equalsIgnoreCase("off") || 
+				args[1].equalsIgnoreCase("disable") ||
+				args[1].equalsIgnoreCase("false")) {
+				objRoll.stream = false;
+			}
+			$.say(username + ((objRoll.stream) ? " enabled" : " disabled") +
+				" stream only rolling.");
+			$.inidb.set("roll", "roll_stream", objRoll.stream);
+		} else if (args[0].equalsIgnoreCase("config")) {
+			if (!$.isMod(username)) {
+				$.say($.modmsg);
+			} else {
+				$.say("/me \u208Droll\u208E \u2039stream: " +
+					((objRoll.stream) ? "enabled" : "disabled") +
+					"\u203A \u2039wait: " +
+					((objRoll.wait) ? "enabled" : "disabled") +
+					"\u203A \u2039time: " +
+					Math.floor(objRoll.timer / 1000) +
+					" seconds\u203A \u2039bonus: " + objRoll.bonus +
+					"\u203A.");
+			}
+		} else if ((args.length > 0) && (args.length < 7)) {
+			if (objRoll.stream && !$.isOnline($.channelName)) {
+				$.say(username + " can only !roll while " +
+					$.username.resolve($.channelName) + "'s streaming!");
+				return;
+			}
+			
+			if (objRoll.wait) {
+				for (i = 0; i < objRoll.limiter.length; i++) {
+					if (!objRoll.limiter[i].user.equalsIgnoreCase(sender)) {
+						continue;
+					}
+					curTime = System.currentTimeMillis();
+					if (curTime < objRoll.limiter[i].time) {
+						$.say(username + " is waiting " +
+							Math.ceil((objRoll.limiter[i].time - curTime) /
+								1000) + " out of " +
+								Mail.ceil(objRoll.timer / 1000) +
+								" seconds for next \u001F!roll\u001F!");
+						return;
+					}
+					found = true;
+					objRoll.limiter[i].time = curTime + objRoll.timer;
+					break;
+				}
+		
+				if (!found) {
+					objRoll.limiter.push(new Object({
+						user:sender,
+						time:objRoll.timer + System.currentTimeMillis(),
+					}));
+				} 
+			}
+			
+			var tempstr = null;
+			var dpos = null;
+			var diNum = null;
+			var diType = null;
+			var diRolls = null;
+			var diFlavor = null;
+			var diTotal = 0;
+			var diMax = 0;
+			var diMin = 0;
+			var diTemp = 0;
+			var j = 0;
+			
+			for (i = 0; i < args.length; i++) {
+				tempstr = args[i].toLowerCase();
+				dpos = tempstr.search("d");
+				if (dpos == -1) {
+					diNum = parseInt(tempstr);
+					diType = 6;
+				} else if (dpos == 0) {
+					diNum = 1;
+					diType = parseInt(tempstr.substring(1));
+				} else {
+					diNum = parseInt(tempstr.substring(0, dpos - 1));
+					diType = parseInt(tempstr.substring(dpos + 1));
+				}
+				
+				if ((diNum === undefined) || (diNum === null) ||
+					isNaN(diNum) || (diNum < 1))
+				{
+					$.say(username + "'s " + args[i].trim() + 
+						" contains an invalid number of dice.");
+					return;
+				} else if (diNum > 30) {
+					$.say(username + "'s " + args[i].trim() +
+						" wants too many dice rolled.");
+					return;
+				}
+				
+				if (diType == 4) {
+					for (j = 0; j < diNum; j++) {
+						diTemp = (1 + Math.floor(Math.random() * 4));
+						diTotal += diTemp;
+						diMax += 4;
+						diMin += 1;
+						diRolls = ((diRolls === null) ? "" : diRolls + " + ")
+							+ diTemp + "\u25D8\u2074";
+					}
+				} else if (diType == 6) {
+					for (j = 0; j < diNum; j++) {
+						diTemp = (1 + Math.floor(Math.random() * 6));
+						diTotal += diTemp;
+						diMax += 6;
+						diMin += 1;
+						diRolls = ((diRolls === null) ? "" : diRolls + " + ")
+							+ diTemp + "\u25D8\u2076";
+					}
+				} else if (diType == 8) {
+					for (j = 0; j < diNum; j++) {
+						diTemp = (1 + Math.floor(Math.random() * 8));
+						diTotal += diTemp;
+						diMax += 8;
+						diMin += 1;
+						diRolls = ((diRolls === null) ? "" : diRolls + " + ")
+							+ diTemp + "\u25D8\u2078";
+					}
+				} else if (diType == 10) {
+					for (j = 0; j < diNum; j++) {
+						diTemp = (1 + Math.floor(Math.random() * 10));
+						diTotal += diTemp;
+						diMax += 10;
+						diMin += 1;
+						diRolls = ((diRolls === null) ? "" : diRolls + " + ")
+							+ diTemp + "\u25D8\u00B9\u2070";
+					}
+				} else if (diType == 12) {
+					for (j = 0; j < diNum; j++) {
+						diTemp = (1 + Math.floor(Math.random() * 12));
+						diTotal += diTemp;
+						diMax += 12;
+						diMin += 1;
+						diRolls = ((diRolls === null) ? "" : diRolls + " + ")
+							+ diTemp + "\u25D8\u00B9\u00B2";
+					}
+				} else if (diType == 20) {
+					for (j = 0; j < diNum; j++) {
+						diTemp = (1 + Math.floor(Math.random() * 20));
+						diTotal += diTemp;
+						diMax += 20;
+						diMin += 1;
+						diRolls = ((diRolls === null) ? "" : diRolls + " + ")
+							+ diTemp + "\u25D8\u00B2\u2070";
+					}
+				} else if (diType == 100) {
+					for (j = 0; j < diNum; j++) {
+						diTemp = (1 + Math.floor(Math.random() * 100));
+						diTotal += diTemp;
+						diMax += 100;
+						diMin += 1;
+						diRolls = ((diRolls === null) ? "" : diRolls + " + ")
+							+ diTemp + "\u25D8\u00B9\u2070\u2070";
+					}
+				} else {
+					$.say(username + "'s " + args[i].trim() + 
+						" contains an invalid sided dice.");
+					return;
+				}
+			}
+				
+			if (diTotal >= diMax) {	diFlavor = " for a MASSIVE hit!"; }
+			if (diTotal <= diMin) {	diFlavor = " FAILURE!";	}
+			if (diFlavor === null) { diFlavor = "!"; }
+				
+			$.say(username + " rolled " + diRolls +	" = " +
+				diTotal + diFlavor);
+		}
+		return;
+	}
+});
+
+$.registerChatCommand("./commands/rollCommand.js", "roll");
