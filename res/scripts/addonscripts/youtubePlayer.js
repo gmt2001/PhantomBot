@@ -420,13 +420,11 @@ var musicPlayerConnected = false;
 
 $.on('musicPlayerConnect', function (event) {
     println("[\u266B] MusicClient connected!");
-    $.say("[\u266B] Song requests have been enabled!")
     musicPlayerConnected = true;
 });
 
 $.on('musicPlayerDisconnect', function (event) {
     println("[\u266B] MusicClient disconnected!");
-    $.say("[\u266B] Song requests have been disabled.")
     musicPlayerConnected = false;
 });
 
