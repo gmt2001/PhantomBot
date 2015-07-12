@@ -325,32 +325,6 @@ $.hook.call = function(hook, arg, alwaysrun) {
     }
 }
 
-$.permCom = function(user, command) {
-    var keys = $.inidb.GetKeyList("permcom", "");
-    var groupArray = [];
-    
-    for(var i=0;i<keys.length;i++) {
-        if(keys[i].indexOf(command.toLowerCase()) > -1) {
-            var permGroupID = $.getGroupIdByName($.inidb.get("permcom", keys[i]));
-            var permissionGroup = $.getGroupNameById(permGroupID);
-            var userGroup = $.getUserGroupName(user);
-
-            if($.inidb.get("permcom", command.toLowerCase() + "_recursive")) {
-                if(($.getGroupIdByName(userGroup)>permGroupID) && !$.isAdmin(user)) {
-                    $.say("Your user group : " + userGroup + " does not have permission to use the command: "+ command +".");
-                    return false;
-                }   
-            } else {
-                groupArray.push(permissionGroup);
-                if((groupArray.indexOf(userGroup) == -1) && !$.isAdmin(user)) {
-                    $.say("Your user group : " + userGroup + " does not have permission to use the command: "+ command +".");
-                    return false;
-                }                
-            }
-        }    
-    }
-    return true;
-};
 
 $api.on($script, 'command', function(event) {
     var sender = event.getSender().toLowerCase();
