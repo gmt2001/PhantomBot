@@ -328,9 +328,6 @@ $.hook.call = function(hook, arg, alwaysrun) {
 $.permCom = function(user, command) {
     var keys = $.inidb.GetKeyList("permcom", "");
     var groupArray = [];
-    if($.inidb.exists('aliases', command.toLowerCase())) {
-        command = $.inidb.get('aliases', command.toLowerCase());
-    }
     
     for(var i=0;i<keys.length;i++) {
         if(keys[i].indexOf(command.toLowerCase()) > -1) {
@@ -356,7 +353,7 @@ $.permCom = function(user, command) {
 };
 
 $api.on($script, 'command', function(event) {
-    var sender = event.getSender();
+    var sender = event.getSender().toLowerCase();
     if ($.inidb.exists('aliases', event.getCommand().toLowerCase())) {
         event.setCommand($.inidb.get('aliases', event.getCommand().toLowerCase()));
     }
@@ -364,7 +361,7 @@ $api.on($script, 'command', function(event) {
     var command = event.getCommand();
     if(!$.permCom(sender, command)) {
         return;
-    };
+    }
     
     if ($.moduleEnabled("./systems/pointSystem.js") && !$.isModv3(sender, event.getTags()) && $.inidb.exists("pricecom", command.toLowerCase())) {
         if (parseInt($.inidb.get("points", sender)) < parseInt($.inidb.get("pricecom", command.toLowerCase()))) {

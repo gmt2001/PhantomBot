@@ -60,6 +60,10 @@ $.isSubv3 = function (user, tags) {
     return $.isSub(user) || (tags.containsKey("subscriber") && tags.get("subscriber").equalsIgnoreCase("1"));
 }
 
+$.isTurbo = function (user, tags) {
+    return (tags.containsKey("turbo") && tags.get("turbo").equalsIgnoreCase("1"));
+}
+
 $.isDonator = function (user) {
     return $.getUserGroupId(user) == 4;
 }
@@ -552,45 +556,45 @@ $.on('ircChannelLeave', function(event) {
     
     $.lastjoinpart = System.currentTimeMillis();
     
-    for (i = 0; i < $.modeOUsers.length; i++) {
-        if ($.modeOUsers[i].equalsIgnoreCase(username)) {
-            $.modeOUsers.splice(i, 1);
-            break;
-        }
-    }
-    
     for (i = 0; i < $.users.length; i++) {
         if ($.users[i][0].equalsIgnoreCase(username)) {
             $.users.splice(i, 1);
             break;
         }
     }
+    
+    for (i = 0; i < $.modeOUsers.length; i++) {
+        if($.modeOUsers[i].equalsIgnoreCase(event.getUser().toLowerCase())) {
+            $.modeOUsers.splice(i, 1);
+            if(!$.isAdmin(event.getUser().toLowerCase())){
+                $.inidb.set('group', event.getUser().toLowerCase(), 7);
+            }
+            println("-Moderator: " + event.getUser().toLowerCase());
+        }
+    }
 });
 
 $.on('ircChannelUserMode', function(event) {
     if (event.getMode().equalsIgnoreCase("o")) {
-        if (event.getAdd() == true) {
-            if (!$.array.contains($.modeOUsers, event.getUser().toLowerCase())) {
-                
+        if (event.getAdd()==true) {
+            if (!$.array.contains($.modeOUsers, event.getUser().toLowerCase())) {                
                 $.modeOUsers.push(event.getUser().toLowerCase());
-                
-                if ($.array.contains($.modeOUsers, event.getUser().toLowerCase())) {
-                    var userGroup = $.inidb.get('group', event.getUser().toLowerCase());
-                    if(!(parseInt(userGroup)<=1)){
-                        $.inidb.set('group', event.getUser().toLowerCase(), 2);
-                        println("Moderator: " + event.getUser().toLowerCase());
-                    }
+                if(!$.isAdmin(event.getUser().toLowerCase())){
+                    $.inidb.set('group', event.getUser().toLowerCase(), 2);
+                    println("Moderator: " + event.getUser().toLowerCase());
                 }
-
                 if ($.array.contains($.modeOUsers, $.botowner.toLowerCase())) {
                     $.inidb.set('group', $.botowner.toLowerCase(), 0);
                 }
             }
         } else {
-            for (var i = 0; i < $.modeOUsers.length; i++) {
-                if ($.modeOUsers[i].equalsIgnoreCase(event.getUser().toLowerCase())) {
+            for (i = 0; i < $.modeOUsers.length; i++) {
+                if($.modeOUsers[i].equalsIgnoreCase(event.getUser().toLowerCase())) {
                     $.modeOUsers.splice(i, 1);
-                    break;
+                    if(!$.isAdmin(event.getUser().toLowerCase())){
+                        $.inidb.set('group', event.getUser().toLowerCase(), 7);
+                    }
+                    println("-Moderator: " + event.getUser().toLowerCase());
                 }
             }
         }
