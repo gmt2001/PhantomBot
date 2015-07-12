@@ -419,12 +419,22 @@ $.on('musicPlayerState', function (event) {
 var musicPlayerConnected = false;
 
 $.on('musicPlayerConnect', function (event) {
-    println("[\u266B] MusicClient connected!");
+    if($.song_toggle==1)
+    {
+        $.say("[\u266B] Song requests have been enabled!");
+    } else {
+        println("[\u266B] MusicClient connected!");
+    }
     musicPlayerConnected = true;
 });
 
 $.on('musicPlayerDisconnect', function (event) {
-    println("[\u266B] MusicClient disconnected!");
+    if($.song_toggle==1)
+    {
+        $.say("[\u266B] Song requests have been disabled.");
+    } else {
+        println("[\u266B] MusicClient disconnected!");
+    }
     musicPlayerConnected = false;
 });
 
