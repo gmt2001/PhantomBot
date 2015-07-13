@@ -1,4 +1,4 @@
-var arrSlotLimiter = new Array();
+ var arrSlotLimiter = new Array();
 $var.lastSlotWin = "";
 $var.lastSlotLoss = "";
 
@@ -123,7 +123,7 @@ if ($.slotDoubleEmoteReward3 === undefined || $.slotDoubleEmoteReward3 === null 
     $.slotDoubleEmoteReward3 = 3;
 }
 
-if ($.slotHalfRewards === undefined || $.slotHalfRewards === null || isNaN($.slotHalfRewards) || $.slotHalfRewards < 0) {
+if ($.slotHalfRewards === "" || $.slotHalfRewards === null) {
     $.slotHalfRewards = 1;
 }
 
