@@ -564,8 +564,8 @@ $.on('command', function (event) {
                     return;
                 }
                 if (args[1] != null) {
-                    $.inidb.set('slotMachine', 'slotSeeingEmoteReward7', args[2]);
-                    $.slotEmoteReward5 = args[1];
+                    $.inidb.set('slotMachine', 'slotSeeingEmoteReward7', args[1]);
+                    $.slotSeeingEmoteReward7 = args[1];
                     $.say("The reward for seeing a " + slotEmote7 + " is now: " + slotSeeingEmoteReward7);
                 }else {
                     $.say("The reward for seeing a " + slotEmote7 + " is: " + slotSeeingEmoteReward7);
