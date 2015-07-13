@@ -498,7 +498,7 @@ $.on('command', function (event) {
                     $.say("The reward for emote 6 is now: " + slotEmoteReward6 + " and very rare.");
                 } else if (args[1].equalsIgnoreCase("7") && args[2] != null) {
                     $.inidb.set('slotMachine', 'slotEmoteReward7', args[2]);
-                    $.slotEmoteReward7 = args[2];
+                    $.slotJackpot = args[2];
                     $.say("The reward for emote 7 (Jackpot) is now: " + slotJackpot + " and legendary.");
                 } else {
                     $.say("The reward for emote 1 is: " + slotEmoteReward1 + " and common. [2] " + slotEmoteReward2 + " [3] " + slotEmoteReward3 + " [4] " + slotEmoteReward4 + " [5] " + slotEmoteReward5 + " [6] " + slotEmoteReward6 + " [7] " + slotJackpot + " and the rarest.");
