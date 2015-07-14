@@ -29,7 +29,7 @@ public class EventBus
     {
         return instance;
     }
-    private com.google.common.eventbus.AsyncEventBus aeventBus = new com.google.common.eventbus.AsyncEventBus(Executors.newCachedThreadPool());
+    private com.google.common.eventbus.AsyncEventBus aeventBus = new com.google.common.eventbus.AsyncEventBus(Executors.newFixedThreadPool(8));
     private com.google.common.eventbus.EventBus eventBus = new com.google.common.eventbus.EventBus();
     private Set<Listener> listeners = Sets.newHashSet();
 
