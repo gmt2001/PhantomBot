@@ -47,7 +47,7 @@ public class HTTPServer extends Thread
     HTTPServer(int p, String oauth)
     {
         port = p;
-        pass = oauth;
+        pass = oauth.replace("oauth:", "");
 
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
@@ -107,22 +107,42 @@ public class HTTPServer extends Thread
                     {
                         File target = null;
 
-                        if (request[1].startsWith("/"))
+                        if (args.containsKey("password"))
                         {
-                            target = new File(webhome + request[1]);
-                        } else
-                        {
-                            target = new File(webhome + "/" + request[1]);
+                            String password = URLDecoder.decode(args.get("password"), "UTF-8").replace("oauth:", "");
+
+                            if (password.equals(pass) && (request[1].startsWith("inistore") || request[1].startsWith("/inistore")
+                                    || request[1].startsWith("addons") || request[1].startsWith("/addons")))
+                            {
+                                if (request[1].startsWith("/"))
+                                {
+                                    target = new File("." + request[1]);
+                                } else
+                                {
+                                    target = new File("." + "/" + request[1]);
+                                }
+                            }
                         }
 
-                        if (target.exists() && target.isDirectory())
+                        if (target == null)
                         {
-                            if (request[1].endsWith("/"))
+                            if (request[1].startsWith("/"))
                             {
-                                target = new File(webhome + "/" + request[1] + "index.html");
+                                target = new File(webhome + request[1]);
                             } else
                             {
-                                target = new File(webhome + "/" + request[1] + "/" + "index.html");
+                                target = new File(webhome + "/" + request[1]);
+                            }
+
+                            if (target.exists() && target.isDirectory())
+                            {
+                                if (request[1].endsWith("/"))
+                                {
+                                    target = new File(webhome + "/" + request[1] + "index.html");
+                                } else
+                                {
+                                    target = new File(webhome + "/" + request[1] + "/" + "index.html");
+                                }
                             }
                         }
 
@@ -157,16 +177,12 @@ public class HTTPServer extends Thread
                         }
                     } else if (request[0].equals("PUT"))
                     {
-                        InetAddress rmt = conn.getInetAddress();
-
                         if (args.containsKey("password"))
                         {
-                            String password = URLDecoder.decode(args.get("password"), "UTF-8");
-                            pass = pass.replace("oauth:", "");
-                            //pass = URLDecoder.decode(pass.replace("oauth:", ""), "UTF-8");
+                            String password = URLDecoder.decode(args.get("password"), "UTF-8").replace("oauth:", "");
 
-                            if(password.matches(pass)) {
-
+                            if (password.equals(pass))
+                            {
                                 if (!args.containsKey("user") || !args.containsKey("message"))
                                 {
                                     out.print("HTTP/1.0 400 Bad Request\n"
@@ -185,19 +201,21 @@ public class HTTPServer extends Thread
                                     EventBus.instance().post(new IrcChannelMessageEvent(PhantomBot.instance().getSession(), user, message, PhantomBot.instance().getChannel()));
 
                                     out.print("HTTP/1.0 200 OK\n"
-                                        + "ContentType: " + "text/text" + "\n"
-                                        + "Date: " + new Date() + "\n"
-                                        + "Server: basic HTTP server\n"
-                                        + "Content-Length: " + "12" + "\n"
-                                        + "\n"
-                                        + "event posted"
-                                        + "\n");
+                                            + "ContentType: " + "text/text" + "\n"
+                                            + "Date: " + new Date() + "\n"
+                                            + "Server: basic HTTP server\n"
+                                            + "Content-Length: " + "12" + "\n"
+                                            + "\n"
+                                            + "event posted"
+                                            + "\n");
                                 }
-                            } else {
+                            } else
+                            {
                                 com.gmt2001.Console.out.println("Invalid password recieved for remote http PUT request. Recieved: " + password + " Expected: " + pass);
                             }
-                        } else {
-                                com.gmt2001.Console.out.println("No password recieved for remote http PUT request.");
+                        } else
+                        {
+                            com.gmt2001.Console.out.println("No password recieved for remote http PUT request.");
                         }
                     }
                 }
