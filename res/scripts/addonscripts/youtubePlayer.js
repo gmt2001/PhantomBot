@@ -13,8 +13,10 @@ $.songname = null;
 $.songid = null;
 $.songurl = null;
 $.songprefix = null;
+$.song_shuffle = $.inidb.get('settings','song_shuffle');
 
-if ($.song_limit === undefined || $.song_limit === null || isNaN($.song_limit) || $.song_limit < 0) {
+
+if ($.song_limit == null || isNaN($.song_limit) || $.song_limit < 0) {
     $.song_limit = 3;
 }
 
@@ -31,95 +33,35 @@ if($.storing==null || $.storing=="") {
 }
 
 if($.titles==null || $.titles=="") {
-    $.titles = 1;
+    $.titles = 2;
 }
 
-var musicplayer = $.musicplayer;
-
-function youtubeParser(url){
-    var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?^\s]*).*/;
-    var match = url.match(regExp);
-    if (match&&match[7].length==11){
-        return match[7];
-    }else{
-        return url;
-    }
-}
-
-function stringParse(text) {
-    //disallowed symbols: /\:*?"<>|
-    var s = text.toString();
-    s = s.replace("/", "");
-    s = s.replace("\\", "");
-    s = s.replace(":", "-");
-    s = s.replace("*", "");
-    s = s.replace("?", "");
-    s = s.replace("<", "");
-    s = s.replace(">", "");
-    s = s.replace('"', "");
-    s = s.replace("|", "");
-    s = s.replace("#", "");
-    return s;
+if ($.song_shuffle == null || $.song_shuffle == "" || $.song_shuffle == 0) {
+    $.song_shuffle = false;
 }
 
 function Song(name, user) {
+    if (name==null || name=="") return;
+    name = name;
     var x = 0;
     var y = 0;
     var retries = 9;
-    if (name==null || name=="") return;
-    var search = new String(name);
-    if (youtubeParser(search).length == 11)
-    {
-        this.id = youtubeParser(search);
-        var HttpRequest = Packages.com.gmt2001.HttpRequest;
-        var HashMap = Packages.java.util.HashMap;
-        var JSONObject = Packages.org.json.JSONObject;
-        var j = new JSONObject("{}");
-        var h = new HashMap(1);
-        h.put("Content-Type", "application/json-rpc");
-
-        var jsonurl = "http://www.youtube.com/oembed?url=http://www.youtube.com/watch?v=" + this.id + "&format=json";
-        var r = HttpRequest.getData(HttpRequest.RequestType.GET, jsonurl, j.toString(), h);
-
-        var response = new JSONObject(r.content);
-
-        if (response != null) {
-            this.name = response.getString("title");
-            while( y <= retries ) {
-                y++;
-                var ldata = $.youtube.GetVideoLength(this.id);
-                //ldata[1] = returns only highest integer of time
-                //ldata[2] = all integers of time separated by :
-                if (ldata[2]!="") {
-                    var duration = ldata[2];
-                    this.length = duration;
-                    break;
-                }
-            }
-            if( y > retries ){
-                y = 0;
-                return;
-            }
-        } else {
-            this.id = null;
-            this.name = "";
-            this.length = 0;
-        }       
-    } else {
     
         while( x <= retries ) {
             x++;
-            var regexname = stringParse(name);
-            var data = $.youtube.SearchForVideo(youtubeParser(regexname));
+            var data = $.youtube.SearchForVideo(name);
             if (data[0]!="") {
                 this.id = data[0];
                 this.name = data[1];
+                this.length = 1;
                 break;
             }
         }
+		
         if( x > retries )
         {
             x = 0;
+
             $.say("Song >> " + name + " not searchable due to API error. Please try again.");
             //failed search, return user's points
             if ($.inidb.exists("pricecom", "addsong") && parseInt($.inidb.get("pricecom", "addsong"))> 0 ){
@@ -128,39 +70,51 @@ function Song(name, user) {
                     $.say("The command cost of " + cost + " " + $.pointname + " has been returned to " + $.username.resolve(user));
                     $.inidb.incr("points", user.toLowerCase(), cost);
                     $.inidb.SaveAll();
+
                 }
             }
-                
             return;
         }
-        while( y <= retries ) {
-            y++;
-            ldata = $.youtube.GetVideoLength(this.id);
-            //ldata[1] = returns only highest integer of time
-            //ldata[2] = all integers of time separated by :
-            if (ldata[2]!="") {
-                duration = ldata[2];
-                this.length = duration;
-                break;
-            }
-        }
-        if( y > retries ){
-            y = 0;
-            return;
-        }
-    }
-
-    
+        
     this.getId = function () {
         return this.id;
     }
     
     this.getLength = function () {
+        
+        while( y <= retries ) {
+            y++;
+            var ldata = $.youtube.GetVideoLength(this.id);
+            //ldata[1] = returns only highest integer of time
+            //ldata[2] = all integers of time separated by :
+            if (ldata[2]!="") {
+                var duration = ldata[2];
+                this.length = duration;
+                break;
+            }
+        }
+		
+        if( y > retries ){
+            y = 0;
+            $.say("Song >> " + name + " length not retrievable to API error. Please try again.");
+            //failed search, return user's points
+            if ($.inidb.exists("pricecom", "addsong") && parseInt($.inidb.get("pricecom", "addsong"))> 0 ){
+                if(!$.isMod(user)){
+                    var cost = $.inidb.get("pricecom", "addsong");
+                    $.say("The command cost of " + cost + " " + $.pointname + " has been returned to " + $.username.resolve(user));
+                    $.inidb.incr("points", user.toLowerCase(), cost);
+                    $.inidb.SaveAll();
+
+                }
+            }
+            return;
+        }
+        
         return this.length;
     }
 
     this.cue = function () {
-        musicplayer.cue(this.id);
+        $.musicplayer.cue(this.id);
     }
 
     this.getName = function () {
@@ -189,14 +143,14 @@ function RequestedSong(song, user) {
 
         var requestlimit = $.song_limit;
 
-        return $var.requestusers[user] < requestlimit;
+        return $var.requestusers[user] < requestlimit | isModv3(user);
     }
 
     this.canRequest2 = function () {
         if ($var.requestusers[user] == null) return true;
 
         for (var i in $var.songqueue) {
-            if (this.song.id + "" === $var.songqueue[i].song.id + "") return false;
+            if (this.song.id + "" === $var.songqueue[i].song.id + "" | isModv3(user)) return false;
         }
         return true;
     }
@@ -281,8 +235,8 @@ function nextDefault() {
             setTimeout(function () {
                 if ($.fileExists("addons/youtubePlayer/playlist.txt")) {
                     $var.defaultplaylist = $.readFile("addons/youtubePlayer/playlist.txt");
-                } else if ($.fileExists("../addons/youtubePlayer/playlist.txt")) {
-                    $var.defaultplaylist = $.readFile("../addons/youtubePlayer/playlist.txt");
+                } else if ($.fileExists(".addons/youtubePlayer/playlist.txt")) {
+                    $var.defaultplaylist = $.readFile(".addons/youtubePlayer/playlist.txt");
                 }
 
                 $var.defaultplaylistpos = 0;
@@ -297,8 +251,13 @@ function nextDefault() {
     }
 
     if ($var.defaultplaylist.length > 0) {
-
-        s = new Song($var.defaultplaylist[$var.defaultplaylistpos], "");
+        var playlistpos;
+        if($.song_shuffle) {
+            playlistpos = $.randRange(0, $var.defaultplaylist.length);
+        } else {
+           playlistpos = $var.defaultplaylistpos;
+        }
+        s = new Song($var.defaultplaylist[playlistpos], "");
         s = new RequestedSong(s, "DJ " + $.username.resolve($.botname));
         $var.defaultplaylistpos++;
 
@@ -349,7 +308,7 @@ function next() {
         $var.prevSong = $.currSong;
         $var.currSong = s;
         
-        if ($.storing==1) {
+        /*if ($.storing==1) {
             $.songrequester = $var.currSong.user;
             $.songname = $var.currSong.song.getName();
             $.songid = $var.currSong.song.getId();
@@ -364,7 +323,7 @@ function next() {
             if($var.songqueue.length>0) {
                 $api.setTimeout($script, parseSongQueue, 1);
             }
-        }
+        }*/
         
     } else {
         $var.currSong = null;
@@ -421,6 +380,7 @@ var musicPlayerConnected = false;
 $.on('musicPlayerConnect', function (event) {
     if($.song_toggle==1)
     {
+
         $.say("[\u266B] Song requests have been enabled!");
     } else {
         println("[\u266B] MusicClient connected!");
@@ -431,6 +391,7 @@ $.on('musicPlayerConnect', function (event) {
 $.on('musicPlayerDisconnect', function (event) {
     if($.song_toggle==1)
     {
+
         $.say("[\u266B] Song requests have been disabled.");
     } else {
         println("[\u266B] MusicClient disconnected!");
@@ -533,6 +494,26 @@ $.on('command', function (event) {
             }
         }
         
+        if (action.equalsIgnoreCase("shuffle")) {
+            if (!$.isCaster(sender)) {
+                $.say($.adminmsg);
+                return;
+            }
+
+            if ($.song_shuffle == false) {
+
+                $.song_shuffle = true;
+                $.inidb.set('settings', 'song_shuffle', $.song_shuffle.toString());
+                $.defaultplaylist = $.readFile("addons/youtubePlayer/playlist.txt");
+                $.say("Default playlist will now randomly choose songs to be played.");
+
+            } else {
+                $.song_shuffle = false;
+                $.inidb.set('settings', 'song_shuffle', $.song_shuffle.toString());
+                $.say("Playlist shuffling has been disabled.");
+            }
+        }
+        
         if (action.equalsIgnoreCase("storepath")) {
             if (!$.isCaster(sender)) {
                 $.say($.adminmsg);
@@ -617,12 +598,24 @@ $.on('command', function (event) {
     }
 
     if (command.equalsIgnoreCase("addsong")) {
+
+
+
         if ($.inidb.get('blacklist', sender) == "true") {
             //blacklisted, deny
             $.say("You are denied access to song request features!");
+
+
+
+
+
+
             return;
         }
+
+
         
+
         //start arguments check
         if (args.length == 0) {
             $.say("Type >> '!addsong or !songrequest <youtube link>' to add a song to the playlist.")
@@ -634,6 +627,7 @@ $.on('command', function (event) {
                 if ($.inidb.exists("pricecom", "addsong") && parseInt($.inidb.get("pricecom", "addsong"))> 0 ){
                     $.say("Music player disabled.");
                     if(!$.isModv3(sender, event.getTags())){
+
                         var cost = $.inidb.get("pricecom", "addsong");
                         $.say("The command cost of " + cost + " " + $.pointname + " has been returned to " + $.username.resolve(sender, event.getTags()));
                         $.inidb.incr("points", sender.toLowerCase(), cost);
@@ -642,8 +636,6 @@ $.on('command', function (event) {
                 }
                 return;
             }
-            
-            
 
             var video = new Song(argsString, sender);
 
@@ -651,19 +643,6 @@ $.on('command', function (event) {
                 $.say("Song doesn't exist or you typed something wrong.");
                 return;
             }
-            
-            if ( video.getLength()=="" || video.getLength()==null || !video.getLength()) {
-                $.say("Song >> " + video.getName() + " length not retrievable due to API error. Please try again.");
-                if ($.inidb.exists("pricecom", "addsong") && parseInt($.inidb.get("pricecom", "addsong"))> 0 ){
-                    if(!$.isModv3(sender, event.getTags())){
-                        var cost = $.inidb.get("pricecom", "addsong");
-                        $.say("The command cost of " + cost + " " + $.pointname + " has been returned to " + $.username.resolve(sender, event.getTags()));
-                        $.inidb.incr("points", sender.toLowerCase(), cost);
-                        $.inidb.SaveAll();
-                    }
-                }
-                return;
-            }           
             
             if ( (video.getLength() > 480.0)) {
                 $.say("Song >> " + video.getName() + " is over " + parseInt(video.length/60) + " minutes long, maximum length is 8 minutes.");
@@ -695,8 +674,7 @@ $.on('command', function (event) {
             $.say("Songrequests is currently disabled!");
             return;
         }
-
-        id = youtubeParser(argsString);
+        var id = youtubeParser(argsString);
                 
         if (id == null) {
             $.say("Song doesn't exist or you typed something wrong.");
@@ -722,6 +700,7 @@ $.on('command', function (event) {
 
     if (command.equalsIgnoreCase("volume")) {
         if (!$.isModv3(sender, event.getTags())) {
+
             $.say($.modmsg);
             return;
         }
@@ -738,6 +717,7 @@ $.on('command', function (event) {
         song = $.musicplayer.currentId();
 
         if ($.isModv3(sender, event.getTags())) {
+
             next();
             return;
         }

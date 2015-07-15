@@ -23,6 +23,8 @@ import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.Date;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 import javax.net.ssl.HttpsURLConnection;
 import me.mast3rplan.phantombot.PhantomBot;
 import org.apache.commons.io.IOUtils;
@@ -266,10 +268,29 @@ public class YouTubeAPIv3
     {
         this.apikey = apikey;
     }
-
+        
     public String[] SearchForVideo(String q)
-    {
+    {   q = new String(q);
+        
+        if(q.length()<=14 && q.length()>=11) {
+            if(q.contains("v=") | q.contains("?v=")) {
+                q = q.replace("?", "");
+                q = q.replace("v=", "");
+            }
+        } else {
+            /*Pattern pattern = Pattern.compile(".*(?:youtu.be\\/|v\\/|u\\/\\w\\/|embed\\/|watch\\?v=)([^#\\&\\?^\\s]*).*");
+            Matcher matcher = pattern.matcher(q);
+    
+            if (matcher.matches()){
+                q = matcher.group(1);
+                
+            } else {*/
+                //q = q.replaceAll("[^a-zA-Z0-9 ]","");
+            //}
+        }
+        
         q = q.replace(" ", "%20");
+        q = q.trim().toString();
         JSONObject j = GetData(request_type.GET, "https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&q=" + q + "&type=video&key=" + apikey);
         if (j.getBoolean("_success"))
         {
