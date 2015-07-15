@@ -77,6 +77,20 @@ public class HTTPServer extends Thread
                 Scanner scan = new Scanner(conn.getInputStream());
                 PrintStream out = new PrintStream(conn.getOutputStream());
 
+                for (int i = 0; i < 20 || scan.hasNextLine(); i++)
+                {
+                    if (!scan.hasNextLine())
+                    {
+                        try
+                        {
+                            Thread.sleep(100);
+                        } catch (InterruptedException ex)
+                        {
+                            Logger.getLogger(HTTPServer.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
+
                 if (!scan.hasNextLine())
                 {
                     throw new IOException();
@@ -165,7 +179,8 @@ public class HTTPServer extends Thread
                             pass = pass.replace("oauth:", "");
                             //pass = URLDecoder.decode(pass.replace("oauth:", ""), "UTF-8");
 
-                            if(password.matches(pass)) {
+                            if (password.matches(pass))
+                            {
 
                                 if (!args.containsKey("user") || !args.containsKey("message"))
                                 {
@@ -185,19 +200,21 @@ public class HTTPServer extends Thread
                                     EventBus.instance().post(new IrcChannelMessageEvent(PhantomBot.instance().getSession(), user, message, PhantomBot.instance().getChannel()));
 
                                     out.print("HTTP/1.0 200 OK\n"
-                                        + "ContentType: " + "text/text" + "\n"
-                                        + "Date: " + new Date() + "\n"
-                                        + "Server: basic HTTP server\n"
-                                        + "Content-Length: " + "12" + "\n"
-                                        + "\n"
-                                        + "event posted"
-                                        + "\n");
+                                            + "ContentType: " + "text/text" + "\n"
+                                            + "Date: " + new Date() + "\n"
+                                            + "Server: basic HTTP server\n"
+                                            + "Content-Length: " + "12" + "\n"
+                                            + "\n"
+                                            + "event posted"
+                                            + "\n");
                                 }
-                            } else {
+                            } else
+                            {
                                 com.gmt2001.Console.out.println("Invalid password recieved for remote http PUT request. Recieved: " + password + " Expected: " + pass);
                             }
-                        } else {
-                                com.gmt2001.Console.out.println("No password recieved for remote http PUT request.");
+                        } else
+                        {
+                            com.gmt2001.Console.out.println("No password recieved for remote http PUT request.");
                         }
                     }
                 }
