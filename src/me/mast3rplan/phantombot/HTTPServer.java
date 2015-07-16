@@ -77,9 +77,18 @@ public class HTTPServer extends Thread
                 Scanner scan = new Scanner(conn.getInputStream());
                 PrintStream out = new PrintStream(conn.getOutputStream());
 
-                if (!scan.hasNextLine())
+                for (int i = 0; i < 20 || !scan.hasNextLine(); i++)
                 {
-                    throw new IOException();
+                    if (!scan.hasNextLine())
+                    {
+                        try
+                        {
+                            Thread.sleep(100);
+                        } catch (InterruptedException ex)
+                        {
+                            Logger.getLogger(HTTPServer.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
                 }
 
                 String[] request = scan.nextLine().split(" ");

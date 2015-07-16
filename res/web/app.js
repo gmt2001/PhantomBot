@@ -5,19 +5,17 @@ var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 var player;
-
 function onYouTubeIframeAPIReady() {
     player = new YT.Player('player', {
-        height: '480',
-        width: '720',
+        height: '390',
+        width: '640',
         videoId: '',
         playerVars: {
             iv_load_policy: 3,
             //controls: 0,
             showinfo: 0,
             showsearch: 0,
-            modestbranding: 1,
-            autoplay: 1
+	    autoplay: 1
         },
         events: {
             'onReady': onPlayerReady,
@@ -27,13 +25,10 @@ function onYouTubeIframeAPIReady() {
 }
 
 function onPlayerReady(event) {
-    event.target.setPlaybackQuality('hd720');
-    ready();
-
+    ready()
 }
 
 var r = false;
-
 function ready() {
     if (r) {
         connection.send("ready");
@@ -42,26 +37,21 @@ function ready() {
     }
 }
 
-var vids = [];
+var vids = []
 
 var i = -1;
-
 function onPlayerStateChange(event) {
-
     console.log(event);
     connection.send("state|" + event.data);
-if (event.data == YT.PlayerState.BUFFERING) {
-    event.target.setPlaybackQuality('hd720');
-}
 }
 
-var url = window.location.host.split(":");
-var addr = 'ws://' + url[0] + ':25001';
+var url = window.location.host.split (":");
+var addr = 'ws://' + url [0] + ':25001';
 var connection = new WebSocket(addr, []);
 
 connection.onopen = function (e) {
     ready();
-};
+}
 
 connection.onmessage = function (e) {
     console.log(e);
@@ -102,17 +92,17 @@ connection.onmessage = function (e) {
             handleSetVolume(d);
             break;
     }
-};
+}
 
 function handleNext(d) {
     i++;
-    if (vids[i] === null) i = 0;
+    if (vids[i] == null) i = 0;
     player.cueVideoById(vids[i], 0, "hd720");
 }
 
 function handlePrevious(d) {
     i--;
-    if (vids[i] === null) i = vids.length - 1;
+    if (vids[i] == null) i = vids.length - 1;
     player.cueVideoById(vids[i], 0, "hd720");
 }
 
@@ -129,7 +119,7 @@ function handleAdd(d) {
 }
 
 function handleCurrentId(d) {
-    connection.send("currentid|" + player.getVideoUrl().match(/^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?^\s]*).*/)[1]);
+    connection.send("currentid|" + player.getVideoUrl().match(/[?&]v=([^&]+)/)[1]);
 }
 
 function handleReload(d) {
@@ -141,7 +131,7 @@ function handleCue(d) {
 }
 
 function handleEval(d) {
-    window[d[1]];
+    eval(d[1]);
 }
 
 function handleSetVolume(d) {
