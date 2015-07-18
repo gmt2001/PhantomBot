@@ -18,7 +18,6 @@ package com.gmt2001;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.io.BufferedInputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -44,7 +43,6 @@ public class HttpRequest
     {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
-    
 
     public static HttpResponse getData(RequestType type, String url, String post, HashMap<String, String> headers)
     {
@@ -79,6 +77,7 @@ public class HttpRequest
                 {
                     h.setDoOutput(true);
                 }
+
                 h.connect();
 
                 if (!post.isEmpty())
@@ -88,14 +87,12 @@ public class HttpRequest
 
                 if (h.getResponseCode() == 200)
                 {
-                    BufferedInputStream i = new BufferedInputStream(h.getInputStream());
-                    r.content = IOUtils.toString(i, h.getContentEncoding());
+                    r.content = IOUtils.toString(h.getInputStream(), h.getContentEncoding());
                     r.httpCode = h.getResponseCode();
                     r.success = true;
                 } else
                 {
-                    BufferedInputStream i = new BufferedInputStream(h.getErrorStream());
-                    r.content = IOUtils.toString(i, h.getContentEncoding());
+                    r.content = IOUtils.toString(h.getErrorStream(), h.getContentEncoding());
                     r.httpCode = h.getResponseCode();
                     r.success = false;
                 }
@@ -114,7 +111,6 @@ public class HttpRequest
                 h.setConnectTimeout(timeout);
                 h.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.52 Safari/537.36 PhantomBotJ/2015");
                 h.setRequestProperty("Content-length", "0");
-                
                 if (!post.isEmpty())
                 {
                     h.setDoOutput(true);
@@ -129,14 +125,12 @@ public class HttpRequest
 
                 if (h.getResponseCode() == 200)
                 {
-                    BufferedInputStream i = new BufferedInputStream(h.getInputStream());
-                    r.content = IOUtils.toString(i, h.getContentEncoding());
+                    r.content = IOUtils.toString(h.getInputStream(), h.getContentEncoding());
                     r.httpCode = h.getResponseCode();
                     r.success = true;
                 } else
                 {
-                    BufferedInputStream i = new BufferedInputStream(h.getInputStream());
-                    r.content = IOUtils.toString(i, h.getContentEncoding());
+                    r.content = IOUtils.toString(h.getErrorStream(), h.getContentEncoding());
                     r.httpCode = h.getResponseCode();
                     r.success = false;
                 }

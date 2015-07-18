@@ -523,10 +523,18 @@ $.on('command', function (event) {
                 $.titles = 1;
                 $.inidb.set('settings', 'song_titles', $.titles.toString());
                 $.say("Playlist storage has been set to export as video url links.");
+                $.println("Loading default playlist...");
+                parseDefault();
+                parseSongQueue();
+                $.println("Playlist loaded.");
             } else {
                 $.titles = 2;
                 $.inidb.set('settings', 'song_titles', $.titles.toString());
                 $.say("Playlist storage has been set to export titles only.");
+                $.println("Loading default playlist...");
+                parseDefault();
+                parseSongQueue();
+                $.println("Playlist loaded.");
             }
         }
         
