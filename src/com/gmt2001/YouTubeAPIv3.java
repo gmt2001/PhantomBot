@@ -17,8 +17,8 @@
 package com.gmt2001;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.BufferedInputStream;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
@@ -46,7 +46,7 @@ public class YouTubeAPIv3
 
     private static final YouTubeAPIv3 instance = new YouTubeAPIv3();
     private String apikey = "AIzaSyCzHxG53pxE0hWrWBIMMGm75PRHBQ8ZP8c";
-
+    
     private enum request_type
     {
 
@@ -76,7 +76,7 @@ public class YouTubeAPIv3
         Date prejson = start;
         Date postjson = start;
         JSONObject j = new JSONObject("{}");
-        InputStream i = null;
+        BufferedInputStream i = null;
         String rawcontent = "";
         int available = 0;
 
@@ -101,7 +101,7 @@ public class YouTubeAPIv3
             c.setDefaultUseCaches(false);
             c.setConnectTimeout(5000);
             c.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.52 Safari/537.36 PhantomBotJ/2015");
-            c.setRequestProperty("Content-Type", "application/json");
+            c.setRequestProperty("Content-Type", "application/json-rpc");
             c.setRequestProperty("Content-length", "0");
 
             if (!post.isEmpty())
@@ -116,7 +116,7 @@ public class YouTubeAPIv3
             if (!post.isEmpty())
             {
                 OutputStream o = c.getOutputStream();
-                IOUtils.write(post, o);
+                IOUtils.write(post, c.getOutputStream());
                 o.close();
             }
 
@@ -124,25 +124,24 @@ public class YouTubeAPIv3
 
             if (c.getResponseCode() == 200)
             {
-                i = c.getInputStream();
+                i = new BufferedInputStream(c.getInputStream());
             } else
             {
-                i = c.getErrorStream();
+                i = new BufferedInputStream(c.getErrorStream());
             }
 
             if (i != null)
             {
                 available = i.available();
 
-                while (available == 0 && (new Date().getTime() - postconnect.getTime()) < 500)
-                {
-                    Thread.sleep(500);
-                    available = i.available();
-                }
+                    while (available == 0 && (new Date().getTime() - postconnect.getTime()) < 450) {
+                            Thread.sleep(500);
+                            available = i.available();
+                    }
                 
                 if (available == 0)
                 {
-                    i = c.getErrorStream();
+                    i = new BufferedInputStream(c.getErrorStream());
                     
                     if (i != null)
                     {
@@ -158,7 +157,6 @@ public class YouTubeAPIv3
             {
                 content = IOUtils.toString(i, c.getContentEncoding());
             }
-
             rawcontent = content;
             prejson = new Date();
             j = new JSONObject(content);
@@ -281,15 +279,13 @@ public class YouTubeAPIv3
                 q = q.replace("v=", "");
             }
         }
+        Pattern pattern = Pattern.compile(".*(?:youtu.be\\/|v\\/|u\\/\\w\\/|embed\\/|watch\\?v=)([^#\\&\\?^\\s]*).*");
+        Matcher matcher = pattern.matcher(q);
 
-        if(q.length()>14) {
-            Pattern pattern = Pattern.compile(".*(?:youtu.be\\/|v\\/|u\\/\\w\\/|embed\\/|watch\\?v=)([^#\\&\\?^\\s]*).*");
-            Matcher matcher = pattern.matcher(q);
-
-            if (matcher.matches()){
-                q = matcher.group(1);    
-            }
-        }   
+        if (matcher.matches()){
+            q = matcher.group(1);    
+        }
+        
         JSONObject j = GetData(request_type.GET, "https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=" + q + "&format=json");
             if (j.getBoolean("_success") && !j.toString().contains("Bad Request"))
             {
@@ -312,36 +308,41 @@ public class YouTubeAPIv3
             } else {
                 q = q.replaceAll("[^a-zA-Z0-9 ]","");
                 q = q.replace(" ", "%20");
-                for(int i=0;i<9;i++) { 
+                
                 JSONObject j2 = GetData(request_type.GET, "https://www.googleapis.com/youtube/v3/search?q=" + q + "&key=" + apikey + "&type=video&part=snippet&maxResults=1");
                 if (j2.getBoolean("_success"))
                 {
                     if (j2.getInt("_http") == 200)
                     {
-                        com.gmt2001.Console.err.println(j2.toString());
-                        JSONArray a = j2.getJSONArray("items");
+                            JSONArray a = j2.getJSONArray("items");
+                            if (a.length() > 0)
+                            {
+                                JSONObject it = a.getJSONObject(0);
 
-                        if (a.length() > 0)
-                        {
-                            JSONObject it = a.getJSONObject(0);
+                                JSONObject id = it.getJSONObject("id");
+                                JSONObject sn = it.getJSONObject("snippet");
 
-                            JSONObject id = it.getJSONObject("id");
-                            JSONObject sn = it.getJSONObject("snippet");
-
-                            return new String[]
+                                return new String[]
                                 {
                                     id.getString("videoId"), sn.getString("title"), sn.getString("channelTitle")
                                 };
-                        }
-                    }
-                } else {
-                    if(i==9) {
+                            } else {
+                                    return new String[]
+                                    {
+                                        "", "", ""
+                                    };
+                            }
+                    } else {
                         return new String[]
                         {
                             "", "", ""
                         };
                     }
-                }
+                } else {
+                        return new String[]
+                        {
+                            "", "", ""
+                        };
                 }
             }
             return new String[]
@@ -352,16 +353,12 @@ public class YouTubeAPIv3
 
     public int[] GetVideoLength(String id)
     {
-        JSONObject j = GetData(request_type.GET, "https://www.googleapis.com/youtube/v3/videos?id=" + id + "&key=" + apikey + "&part=contentDetails&maxResults=1");
-
+        JSONObject j = GetData(request_type.GET, "https://www.googleapis.com/youtube/v3/videos?id=" + id + "&key=" + apikey + "&part=contentDetails");
         if (j.getBoolean("_success"))
         {
             if (j.getInt("_http") == 200)
             {
-                try
-                {
                     JSONArray a = j.getJSONArray("items");
-
                     if (a.length() > 0)
                     {
                         JSONObject i = a.getJSONObject(0);
@@ -407,17 +404,19 @@ public class YouTubeAPIv3
                                 {
                                     h, m, s
                                 };
-                    }
-                } catch (Exception e)
-                {
-                    return new int[]
+                    } else {
+                            return new int[]
                             {
                                 0, 0, 0
                             };
-                }
+                    }
+            } else {
+                return new int[]
+                    {
+                        0, 0, 0
+                    };
             }
         }
-
         return new int[]
                 {
                     0, 0, 0
