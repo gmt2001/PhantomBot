@@ -30,7 +30,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.security.SecureRandom;
-import java.security.NoSuchAlgorithmException;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.logging.Level;
@@ -117,7 +116,7 @@ public class PhantomBot implements Listener
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
         com.gmt2001.Console.out.println();
-        com.gmt2001.Console.out.println("PhantomBot Core 1.6.0 7/10/2015");
+        com.gmt2001.Console.out.println("PhantomBot Core 1.6.1 7/17/2015");
         com.gmt2001.Console.out.println("Creator: mast3rplan");
         com.gmt2001.Console.out.println("Developers: gmt2001, GloriousEggroll, PhantomIndex");
         com.gmt2001.Console.out.println("www.phantombot.net");

@@ -158,7 +158,7 @@ function parseDefault() {
             $.songid = $.song.getId();
                 
             if ($.titles==1){
-                $.songurl = '<a href="https://www.youtube.com/watch?v=' + $.songid + '" target="new"><div style="width: 150px; float: left;">' + $.songid + '</div></a><div style="float: left;"> ' + i.toString() + ". " + $.songname + "</div></br>";
+                $.songurl = '<a href="https://www.youtube.com/watch?v=' + $.songid + '" target="new"><div style="width: 150px; float: left;" class="playlistid">' + $.songid + '</div></a><div style="float: left;" class="playlistname"> ' + i.toString() + ". " + $.songname + "</div></br>";
                 $.writeToFile($.songurl, $.storepath + "default.html", true);
             }
             else {
@@ -179,7 +179,7 @@ function parseSongQueue() {
     $.songid = $var.currSong.song.getId();
         
     if ($.titles==1){
-        $.songurl = '<a href="https://www.youtube.com/watch?v=' + $.songid + '" target="new"><div style="width: 150px;float: left;">' + $.songid + '</div></a><div style="float: left;">' + $.songname + " - " + $.songrequester + "</div></br>";
+        $.songurl = '<a href="https://www.youtube.com/watch?v=' + $.songid + '" target="new"><div style="width: 150px;float: left;"  class="playlistid">' + $.songid + '</div></a><div style="float: left;" class="playlistname">' + $.songname + " - " + $.songrequester + "</div></br>";
         $.writeToFile($.songurl, $.storepath + "requests.html", true);
     } else {
         $.songprefix = $.songid + " " + $.songname + " - " + $.songrequester + "\n";
@@ -194,7 +194,7 @@ function parseSongQueue() {
             $.songid = $var.songqueue[i].song.getId();
                 
             if ($.titles==1){
-                $.songurl = '<a href="https://www.youtube.com/watch?v=' + $.songid + '" target="new"><div style="width: 150px;float: left;">' + $.songid + '</div></a><div style="float: left;"> ' + i.toString() + ". " + $.songname + " - " + $.songrequester + "</div></br>";
+                $.songurl = '<a href="https://www.youtube.com/watch?v=' + $.songid + '" target="new"><div style="width: 150px;float: left;"  class="playlistid">' + $.songid + '</div></a><div style="float: left;"  class="playlistname"> ' + i.toString() + ". " + $.songname + " - " + $.songrequester + "</div></br>";
                 $.writeToFile($.songurl, $.storepath + "requests.html", true);
             } else {
                 $.songprefix = $.songid + " " + i.toString() + ". " + $.songname + " - " + $.songrequester + "\n";
