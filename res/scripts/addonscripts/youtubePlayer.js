@@ -242,7 +242,7 @@ function nextDefault() {
 
     if ($var.defaultplaylist.length > 0) {
         var playlistpos;
-        if($.song_shuffle && ($var.playChoice==false | $var.playChoice==null)) {
+        if($.song_shuffle==true && ($var.playChoice==false | $var.playChoice==null)) {
             playlistpos = $.randRange(0, $var.defaultplaylist.length);
             $var.defaultplaylistpos = playlistpos;
         } else {
