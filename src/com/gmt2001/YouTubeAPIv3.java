@@ -134,7 +134,7 @@ public class YouTubeAPIv3
             {
                 available = i.available();
 
-                    while (available == 0 && (new Date().getTime() - postconnect.getTime()) < 500) {
+                    while (available == 0 && (new Date().getTime() - postconnect.getTime()) < 450) {
                             Thread.sleep(500);
                             available = i.available();
                     }

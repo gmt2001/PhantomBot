@@ -86,7 +86,6 @@ public class PhantomBot implements Listener
     private ConnectionManager connectionManager;
     private Session session;
     public static Session tgcSession;
-    private int sessionIndicator;
     private Channel channel;
     private FollowersCache followersCache;
     private ChannelHostCache hostCache;
@@ -137,7 +136,6 @@ public class PhantomBot implements Listener
         this.ownerName = owner;
         this.baseport = baseport;
         this.youtubekey = youtubekey;
-        this.sessionIndicator = 0;
         if (!youtubekey.isEmpty())
         {
             YouTubeAPIv3.instance().SetAPIKey(youtubekey);
@@ -341,17 +339,15 @@ public class PhantomBot implements Listener
     @Subscribe
     public void onIRCConnectComplete(IrcConnectCompleteEvent event)
     {
-        if(sessionIndicator==0) {       
-        session.sayRaw("CAP REQ :twitch.tv/tags");
-        session.sayRaw("CAP REQ :twitch.tv/commands");
-        session.sayRaw("CAP REQ :twitch.tv/membership");
-        session.join("#" + channelName.toLowerCase());
-        sessionIndicator++;
+        if(event.getSession().equals(this.session)) {       
+        this.session.sayRaw("CAP REQ :twitch.tv/tags");
+        this.session.sayRaw("CAP REQ :twitch.tv/commands");
+        this.session.sayRaw("CAP REQ :twitch.tv/membership");
+        this.session.join("#" + channelName.toLowerCase());
         } else {
             tgcSession.sayRaw("CAP REQ :twitch.tv/tags");
             tgcSession.sayRaw("CAP REQ :twitch.tv/commands");
             tgcSession.sayRaw("CAP REQ :twitch.tv/membership");
-            sessionIndicator++;
         }
         
         
