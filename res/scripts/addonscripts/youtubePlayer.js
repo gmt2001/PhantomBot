@@ -308,9 +308,7 @@ function next() {
 
         $var.prevSong = $.currSong;
         $var.currSong = s;
-        $.println("Loading request list...");
         parseSongQueue();
-        $.println("Request list loaded.");
           
     } else {
         $var.currSong = null;
