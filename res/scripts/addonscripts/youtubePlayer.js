@@ -13,7 +13,7 @@ $.songname = null;
 $.songid = null;
 $.songurl = null;
 $.songprefix = null;
-$.song_shuffle = $.inidb.get('settings','song_shuffle');
+$.song_shuffle = parseInt($.inidb.get('settings','song_shuffle'));
 $var.playChoice = false;
 
 
@@ -38,7 +38,7 @@ if($.titles===null || $.titles==="") {
 }
 
 if ($.song_shuffle === null || $.song_shuffle === "" || $.song_shuffle === 0) {
-    $.song_shuffle = false;
+    $.song_shuffle = 0;
 }
 
 reloadPlaylist = function() {
@@ -163,7 +163,7 @@ $.parseDefault = function parseDefault() {
             $.songid = $.song.getId();
                 
             if ($.titles===1){
-                $.songurl = '<a href="https://www.youtube.com/watch?v=' + $.songid + '" target="new"><div style="width: 150px; float: left;" class="playlistid">' + $.songid + '</div></a><div style="float: left;" class="playlistname"> ' + i.toString() + ". " + $.songname + "</div></br>";
+                $.songurl = '<div style="width: 150px; float: left;" class="playlistid"><a href="https://www.youtube.com/watch?v=' + $.songid + '" target="new">' + $.songid + '</a></div><div style="float: left;" class="playlistname"> ' + i.toString() + ". " + $.songname + "</div></br>";
                 $.writeToFile($.songurl, $.storepath + "default.html", true);
             }
             else {
@@ -187,7 +187,7 @@ $.parseSongQueue = function parseSongQueue() {
     $.songid = $var.currSong.song.getId();
         
     if ($.titles===1){
-        $.songurl = '<a href="https://www.youtube.com/watch?v=' + $.songid + '" target="new"><div style="width: 150px;float: left;"  class="playlistid">' + $.songid + '</div></a><div style="float: left;" class="playlistname">' + $.songname + " - " + $.songrequester + "</div></br>";
+        $.songurl = '<div style="width: 150px; float: left;" class="playlistid"><a href="https://www.youtube.com/watch?v=' + $.songid + '" target="new">' + $.songid + '</a></div><div style="float: left;" class="playlistname">' + $.songname + " - " + $.songrequester + "</div></br>";
         $.writeToFile($.songurl, $.storepath + "requests.html", true);
     } else {
         $.songprefix = $.songid + " " + $.songname + " - " + $.songrequester + "\n";
@@ -202,7 +202,7 @@ $.parseSongQueue = function parseSongQueue() {
             $.songid = $var.songqueue[i].song.getId();
                 
             if ($.titles===1){
-                $.songurl = '<a href="https://www.youtube.com/watch?v=' + $.songid + '" target="new"><div style="width: 150px;float: left;"  class="playlistid">' + $.songid + '</div></a><div style="float: left;"  class="playlistname"> ' + i.toString() + ". " + $.songname + " - " + $.songrequester + "</div></br>";
+                $.songurl = '<div style="width: 150px;float: left;"  class="playlistid"><a href="https://www.youtube.com/watch?v=' + $.songid + '" target="new">' + $.songid + '</a></div><div style="float: left;"  class="playlistname"> ' + i.toString() + ". " + $.songname + " - " + $.songrequester + "</div></br>";
                 $.writeToFile($.songurl, $.storepath + "requests.html", true);
             } else {
                 $.songprefix = $.songid + " " + i.toString() + ". " + $.songname + " - " + $.songrequester + "\n";
@@ -252,7 +252,7 @@ function nextDefault() {
 
     if ($var.defaultplaylist.length > 0) {
         var playlistpos;
-        if($.song_shuffle===true && ($var.playChoice===false || $var.playChoice===null)) {
+        if($.song_shuffle===1 && $var.playChoice===false) {
             playlistpos = $.randRange(0, $var.defaultplaylist.length);
             $var.defaultplaylistpos = playlistpos;
         } else {
@@ -483,15 +483,15 @@ $.on('command', function (event) {
                 return;
             }
 
-            if ($.song_shuffle === false) {
+            if ($.song_shuffle === 0) {
 
                 $.song_shuffle = true;
-                $.inidb.set('settings', 'song_shuffle', "true");
+                $.inidb.set('settings', 'song_shuffle', "1");
                 $.say("Default playlist will now randomly choose songs to be played.");
 
             } else {
-                $.song_shuffle = false;
-                $.inidb.set('settings', 'song_shuffle', "false");
+                $.song_shuffle = 0;
+                $.inidb.set('settings', 'song_shuffle', "0");
                 $.say("Playlist shuffling has been disabled.");
             }
         }
