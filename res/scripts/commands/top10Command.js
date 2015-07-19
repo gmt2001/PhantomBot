@@ -9,10 +9,6 @@ $.on('command', function(event) {
         if (!$.moduleEnabled("./systems/pointSystem.js")) {
             return;
         }
-        if (!$.isModv3(sender, event.getTags())) {
-            $.say($.modmsg);
-            return;
-        }
         
         var keys = $.inidb.GetKeyList("points", "");
         var top10 = new Array(new Array("Nobody", -1), new Array("Nobody", -2), new Array("Nobody", -3),
@@ -55,10 +51,7 @@ $.on('command', function(event) {
         if (!$.moduleEnabled("./systems/timeSystem.js")) {
             return;
         }
-        if (!$.isModv3(sender, event.getTags())) {
-            $.say($.modmsg);
-            return;
-        }
+
         
         var keys = $.inidb.GetKeyList("time", "");
         var top10time = new Array(new Array("Nobody", -1), new Array("Nobody", -2), new Array("Nobody", -3),
