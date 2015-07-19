@@ -17,8 +17,9 @@
 package com.gmt2001;
 
 import java.io.IOException;
-import java.io.OutputStream;
+//import java.io.OutputStream;
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
@@ -115,7 +116,7 @@ public class YouTubeAPIv3
 
             if (!post.isEmpty())
             {
-                OutputStream o = c.getOutputStream();
+                BufferedOutputStream o = new BufferedOutputStream(c.getOutputStream());
                 IOUtils.write(post, c.getOutputStream());
                 o.close();
             }

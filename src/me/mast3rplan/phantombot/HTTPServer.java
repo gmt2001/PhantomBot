@@ -18,6 +18,8 @@ package me.mast3rplan.phantombot;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.InetAddress;
@@ -74,8 +76,8 @@ public class HTTPServer extends Thread
             {
 
                 Socket conn = socket.accept();
-                Scanner scan = new Scanner(conn.getInputStream());
-                PrintStream out = new PrintStream(conn.getOutputStream());
+                Scanner scan = new Scanner(new BufferedInputStream(conn.getInputStream()));
+                PrintStream out = new PrintStream(new BufferedOutputStream(conn.getOutputStream()));
 
                 for (int i = 0; i < 20 || !scan.hasNextLine(); i++)
                 {
