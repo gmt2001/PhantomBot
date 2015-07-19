@@ -20,6 +20,9 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+
 import java.util.Map.Entry;
 import javax.net.ssl.HttpsURLConnection;
 import org.apache.commons.io.IOUtils;
@@ -82,17 +85,17 @@ public class HttpRequest
 
                 if (!post.isEmpty())
                 {
-                    IOUtils.write(post, h.getOutputStream());
+                    IOUtils.write(post, new BufferedOutputStream(h.getOutputStream()));
                 }
 
                 if (h.getResponseCode() == 200)
                 {
-                    r.content = IOUtils.toString(h.getInputStream(), h.getContentEncoding());
+                    r.content = IOUtils.toString(new BufferedInputStream(h.getInputStream()), h.getContentEncoding());
                     r.httpCode = h.getResponseCode();
                     r.success = true;
                 } else
                 {
-                    r.content = IOUtils.toString(h.getErrorStream(), h.getContentEncoding());
+                    r.content = IOUtils.toString(new BufferedInputStream(h.getInputStream()), h.getContentEncoding());
                     r.httpCode = h.getResponseCode();
                     r.success = false;
                 }
@@ -120,17 +123,17 @@ public class HttpRequest
 
                 if (!post.isEmpty())
                 {
-                    IOUtils.write(post, h.getOutputStream());
+                    IOUtils.write(post, new BufferedOutputStream(h.getOutputStream()));
                 }
 
                 if (h.getResponseCode() == 200)
                 {
-                    r.content = IOUtils.toString(h.getInputStream(), h.getContentEncoding());
+                    r.content = IOUtils.toString(new BufferedInputStream(h.getInputStream()), h.getContentEncoding());
                     r.httpCode = h.getResponseCode();
                     r.success = true;
                 } else
                 {
-                    r.content = IOUtils.toString(h.getErrorStream(), h.getContentEncoding());
+                    r.content = IOUtils.toString(new BufferedInputStream(h.getInputStream()), h.getContentEncoding());
                     r.httpCode = h.getResponseCode();
                     r.success = false;
                 }

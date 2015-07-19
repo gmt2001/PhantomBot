@@ -117,7 +117,7 @@ public class YouTubeAPIv3
             if (!post.isEmpty())
             {
                 BufferedOutputStream o = new BufferedOutputStream(c.getOutputStream());
-                IOUtils.write(post, c.getOutputStream());
+                IOUtils.write(post, o);
                 o.close();
             }
 
