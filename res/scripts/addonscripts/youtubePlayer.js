@@ -45,7 +45,7 @@ reloadPlaylist = function() {
     $var.defaultplaylist = $.readFile("./addons/youtubePlayer/playlist.txt");
     $.parseDefault();
 }
-notSearchable = function() {
+notSearchable = function(user) {
                     this.id = null;
                     this.name = "";
                     this.length = 0;
@@ -75,7 +75,7 @@ function Song(name, user) {
         this.name = data[1];
         this.length = 1;
         if(data[0]==="") {
-            notSearchable();
+            notSearchable(this.user);
         }
                     
     this.getId = function () {
@@ -91,9 +91,10 @@ function Song(name, user) {
             }
         }
         if(ldata[0]===0 && ldata[1]===0 && ldata[2]===0) {
-            notSearchable();
+            notSearchable(this.user);
         }
-        return ldata[2];
+        this.length = ldata[2];
+        return this.length;
     };
 
     this.cue = function () {
@@ -130,14 +131,21 @@ function RequestedSong(song, user) {
 
         var requestlimit = $.song_limit;
 
-        if (($var.requestusers[user] < requestlimit) || isModv3(user)) return true;
+        if(!$.isMod(user)) {
+            if ($var.requestusers[user] > requestlimit) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+        return false;
     };
 
     this.canRequest2 = function () {
         if ($var.requestusers[user] === null) return true;
 
         for (var i in $var.songqueue) {
-            if (this.song.id === $var.songqueue[i].song.id && !isModv3(user)) return false;
+            if (this.song.id === $var.songqueue[i].song.id && !isMod(user)) return false;
         }
         return true;
     };

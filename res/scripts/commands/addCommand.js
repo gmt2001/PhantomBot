@@ -400,43 +400,6 @@ $.on('command', function(event) {
     }
 });
 
-$.permCom = function(user, command) {
-    var keys = $.inidb.GetKeyList("permcom", "");
-    var permGroupName = "";
-    var userGroup = $.getUserGroupName(user);
-    var noPermission = "Your user group : " + userGroup + " does not have permission to use the command: "+ command +".";
-        
-    for(var i=0;i<keys.length;i++) { 
-            if(keys[i].contains(command)) {
-                if(keys[i].contains("_recursive")) {
-                    permGroupName = $.inidb.get("permcom", keys[i]); 
-                    if(($.getGroupIdByName(userGroup) > $.getGroupIdByName(permGroupName)) && !$.isAdmin(user)) {
-                        for(var j=0;j<keys.length;j++) {
-                            permGroupName = $.inidb.get("permcom", keys[j]);    
-                            if(keys[j].equalsIgnoreCase(command)) {
-                                if(!permGroupName.contains(userGroup.toLowerCase()) && !$.isAdmin(user)) {
-                                    $.say(noPermission);
-                                    return false;
-                                }
-                            }
-                        }
-                    } else {
-                        return true;
-                    }
-                    
-                } else if(keys[i].equalsIgnoreCase(command)) {
-                    permGroupName = $.inidb.get("permcom", keys[i]); 
-                    if(!permGroupName.contains(userGroup.toLowerCase()) && !$.isAdmin(user)) {
-                        $.say(noPermission);
-                        return false;
-                    }
-                } else {
-                    return true;
-                }
-            }
-    }
-    return true;
-};
 
 setTimeout(function(){ 
     if ($.moduleEnabled('./commands/addCommand.js')) {
