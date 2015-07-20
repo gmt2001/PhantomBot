@@ -338,14 +338,18 @@ $.permCom = function(user, command) {
                     permGroupName = $.inidb.get("permcom", keys[i]); 
                     if(($.getGroupIdByName(userGroup.toLowerCase()) > $.getGroupIdByName(permGroupName)) && !$.isAdmin(user)) {
                         for(var j=0;j<keys.length;j++) {
-                            permGroupName = $.inidb.get("permcom", keys[j]);    
+                            permGroupName = $.inidb.get("permcom", keys[j]);
                             if(keys[j].equalsIgnoreCase(command)) {
                                 if(!permGroupName.contains(userGroup.toLowerCase()) && !$.isAdmin(user)) {
                                     $.say(noPermission);
                                     return false;
+                                } else {
+                                    return true;
                                 }
                             }
                         }
+                        $.say(noPermission);
+                        return false;
                     } else {
                         return true;
                     }

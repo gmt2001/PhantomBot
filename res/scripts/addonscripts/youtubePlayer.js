@@ -608,7 +608,6 @@ $.on('command', function (event) {
         if (args.length >= 1) {
             if (!musicPlayerConnected) {
                 if ($.inidb.exists("pricecom", "addsong") && parseInt($.inidb.get("pricecom", "addsong"))> 0 ){
-                    $.say("Music player disabled.");
                     if(!$.isModv3(sender, event.getTags())){
 
                         var cost = $.inidb.get("pricecom", "addsong");
@@ -617,6 +616,7 @@ $.on('command', function (event) {
                         $.inidb.SaveAll();
                     }
                 }
+                $.say("Music player disabled.");
                 return;
             }
 
@@ -816,9 +816,9 @@ $.on('command', function (event) {
 
 //Q: why is there a timeout delay here before a timer? seems redundant no?
 //A: the timeout sets a delay to start the timer, otherwise the timer won't detect if a module is disabled (because it hasnt loaded in yet)
-setTimeout(function(){
+offlinePlayer = function() {setTimeout(function(){
     if ($.moduleEnabled('./addonscripts/youtubePlayer.js')) {
-
+        $.say('playeroffline');
         $.timer.addTimer("./addonscripts/youtubePlayer.js", "currsongyt", true, function() {
             $var.ytcurrSong = $.readFile("./addons/youtubePlayer/currentsong.txt");
             if (!$var.ytcurrSong.toString().equalsIgnoreCase($.inidb.get("settings", "lastsong")) && !musicPlayerConnected) {
@@ -833,6 +833,22 @@ setTimeout(function(){
             }
 
         }, 10* 1000);
+    }   
+}, 10* 1000); 
+};
+offlinePlayer();
+
+if($.storing===1) {
+    $.parseDefault();
+}
+
+$.on('musicPlayerCurrentVolume', function (event) {
+    $.say("[\u266B] Music volume is currently: " + parseInt(event.getVolume()) + "%");
+});
+
+chatRegister = function() {setTimeout(function(){ 
+    if ($.moduleEnabled('./addonscripts/youtubePlayer.js')) {
+        $.say('chatregister');
         $.registerChatCommand("./addonscripts/youtubePlayer.js", "playsong", "mod");
         $.registerChatCommand("./addonscripts/youtubePlayer.js", "addsong");
         $.registerChatCommand("./addonscripts/youtubePlayer.js", "skipsong");
@@ -842,14 +858,8 @@ setTimeout(function(){
         $.registerChatCommand("./addonscripts/youtubePlayer.js", "stealsong", "admin");
         $.registerChatCommand("./addonscripts/youtubePlayer.js", "delsong", "mod");
         $.registerChatCommand("./addonscripts/youtubePlayer.js", "volume", "mod");
+        $.say('chatregistercomplete');
     }
-    
-}, 10* 1000);
-
-if($.storing===1) {
-    $.parseDefault();
-}
-
-$.on('musicPlayerCurrentVolume', function (event) {
-    $.say("[\u266B] Music volume is currently: " + parseInt(event.getVolume()) + "%");
-});
+},10*1000);
+};
+chatRegister();

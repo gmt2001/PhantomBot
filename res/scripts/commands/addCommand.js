@@ -227,7 +227,7 @@ $.on('command', function(event) {
         
                 
         if (args.length >= 2) {
-            if (!$.inidb.exists("command", args[0].toLowerCase()) && !$.commandExists(args[0].toLowerCase())) {
+            if (!$.commandExists(args[0].toLowerCase())) {
                 $.say("The command !" + args[0] + " does not exist!");
                 return;
             }
@@ -267,22 +267,21 @@ $.on('command', function(event) {
                 }
                 return;
             }
-            if(mode=="_recursive") {
-                $.inidb.set("permcom", args[0].toLowerCase() + mode, newgroup);
-            } else {
-                if($.inidb.exists("permcom",args[0].toLowerCase())) {
-                    var oldgroup = $.inidb.get("permcom", args[0].toLowerCase());
-                    $.inidb.set("permcom", args[0].toLowerCase(), oldgroup + "_" + newgroup);
-                } else {
-                    $.inidb.set("permcom", args[0].toLowerCase(), newgroup);
-                }
-            }    
-
+            
             if ($.inidb.exists('aliases', args[0].toLowerCase())) {
-                alias = $.inidb.get('aliases', args[0].toLowerCase());
-                $.inidb.add("permcom", alias + mode, newgroup);
+                var sourceCommand = $.inidb.get('aliases', args[0].toLowerCase());
             }
-
+            
+            if(mode=="_recursive") {
+                $.inidb.set("permcom", sourceCommand + mode, newgroup);
+            } else {
+                if($.inidb.exists("permcom",sourceCommand)) {
+                    var oldgroup = $.inidb.get("permcom", sourceCommand);
+                    $.inidb.set("permcom", sourceCommand, oldgroup + "_" + newgroup);
+                } else {
+                    $.inidb.set("permcom", sourceCommand, newgroup);
+                }
+            }   
             
             if(mode=="_recursive") {
                 $.say('Permissions for command: ' + args[0] + ' set for group: ' + args[1] + ' and higher.');
@@ -380,19 +379,21 @@ $.on('command', function(event) {
         if (args.length == 2) {
             var commandname = args[0].toLowerCase();
             var commandprice = parseInt(args[1]);
-            
-            if ($.inidb.exists("aliases", commandname) && $.inidb.get("aliases", commandname)!=""){
-                commandname = $.inidb.get("aliases", commandname);
+            var sourceCommand = "";
+            if ($.inidb.exists('aliases', commandname)) {
+                sourceCommand = $.inidb.get('aliases', commandname);
+            } else {
+                sourceCommand = commandname;
             }
-            
-            if (!$.commandExists(commandname)) {
+
+            if (!$.commandExists(sourceCommand)) {
                 $.say("Please select a command that exists and is available to non-mods.");
                 return;
             } else if (isNaN(commandprice) || commandprice < 0) {
                 $.say("Please enter a valid price, 0 or greater.");
                 return;
             } else {
-                $.inidb.set("pricecom", commandname, commandprice);
+                $.inidb.set("pricecom", sourceCommand, commandprice);
                 $.say("The price for !" + args[0].toLowerCase() + " has been set to " + commandprice + " " + $.pointname + ".");
             }
         }		
