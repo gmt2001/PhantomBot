@@ -818,7 +818,6 @@ $.on('command', function (event) {
 //A: the timeout sets a delay to start the timer, otherwise the timer won't detect if a module is disabled (because it hasnt loaded in yet)
 offlinePlayer = function() {setTimeout(function(){
     if ($.moduleEnabled('./addonscripts/youtubePlayer.js')) {
-        $.say('playeroffline');
         $.timer.addTimer("./addonscripts/youtubePlayer.js", "currsongyt", true, function() {
             $var.ytcurrSong = $.readFile("./addons/youtubePlayer/currentsong.txt");
             if (!$var.ytcurrSong.toString().equalsIgnoreCase($.inidb.get("settings", "lastsong")) && !musicPlayerConnected) {
@@ -848,7 +847,6 @@ $.on('musicPlayerCurrentVolume', function (event) {
 
 chatRegister = function() {setTimeout(function(){ 
     if ($.moduleEnabled('./addonscripts/youtubePlayer.js')) {
-        $.say('chatregister');
         $.registerChatCommand("./addonscripts/youtubePlayer.js", "playsong", "mod");
         $.registerChatCommand("./addonscripts/youtubePlayer.js", "addsong");
         $.registerChatCommand("./addonscripts/youtubePlayer.js", "skipsong");
@@ -858,7 +856,6 @@ chatRegister = function() {setTimeout(function(){
         $.registerChatCommand("./addonscripts/youtubePlayer.js", "stealsong", "admin");
         $.registerChatCommand("./addonscripts/youtubePlayer.js", "delsong", "mod");
         $.registerChatCommand("./addonscripts/youtubePlayer.js", "volume", "mod");
-        $.say('chatregistercomplete');
     }
 },10*1000);
 };
