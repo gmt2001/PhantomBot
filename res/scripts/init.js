@@ -332,7 +332,7 @@ $.permCom = function(user, command) {
     var userGroup = $.getUserGroupName(user.toLowerCase());
     var noPermission = "Your user group : " + userGroup + " does not have permission to use the command: "+ command +".";
         
-    for(var i=0;i<keys.length;i++) { 
+        for(var i=0;i<keys.length;i++) { 
             if(keys[i].contains(command)) {
                 if(keys[i].contains("_recursive")) {
                     permGroupName = $.inidb.get("permcom", keys[i]); 
@@ -343,28 +343,25 @@ $.permCom = function(user, command) {
                                 if(!permGroupName.contains(userGroup.toLowerCase()) && !$.isAdmin(user)) {
                                     $.say(noPermission);
                                     return false;
-                                } else {
-                                    return true;
                                 }
                             }
                         }
-                        $.say(noPermission);
-                        return false;
-                    } else {
-                        return true;
                     }
-                    
-                } else if(keys[i].equalsIgnoreCase(command)) {
-                    permGroupName = $.inidb.get("permcom", keys[i]); 
-                    if(!permGroupName.contains(userGroup.toLowerCase()) && !$.isAdmin(user)) {
-                        $.say(noPermission);
-                        return false;
-                    }
-                } else {
                     return true;
                 }
             }
-    }
+        }
+        
+        for(var i=0;i<keys.length;i++) { 
+            if(keys[i].equalsIgnoreCase(command)) {
+                permGroupName = $.inidb.get("permcom", keys[i]); 
+                if(!permGroupName.contains(userGroup.toLowerCase()) && !$.isAdmin(user)) {
+                    $.say(noPermission);
+                    return false;
+                }
+            }
+        }
+        
     return true;
 };
 
