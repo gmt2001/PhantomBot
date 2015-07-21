@@ -347,7 +347,10 @@ $.permCom = function(user, command) {
                             }
                         }
                     }
-                    return true;
+                    if(($.getGroupIdByName(userGroup.toLowerCase()) <= $.getGroupIdByName(permGroupName)) && !$.isAdmin(user)) {
+                         return true;                   
+                    }
+                    
                 }
             }
         }
