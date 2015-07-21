@@ -228,13 +228,14 @@ $.on('command', function(event) {
                 
         if (args.length >= 2) {
             if (!$.commandExists(args[0].toLowerCase())) {
-                $.say("The command !" + args[0] + " does not exist!");
+                $.say("The command !" + args[0].toString() + " does not exist!");
                 return;
             }
             
             var newgroup = args[1].toLowerCase();
             var permcommArray = $.inidb.GetKeyList("permcom", "");
             var alias = "";
+            var sourceCommand = "";
             
             if(!parseInt(args[2])) {
                 $.say("You must specify a permission mode of 1 or 2! 1 specifies only a single group, multiple single groups can be added for the same command. 2 specifies recursive (all groups higher than the group specified).");
@@ -269,7 +270,9 @@ $.on('command', function(event) {
             }
             
             if ($.inidb.exists('aliases', args[0].toLowerCase())) {
-                var sourceCommand = $.inidb.get('aliases', args[0].toLowerCase());
+                sourceCommand = $.inidb.get('aliases', args[0].toLowerCase());
+            } else {
+                sourceCommand = args[0].toLowerCase();
             }
             
             if(mode=="_recursive") {
