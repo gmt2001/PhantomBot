@@ -65,11 +65,9 @@ function Song(name, user) {
     this.user = user;
     if (name===null || name==="") return;
         var data = $.youtube.SearchForVideo(name);
-        while(data[0]===""){
+        
+        while(data[0].length()<11){
             data = $.youtube.SearchForVideo(name);
-            if (data[0]!=="") {
-                break;
-            }
         }
         this.id = data[0];
         this.name = data[1];
@@ -86,9 +84,6 @@ function Song(name, user) {
         var ldata = $.youtube.GetVideoLength(this.id);
         while(ldata[0]===0 && ldata[1]===0 && ldata[2]===0) {
             ldata = $.youtube.GetVideoLength(this.id);
-            if (ldata[2]!==0) {
-                break;
-            }
         }
         if(ldata[0]===0 && ldata[1]===0 && ldata[2]===0) {
             notSearchable(this.user);
@@ -128,7 +123,9 @@ function RequestedSong(song, user) {
 
     this.canRequest = function () {
         if ($var.requestusers[user] === null) return true;
-
+        for(var i=0;i<$var.requestusers.length;i++){
+            $.say($var.requestusers[i]);
+        }
         var requestlimit = $.song_limit;
 
         if(!$.isMod(user)) {
@@ -138,7 +135,7 @@ function RequestedSong(song, user) {
                 return true;
             }
         }
-        return false;
+        return true;
     };
 
     this.canRequest2 = function () {
@@ -633,7 +630,7 @@ $.on('command', function (event) {
                 return;
             }
 
-            song = new RequestedSong(video, username);
+            song = new RequestedSong(video, sender);
 
             if (!song.canRequest()) {
                 $.say("You've hit your song request limit, " + username + "!");
@@ -779,6 +776,21 @@ $.on('command', function (event) {
             $.parseDefault();
             return;
         }
+    }
+    if (command.equalsIgnoreCase("gettitle")) {
+        if (!$.isAdmin(sender)) {
+            $.say($.adminmsg);
+            return;
+        }
+        $.say("start search");
+        var data = $.youtube.SearchForVideo(argsString);
+        while(data[0].length()<11){
+            data = $.youtube.SearchForVideo(argsString);
+        }
+        $.say("search complete");
+        this.id = data[0];
+        this.name = data[1];
+        $.say(data[0]);
     }
 
     if (command.equalsIgnoreCase("playsong")) {
