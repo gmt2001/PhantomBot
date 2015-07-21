@@ -331,41 +331,38 @@ $.permCom = function(user, command) {
     var permGroupName = "";
     var userGroup = $.getUserGroupName(user.toLowerCase());
     var noPermission = "Your user group : " + userGroup + " does not have permission to use the command: "+ command +".";
+    
+        if($.isAdmin(user)) {
+            return true;
+        }
         
         for(var i=0;i<keys.length;i++) { 
-            if(keys[i].contains(command)) {
-                if(keys[i].contains("_recursive")) {
+            if(keys[i].contains(command + "_recursive")) {
                     permGroupName = $.inidb.get("permcom", keys[i]); 
-                    if(($.getGroupIdByName(userGroup.toLowerCase()) > $.getGroupIdByName(permGroupName)) && !$.isAdmin(user)) {
-                        for(var j=0;j<keys.length;j++) {
-                            permGroupName = $.inidb.get("permcom", keys[j]);
-                            if(keys[j].equalsIgnoreCase(command)) {
-                                if(!permGroupName.contains(userGroup.toLowerCase()) && !$.isAdmin(user)) {
-                                    $.say(noPermission);
-                                    return false;
-                                }
-                            }
-                        }
-                    }
-                    if(($.getGroupIdByName(userGroup.toLowerCase()) <= $.getGroupIdByName(permGroupName)) && !$.isAdmin(user)) {
+                    if(($.getGroupIdByName(userGroup.toLowerCase()) <= $.getGroupIdByName(permGroupName))) {
                          return true;                   
                     }
-                    
-                }
             }
         }
         
         for(var i=0;i<keys.length;i++) { 
             if(keys[i].equalsIgnoreCase(command)) {
                 permGroupName = $.inidb.get("permcom", keys[i]); 
-                if(!permGroupName.contains(userGroup.toLowerCase()) && !$.isAdmin(user)) {
-                    $.say(noPermission);
-                    return false;
+                if(permGroupName.contains(userGroup.toLowerCase())) {
+                    return true;
                 }
             }
         }
         
-    return true;
+        for(var i=0;i<keys.length;i++) {
+            if(!keys[i].contains(command) && (i==keys.length - 1)) {
+                    return true;
+            }
+        }
+        
+        
+    $.say(noPermission);    
+    return false;
 };
 
 $api.on($script, 'command', function(event) {
