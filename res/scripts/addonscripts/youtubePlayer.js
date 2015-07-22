@@ -51,7 +51,7 @@ notSearchable = function(user) {
                     this.length = 0;
                     $.say("Song not searchable due to API error. Please try again.");
                     if ($.inidb.exists("pricecom", "addsong") && parseInt($.inidb.get("pricecom", "addsong"))> 0 ){
-                        if(!$.isMod(user)){
+                        if(!$.isModv3(user)){
                             var cost = $.inidb.get("pricecom", "addsong");
                             $.say("The command cost of " + cost + " " + $.pointname + " has been returned to " + $.username.resolve(user));
                             $.inidb.incr("points", user.toLowerCase(), cost);
@@ -123,26 +123,17 @@ function RequestedSong(song, user) {
 
     this.canRequest = function () {
         if ($var.requestusers[user] === null) return true;
-        for(var i=0;i<$var.requestusers.length;i++){
-            $.say($var.requestusers[i]);
-        }
+
         var requestlimit = $.song_limit;
 
-        if(!$.isMod(user)) {
-            if ($var.requestusers[user] > requestlimit) {
-                return false;
-            } else {
-                return true;
-            }
-        }
-        return true;
+        return $var.requestusers[user] < requestlimit;
     };
 
     this.canRequest2 = function () {
         if ($var.requestusers[user] === null) return true;
 
         for (var i in $var.songqueue) {
-            if (this.song.id === $var.songqueue[i].song.id && !isMod(user)) return false;
+            if (this.song.id + "" === $var.songqueue[i].song.id + "") return false;
         }
         return true;
     };
@@ -630,16 +621,18 @@ $.on('command', function (event) {
                 return;
             }
 
-            song = new RequestedSong(video, sender);
+            song = new RequestedSong(video, username);
+            
+            if(!$.isModv3(username)) {
+                if (!song.canRequest()) {
+                    $.say("You've hit your song request limit, " + username + "!");
+                    return;
+                }
 
-            if (!song.canRequest()) {
-                $.say("You've hit your song request limit, " + username + "!");
-                return;
-            }
-
-            if (!song.canRequest2()) {
-                $.say("That song is already in the queue or the default playlist, " + username + "!");
-                return;
+                if (!song.canRequest2()) {
+                    $.say("That song is already in the queue or the default playlist, " + username + "!");
+                    return;
+                }
             }
 
             $.say("[\u266B] Song -- " + video.name + " was added to the queue by @" + username + ".");

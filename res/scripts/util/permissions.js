@@ -43,7 +43,11 @@ $.isMod = function (user) {
 }
 
 $.isModv3 = function (user, tags) {
-    return $.isMod(user) || (tags.containsKey("user-type") && tags.get("user-type").length() > 0);
+    if(tags!==null) {
+        return $.isMod(user) || (tags.containsKey("user-type") && tags.get("user-type").length() > 0);
+    } else {
+        return $.isMod(user);
+    }
 }
 
 $.isSub = function (user) {
@@ -57,7 +61,11 @@ $.isSub = function (user) {
 }
 
 $.isSubv3 = function (user, tags) {
-    return $.isSub(user) || (tags.containsKey("subscriber") && tags.get("subscriber").equalsIgnoreCase("1"));
+    if(tags!==null) {
+        return $.isSub(user) || (tags.containsKey("subscriber") && tags.get("subscriber").equalsIgnoreCase("1"));
+    } else {
+        return $.isSub(user);
+    }
 }
 
 $.isTurbo = function (user, tags) {
