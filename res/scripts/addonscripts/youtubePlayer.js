@@ -124,7 +124,7 @@ function RequestedSong(song, user) {
     this.canRequest = function () {
         if ($var.requestusers[user] == null) return true;
 
-        var requestlimit = $.song_limit;
+        var requestlimit = ($.song_limit - 1); // -1 since the array starts at 0
 
         return $var.requestusers[user] < requestlimit;
     };
