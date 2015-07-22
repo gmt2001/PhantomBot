@@ -241,14 +241,33 @@ $.on('command', function(event) {
                 return;                
             }
             
-            if (action.equalsIgnoreCase("remove") || action.equalsIgnoreCase("delete") || action.equalsIgnoreCase("reset")) {
+            if (action.equalsIgnoreCase("remove") || action.equalsIgnoreCase("delete")) {
                 if (!$.isAdmin(sender)) {
                     $.say($.adminmsg);
                     return;
                 }
-                $.setUserGroupById(args[1], $.getGroupIdByName("Viewers"));
-                $.say("Group for " + $.username.resolve(args[1]) + " reset to " + $.getUserGroupName($.username.resolve(args[1])) + "!");
-                $.logEvent("permissions.js", 183, username + " reset " + args[1] + "'s group to " + $.getUserGroupName($.username.resolve(args[1])));
+                var keys = $.inidb.GetKeyList("group", "");
+                for(var i=0;i<keys.length;i++) {
+                    if($.inidb.get("group", keys[i])===$.getGroupIdByName(args[1].toLowerCase())){
+                        $.inidb.set("group", keys[i], "7");
+                    }
+                }
+                
+                var keys2 = $.inidb.GetKeyList("grouppoints", "");
+                for(var i=0;i<keys2.length;i++) {
+                        if(keys2[i].equalsIgnoreCase((args[1]))){
+                            $.inidb.del("grouppoints", keys2[i]);
+                        }
+                }
+                
+                if($.getGroupIdByName(args[1].toLowerCase()!==null)) {
+                    $.inidb.del("groups",$.getGroupIdByName(args[1].toLowerCase()));
+                }
+                
+                $.say("Group " + args[0] + " has been successfully removed. All users in that group have been moved to the Viewers group.");
+                //$.setUserGroupById(args[1], $.getGroupIdByName("Viewers"));
+                //$.say("Group for " + $.username.resolve(args[1]) + " reset to " + $.getUserGroupName($.username.resolve(args[1])) + "!");
+                //$.logEvent("permissions.js", 183, username + " reset " + args[1] + "'s group to " + $.getUserGroupName($.username.resolve(args[1])));
                 return;
             }
             if (action.equalsIgnoreCase("create")) {
