@@ -11,7 +11,7 @@ $.on('command', function(event) {
         $var.bid_highest_username;
         if (args.length == 0){ // Check for command arguments being 0;
             if($var.bid_running){ // Check if bid is started!\
-                if ($var.bid_highest_username || $var.bid_highest_username === null){
+                if ($var.bid_highest_username || $var.bid_highest_username == null){
                     $.say("Current highest bider is: " + $var.bid_highest_username + " with " + $var.bid_highest_amount + " of " + $.pointname + ".");
                     return;
                 }

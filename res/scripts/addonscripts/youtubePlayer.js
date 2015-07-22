@@ -17,27 +17,27 @@ $.song_shuffle = parseInt($.inidb.get('settings','song_shuffle'));
 $var.playChoice = false;
 
 
-if ($.song_limit === null || isNaN($.song_limit) || $.song_limit < 0) {
+if ($.song_limit == null || isNaN($.song_limit) || $.song_limit < 0) {
     $.song_limit = 3;
 }
 
-if($.song_toggle===null || $.song_toggle==="") {
+if($.song_toggle==null || $.song_toggle=="") {
     $.song_toggle = 1;
 }
 
-if($.storepath===null || $.storepath==="" || $.strlen($.storepath) === 0) {
+if($.storepath==null || $.storepath=="" || $.strlen($.storepath) == 0) {
     $.storepath = "web/";
 }
 
-if($.storing===null || $.storing==="") {
+if($.storing==null || $.storing=="") {
     $.storing = 1;
 }
 
-if($.titles===null || $.titles==="") {
+if($.titles==null || $.titles=="") {
     $.titles = 2;
 }
 
-if ($.song_shuffle === null || $.song_shuffle === "" || $.song_shuffle === 0) {
+if ($.song_shuffle == null || $.song_shuffle == "" || $.song_shuffle == 0) {
     $.song_shuffle = 0;
 }
 
@@ -45,13 +45,13 @@ reloadPlaylist = function() {
     $var.defaultplaylist = $.readFile("./addons/youtubePlayer/playlist.txt");
     $.parseDefault();
 }
-notSearchable = function(user) {
+notSearchable = function(user, tags) {
                     this.id = null;
                     this.name = "";
                     this.length = 0;
                     $.say("Song not searchable due to API error. Please try again.");
                     if ($.inidb.exists("pricecom", "addsong") && parseInt($.inidb.get("pricecom", "addsong"))> 0 ){
-                        if(!$.isModv3(user)){
+                        if(!$.isModv3(user, tags)){
                             var cost = $.inidb.get("pricecom", "addsong");
                             $.say("The command cost of " + cost + " " + $.pointname + " has been returned to " + $.username.resolve(user));
                             $.inidb.incr("points", user.toLowerCase(), cost);
@@ -61,9 +61,9 @@ notSearchable = function(user) {
                     return;
 };
 
-function Song(name, user) {
+function Song(name, user, tags) {
     this.user = user;
-    if (name===null || name==="") return;
+    if (name==null || name=="") return;
         var data = $.youtube.SearchForVideo(name);
         
         while(data[0].length()<11){
@@ -72,8 +72,8 @@ function Song(name, user) {
         this.id = data[0];
         this.name = data[1];
         this.length = 1;
-        if(data[0]==="") {
-            notSearchable(this.user);
+        if(data[0]=="") {
+            notSearchable(this.user, tags);
         }
                     
     this.getId = function () {
@@ -82,10 +82,10 @@ function Song(name, user) {
     
     this.getLength = function () {
         var ldata = $.youtube.GetVideoLength(this.id);
-        while(ldata[0]===0 && ldata[1]===0 && ldata[2]===0) {
+        while(ldata[0]==0 && ldata[1]==0 && ldata[2]==0) {
             ldata = $.youtube.GetVideoLength(this.id);
         }
-        if(ldata[0]===0 && ldata[1]===0 && ldata[2]===0) {
+        if(ldata[0]==0 && ldata[1]==0 && ldata[2]==0) {
             notSearchable(this.user);
         }
         this.length = ldata[2];
@@ -114,7 +114,7 @@ function RequestedSong(song, user) {
 
         $var.songqueue.push(this);
 
-        if ($var.requestusers[user] !== null) {
+        if ($var.requestusers[user] != null) {
             $var.requestusers[user]++;
         } else {
             $var.requestusers[user] = 0;
@@ -122,7 +122,7 @@ function RequestedSong(song, user) {
     };
 
     this.canRequest = function () {
-        if ($var.requestusers[user] === null) return true;
+        if ($var.requestusers[user] == null) return true;
 
         var requestlimit = $.song_limit;
 
@@ -130,10 +130,10 @@ function RequestedSong(song, user) {
     };
 
     this.canRequest2 = function () {
-        if ($var.requestusers[user] === null) return true;
+        if ($var.requestusers[user] == null) return true;
 
         for (var i in $var.songqueue) {
-            if (this.song.id + "" === $var.songqueue[i].song.id + "") return false;
+            if (this.song.id + "" == $var.songqueue[i].song.id + "") return false;
         }
         return true;
     };
@@ -148,17 +148,17 @@ function RequestedSong(song, user) {
 
 $.parseDefault = function parseDefault() {
     
-    if($var.defaultplaylist.length > 0  && $.storing===1) {
+    if($var.defaultplaylist.length > 0  && $.storing==1) {
         $.println("Parsing default playlist, please wait...");
         $.writeToFile("",$.storepath + "default.html", false);
         $.writeToFile("",$.storepath + "default.txt", false);
 
         for(var i=0; i< $var.defaultplaylist.length; i++){
-            $.song = new Song($var.defaultplaylist[i],"");
+            $.song = new Song($var.defaultplaylist[i]);
             $.songname = $.song.getName();
             $.songid = $.song.getId();
                 
-            if ($.titles===1){
+            if ($.titles==1){
                 $.songurl = '<div style="width: 150px; float: left;" class="playlistid"><a href="https://www.youtube.com/watch?v=' + $.songid + '" target="new">' + $.songid + '</a></div><div style="float: left;" class="playlistname"> ' + i.toString() + ". " + $.songname + "</div></br>";
                 $.writeToFile($.songurl, $.storepath + "default.html", true);
             }
@@ -173,7 +173,7 @@ $.parseDefault = function parseDefault() {
 
 $.parseSongQueue = function parseSongQueue() {
  
-    if($.storing===1 && $var.currSong!=null) {
+    if($.storing==1 && $var.currSong!=null) {
     $.println("Parsing song request playlist, please wait...");
     $.writeToFile("",$.storepath + "requests.html", false);
     $.writeToFile("",$.storepath + "requests.txt", false);
@@ -182,7 +182,7 @@ $.parseSongQueue = function parseSongQueue() {
     $.songname = $var.currSong.song.getName();
     $.songid = $var.currSong.song.getId();
         
-    if ($.titles===1){
+    if ($.titles==1){
         $.songurl = '<div style="width: 150px; float: left;" class="playlistid"><a href="https://www.youtube.com/watch?v=' + $.songid + '" target="new">' + $.songid + '</a></div><div style="float: left;" class="playlistname">' + $.songname + " - " + $.songrequester + "</div></br>";
         $.writeToFile($.songurl, $.storepath + "requests.html", true);
     } else {
@@ -197,7 +197,7 @@ $.parseSongQueue = function parseSongQueue() {
             $.songname = $var.songqueue[i].song.getName();
             $.songid = $var.songqueue[i].song.getId();
                 
-            if ($.titles===1){
+            if ($.titles==1){
                 $.songurl = '<div style="width: 150px;float: left;"  class="playlistid"><a href="https://www.youtube.com/watch?v=' + $.songid + '" target="new">' + $.songid + '</a></div><div style="float: left;"  class="playlistname"> ' + i.toString() + ". " + $.songname + " - " + $.songrequester + "</div></br>";
                 $.writeToFile($.songurl, $.storepath + "requests.html", true);
             } else {
@@ -216,12 +216,12 @@ function nextDefault() {
     var user = "";
     //var s = new Song(null, "");
 
-    if ($var.currSong !== null) {
+    if ($var.currSong != null) {
         return;
     }
 
-    if ($var.defaultplaylist === null || $var.defaultplaylist === undefined) {
-        if ($var.defaultplaylistretry === null || $var.defaultplaylistretry === undefined) {
+    if ($var.defaultplaylist == null || $var.defaultplaylist == undefined) {
+        if ($var.defaultplaylistretry == null || $var.defaultplaylistretry == undefined) {
             $var.defaultplaylistretry = 0;
         }
 
@@ -248,13 +248,13 @@ function nextDefault() {
 
     if ($var.defaultplaylist.length > 0) {
         var playlistpos;
-        if($.song_shuffle===1 && $var.playChoice===false) {
+        if($.song_shuffle==1 && $var.playChoice==false) {
             playlistpos = $.randRange(0, $var.defaultplaylist.length);
             $var.defaultplaylistpos = playlistpos;
         } else {
            playlistpos = $var.defaultplaylistpos;
         }
-        var s = new RequestedSong(new Song($var.defaultplaylist[playlistpos],""), "DJ " + $.username.resolve($.botname));
+        var s = new RequestedSong(new Song($var.defaultplaylist[playlistpos]), "DJ " + $.username.resolve($.botname));
         
         $var.defaultplaylistpos++;
 
@@ -273,13 +273,13 @@ function nextDefault() {
         $var.currSong = null;
     }
 
-    if ($var.currSong === null) {
+    if ($var.currSong == null) {
         return;
     }
     
-    if ($.song_toggle === 1) {
+    if ($.song_toggle == 1) {
         $.say("[\u266B] Now Playing -- " + name + " -- requested by @" + user);
-    } else if ($.song_toggle === 2) {
+    } else if ($.song_toggle == 2) {
         println("[\u266B] Now Playing -- " + name + " -- requested by @" + user);
     }
     
@@ -294,7 +294,7 @@ function nextDefault() {
 function next() {
     var name = "";
     var user = "";
-    var s = new Song(null, "");
+    var s = new Song(null);
 
     if ($var.songqueue.length > 0) {
         s = $var.songqueue.shift();
@@ -310,16 +310,16 @@ function next() {
         $var.currSong = null;
     }
 
-    if ($var.currSong === null) {
+    if ($var.currSong == null) {
         println("The song request queue is empty! Request a new song with !addsong or !songrequest <youtube link>");
         nextDefault();
         return;
     }
 
-    if ($.song_toggle === 1) {
+    if ($.song_toggle == 1) {
         $.say("[\u266B] Now Playing -- " + name + " -- requested by @" + user);
 
-    } else if ($.song_toggle === 2) {
+    } else if ($.song_toggle == 2) {
         println("[\u266B] Now Playing -- " + name + " -- requested by @" + user);
     }
     
@@ -337,18 +337,18 @@ function next() {
 }
 
 $.on('musicPlayerState', function (event) {
-    if (event.getStateId() === -2) {
+    if (event.getStateId() == -2) {
         $var.songqueue = [];
         $var.requestusers = {};
 
         next();
     }
 
-    if (event.getStateId() === 0) {
+    if (event.getStateId() == 0) {
         next();
     }
 
-    if (event.getStateId() === 5) {
+    if (event.getStateId() == 5) {
         $.musicplayer.play();
         $.musicplayer.currentId();
     }
@@ -357,7 +357,7 @@ $.on('musicPlayerState', function (event) {
 var musicPlayerConnected = false;
 
 $.on('musicPlayerConnect', function (event) {
-    if($.song_toggle===1)
+    if($.song_toggle==1)
     {
 
         $.say("[\u266B] Song requests have been enabled!");
@@ -368,7 +368,7 @@ $.on('musicPlayerConnect', function (event) {
 });
 
 $.on('musicPlayerDisconnect', function (event) {
-    if($.song_toggle===1)
+    if($.song_toggle==1)
     {
 
         $.say("[\u266B] Song requests have been disabled.");
@@ -404,7 +404,7 @@ $.on('command', function (event) {
                 return;
             }
 
-            if ($.song_toggle === 2) {
+            if ($.song_toggle == 2) {
 
                 $.song_toggle = 1;
                 $.inidb.set('settings', 'song_toggle', $.song_toggle.toString());
@@ -443,7 +443,7 @@ $.on('command', function (event) {
                 return;
             }
 
-            if (args[1] === null) {
+            if (args[1] == null) {
                 $.say("Current song request limit is: " + $.song_limit);
                 return;
             }
@@ -459,7 +459,7 @@ $.on('command', function (event) {
                 return;
             }
 
-            if ($.storing === 2) {
+            if ($.storing == 2) {
 
                 $.storing = 1;
                 $.inidb.set('settings', 'song_storing', $.storing.toString());
@@ -479,7 +479,7 @@ $.on('command', function (event) {
                 return;
             }
 
-            if ($.song_shuffle === 0) {
+            if ($.song_shuffle == 0) {
 
                 $.song_shuffle = true;
                 $.inidb.set('settings', 'song_shuffle', "1");
@@ -503,11 +503,11 @@ $.on('command', function (event) {
                 return;
             }
             
-            while (args[1].indexOf('\\') !== -1 && !args[1].equalsIgnoreCase('viewstorepath') && args[1]!=="" && args[1]!==null) {
+            while (args[1].indexOf('\\') != -1 && !args[1].equalsIgnoreCase('viewstorepath') && args[1]!="" && args[1]!=null) {
                 args[1] = args[1].replace('\\', '/');
             }
             
-            if($.strlen(args[1]) === 0 || args[1].substring($.strlen(args[1]) - 1) !== "/" || !args[1].substring($.strlen(args[1]) - 1).equalsIgnoreCase("/")) {
+            if($.strlen(args[1]) == 0 || args[1].substring($.strlen(args[1]) - 1) != "/" || !args[1].substring($.strlen(args[1]) - 1).equalsIgnoreCase("/")) {
                 args[1] = args[1] + "/";
             }
             
@@ -522,7 +522,7 @@ $.on('command', function (event) {
                 return;
             }
 
-            if ($.titles === 2) {
+            if ($.titles == 2) {
 
                 $.titles = 1;
                 $.inidb.set('settings', 'song_titles', $.titles.toString());
@@ -549,13 +549,13 @@ $.on('command', function (event) {
         }
 
         if (action.equalsIgnoreCase("config")) {
-            if ($.song_toggle === 1) {
+            if ($.song_toggle == 1) {
                 $.song_t = "On";
             } else {
                 $.song_t = "Off";
             }
 
-            if (musicPlayerConnected === true) {
+            if (musicPlayerConnected == true) {
                 $.song_status = "Enabled";
             } else {
                 $.song_status = "Disabled";
@@ -568,7 +568,7 @@ $.on('command', function (event) {
                 $.say($.adminmsg);
                 return;
             }
-            if ($var.currSong !== null) {
+            if ($var.currSong != null) {
                 var songurl = "https://www.youtube.com/watch?v=" + $var.currSong.song.getId();
                 $.musicplayer.stealSong(songurl);
                 $var.defaultplaylist = $.readFile("./addons/youtubePlayer/playlist.txt");
@@ -582,13 +582,13 @@ $.on('command', function (event) {
 
     if (command.equalsIgnoreCase("addsong")) {
 
-        if ($.inidb.get('blacklist', sender) === "true") {
+        if ($.inidb.get('blacklist', sender) == "true") {
             //blacklisted, deny
             $.say("You are denied access to song request features!");
             return;
         }
         //start arguments check
-        if (args.length === 0) {
+        if (args.length == 0) {
             $.say("Type >> '!addsong or !songrequest <youtube link>' to add a song to the playlist.");
             return;
         }
@@ -601,16 +601,16 @@ $.on('command', function (event) {
                         var cost = $.inidb.get("pricecom", "addsong");
                         $.say("The command cost of " + cost + " " + $.pointname + " has been returned to " + $.username.resolve(sender, event.getTags()));
                         $.inidb.incr("points", sender.toLowerCase(), cost);
-                        $.inidb.SaveAll();
+                        $.inidb.SaveAll(true);
                     }
                 }
                 $.say("Music player disabled.");
                 return;
             }
 
-            var video = new Song(argsString, sender);
+            var video = new Song(argsString, sender, event.getTags());
 
-            if (video.id === null) {
+            if (video.id == null) {
                 $.say("Song doesn't exist or you typed something wrong.");
                 return;
             }
@@ -623,7 +623,7 @@ $.on('command', function (event) {
 
             song = new RequestedSong(video, username);
             
-            if(!$.isModv3(username)) {
+            if(!$.isModv3(sender, event.getTags())) {
                 if (!song.canRequest()) {
                     $.say("You've hit your song request limit, " + username + "!");
                     return;
@@ -638,7 +638,7 @@ $.on('command', function (event) {
             $.say("[\u266B] Song -- " + video.name + " was added to the queue by @" + username + ".");
             song.request();
 
-            if ($var.currSong === null) {
+            if ($var.currSong == null) {
                 next();
             }
         }
@@ -650,14 +650,14 @@ $.on('command', function (event) {
         }
         var name = argsString;
                 
-        if (name === null) {
+        if (name == null) {
             $.say("Song doesn't exist or you typed something wrong.");
             return;
         }
 
         for (i in $var.songqueue) {
-            if (name === $var.songqueue[i].song.getId() || $var.songqueue[i].song.getName().toLowerCase().contains(name.toLowerCase())) {
-                if ($var.songqueue[i].user === username || $.isModv3(sender, event.getTags())) {
+            if (name == $var.songqueue[i].song.getId() || $var.songqueue[i].song.getName().toLowerCase().contains(name.toLowerCase())) {
+                if ($var.songqueue[i].user == username || $.isModv3(sender, event.getTags())) {
                     $.say("[\u266B] Song -- " + $var.songqueue[i].song.getName() + " has been removed from the queue!");
                     $var.songqueue.splice(i, 1);
                     return;
@@ -709,10 +709,10 @@ $.on('command', function (event) {
             $var.skipSong = false;
             $.pollResults.get('yes').intValue();
 
-            if (song !== $.musicplayer.currentId()) {
+            if (song != $.musicplayer.currentId()) {
                 $.say("The poll failed due to the song ending.");
             }
-            if ($.pollResults.get('yes').intValue() === 1) {
+            if ($.pollResults.get('yes').intValue() == 1) {
                 $.say("Skipping song!");
                 next();
             } else {
@@ -739,7 +739,7 @@ $.on('command', function (event) {
     }
     if (command.equalsIgnoreCase("currentsong")) {
 
-        if ($.readFile("./addons/youtubePlayer/currentsong.txt")==="") {
+        if ($.readFile("./addons/youtubePlayer/currentsong.txt")=="") {
             $.say("There is no song playing! Request one with !addsong or !songrequest <youtube link>");
             return;
         }
@@ -761,7 +761,7 @@ $.on('command', function (event) {
             $.say($.adminmsg);
             return;
         }
-        if ($var.currSong !== null) {
+        if ($var.currSong != null) {
             var currsongurl = "https://www.youtube.com/watch?v=" + $var.currSong.song.getId();
             $.musicplayer.stealSong(currsongurl);
             $var.defaultplaylist = $.readFile("./addons/youtubePlayer/playlist.txt");
@@ -805,7 +805,7 @@ $.on('command', function (event) {
                 next();
                 return;
             }
-            song = new Song($var.defaultplaylist[pos],"");
+            song = new Song($var.defaultplaylist[pos]);
             if(song.getName().toLowerCase().contains(argsString.toLowerCase())) {
                 $var.defaultplaylistpos = pos;
                 $var.playChoice=true;
@@ -826,9 +826,9 @@ offlinePlayer = function() {setTimeout(function(){
         $.timer.addTimer("./addonscripts/youtubePlayer.js", "currsongyt", true, function() {
             $var.ytcurrSong = $.readFile("./addons/youtubePlayer/currentsong.txt");
             if (!$var.ytcurrSong.toString().equalsIgnoreCase($.inidb.get("settings", "lastsong")) && !musicPlayerConnected) {
-                if ($var.ytcurrSong.toString()!==null || $var.ytcurrSong.toString()!=="") {
+                if ($var.ytcurrSong.toString()!=null || $var.ytcurrSong.toString()!="") {
                     $.inidb.set("settings", "lastsong", $var.ytcurrSong.toString());
-                    if ($.song_toggle === 1) {
+                    if ($.song_toggle == 1) {
                         $.say("[\u266B] Now Playing -- " + $var.ytcurrSong.toString());
                     } else {
                         println("[\u266B] Now Playing -- " + $var.ytcurrSong.toString());
@@ -842,7 +842,7 @@ offlinePlayer = function() {setTimeout(function(){
 };
 offlinePlayer();
 
-if($.storing===1) {
+if($.storing==1) {
     $.parseDefault();
 }
 

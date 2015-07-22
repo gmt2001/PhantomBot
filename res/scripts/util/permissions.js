@@ -43,7 +43,7 @@ $.isMod = function (user) {
 }
 
 $.isModv3 = function (user, tags) {
-    if(tags!==null) {
+    if(tags!=null) {
         return $.isMod(user) || (tags.containsKey("user-type") && tags.get("user-type").length() > 0);
     } else {
         return $.isMod(user);
@@ -61,7 +61,7 @@ $.isSub = function (user) {
 }
 
 $.isSubv3 = function (user, tags) {
-    if(tags!==null) {
+    if(tags!=null) {
         return $.isSub(user) || (tags.containsKey("subscriber") && tags.get("subscriber").equalsIgnoreCase("1"));
     } else {
         return $.isSub(user);
@@ -69,7 +69,11 @@ $.isSubv3 = function (user, tags) {
 }
 
 $.isTurbo = function (user, tags) {
-    return (tags.containsKey("turbo") && tags.get("turbo").equalsIgnoreCase("1"));
+    if(tags!=null) {
+        tags = tags;
+        return (tags.containsKey("turbo") && tags.get("turbo").equalsIgnoreCase("1"));
+    }
+    return false;
 }
 
 $.isDonator = function (user) {
@@ -248,7 +252,7 @@ $.on('command', function(event) {
                 }
                 var keys = $.inidb.GetKeyList("group", "");
                 for(var i=0;i<keys.length;i++) {
-                    if($.inidb.get("group", keys[i])===$.getGroupIdByName(args[1].toLowerCase())){
+                    if($.inidb.get("group", keys[i])==$.getGroupIdByName(args[1].toLowerCase())){
                         $.inidb.set("group", keys[i], "7");
                     }
                 }
@@ -260,7 +264,7 @@ $.on('command', function(event) {
                         }
                 }
                 
-                if($.getGroupIdByName(args[1].toLowerCase()!==null)) {
+                if($.getGroupIdByName(args[1].toLowerCase()!=null)) {
                     $.inidb.del("groups",$.getGroupIdByName(args[1].toLowerCase()));
                 }
                 

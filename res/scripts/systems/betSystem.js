@@ -10,10 +10,10 @@ var betstarter;
 $.bet_minimum = parseInt($.inidb.get('settings', 'bet_minimum'));
 $.bet_maximum = parseInt($.inidb.get('settings', 'bet_maximum'));
 
-if ($.bet_minimum === undefined || $.bet_minimum === null || isNaN($.bet_minimum) || $.bet_minimum < 0) {
+if ($.bet_minimum == undefined || $.bet_minimum == null || isNaN($.bet_minimum) || $.bet_minimum < 0) {
     $.bet_minimum = 0;
 }
-if ($.bet_maximum === undefined || $.bet_maximum === null || isNaN($.bet_maximum) || $.bet_maximum < 0) {
+if ($.bet_maximum == undefined || $.bet_maximum == null || isNaN($.bet_maximum) || $.bet_maximum < 0) {
     $.bet_maximum = 0;
 }
 

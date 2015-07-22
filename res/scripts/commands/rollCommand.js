@@ -12,7 +12,7 @@ var objRoll = new Object({
  * validated, then set to the respective variable. */
 
 objRoll.temp = parseInt($.inidb.get("roll", "roll_timer"));
-if ((objRoll.temp === undefined) || (objRoll.temp === null) ||
+if ((objRoll.temp == undefined) || (objRoll.temp == null) ||
 	isNaN(objRoll.temp) || (objRoll.temp < 1000)) {
 	$.inidb.set("roll", "roll_timer", objRoll.timer);
 } else {
@@ -20,7 +20,7 @@ if ((objRoll.temp === undefined) || (objRoll.temp === null) ||
 }
 
 objRoll.temp = parseInt($.inidb.get("roll", "roll_bonus"));
-if ((objRoll.temp === undefined) || (objRoll.temp === null) ||
+if ((objRoll.temp == undefined) || (objRoll.temp == null) ||
 	isNaN(objRoll.temp) || (objRoll.temp < 1000)) {
 	$.inidb.set("roll", "roll_bonus", objRoll.bonus);
 } else {
@@ -28,7 +28,7 @@ if ((objRoll.temp === undefined) || (objRoll.temp === null) ||
 }
 
 objRoll.temp = $.inidb.get("roll", "roll_wait");
-if ((objRoll.temp === undefined) || (objRoll.temp === null)) {
+if ((objRoll.temp == undefined) || (objRoll.temp == null)) {
 	$.inidb.set("roll", "roll_wait", objRoll.wait);
 } else if (objRoll.temp.equalsIgnoreCase("true")) {
 	objRoll.wait = true;
@@ -39,7 +39,7 @@ if ((objRoll.temp === undefined) || (objRoll.temp === null)) {
 }
 
 objRoll.temp = $.inidb.get("roll", "roll_stream");
-if ((objRoll.temp === undefined) || (objRoll.temp === null)) {
+if ((objRoll.temp == undefined) || (objRoll.temp == null)) {
 	$.inidb.set("roll", "roll_stream", objRoll.stream);
 } else if (objRoll.temp.equalsIgnoreCase("true")) {
 	objRoll.stream = true;
@@ -62,7 +62,7 @@ $.on('command', function(event) {
 		if (args.length == 0) {
 			var points = parseInt($.inidb.get('points', sender));
 			
-			if ((points === undefined) || (points === null) ||
+			if ((points == undefined) || (points == null) ||
 				isNaN(points) || (points < 0)) {
 				points = 0;
 				$.inidb.set('points', sender, points);
@@ -164,7 +164,7 @@ $.on('command', function(event) {
 					objRoll.bonus + ".");
 			} else {
 				var newbonus = parseInt(args[1]);
-				if ((newbonus === undefined) || (newbonus === null) ||
+				if ((newbonus == undefined) || (newbonus == null) ||
 					isNaN(newbonus) || (newbonus < 1)) {
 					$.say(username + " tried to set an invalid roll bonus, " +
 						"please enter a number 1 or greater.");
@@ -184,7 +184,7 @@ $.on('command', function(event) {
 					Math.ceil(objRoll.timer / 1000) + " seconds.");
 			} else {
 				var newtime = parseInt(args[1]);
-				if ((newtime === undefined) || (newtime === null) ||
+				if ((newtime == undefined) || (newtime == null) ||
 					isNaN(newtime) || (newtime < 1)) {
 					$.say(username + " tried to set an invalid roll timer, " +
 						"please enter a number 1 or greater.");
@@ -287,7 +287,7 @@ $.on('command', function(event) {
 					diType = parseInt(tempstr.substring(dpos + 1));
 				}
 				
-				if ((diNum === undefined) || (diNum === null) ||
+				if ((diNum == undefined) || (diNum == null) ||
 					isNaN(diNum) || (diNum < 1))
 				{
 					$.say(username + "'s " + args[i].trim() + 
@@ -305,7 +305,7 @@ $.on('command', function(event) {
 						diTotal += diTemp;
 						diMax += 4;
 						diMin += 1;
-						diRolls = ((diRolls === null) ? "" : diRolls + " + ")
+						diRolls = ((diRolls == null) ? "" : diRolls + " + ")
 							+ diTemp + "\u25D8\u2074";
 					}
 				} else if (diType == 6) {
@@ -314,7 +314,7 @@ $.on('command', function(event) {
 						diTotal += diTemp;
 						diMax += 6;
 						diMin += 1;
-						diRolls = ((diRolls === null) ? "" : diRolls + " + ")
+						diRolls = ((diRolls == null) ? "" : diRolls + " + ")
 							+ diTemp + "\u25D8\u2076";
 					}
 				} else if (diType == 8) {
@@ -323,7 +323,7 @@ $.on('command', function(event) {
 						diTotal += diTemp;
 						diMax += 8;
 						diMin += 1;
-						diRolls = ((diRolls === null) ? "" : diRolls + " + ")
+						diRolls = ((diRolls == null) ? "" : diRolls + " + ")
 							+ diTemp + "\u25D8\u2078";
 					}
 				} else if (diType == 10) {
@@ -332,7 +332,7 @@ $.on('command', function(event) {
 						diTotal += diTemp;
 						diMax += 10;
 						diMin += 1;
-						diRolls = ((diRolls === null) ? "" : diRolls + " + ")
+						diRolls = ((diRolls == null) ? "" : diRolls + " + ")
 							+ diTemp + "\u25D8\u00B9\u2070";
 					}
 				} else if (diType == 12) {
@@ -341,7 +341,7 @@ $.on('command', function(event) {
 						diTotal += diTemp;
 						diMax += 12;
 						diMin += 1;
-						diRolls = ((diRolls === null) ? "" : diRolls + " + ")
+						diRolls = ((diRolls == null) ? "" : diRolls + " + ")
 							+ diTemp + "\u25D8\u00B9\u00B2";
 					}
 				} else if (diType == 20) {
@@ -350,7 +350,7 @@ $.on('command', function(event) {
 						diTotal += diTemp;
 						diMax += 20;
 						diMin += 1;
-						diRolls = ((diRolls === null) ? "" : diRolls + " + ")
+						diRolls = ((diRolls == null) ? "" : diRolls + " + ")
 							+ diTemp + "\u25D8\u00B2\u2070";
 					}
 				} else if (diType == 100) {
@@ -359,7 +359,7 @@ $.on('command', function(event) {
 						diTotal += diTemp;
 						diMax += 100;
 						diMin += 1;
-						diRolls = ((diRolls === null) ? "" : diRolls + " + ")
+						diRolls = ((diRolls == null) ? "" : diRolls + " + ")
 							+ diTemp + "\u25D8\u00B9\u2070\u2070";
 					}
 				} else {
@@ -371,7 +371,7 @@ $.on('command', function(event) {
 				
 			if (diTotal >= diMax) {	diFlavor = " for a MASSIVE hit!"; }
 			if (diTotal <= diMin) {	diFlavor = " FAILURE!";	}
-			if (diFlavor === null) { diFlavor = "!"; }
+			if (diFlavor == null) { diFlavor = "!"; }
 				
 			$.say(username + " rolled " + diRolls +	" = " +
 				diTotal + diFlavor);
