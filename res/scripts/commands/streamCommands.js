@@ -228,7 +228,7 @@ $.on('command', function(event) {
             }
             
             if (args[0].equalsIgnoreCase("help")) {
-                $.say("Usage: !commercial <commercial length 30, 60, 90, 120, 150, or 180>, !commercial enablecommand, !comemrcial disablecommand, !commercial autotimer");
+                $.say("Usage: !commercial <commercial length 30, 60, 90, 120, 150, or 180>, !commercial enablecommand, !commercial disablecommand, !commercial autotimer");
                 return;
             }
         }
