@@ -1,19 +1,17 @@
 $.on('ircChannelMessage', function(event) {
     
     var message = new String(event.getMessage().toLowerCase().trim());
+
     message = message.replace(/[^a-zA-Z0-9\s]+/g,'');
-    var emoteKey = $.inidb.GetKeyList("phrases", "");
-
-
+	var emoteKey = $.inidb.GetKeyList("phrases", "");
+	
     for (i = 0; i < emoteKey.length; i++) {
         if (message.indexOf(emoteKey[i].toLowerCase()) != -1) {
         
             $.say($.inidb.get('phrases', emoteKey[i]));
             return;
         }
-    }
-
-    
+    }    
 });
 
 $.on('command', function (event) {
@@ -29,23 +27,13 @@ $.on('command', function (event) {
             $.say($.modmsg);
             return;
         }
-        if((argsString.indexOf('"')==1))
-        {
-            triggerphrase = argsString.substring(2, argsString.indexOf('" ')).toLowerCase();
-        } else {
-            triggerphrase = args[0].toString().toLowerCase();
-        }
-        triggerphrase = new String(triggerphrase.trim());
+
+        triggerphrase = args[0].toLowerCase();
+        triggerphrase = new String(triggerphrase);
         triggerphrase = triggerphrase.replace(/[^a-zA-Z0-9\s]+/g,'');
         
-        if(argsString.indexOf('" "')!=-1)
-        {
-            response = argsString.substring(argsString.indexOf('" "') + 3, argsString.length() - 1);
-        } else {
-            response = args[1].toString();
-        }
+        response = args[1];
          
-
         $.inidb.set('phrases', triggerphrase, response);
         $.say("Phrase trigger: " + triggerphrase + ", Message: \"" + response + "\" was added!");
     }
