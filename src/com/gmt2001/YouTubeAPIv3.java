@@ -288,7 +288,7 @@ public class YouTubeAPIv3
         }
         
         JSONObject j = GetData(request_type.GET, "https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=" + q + "&format=json");
-            if (j.getBoolean("_success") && !j.toString().contains("Bad Request"))
+            if (j.getBoolean("_success") && !j.toString().contains("Bad Request") && !j.toString().contains("Not Found"))
             {
                 if (j.getInt("_http") == 200)
                 {
