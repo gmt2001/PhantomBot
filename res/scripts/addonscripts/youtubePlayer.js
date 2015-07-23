@@ -399,7 +399,7 @@ $.on('command', function (event) {
     if (command.equalsIgnoreCase("song")) {
         action = args[0];
         if (action.equalsIgnoreCase("toggle")) {
-            if (!$.isCaster(sender)) {
+            if (!$.isAdmin(sender)) {
                 $.say($.adminmsg);
                 return;
             }
@@ -454,7 +454,7 @@ $.on('command', function (event) {
         }
 
         if (action.equalsIgnoreCase("storing")) {
-            if (!$.isCaster(sender)) {
+            if (!$.isAdmin(sender)) {
                 $.say($.adminmsg);
                 return;
             }
@@ -474,7 +474,7 @@ $.on('command', function (event) {
         }
         
         if (action.equalsIgnoreCase("shuffle")) {
-            if (!$.isCaster(sender)) {
+            if (!$.isAdmin(sender)) {
                 $.say($.adminmsg);
                 return;
             }
@@ -493,7 +493,7 @@ $.on('command', function (event) {
         }
         
         if (action.equalsIgnoreCase("storepath")) {
-            if (!$.isCaster(sender)) {
+            if (!$.isAdmin(sender)) {
                 $.say($.adminmsg);
                 return;
             }
@@ -517,7 +517,7 @@ $.on('command', function (event) {
         }
         
         if (action.equalsIgnoreCase("titles")) {
-            if (!$.isCaster(sender)) {
+            if (!$.isAdmin(sender)) {
                 $.say($.adminmsg);
                 return;
             }
@@ -539,7 +539,7 @@ $.on('command', function (event) {
         }
         
         if (action.equalsIgnoreCase("reloadplaylist")) {
-            if (!$.isCaster(sender)) {
+            if (!$.isAdmin(sender)) {
                 $.say($.adminmsg);
                 return;
             }

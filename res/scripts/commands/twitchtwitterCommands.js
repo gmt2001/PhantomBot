@@ -19,7 +19,7 @@ $.on('command', function(event) {
                 return;
             }
         } else if ($.inidb.get("twitchtwitter", "perm").equalsIgnoreCase("caster")) {
-            if (!$.isCaster(sender)) {
+            if (!$.isAdmin(sender)) {
                 $.say($.castermsg);
                 return;
             }

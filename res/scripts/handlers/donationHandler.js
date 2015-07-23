@@ -25,7 +25,7 @@ $.on('command', function (event) {
         var action = args[0];
         
         if (action.equalsIgnoreCase("filepath")) {
-            if (!$.isCaster(sender)) {
+            if (!$.isAdmin(sender)) {
                 $.say($.adminmsg);
                 return;
             }

@@ -179,14 +179,14 @@ $.on('command', function(event) {
             if (i < $.commandList.length) {
                 if ($.moduleEnabled($.commandList[i][0]) && (($.commandList[i][2].equalsIgnoreCase("admin") && $.isAdmin(sender))
                     || ($.commandList[i][2].equalsIgnoreCase("mod") && $.isModv3(sender, event.getTags()))
-                    || ($.commandList[i][2].equalsIgnoreCase("caster") && $.isCaster(sender)) || $.commandList[i][2].equalsIgnoreCase(""))) {
+                    || ($.commandList[i][2].equalsIgnoreCase("caster") && $.isAdmin(sender)) || $.commandList[i][2].equalsIgnoreCase(""))) {
                     length++;
                 }
             } else {
                 if ($.moduleEnabled($.customCommandList[i - $.commandList.length][0])
                     && (($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("admin") && $.isAdmin(sender))
                         || ($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("mod") && $.isModv3(sender, event.getTags()))
-                        || ($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("caster") && $.isCaster(sender))
+                        || ($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("caster") && $.isAdmin(sender))
                         || $.customCommandList[i - $.commandList.length][2].equalsIgnoreCase(""))) {
                     length++;
                 }
@@ -227,14 +227,14 @@ $.on('command', function(event) {
             if (i < $.commandList.length) {
                 if (!$.moduleEnabled($.commandList[i][0]) || !(($.commandList[i][2].equalsIgnoreCase("admin") && $.isAdmin(sender))
                     || ($.commandList[i][2].equalsIgnoreCase("mod") && $.isModv3(sender, event.getTags()))
-                    || ($.commandList[i][2].equalsIgnoreCase("caster") && $.isCaster(sender)) || $.commandList[i][2].equalsIgnoreCase(""))) {
+                    || ($.commandList[i][2].equalsIgnoreCase("caster") && $.isAdmin(sender)) || $.commandList[i][2].equalsIgnoreCase(""))) {
                     start++;
                 }
             } else {
                 if (!$.moduleEnabled($.customCommandList[i - $.commandList.length][0])
                     || !(($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("admin") && $.isAdmin(sender))
                         || ($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("mod") && $.isModv3(sender, event.getTags()))
-                        || ($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("caster") && $.isCaster(sender))
+                        || ($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("caster") && $.isAdmin(sender))
                         || $.customCommandList[i - $.commandList.length][2].equalsIgnoreCase(""))) {
                     start++;
                 }
@@ -245,14 +245,14 @@ $.on('command', function(event) {
             if (i < $.commandList.length) {
                 if (!$.moduleEnabled($.commandList[i][0]) || !(($.commandList[i][2].equalsIgnoreCase("admin") && $.isAdmin(sender))
                     || ($.commandList[i][2].equalsIgnoreCase("mod") && $.isModv3(sender, event.getTags()))
-                    || ($.commandList[i][2].equalsIgnoreCase("caster") && $.isCaster(sender)) || $.commandList[i][2].equalsIgnoreCase(""))) {
+                    || ($.commandList[i][2].equalsIgnoreCase("caster") && $.isAdmin(sender)) || $.commandList[i][2].equalsIgnoreCase(""))) {
                     continue;
                 }
             } else {
                 if (!$.moduleEnabled($.customCommandList[i - $.commandList.length][0])
                     || !(($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("admin") && $.isAdmin(sender))
                         || ($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("mod") && $.isModv3(sender, event.getTags()))
-                        || ($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("caster") && $.isCaster(sender))
+                        || ($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("caster") && $.isAdmin(sender))
                         || $.customCommandList[i - $.commandList.length][2].equalsIgnoreCase(""))) {
                     continue;
                 }

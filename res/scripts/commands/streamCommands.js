@@ -82,7 +82,7 @@ $.on('command', function(event) {
             $.say("Current Game: " + $.getGame($.channelName));
             return;
         }
-        else if (!isCaster(sender)) {
+        else if (!$.isAdmin(sender)) {
             $.say($.castermsg);
             return;	
         }
@@ -111,7 +111,7 @@ $.on('command', function(event) {
             $.say("Current Status: " + $.getStatus($.channelName));
             return;
         }
-        else if (!isCaster(sender)) {
+        else if (!$.isAdmin(sender)) {
             $.say($.castermsg);
             return;	
         }
@@ -135,7 +135,7 @@ $.on('command', function(event) {
     }
     
     if (command.equalsIgnoreCase("commercial")) {
-        if (!isCaster(sender)) {
+        if (!$.isAdmin(sender)) {
             $.say($.castermsg);
             return;
         }
