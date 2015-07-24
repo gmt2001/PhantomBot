@@ -48,7 +48,7 @@ for (i = 0; i < lines.length; i++) {
 }
 
 function issueCommand(command) {
-    for (vari = 0; i < 4; i++) {
+    for (var i = 0; i < 4; i++) {
         $.say(command);
     }
 }
