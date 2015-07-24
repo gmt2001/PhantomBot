@@ -306,6 +306,18 @@ $.on('command', function (event) {
                 $.say(username + " has changed the name of " + $.pointname + " to '" + argsString2 + "'!");
 
                 $.pointname = argsString2;
+
+            } else if (action.equalsIgnoreCase("reset")) {
+                if (!$.isAdmin(sender)) {
+                    $.say($.adminmsg);
+                    return;
+                }
+
+            $.inidb.RemoveFile("points");
+            $.inidb.ReloadFile("points");
+            $.say(username +", all "+ $.pointname+ " were reset to 0!");
+
+                
             } else if (action.equalsIgnoreCase("toggle") && !argsString.isEmpty()) {
                 if (!$.isAdmin(sender)) {
                     $.say($.adminmsg);

@@ -525,7 +525,7 @@ if ($.inidb.GetBoolean("init", "initialsettings", "loaded") == false
     $.loadScript('./util/initialsettings.js');
 }
 
-$.upgrade_version = 14;
+$.upgrade_version = 15;
 if ($.inidb.GetInteger("init", "upgrade", "version") < $.upgrade_version) {
     $.logEvent("init.js", 426, "Running upgrade from v" + $.inidb.GetInteger("init", "upgrade", "version") + " to v" + $.upgrade_version + "...");
     $.loadScript('./util/upgrade.js');

@@ -98,6 +98,7 @@ $.on('command', function(event) {
                 rMode = $.inidb.get('raffles', 'mode');
                 var rKey = $.inidb.get('raffles', 'keyword');
                 var rWinner = $.inidb.get('raffles', 'winner');
+                var rPlayers = $.inidb.get('raffles', 'players');
                 var rEntries = $.inidb.get('raffles', 'entries');
                 var rDate = $.inidb.get('raffles', 'date');
 
@@ -129,8 +130,12 @@ $.on('command', function(event) {
                     if (rEntries == null) {
                         rEntries = 0;
                     }
+                    
+                    if (rPlayers == null) {
+                        rPlayers = 0;
+                    }
 
-                    $.say("[" + rDate + "] - [Reward: " + rReward + "] - [Entry Price: " + rPrice + " " + $.pointname + "] - [Mode: " + rMode + "] - [Keyword: " + rKey + "] - [Winner: " + $.username.resolve(rWinner) + "] - [Entries: " + rEntries + "]");
+                    $.say("[" + rDate + "] - [Reward: " + rReward + "] - [Entry Price: " + rPrice + " " + $.pointname + "] - [Mode: " + rMode + "] - [Keyword: " + rKey + "] - [Winner: " + $.username.resolve(rWinner) + "] - [Entries: " + rEntries + "] - [Players: " + rPlayers + "]");
                 }
             }
         }
@@ -214,6 +219,7 @@ $.on('command', function(event) {
             }
             
             $var.raffle_running = true;
+           
         } else if (action.equalsIgnoreCase("end")) {
             if (!$.isModv3(sender, event.getTags())) {
                 $.say($.modmsg);
@@ -272,9 +278,31 @@ $.on('command', function(event) {
             $.inidb.set('raffles', 'mode', $var.raffle_mode);
             $.inidb.set('raffles', 'keyword', $var.raffle_keyword);
             $.inidb.set('raffles', 'entries', $var.raffle_entrants.length);
+            $.inidb.set('raffles', 'players', $var.raffle_entrants);
             $.inidb.set('raffles', 'date', date);
 
-        } else if (action.equalsIgnoreCase("repick")) {
+        } else if (action.equalsIgnoreCase("entries")) {
+            if (!$.isModv3(sender, event.getTags())) {
+                $.say(username + ", only moderators may check the current list.");
+                return;
+            
+            }
+            
+            else if (!$var.raffle_running) {
+                return;
+            }
+            
+            else if($var.raffle_entrants.length == 0) {
+                $.say("/me No one entered the raffle yet!");
+                return;
+            }
+            else if ($var.raffle_running) {
+            
+                $.say("The current entrants are " + $var.raffle_entrants)
+                return;    
+            }
+            
+        }else if (action.equalsIgnoreCase("repick")) {
             if (!$.isModv3(sender, event.getTags())) {
                 $.say($.modmsg);
                 return;
@@ -322,6 +350,7 @@ $.on('command', function(event) {
                 $.inidb.set('raffles', 'mode', $var.raffle_mode);
                 $.inidb.set('raffles', 'keyword', $var.raffle_keyword);
                 $.inidb.set('raffles', 'entries', $var.raffle_entrants.length);
+                $.inidb.set('raffles', 'players', $var.raffle_entrants);
                 $.inidb.set('raffles', 'date', date);
 
             }

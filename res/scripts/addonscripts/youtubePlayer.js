@@ -396,7 +396,7 @@ $.on('command', function (event) {
     }
 
 
-    if (command.equalsIgnoreCase("song")) {
+    if (command.equalsIgnoreCase("musicplayer")) {
         action = args[0];
         if (action.equalsIgnoreCase("toggle")) {
             if (!$.isAdmin(sender)) {

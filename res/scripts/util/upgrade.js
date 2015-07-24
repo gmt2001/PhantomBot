@@ -631,7 +631,21 @@ if ($.inidb.GetInteger("init", "upgrade", "version") < 14) {
     $.writeToFile("", "./addons/youtubePlayer/currentsong.txt", false);
     $.inidb.set('settings', "lastdonation", "");
     $.inidb.set('settings', "lastsong", "");    
-    println("   End version 13 upgrades...");
+    println("   End version 14 upgrades...");
+}
+
+if ($.inidb.GetInteger("init", "upgrade", "version") < 15) {
+    println("   Starting version 15 upgrades...");
+    
+    println("     Updating youtubePlayer.js musicplayer command");
+    var keys = $.inidb.GetKeyList("aliases", "");
+
+    for(var i=0;i<keys.length;i++) {
+        if($.inidb.get("aliases",keys[i])=="song") {
+            $.inidb.set("aliases",keys[i],"musicplayer")
+        }
+    }
+    println("   End version 15 upgrades...");
 }
 
 println("   Saving...");
