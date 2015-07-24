@@ -861,6 +861,8 @@ chatRegister = function() {setTimeout(function(){
         $.registerChatCommand("./addonscripts/youtubePlayer.js", "stealsong", "admin");
         $.registerChatCommand("./addonscripts/youtubePlayer.js", "delsong", "mod");
         $.registerChatCommand("./addonscripts/youtubePlayer.js", "volume", "mod");
+        $.registerChatCommand("./addonscripts/youtubePlayer.js", "musicplayer", "mod");
+
     }
 },10*1000);
 };
