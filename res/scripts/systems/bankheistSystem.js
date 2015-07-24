@@ -99,7 +99,7 @@ if($.joinedHeist == "" || $.joinedHeist == null){
 
 $.banksOpen = $.inidb.get("bankheist_strings", "banksOpen");
 if($.banksOpen == "" || $.banksOpen == null){
-    $.banksOpen = "The banks are now open for the taking! Use !bankheist (amount) to bet. 60 seconds are remaining to join!";
+    $.banksOpen = "The banks are now open for the taking! Use !bankheist (amount) to bet. " + $.signupMinutes + " minute(s) are remaining to join!";
     $.inidb.set("bankheist_strings","banksOpen","");
 }
 
