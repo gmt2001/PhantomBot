@@ -3,7 +3,10 @@ $.on('ircChannelMessage', function(event) {
     var message = new String(event.getMessage().toLowerCase().trim());
 
     message = message.replace(/[^a-zA-Z0-9\s]+/g,'');
-	var emoteKey = $.inidb.GetKeyList("phrases", "");
+    var emoteKey = $.inidb.GetKeyList("phrases", "");
+    if(emoteKey==null || emoteKey[0]=="" || emoteKey[0]==null) {
+        return;
+    }
 	
     for (i = 0; i < emoteKey.length; i++) {
         if (message.indexOf(emoteKey[i].toLowerCase()) != -1) {

@@ -336,6 +336,10 @@ $.permCom = function(user, command) {
             return true;
         }
         
+        if(keys==null || keys[0]=="" || keys[0]==null) {
+            return true;
+        }
+        
         for(var i=0;i<keys.length;i++) { 
             if(keys[i].contains(command + "_recursive")) {
                     permGroupName = $.inidb.get("permcom", keys[i]); 
@@ -367,6 +371,7 @@ $.permCom = function(user, command) {
         
     $.say(noPermission);    
     return false;
+    
 };
 
 $api.on($script, 'command', function(event) {

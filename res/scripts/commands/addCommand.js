@@ -80,6 +80,9 @@ $.on('command', function(event) {
 
         var customcommands = "";
         var keys = $.inidb.GetKeyList("command", "");
+        if(keys==null || keys[0]=="" || keys[0]==null) {
+            return;
+        }
         for (var i = 0 ; i < keys.length; i++) {
             customcommands +="!";
             customcommands +=keys[i];
@@ -234,6 +237,12 @@ $.on('command', function(event) {
             
             var newgroup = args[1].toLowerCase();
             var permcommArray = $.inidb.GetKeyList("permcom", "");
+            
+            if(keys==null || keys[0]=="" || keys[0]==null) {
+                $.say("There are currently no commands listed in permcom's permissions list.");
+                return;
+            }
+            
             var alias = "";
             var sourceCommand = "";
             
