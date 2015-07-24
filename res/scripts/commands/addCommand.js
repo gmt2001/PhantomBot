@@ -238,10 +238,6 @@ $.on('command', function(event) {
             var newgroup = args[1].toLowerCase();
             var permcommArray = $.inidb.GetKeyList("permcom", "");
             
-            if(keys==null || keys[0]=="" || keys[0]==null) {
-                $.say("There are currently no commands listed in permcom's permissions list.");
-                return;
-            }
             
             var alias = "";
             var sourceCommand = "";
