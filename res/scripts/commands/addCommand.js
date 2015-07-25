@@ -251,13 +251,13 @@ $.on('command', function(event) {
                 mode = "";
             }
             if(newgroup.equalsIgnoreCase("admin")) {
-                newgroup = "Administrator";
+                newgroup = "administrator";
             }
             if(newgroup.equalsIgnoreCase("mod")) {
-                newgroup = "Moderator";
+                newgroup = "moderator";
             }
             if(newgroup.equalsIgnoreCase("sub")) {
-                newgroup = "Subscriber";
+                newgroup = "subscriber";
             }
             if(newgroup.equalsIgnoreCase("delete")) {
                 for (var i = 0; i < permcommArray.length; i++) {
