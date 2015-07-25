@@ -250,7 +250,15 @@ $.on('command', function(event) {
             } else {
                 mode = "";
             }
-            
+            if(newgroup.equalsIgnoreCase("admin")) {
+                newgroup = "Administrator";
+            }
+            if(newgroup.equalsIgnoreCase("mod")) {
+                newgroup = "Moderator";
+            }
+            if(newgroup.equalsIgnoreCase("sub")) {
+                newgroup = "Subscriber";
+            }
             if(newgroup.equalsIgnoreCase("delete")) {
                 for (var i = 0; i < permcommArray.length; i++) {
                     if (permcommArray[i].equalsIgnoreCase(args[0] + mode)) {
