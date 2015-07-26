@@ -45,9 +45,9 @@ reloadPlaylist = function() {
     $var.defaultplaylist = $.readFile("./addons/youtubePlayer/playlist.txt");
     $.parseDefault();
 }
-notSearchable = function(songid, user, tags) {
+notSearchable = function(songid,songname, user, tags) {
                     this.id = songid;
-                    this.name = "";
+                    this.name = songname;
                     this.length = 0;
                     $.say("Song "+ songid+" not searchable, marked private, or does not exist.");
                     if ($.inidb.exists("pricecom", "addsong") && parseInt($.inidb.get("pricecom", "addsong"))> 0 ){
@@ -58,7 +58,6 @@ notSearchable = function(songid, user, tags) {
                             $.inidb.SaveAll();
                         }
                     }
-                    return;
 };
 
 function Song(name, user, tags) {
@@ -67,17 +66,21 @@ function Song(name, user, tags) {
     if (name==null || name=="") return;
         var data = $.youtube.SearchForVideo(name);
         
-        while(data[0].length()<11 || data[1]!="Video Marked Private"){
+        while(data[0].length()<11){
             data = $.youtube.SearchForVideo(name);
         }
         this.id = data[0];
         this.name = data[1];
         this.length = 1;
         if(data[1]=="Video Marked Private") {
-            notSearchable(this.id, this.user, this.tags);
+            notSearchable(this.id, this.name, this.user, this.tags);
+            if(this.user!=null) {
+                return;
+            }
         }
         if(data[0]=="") {
-            notSearchable(name, this.user, this.tags);
+            notSearchable(name, "", this.user, this.tags);
+            return;
         }
 
                     
@@ -91,7 +94,8 @@ function Song(name, user, tags) {
             ldata = $.youtube.GetVideoLength(this.id);
         }
         if(ldata[0]==0 && ldata[1]==0 && ldata[2]==0) {
-            notSearchable(this.id, this.user, this.tags);
+            notSearchable(this.id, name, this.user, this.tags);
+            return;
         }
         this.length = ldata[2];
         return this.length;
