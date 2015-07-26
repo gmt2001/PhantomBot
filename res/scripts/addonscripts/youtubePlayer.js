@@ -45,11 +45,11 @@ reloadPlaylist = function() {
     $var.defaultplaylist = $.readFile("./addons/youtubePlayer/playlist.txt");
     $.parseDefault();
 }
-notSearchable = function(user, tags) {
-                    this.id = null;
+notSearchable = function(songid, user, tags) {
+                    this.id = songid;
                     this.name = "";
                     this.length = 0;
-                    $.say("Song not searchable due to API error. Please try again.");
+                    $.say("Song "+ songid+" not searchable, marked private, or does not exist.");
                     if ($.inidb.exists("pricecom", "addsong") && parseInt($.inidb.get("pricecom", "addsong"))> 0 ){
                         if(!$.isModv3(user, tags)){
                             var cost = $.inidb.get("pricecom", "addsong");
@@ -63,18 +63,23 @@ notSearchable = function(user, tags) {
 
 function Song(name, user, tags) {
     this.user = user;
+    this.tags = tags;
     if (name==null || name=="") return;
         var data = $.youtube.SearchForVideo(name);
         
-        while(data[0].length()<11){
+        while(data[0].length()<11 || data[1]!="Video Marked Private"){
             data = $.youtube.SearchForVideo(name);
         }
         this.id = data[0];
         this.name = data[1];
         this.length = 1;
-        if(data[0]=="") {
-            notSearchable(this.user, tags);
+        if(data[1]=="Video Marked Private") {
+            notSearchable(this.id, this.user, this.tags);
         }
+        if(data[0]=="") {
+            notSearchable(name, this.user, this.tags);
+        }
+
                     
     this.getId = function () {
         return this.id;
@@ -86,7 +91,7 @@ function Song(name, user, tags) {
             ldata = $.youtube.GetVideoLength(this.id);
         }
         if(ldata[0]==0 && ldata[1]==0 && ldata[2]==0) {
-            notSearchable(this.user);
+            notSearchable(this.id, this.user, this.tags);
         }
         this.length = ldata[2];
         return this.length;
@@ -843,6 +848,7 @@ offlinePlayer = function() {setTimeout(function(){
 offlinePlayer();
 
 if($.storing==1) {
+    $var.defaultplaylist = $.readFile("./addons/youtubePlayer/playlist.txt");
     $.parseDefault();
 }
 
