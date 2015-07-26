@@ -1,4 +1,10 @@
 $.subscribemode = $.inidb.get('settings', 'subscribemode');
+$.sub_silentmode = $.inidb.get('settings', 'sub_silentmode');
+
+if ($.sub_silentmode == null || $.sub_silentmode == undefined) {
+    $.inidb.set('settings', 'sub_silentmode', '1');
+    $.sub_silentmode = $.inidb.get('settings', 'sub_silentmode');
+}
 
 if ($.subscribemode == null || $.subscribemode == undefined) {
     $.inidb.set('settings', 'subscribemode', 'auto');
@@ -53,8 +59,9 @@ $.on('twitchSubscribe', function(event) {
                 s = s.replace('(reward)', p);
             }
         }
-
-        $.say(s);
+        if($.sub_silentmode==0) {
+            $.say(s);
+        }
     }
         
     if ($.moduleEnabled("./systems/pointSystem.js") && p > 0) {
@@ -82,8 +89,9 @@ $.on('twitchUnsubscribe', function(event) {
 
 $.on('twitchSubscribesInitialized', function(event) {
     println(">>Enabling new subscriber announcements");
-    
-    $.announceSubscribes = true;
+    if($.sub_silentmode==0) {
+        $.announceSubscribes = true;
+    }
 });
 
 $.on('command', function(event) {
@@ -117,6 +125,25 @@ $.on('command', function(event) {
         }
     }
     
+    if (command.equalsIgnoreCase("subsilentmode")) {
+        if (!$.isAdmin(sender)) {
+            $.say($.adminmsg);
+            return;
+        }
+        
+        if($.sub_silentmode==1) {
+            $.inidb.set("settings", 'sub_silentmode', 0);
+            $.say('Subscribe handler now set to silent mode');
+            $.sub_silentmode=0;
+            return;
+        } else if($.sub_silentmode==0) {
+            $.inidb.set("settings", 'sub_silentmode', 1);
+            $.say('Subscribe handler now set to verbose mode');
+            $.sub_silentmode=1;
+            return;
+        }
+    }
+    
     if (command.equalsIgnoreCase("subscribereward")) {
         if (!$.isAdmin(sender)) {
             $.say($.adminmsg);
@@ -146,14 +173,17 @@ $.on('command', function(event) {
     if (command.equalsIgnoreCase("subscribecount")) {
         var keys = $.inidb.GetKeyList("subscribed", "");
         var count = 0;
+        if(!$.isAdmin(sender)) {
+            $.say("You must be an Administrator to use this command");
+            return;
+        }
         
         for (i = 0; i < keys.length; i++) {
             if ($.inidb.get("subscribed", keys[i]).equalsIgnoreCase("1")) {
                 count++;
             }
         }
-        
-        $.say("There are currently " + count + " subscribers!");
+        $.println("There are currently " + count + " subscribers!");
     }
     
     if (command.equalsIgnoreCase("subscribemode")) {
@@ -201,9 +231,11 @@ $.on('ircPrivateMessage', function(event) {
         }
     } 
 });
+
 setTimeout(function(){ 
     if ($.moduleEnabled('./handlers/subscribeHandler.js')) {
         $.registerChatCommand("./handlers/subscribeHandler.js", "subscribemessage", "admin");
+        $.registerChatCommand("./handlers/subscribeHandler.js", "subsilentmode", "admin");
         $.registerChatCommand("./handlers/subscribeHandler.js", "subscribereward", "admin");
         $.registerChatCommand("./handlers/subscribeHandler.js", "subscribecount");
         $.registerChatCommand("./handlers/subscribeHandler.js", "subscribemode", "admin");
