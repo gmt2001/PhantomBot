@@ -469,6 +469,10 @@ $.on('command', function(event) {
     }
 
     if (command.equalsIgnoreCase("users")) {
+        if (!$.isModv3(sender, event.getTags())) {
+		$.say($.modmsg);
+		return;
+	}
         s = "Users in channel: ";
         
         for (i = 0; i < $.users.length; i++) {
