@@ -532,7 +532,7 @@ $.on('ircChannelMessage', function(event) {
         if ($.users[i][0].equalsIgnoreCase(sender)) {
             $.users[i][1] = System.currentTimeMillis();
             found = true;
-            if($.isSubv3(event.getSender(), event.getTags())==true) {
+            if($.isSubv3(event.getSender(), event.getTags())==true && $.isAdmin(event.getSender())==false && $.isModv3(event.getSender(), event.getTags())==false) {
                 if($.inidb.get("group", sender)!="3") {
                     $.inidb.set("group", sender, "3");
                     $.inidb.set("subscribed", sender, "1");
@@ -581,9 +581,6 @@ $.on('ircChannelJoin', function(event) {
     for (var i = 0; i < $.users.length; i++) {
         if ($.users[i][0].equalsIgnoreCase(username)) {
             found = true;
-            if($.isSub(event.getUser())==true) {
-                $.inidb.set("group", username, 3);
-            }
             break;
         }
     }
@@ -619,9 +616,7 @@ $.on('ircChannelLeave', function(event) {
         if($.modeOUsers[i].equalsIgnoreCase(event.getUser().toLowerCase())) {
             $.modeOUsers.splice(i, 1);
                 if($.isModv3(event.getUser(), event.getTags())==false) {
-                        if($.isSub(event.getUser())==true){
-                            $.inidb.set('group', username, 3);
-                        } else {
+                        if($.isSub(event.getUser())==false){
                             $.inidb.set('group', username, 7);
                             if($.inidb.exists("subscribed",username)) {
                                 $.inidb.del("subscribed", username);
@@ -656,9 +651,7 @@ $.on('ircChannelUserMode', function(event) {
                 if($.modeOUsers[i].equalsIgnoreCase(event.getUser().toLowerCase())) {
                     $.modeOUsers.splice(i, 1);
                     if($.isAdmin(event.getUser().toLowerCase())==false){
-                        if($.isSub(event.getUser())==true){
-                            $.inidb.set('group', event.getUser().toLowerCase(), 3);
-                        } else {
+                        if($.isSub(event.getUser())==false){
                             $.inidb.set('group', event.getUser().toLowerCase(), 7);
                             if($.inidb.exists("subscribed",event.getUser().toLowerCase())) {
                                 $.inidb.del("subscribed", event.getUser().toLowerCase());
