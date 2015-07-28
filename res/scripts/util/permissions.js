@@ -605,14 +605,14 @@ $.on('ircChannelLeave', function(event) {
     for (i = 0; i < $.users.length; i++) {
         if ($.users[i][0].equalsIgnoreCase(username)) {
             $.users.splice(i, 1);
-            if($.isSub(username)==false) {
-                if($.inidb.exists("tempsubgroup", username)) {
+            if($.isAdmin(username)==false) {
+                if($.inidb.exists("tempsubgroup", username) && $.isAdmin(username)==false) {
                     $.inidb.set("group", username, $.inidb.get("tempsubgroup",username));
                 } else {
                     $.inidb.set("group", username, 7);
                 }
                 
-                if($.inidb.exists("subscribed",username)) {
+                if($.inidb.exists("subscribed",username)  && $.isSub(username)==false) {
                     $.inidb.del("subscribed", username);
                 }
             }
@@ -623,17 +623,15 @@ $.on('ircChannelLeave', function(event) {
     for (i = 0; i < $.modeOUsers.length; i++) {
         if($.modeOUsers[i].equalsIgnoreCase(event.getUser().toLowerCase())) {
             $.modeOUsers.splice(i, 1);
-                if($.isModv3(event.getUser(), event.getTags())==false) {
-                        if($.isSub(event.getUser())==false){
+                if($.isAdmin(event.getUser())==false) {
                             if($.inidb.exists("tempsubgroup", username)) {
                                 $.inidb.set("group", username, $.inidb.get("tempsubgroup",username));
                             } else {
                                 $.inidb.set("group", username, 7);
                             }
-                            if($.inidb.exists("subscribed",username)) {
+                            if($.inidb.exists("subscribed",username) && $.isSub(username)==false) {
                                 $.inidb.del("subscribed", username);
                             }
-                        }
                 }
             println("-Moderator: " + event.getUser().toLowerCase());
         }
@@ -663,16 +661,12 @@ $.on('ircChannelUserMode', function(event) {
                 if($.modeOUsers[i].equalsIgnoreCase(event.getUser().toLowerCase())) {
                     $.modeOUsers.splice(i, 1);
                     if($.isAdmin(event.getUser().toLowerCase())==false){
-                        if($.isSub(event.getUser())==false){
                             if($.inidb.exists("tempsubgroup", event.getUser().toLowerCase())) {
                                 $.inidb.set("group", event.getUser().toLowerCase(), $.inidb.get("tempsubgroup",event.getUser().toLowerCase()));
                             } else {
                                 $.inidb.set("group", event.getUser().toLowerCase(), 7);
                             }
-                            if($.inidb.exists("subscribed",event.getUser().toLowerCase())) {
-                                $.inidb.del("subscribed", event.getUser().toLowerCase());
-                            }
-                        }
+                            
                     }
                     println("-Moderator: " + event.getUser().toLowerCase());
                 }
