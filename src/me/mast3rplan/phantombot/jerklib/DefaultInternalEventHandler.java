@@ -16,15 +16,12 @@
  */
 package me.mast3rplan.phantombot.jerklib;
 
-import me.mast3rplan.phantombot.jerklib.events.*;
-import me.mast3rplan.phantombot.jerklib.events.IRCEvent.Type;
-import me.mast3rplan.phantombot.jerklib.listeners.IRCEventListener;
-
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
-
+import me.mast3rplan.phantombot.jerklib.events.*;
+import me.mast3rplan.phantombot.jerklib.events.IRCEvent.Type;
 import static me.mast3rplan.phantombot.jerklib.events.IRCEvent.Type.*;
+import me.mast3rplan.phantombot.jerklib.listeners.IRCEventListener;
 
 /**
  * Class that will only handle events that effect internal states/caches. Like
@@ -44,8 +41,7 @@ public class DefaultInternalEventHandler implements IRCEventListener
 {
 
     private ConnectionManager manager;
-    private Map<Type, IRCEventListener> stratMap = new HashMap<Type, IRCEventListener>();
-    private Logger log = Logger.getLogger(this.getClass().getName());
+    private Map<Type, IRCEventListener> stratMap = new HashMap<>();
 
     /**
      * Creates a new DefaultInternalEventHandler associated with the given
@@ -98,6 +94,7 @@ public class DefaultInternalEventHandler implements IRCEventListener
     /* (non-Javadoc)
      * @see me.mast3rplan.phantombot.jerklib.listeners.IRCEventListener#receiveEvent(me.mast3rplan.phantombot.jerklib.events.IrcEvent)
      */
+    @Override
     public void receiveEvent(IRCEvent event)
     {
         IRCEventListener l = stratMap.get(event.getType());
@@ -108,12 +105,14 @@ public class DefaultInternalEventHandler implements IRCEventListener
         } else
         {
             String command = event.command();
-            if (command.equals("PING"))
+            switch (command)
             {
-                event.getSession().getConnection().pong(event);
-            } else if (command.equals("PONG"))
-            {
-                event.getSession().getConnection().gotPong();
+                case "PING":
+                    event.getSession().getConnection().pong(event);
+                    break;
+                case "PONG":
+                    event.getSession().getConnection().gotPong();
+                    break;
             }
         }
 
@@ -165,10 +164,6 @@ public class DefaultInternalEventHandler implements IRCEventListener
     public void part(IRCEvent e)
     {
         PartEvent pe = (PartEvent) e;
-        if (!pe.getChannel().removeNick(pe.getNick()))
-        {
-            log.severe("Could Not remove nick " + pe.getNick() + " from " + pe.getChannelName());
-        }
         if (pe.getNick().equalsIgnoreCase(e.getSession().getNick()))
         {
             pe.getSession().removeChannel(pe.getChannel());
@@ -238,11 +233,6 @@ public class DefaultInternalEventHandler implements IRCEventListener
     public void kick(IRCEvent e)
     {
         KickEvent ke = (KickEvent) e;
-        if (!ke.getChannel().removeNick(ke.getWho()))
-        {
-            log.info("COULD NOT REMOVE NICK " + ke.getWho() + " from channel " + ke.getChannel().getName());
-        }
-
         Session session = e.getSession();
         if (ke.getWho().equals(session.getNick()))
         {
@@ -310,6 +300,7 @@ public class DefaultInternalEventHandler implements IRCEventListener
     {
         stratMap.put(CONNECT_COMPLETE, new IRCEventListener()
         {
+            @Override
             public void receiveEvent(IRCEvent e)
             {
                 connectionComplete(e);
@@ -318,6 +309,7 @@ public class DefaultInternalEventHandler implements IRCEventListener
 
         stratMap.put(JOIN_COMPLETE, new IRCEventListener()
         {
+            @Override
             public void receiveEvent(IRCEvent e)
             {
                 joinComplete(e);
@@ -326,6 +318,7 @@ public class DefaultInternalEventHandler implements IRCEventListener
 
         stratMap.put(JOIN, new IRCEventListener()
         {
+            @Override
             public void receiveEvent(IRCEvent e)
             {
                 join(e);
@@ -334,6 +327,7 @@ public class DefaultInternalEventHandler implements IRCEventListener
 
         stratMap.put(QUIT, new IRCEventListener()
         {
+            @Override
             public void receiveEvent(IRCEvent e)
             {
                 quit(e);
@@ -342,6 +336,7 @@ public class DefaultInternalEventHandler implements IRCEventListener
 
         stratMap.put(PART, new IRCEventListener()
         {
+            @Override
             public void receiveEvent(IRCEvent e)
             {
                 part(e);
@@ -350,6 +345,7 @@ public class DefaultInternalEventHandler implements IRCEventListener
 
         stratMap.put(NICK_CHANGE, new IRCEventListener()
         {
+            @Override
             public void receiveEvent(IRCEvent e)
             {
                 nick(e);
@@ -358,6 +354,7 @@ public class DefaultInternalEventHandler implements IRCEventListener
 
         stratMap.put(NICK_IN_USE, new IRCEventListener()
         {
+            @Override
             public void receiveEvent(IRCEvent e)
             {
                 nickInUse(e);
@@ -366,6 +363,7 @@ public class DefaultInternalEventHandler implements IRCEventListener
 
         stratMap.put(KICK_EVENT, new IRCEventListener()
         {
+            @Override
             public void receiveEvent(IRCEvent e)
             {
                 kick(e);
@@ -374,6 +372,7 @@ public class DefaultInternalEventHandler implements IRCEventListener
 
         stratMap.put(MODE_EVENT, new IRCEventListener()
         {
+            @Override
             public void receiveEvent(IRCEvent e)
             {
                 mode(e);
