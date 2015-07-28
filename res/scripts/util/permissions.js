@@ -43,8 +43,8 @@ $.isMod = function (user) {
 }
 
 $.isModv3 = function (user, tags) {
-    if(tags!=null) {
-        return (tags.containsKey("user-type") && tags.get("user-type").length() > 0) ||$.isOwner(user) || $.isBot(user);
+    if(tags!=null && tags!="{}") {
+        return (tags.get("user-type").equalsIgnoreCase("mod")) || $.isOwner(user) || $.isBot(user);
     } else {
         return $.isMod(user);
     }
@@ -61,17 +61,16 @@ $.isSub = function (user) {
 }
 
 $.isSubv3 = function (user, tags) {
-    if(tags!=null) {
-        return (tags.containsKey("subscriber") && tags.get("subscriber").equalsIgnoreCase("1")) || $.isOwner(user) || $.isBot(user);
+    if(tags!=null && tags!="{}") {
+        return (tags.get("subscriber").equalsIgnoreCase("1")) || $.isOwner(user) || $.isBot(user);
     } else {
         return $.isSub(user);
     }
 }
 
 $.isTurbo = function (user, tags) {
-    if(tags!=null) {
-        tags = tags;
-        return (tags.containsKey("turbo") && tags.get("turbo").equalsIgnoreCase("1"));
+    if(tags!=null && tags!="{}") {
+        return (tags.get("turbo").equalsIgnoreCase("1"));
     }
     return false;
 }
@@ -293,7 +292,7 @@ $.on('command', function(event) {
                 else {
                     if( (parseInt($.getUserGroupId(sender))< $.parseInt($.getUserGroupId($.username.resolve(args[1])))) )
                     {
-                        if( parseInt($.getUserGroupId(sender)) < parseInt($.getGroupIdByName(name)) )
+                        if( (parseInt($.getUserGroupId(sender)) < parseInt($.getGroupIdByName(name))) )
                         {
                             $.setUserGroupByName(args[1], name);
                             $.say("Group for " + $.username.resolve(args[1]) + " changed to " + $.getUserGroupName($.username.resolve(args[1])) + "!");
@@ -572,13 +571,13 @@ $.on('ircChannelJoin', function(event) {
     
     $.lastjoinpart = System.currentTimeMillis();
     
-    if($.isSubv3(username, event.getTags())) {
-        $.inidb.set("group", username, 4);
-    }
     
     for (var i = 0; i < $.users.length; i++) {
         if ($.users[i][0].equalsIgnoreCase(username)) {
             found = true;
+            if($.isSub(event.getUser())==true) {
+                $.inidb.set("group", username, 4);
+            }
             break;
         }
     }
@@ -586,6 +585,7 @@ $.on('ircChannelJoin', function(event) {
     if (!found) {
         $.users.push(new Array(username, System.currentTimeMillis()));
     }
+    
 });
 
 $.on('ircChannelLeave', function(event) {
@@ -595,13 +595,13 @@ $.on('ircChannelLeave', function(event) {
     
     $.lastjoinpart = System.currentTimeMillis();
     
-    if($.isSubv3(username, event.getTags())==false) {
-        $.inidb.set("group", username, 7);
-    }
     
     for (i = 0; i < $.users.length; i++) {
         if ($.users[i][0].equalsIgnoreCase(username)) {
             $.users.splice(i, 1);
+            if($.isSub(username)==false) {
+                $.inidb.set("group", username, 7);
+            }
             break;
         }
     }
@@ -609,11 +609,13 @@ $.on('ircChannelLeave', function(event) {
     for (i = 0; i < $.modeOUsers.length; i++) {
         if($.modeOUsers[i].equalsIgnoreCase(event.getUser().toLowerCase())) {
             $.modeOUsers.splice(i, 1);
-            if($.isAdmin(event.getUser().toLowerCase())==false){
-                if($.isModv3(event.getUser().toLowerCase())==false) {
-                    $.inidb.set('group', event.getUser().toLowerCase(), 7);
+                if($.isModv3(event.getUser(), event.getTags())==false) {
+                        if($.isSub(event.getUser())==true){
+                            $.inidb.set('group', username, 4);
+                        } else {
+                            $.inidb.set('group', username, 7);
+                        }
                 }
-            }
             println("-Moderator: " + event.getUser().toLowerCase());
         }
     }
@@ -624,12 +626,17 @@ $.on('ircChannelUserMode', function(event) {
         if (event.getAdd()==true) {
             if ($.array.contains($.modeOUsers, event.getUser().toLowerCase())==false) {                
                 $.modeOUsers.push(event.getUser().toLowerCase());
-                if($.isAdmin(event.getUser().toLowerCase())==false){
-                    $.inidb.set('group', event.getUser().toLowerCase(), 2);
-                    println("Moderator: " + event.getUser().toLowerCase());
+                if($.isAdmin(event.getUser())==true){
+                        $.inidb.set('group', event.getUser().toLowerCase(), 1);
+                        println("Admin: " + event.getUser().toLowerCase());  
                 }
+                if($.isAdmin(event.getUser())==false){
+                    $.inidb.set('group', event.getUser().toLowerCase(), 2);
+                    println("Moderator: " + event.getUser().toLowerCase()); 
+                }                   
+
                 if ($.array.contains($.modeOUsers, $.botowner.toLowerCase())) {
-                    $.inidb.set('group', $.botowner.toLowerCase(), 0);
+                        $.inidb.set('group', $.botowner.toLowerCase(), 0);
                 }
             }
         } else {
@@ -637,7 +644,7 @@ $.on('ircChannelUserMode', function(event) {
                 if($.modeOUsers[i].equalsIgnoreCase(event.getUser().toLowerCase())) {
                     $.modeOUsers.splice(i, 1);
                     if($.isAdmin(event.getUser().toLowerCase())==false){
-                        if($.isSubv3(event.getUser().toLowerCase())==true){
+                        if($.isSub(event.getUser())==true){
                             $.inidb.set('group', event.getUser().toLowerCase(), 4);
                         } else {
                             $.inidb.set('group', event.getUser().toLowerCase(), 7);
