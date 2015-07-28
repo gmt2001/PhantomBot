@@ -534,6 +534,9 @@ $.on('ircChannelMessage', function(event) {
             found = true;
             if($.isSubv3(event.getSender(), event.getTags())==true && $.isAdmin(event.getSender())==false && $.isModv3(event.getSender(), event.getTags())==false) {
                 if($.inidb.get("group", sender)!="3") {
+                    if($.inidb.exists("group", sender)) {
+                        $.inidb.set("tempsubgroup", sender, $.inidb.get("group",sender));
+                    }
                     $.inidb.set("group", sender, "3");
                     $.inidb.set("subscribed", sender, "1");
                 }
@@ -603,7 +606,12 @@ $.on('ircChannelLeave', function(event) {
         if ($.users[i][0].equalsIgnoreCase(username)) {
             $.users.splice(i, 1);
             if($.isSub(username)==false) {
-                $.inidb.set("group", username, 7);
+                if($.inidb.exists("tempsubgroup", username)) {
+                    $.inidb.set("group", username, $.inidb.get("tempsubgroup",username));
+                } else {
+                    $.inidb.set("group", username, 7);
+                }
+                
                 if($.inidb.exists("subscribed",username)) {
                     $.inidb.del("subscribed", username);
                 }
@@ -617,7 +625,11 @@ $.on('ircChannelLeave', function(event) {
             $.modeOUsers.splice(i, 1);
                 if($.isModv3(event.getUser(), event.getTags())==false) {
                         if($.isSub(event.getUser())==false){
-                            $.inidb.set('group', username, 7);
+                            if($.inidb.exists("tempsubgroup", username)) {
+                                $.inidb.set("group", username, $.inidb.get("tempsubgroup",username));
+                            } else {
+                                $.inidb.set("group", username, 7);
+                            }
                             if($.inidb.exists("subscribed",username)) {
                                 $.inidb.del("subscribed", username);
                             }
@@ -652,7 +664,11 @@ $.on('ircChannelUserMode', function(event) {
                     $.modeOUsers.splice(i, 1);
                     if($.isAdmin(event.getUser().toLowerCase())==false){
                         if($.isSub(event.getUser())==false){
-                            $.inidb.set('group', event.getUser().toLowerCase(), 7);
+                            if($.inidb.exists("tempsubgroup", event.getUser().toLowerCase())) {
+                                $.inidb.set("group", event.getUser().toLowerCase(), $.inidb.get("tempsubgroup",event.getUser().toLowerCase()));
+                            } else {
+                                $.inidb.set("group", event.getUser().toLowerCase(), 7);
+                            }
                             if($.inidb.exists("subscribed",event.getUser().toLowerCase())) {
                                 $.inidb.del("subscribed", event.getUser().toLowerCase());
                             }
