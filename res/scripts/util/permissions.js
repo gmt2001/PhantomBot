@@ -44,7 +44,7 @@ $.isMod = function (user) {
 
 $.isModv3 = function (user, tags) {
     if(tags!=null) {
-        return (tags.containsKey("user-type") && tags.get("user-type").length() > 0);
+        return (tags.containsKey("user-type") && tags.get("user-type").length() > 0) ||$.isOwner(user) || $.isBot(user);
     } else {
         return $.isMod(user);
     }
@@ -62,7 +62,7 @@ $.isSub = function (user) {
 
 $.isSubv3 = function (user, tags) {
     if(tags!=null) {
-        return (tags.containsKey("subscriber") && tags.get("subscriber").equalsIgnoreCase("1"));
+        return (tags.containsKey("subscriber") && tags.get("subscriber").equalsIgnoreCase("1")) || $.isOwner(user) || $.isBot(user);
     } else {
         return $.isSub(user);
     }
