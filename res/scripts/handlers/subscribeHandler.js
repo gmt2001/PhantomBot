@@ -27,8 +27,11 @@ $.on('twitchSubscribe', function(event) {
     if (subscribed.equalsIgnoreCase("0")) {
         $.inidb.set('subscribed', subscriber, 1);
     }
-    $.inidb.set("tempsubgroup", subscriber, $.inidb.get("group",subscriber));
-    $.inidb.set("group", subscriber, 3);
+    
+    if($.isAdmin(subscriber)==false || $.isModv3(subscriber, event.getTags())==false) {
+        $.inidb.set("tempsubgroup", subscriber, $.inidb.get("group",subscriber));
+        $.inidb.set("group", subscriber, 3);
+    }
     
     if ($.announceSubscribes) {
         var s = $.inidb.get('settings', 'subscribemessage');
@@ -83,7 +86,10 @@ $.on('twitchUnsubscribe', function(event) {
     if (subscribed.equalsIgnoreCase("1")) {
         $.inidb.set('subscribed', subscriber, 0);
     }
-    $.inidb.set("group", subscriber, $.inidb.get("tempsubgroup", subscriber));
+    if($.isAdmin(subscriber)==false || $.isModv3(subscriber, event.getTags())==false) {
+        $.inidb.set("group", subscriber, $.inidb.get("tempsubgroup", subscriber));
+    }
+    
 
 });
 
