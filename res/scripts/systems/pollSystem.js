@@ -285,6 +285,7 @@ $.on('command', function (event) {
             if (!$.isModv3(sender, event.getTags())) {
                 if ($var.pollMaster != sender) {
                     $.say($.modmsg);
+                    return;
                 }
             }
 
