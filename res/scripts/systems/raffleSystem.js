@@ -366,7 +366,9 @@ $.on('ircChannelMessage', function(event) {
     if ($var.raffle_running) {
         if (message.toLowerCase().indexOf($var.raffle_keyword.toLowerCase()) == -1 || $.array.contains($var.raffle_entrants, sender)) {
             if (message.toLowerCase().contains($var.raffle_keyword.toLowerCase())) {
-                $.say("You have already entered the raffle!");
+                if ($var.raffle_toggle == true) {
+                    $.say("You have already entered the raffle!");
+                }
                 return;
             }
             return;
