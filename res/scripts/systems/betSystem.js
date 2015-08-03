@@ -246,8 +246,8 @@ $.on('command', function (event) {
                 }
 
                 var a = 0;
-                var winners = ""
-                var moneyWon = 0
+                var winners = "";
+                var moneyWon = 0;
 
 
                 for (user in $var.bet_table) {
@@ -259,10 +259,10 @@ $.on('command', function (event) {
 
                         if (moneyWon > 0) {
                             if (winners.length > 0) {
-                                winners = winners + ", "
+                                winners += ", ";
                             }
 
-                            winners = winners + $.username.resolve(user)
+                            winners += $.username.resolve(user);
                             $.inidb.set('bets', 'players', winners); //
                         }
                     }
