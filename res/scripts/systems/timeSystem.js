@@ -283,11 +283,15 @@ $.timer.addTimer("./systems/timeSystem.js", "timesystem", true, function() {
         $.inidb.incr('time', nick, 60);
         if ($.timelevel=="true") {
             //this promotes viewers to regulars if they spend more than 36 hours in the stream
-            if ((parseInt($.getUserGroupId(nick))> 6) && ($.inidb.get('followed', nick) == 1) && (parseInt($.inidb.get('time', nick)) >= (parseInt($.timePromoteHours*60))*60)) {
-                var levelup = parseInt($.getUserGroupId(nick)) -1;
-                
-                $.setUserGroupById(nick, levelup);
-                $.say($.username.resolve(nick) + " has been promoted to a " + $.getGroupNameById(levelup) + "! Congratulations!");
+            if(!$.isMod(nick)) {
+                if ( parseInt($.getUserGroupId(nick)) > 6 && $.inidb.get('followed', nick) == 1 ) {
+                    if(parseInt($.inidb.get('time', nick)) >= parseInt($.timePromoteHours*60)*60) {
+                        var levelup = parseInt($.getUserGroupId(nick)) -1;
+                        
+                        $.setUserGroupById(nick, levelup);
+                        $.say($.username.resolve(nick) + " has been promoted to a " + $.getGroupNameById(levelup) + "! Congratulations!");
+                    }
+                }
             }
         }
     }
