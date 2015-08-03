@@ -250,7 +250,7 @@ $.on('command', function (event) {
                 var moneyWon = 0;
 
 
-                for (user in $var.bet_table) {
+                for (var user in $var.bet_table) {
                     a++;
                     bet = $var.bet_table[user];
                     if (bet.option.equalsIgnoreCase(winning)) {
@@ -271,7 +271,7 @@ $.on('command', function (event) {
                 if (a < minbets) {
                     $.say("/me [BET CLOSED] >> There weren't enough bets to determine a proper win.");
 
-                    for (user in $var.bet_table) {
+                    for (var user in $var.bet_table) {
                         bet = $var.bet_table[user];
                         $.inidb.incr('points', user, bet.amount);
                     }
@@ -286,7 +286,7 @@ $.on('command', function (event) {
                     } else if (totalwin == 0) {
                         $.say("/me Everyone lost the bet!");
                     } else {
-                        for (user in $var.bet_table) {
+                        for (var user in $var.bet_table) {
                             bet = $var.bet_table[user];
                             if (bet.option.equalsIgnoreCase(winning)) {
                                 moneyWon = parseInt(pot);
@@ -317,7 +317,7 @@ $.on('command', function (event) {
 
                     var optionString = "";
 
-                    for (i = 0; i < boptions.length; i++) {
+                    for (var i = 0; i < boptions.length; i++) {
                         $var.bet_options.push(boptions[i].trim().toLowerCase());
 
                         if (!optionString.equals("")) {
