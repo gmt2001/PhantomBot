@@ -131,7 +131,7 @@ $.on('command', function (event) {
                 } else {
 
                     if (rOptions == null) {
-                        $.say("There are no past bets.")
+                        $.say("There are no past bets.");
                     } else {
 
                         if (rWinner == null) {
@@ -171,7 +171,7 @@ $.on('command', function (event) {
 
                 var optionString = "";
 
-                for (i = 0; i < boptions.length; i++) {
+                for (var i = 0; i < boptions.length; i++) {
                     $var.bet_options.push(boptions[i].trim().toLowerCase());
 
                     if (!optionString.equals("")) {
@@ -194,13 +194,12 @@ $.on('command', function (event) {
 
                 var betid = $var.bet_id
 
-                setTimeout(function () {
+                $.timer.addTimer("./systems/betSystem.js", "results", true, function() {
                     if (!$var.bet_running) return;
                     if ($var.bet_id != betid) return;
 
-                    $.say("/me Betting is now closed! [Pot: " + pot + " " + $.pointname + "] please wait for the results!")
+                    $.say("/me Betting is now closed! [Pot: " + pot + " " + $.pointname + "] please wait for the results!");
                 }, betlength);
-
 
             } else if (action.equalsIgnoreCase("time") && !$var.bet_running) {
                 if (!$.isModv3(sender, event.getTags())) {
@@ -340,12 +339,13 @@ $.on('command', function (event) {
 
                     var betid = $var.bet_id
 
-                    setTimeout(function () {
+                    $.timer.addTimer("./systems/betSystem.js", "results2", true, function() {
                         if (!$var.bet_running) return;
                         if ($var.bet_id != betid) return;
 
-                        $.say("/me Betting is now closed! [Pot: " + pot + " " + $.pointname + "] please wait for the results!")
+                        $.say("/me Betting is now closed! [Pot: " + pot + " " + $.pointname + "] please wait for the results!");
                     }, betlength);
+
                 } 
                 
                 if (!$var.bet_running) return;
