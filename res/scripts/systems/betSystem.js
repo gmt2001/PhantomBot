@@ -194,12 +194,13 @@ $.on('command', function (event) {
 
                 var betid = $var.bet_id
 
-                $.timer.addTimer("./systems/betSystem.js", "results", true, function() {
+                setTimeout(function () {
                     if (!$var.bet_running) return;
                     if ($var.bet_id != betid) return;
 
-                    $.say("/me Betting is now closed! [Pot: " + pot + " " + $.pointname + "] please wait for the results!");
+                    $.say("/me Betting is now closed! [Pot: " + pot + " " + $.pointname + "] please wait for the results!")
                 }, betlength);
+
 
             } else if (action.equalsIgnoreCase("time") && !$var.bet_running) {
                 if (!$.isModv3(sender, event.getTags())) {
@@ -339,13 +340,12 @@ $.on('command', function (event) {
 
                     var betid = $var.bet_id
 
-                    $.timer.addTimer("./systems/betSystem.js", "results2", true, function() {
+                    setTimeout(function () {
                         if (!$var.bet_running) return;
                         if ($var.bet_id != betid) return;
 
-                        $.say("/me Betting is now closed! [Pot: " + pot + " " + $.pointname + "] please wait for the results!");
+                        $.say("/me Betting is now closed! [Pot: " + pot + " " + $.pointname + "] please wait for the results!")
                     }, betlength);
-
                 } 
                 
                 if (!$var.bet_running) return;
