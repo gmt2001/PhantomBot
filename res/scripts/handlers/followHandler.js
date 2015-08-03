@@ -32,6 +32,7 @@ $.on('twitchFollow', function(event) {
             
             while (s.indexOf('(name)') != -1) {
                 s = s.replace('(name)', username);
+                $.writeToFile(username + " ", "./web/latestfollower.txt", false);
             }
             
             if ($.moduleEnabled("./systems/pointSystem.js")) {
