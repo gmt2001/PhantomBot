@@ -27,12 +27,10 @@ $.on('twitchFollow', function(event) {
                 } else {
                     s = "Thanks for the follow (name)!";
                 }
-                $.writeToFile(username + " ", "./web/latestfollower.txt", false);
             }
             
             while (s.indexOf('(name)') != -1) {
                 s = s.replace('(name)', username);
-                $.writeToFile(username + " ", "./web/latestfollower.txt", false);
             }
             
             if ($.moduleEnabled("./systems/pointSystem.js")) {
@@ -44,6 +42,8 @@ $.on('twitchFollow', function(event) {
                     s = s.replace('(reward)', p.toString());
                 }
             }
+            
+            $.writeToFile(username + " ", "./web/latestfollower.txt", false);
             
             $.followtrain++;
             $.lastfollow = System.currentTimeMillis();

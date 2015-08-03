@@ -605,17 +605,16 @@ $.on('ircChannelLeave', function(event) {
     for (i = 0; i < $.users.length; i++) {
         if ($.users[i][0].equalsIgnoreCase(username)) {
             $.users.splice(i, 1);
-            if($.isAdmin(username)==false) {
-                if($.inidb.exists("tempsubgroup", username) && $.isAdmin(username)==false) {
-                    $.inidb.set("group", username, $.inidb.get("tempsubgroup",username));
-                } else {
-                    $.inidb.set("group", username, 7);
-                }
                 
                 if($.inidb.exists("subscribed",username)  && $.isSub(username)==false) {
                     $.inidb.del("subscribed", username);
+                    if($.inidb.exists("tempsubgroup", username) && $.isAdmin(username)==false) {
+                        $.inidb.set("group", username, $.inidb.get("tempsubgroup",username));
+                    }
+                    if($.inidb.exists("group", username)==false && $.isAdmin(username)==false) {
+                        $.inidb.set("group", username, 7);
+                    }
                 }
-            }
             break;
         }
     }
@@ -623,33 +622,33 @@ $.on('ircChannelLeave', function(event) {
     for (i = 0; i < $.modeOUsers.length; i++) {
         if($.modeOUsers[i].equalsIgnoreCase(event.getUser().toLowerCase())) {
             $.modeOUsers.splice(i, 1);
-                if($.isAdmin(event.getUser())==false) {
-                            if($.inidb.exists("tempsubgroup", username)) {
-                                $.inidb.set("group", username, $.inidb.get("tempsubgroup",username));
-                            } else {
-                                $.inidb.set("group", username, 7);
-                            }
-                            if($.inidb.exists("subscribed",username) && $.isSub(username)==false) {
-                                $.inidb.del("subscribed", username);
-                            }
+                if($.inidb.exists("subscribed",username)  && $.isSub(username)==false) {
+                    $.inidb.del("subscribed", username);
+                    if($.inidb.exists("tempsubgroup", username) && $.isAdmin(username)==false) {
+                        $.inidb.set("group", username, $.inidb.get("tempsubgroup",username));
+                    }
+                    if($.inidb.exists("group", username)==false && $.isAdmin(username)==false) {
+                        $.inidb.set("group", username, 7);
+                    }
                 }
-            println("-Moderator: " + event.getUser().toLowerCase());
+            println("-Moderator: " + username);
         }
     }
 });
 
 $.on('ircChannelUserMode', function(event) {
+    var username = event.getUser().toLowerCase();
     if (event.getMode().equalsIgnoreCase("o")) {
         if (event.getAdd()==true) {
-            if ($.array.contains($.modeOUsers, event.getUser().toLowerCase())==false) {                
-                $.modeOUsers.push(event.getUser().toLowerCase());
-                if($.isAdmin(event.getUser())==true){
-                        $.inidb.set('group', event.getUser().toLowerCase(), 1);
-                        println("Admin: " + event.getUser().toLowerCase());  
+            if ($.array.contains($.modeOUsers, username)==false) {                
+                $.modeOUsers.push(username);
+                if($.isAdmin(username)==true){
+                        $.inidb.set('group', username, 1);
+                        println("Admin: " + username);  
                 }
                 if($.isAdmin(event.getUser())==false){
-                    $.inidb.set('group', event.getUser().toLowerCase(), 2);
-                    println("Moderator: " + event.getUser().toLowerCase()); 
+                    $.inidb.set('group', username, 2);
+                    println("Moderator: " + username); 
                 }                   
 
                 if ($.array.contains($.modeOUsers, $.botowner.toLowerCase())) {
@@ -658,16 +657,19 @@ $.on('ircChannelUserMode', function(event) {
             }
         } else {
             for (i = 0; i < $.modeOUsers.length; i++) {
-                if($.modeOUsers[i].equalsIgnoreCase(event.getUser().toLowerCase())) {
+                if($.modeOUsers[i].equalsIgnoreCase(username)) {
                     $.modeOUsers.splice(i, 1);
-                    if($.isAdmin(event.getUser().toLowerCase())==false){
-                            if($.inidb.exists("tempsubgroup", event.getUser().toLowerCase())) {
-                                $.inidb.set("group", event.getUser().toLowerCase(), $.inidb.get("tempsubgroup",event.getUser().toLowerCase()));
-                            } else {
-                                $.inidb.set("group", event.getUser().toLowerCase(), 7);
-                            }
-                            
+
+                    if($.inidb.exists("subscribed",username)  && $.isSub(username)==false) {
+                        $.inidb.del("subscribed", username);
+                        if($.inidb.exists("tempsubgroup", username) && $.isAdmin(username)==false) {
+                            $.inidb.set("group", username, $.inidb.get("tempsubgroup",username));
+                        }
+                        if($.inidb.exists("group", username)==false && $.isAdmin(username)==false) {
+                            $.inidb.set("group", username, 7);
+                        }
                     }
+                    
                     println("-Moderator: " + event.getUser().toLowerCase());
                 }
             }
