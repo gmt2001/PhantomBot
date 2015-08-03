@@ -245,11 +245,6 @@ $.on('command', function(event) {
                     break;
                 }
                 
-                $.say($var.raffle_entrants.length);
-                for(var i=0;i<$var.raffle_entrants.length;i++) {
-                    $.say($var.raffle_entrants[i]);
-                }
-                
                 winner = $var.raffle_entrants[$.randRange(1, $var.raffle_entrants.length) - 1];
                 followed = $.inidb.get('followed', winner.toLowerCase());
                 

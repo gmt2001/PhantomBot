@@ -275,10 +275,7 @@ public class YouTubeAPIv3
     public String[] SearchForVideo(String q)
     {  
         if(q.contains("v=") | q.contains("?v=")) {
-            if(q.length()<=14 && q.length()>=11) {
-                q = q.replace("?", "");
-                q = q.replace("v=", "");
-            }
+            q = q.substring(q.indexOf("v=") + 2, q.indexOf("v=") + 13);
         }
         Pattern pattern = Pattern.compile(".*(?:youtu.be\\/|v\\/|u\\/\\w\\/|embed\\/|watch\\?v=)([^#\\&\\?^\\s]*).*");
         Matcher matcher = pattern.matcher(q);
