@@ -1,5 +1,5 @@
-$.noticeinterval = parseInt($.inidb.get('notices', 'interval'));
-$.noticemessages = parseInt($.inidb.get('notices', 'reqmessages'));
+$.noticeinterval = parseInt($.inidb.get('notice', 'interval'));
+$.noticemessages = parseInt($.inidb.get('notice', 'reqmessages'));
 
 if ($.noticeinterval == undefined || $.noticeinterval == null || isNaN($.noticeinterval) || $.noticeinterval < 2) {
     $.noticeinterval = 10;
@@ -13,7 +13,7 @@ if ($.noticemessages == undefined || $.noticemessages == null || isNaN($.noticem
 $.on('command', function (event) {
     var sender = event.getSender();
     var command = event.getCommand();
-    var num_messages = $.inidb.get('notices', 'num_messages');
+    var num_messages = $.inidb.get('notice', 'num_messages');
     var argsString = event.getArguments().trim();
     var args = event.getArgs();
     var action;
@@ -68,7 +68,7 @@ $.on('command', function (event) {
                         $.inidb.set('notices', 'message_' + num_messages, message)
                     }
 
-                    $.inidb.incr('notices', 'num_messages', 1)
+                    $.inidb.incr('notice', 'num_messages', 1)
 
                     num_messages = $.inidb.get('notices', 'num_messages')
 
@@ -81,7 +81,7 @@ $.on('command', function (event) {
                     $.say("The current interval is " + $.noticeinterval + " minutes. Set it with !notice timer <minutes> (Minimum is 2 minutes)");
                 } else {
                     if (!isNaN(message) && parseInt(message) >= 2) {
-                        $.inidb.set('notices', 'interval', message);
+                        $.inidb.set('notice', 'interval', message);
                         $.noticeinterval = parseInt(message);
 
                         $.say("The interval between notices has been set to " + $.noticeinterval + " minutes!")
@@ -90,9 +90,9 @@ $.on('command', function (event) {
             }
 
 
-            if ($.inidb.get('settings', 'notices_toggle') == 1) {
+            if ($.inidb.get('notice', 'notices_toggle') == "true") {
                 $.notices_toggle = true;
-            } else if ($.inidb.get('settings', 'notices_toggle') == 2) {
+            } else if ($.inidb.get('notice', 'notices_toggle') == "false") {
                 $.notices_toggle = false;
             }
 
@@ -115,13 +115,13 @@ $.on('command', function (event) {
                 if ($.notices_toggle == false) {
 
                     $.notices_toggle = true;
-                    $.inidb.set('settings', 'notices_toggle', 1);
+                    $.inidb.set('notice', 'notices_toggle', "true");
                     $.say("Notices have been turned on!");
 
                 } else if ($.notices_toggle == true) {
 
                     $.notices_toggle = false;
-                    $.inidb.set('settings', 'notices_toggle', 2);
+                    $.inidb.set('notice', 'notices_toggle', "false");
                     $.say("Notices have been turned off!");
                 }
 
@@ -133,7 +133,7 @@ $.on('command', function (event) {
                     $.say("The current amount is " + $.noticemessages + " messages. Set it with !notice req <amount> (Minimum is 5 messages)")
                 } else {
                     if (!isNaN(message) && parseInt(message) >= 5) {
-                        $.inidb.set('notices', 'reqmessages', message);
+                        $.inidb.set('notice', 'reqmessages', message);
                         $.noticemessages = parseInt(message);
 
                         $.say("The minimum number messages to trigger a notice has been set to " + $.noticemessages + " messages!");
@@ -160,9 +160,9 @@ $.on('command', function (event) {
         if (message == null) {
             $.say("Insert an notice at the end of the rotation. !notice add <message>");
         } else {
-            $.inidb.incr('notices', 'num_messages', 1);
+            $.inidb.incr('notice', 'num_messages', 1);
 
-            num_messages = $.inidb.get('notices', 'num_messages');
+            num_messages = $.inidb.get('notice', 'num_messages');
 
             $.inidb.set('notices', 'message_' + (num_messages - 1), message);
             $.say("Notice added! '" + message + "' There are now " + num_messages + " notices!");
@@ -187,15 +187,15 @@ $.on('command', function (event) {
             if (num_messages > 1) {
                 for (i = 0; i < num_messages; i++) {
                     if (i > parseInt(message)) {
-                        $.inidb.set('notices', 'message_' + (i - 1), $.inidb.get('notices', 'message_' + i))
+                        $.inidb.set('notices', 'message_' + (i - 1), $.inidb.get('notices', 'message_' + i));
                     }
                 }
             }
 
             $.inidb.del('notices', 'message_' + (num_messages - 1))
-            $.inidb.decr('notices', 'num_messages', 1);
+            $.inidb.decr('notice', 'num_messages', 1);
 
-            num_messages = $.inidb.get('notices', 'num_messages');
+            num_messages = $.inidb.get('notice', 'num_messages');
 
             $.say("Notice removed! There are now " + num_messages + " notices!");
         }
@@ -221,7 +221,7 @@ if ($.notices_toggle == undefined || $.notices_toggle == null) {
 
 function sendMessage() {
 
-    var num_messages = $.inidb.get('notices', 'num_messages');
+    var num_messages = $.inidb.get('notice', 'num_messages');
 
     if (isNaN(parseInt(num_messages)) || parseInt(num_messages) == 0) {
         return;
