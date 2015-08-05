@@ -43,6 +43,9 @@ $.isMod = function (user) {
 }
 
 $.isModv3 = function (user, tags) {
+    if($.isAdmin(user)) {
+        return true;
+    }
     if(tags!=null && tags!="{}") {
         return (tags.get("user-type").equalsIgnoreCase("mod")) || $.isOwner(user) || $.isBot(user);
     } else {

@@ -66,18 +66,19 @@ function Song(name, user, tags) {
     if (name==null || name=="") return;
         var data = $.youtube.SearchForVideo(name);
         
-        while(data[0].length()<11){
+        while(data[0].length()<11 && data[1]!="No Search Results Found"){
             data = $.youtube.SearchForVideo(name);
         }
         this.id = data[0];
         this.name = data[1];
         this.length = 1;
-        if(data[1]=="Video Marked Private") {
+        if(data[1]=="Video Marked Private" | data[1]=="No Search Results Found") {
             notSearchable(this.id, this.name, this.user, this.tags);
             if(this.user!=null) {
                 return;
             }
         }
+        
         if(data[0]=="") {
             notSearchable(name, "", this.user, this.tags);
             return;

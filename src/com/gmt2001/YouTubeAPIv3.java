@@ -329,6 +329,14 @@ public class YouTubeAPIv3
             {
                 if (j2.getInt("_http") == 200)
                 {
+                    JSONObject pageInfo = j2.getJSONObject("pageInfo");
+                    if(pageInfo.getInt("totalResults")==0) {
+                            return new String[]
+                            {
+                                q, "No Search Results Found", ""
+                            };
+                    }
+                    
                     JSONArray a = j2.getJSONArray("items");
                     if (a.length() > 0)
                     {
