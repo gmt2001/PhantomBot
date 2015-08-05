@@ -67,6 +67,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
              <classpath refid="reference.class.path" />
          </javac>
      </target>
+     
+     <target depends="compile.src" name="test"></target>
 
      <target depends="compile.src" name="dist">
 	<jar destfile="${versionfolder}/PhantomBot.jar">
