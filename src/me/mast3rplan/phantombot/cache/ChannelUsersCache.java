@@ -23,10 +23,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import me.mast3rplan.phantombot.PhantomBot;
-import me.mast3rplan.phantombot.event.EventBus;
-import me.mast3rplan.phantombot.event.irc.channel.IrcChannelJoinEvent;
-import me.mast3rplan.phantombot.event.irc.channel.IrcChannelLeaveEvent;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -50,12 +46,13 @@ public class ChannelUsersCache implements Runnable
         return instance;
     }
     private Map<String, String> cache;
-    private String channel;
-    private Thread updateThread;
+    private final String channel;
+    private final Thread updateThread;
     private Date timeoutExpire = new Date();
     private Date lastFail = new Date();
     private int numfail = 0;
 
+    @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     public ChannelUsersCache(String channel)
     {
         this.channel = channel;
@@ -83,6 +80,7 @@ public class ChannelUsersCache implements Runnable
     }
 
     @Override
+    @SuppressWarnings("SleepWhileInLoop")
     public void run()
     {
         try
@@ -249,15 +247,16 @@ public class ChannelUsersCache implements Runnable
 
         this.cache = newCache;
 
-        /*for (String joined : join)
-        {
-            EventBus.instance().post(new IrcChannelJoinEvent(PhantomBot.instance().getSession(), PhantomBot.instance().getChannel(), joined));
+        /*
+         * for (String joined : join) { EventBus.instance().post(new
+         * IrcChannelJoinEvent(PhantomBot.instance().getSession(),
+         * PhantomBot.instance().getChannel(), joined)); }
+         *
+         * for (String parted : part) { EventBus.instance().post(new
+         * IrcChannelLeaveEvent(PhantomBot.instance().getSession(),
+         * PhantomBot.instance().getChannel(), parted, "Left"));
         }
-
-        for (String parted : part)
-        {
-            EventBus.instance().post(new IrcChannelLeaveEvent(PhantomBot.instance().getSession(), PhantomBot.instance().getChannel(), parted, "Left"));
-        }*/
+         */
     }
 
     public void setCache(Map<String, String> cache)

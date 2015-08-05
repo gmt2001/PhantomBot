@@ -21,10 +21,10 @@ import me.mast3rplan.phantombot.event.twitch.TwitchEvent;
 public abstract class TwitchHostEvent extends TwitchEvent
 {
 
-    private String hoster;
-    private Type type;
+    private final String hoster;
+    private final Type type;
 
-    enum Type
+    public enum Type
     {
 
         HOST,

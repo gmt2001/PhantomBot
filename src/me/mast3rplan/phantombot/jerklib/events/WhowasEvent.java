@@ -48,6 +48,7 @@ public class WhowasEvent extends IRCEvent
      *
      * @return hostname
      */
+    @Override
     public String getHostName()
     {
         return hostName;
@@ -58,6 +59,7 @@ public class WhowasEvent extends IRCEvent
      *
      * @return nick who was event is about
      */
+    @Override
     public String getNick()
     {
         return nick;
@@ -78,6 +80,7 @@ public class WhowasEvent extends IRCEvent
      *
      * @return username
      */
+    @Override
     public String getUserName()
     {
         return userName;

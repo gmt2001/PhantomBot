@@ -27,7 +27,7 @@ public class in
 {
 
     private static final in instance = new in();
-    private static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    private static final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
     public static in instance()
     {

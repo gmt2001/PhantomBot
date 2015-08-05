@@ -27,6 +27,7 @@ public class WhoisParser implements CommandParser
 
     private WhoisEvent we;
 
+    @Override
     public IRCEvent createEvent(IRCEvent event)
     {
         switch (event.numeric())

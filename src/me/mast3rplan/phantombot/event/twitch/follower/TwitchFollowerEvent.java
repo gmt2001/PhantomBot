@@ -21,10 +21,10 @@ import me.mast3rplan.phantombot.event.twitch.TwitchEvent;
 public abstract class TwitchFollowerEvent extends TwitchEvent
 {
 
-    private String follower;
-    private Type type;
+    private final String follower;
+    private final Type type;
 
-    enum Type
+    public enum Type
     {
 
         FOLLOW,

@@ -75,8 +75,8 @@ public class ModeAdjustment
         return argument;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
+    /*
+     * (non-Javadoc) @see java.lang.Object#toString()
      */
     @Override
     public String toString()

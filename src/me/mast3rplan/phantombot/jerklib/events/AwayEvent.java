@@ -19,20 +19,21 @@ package me.mast3rplan.phantombot.jerklib.events;
 import me.mast3rplan.phantombot.jerklib.Session;
 
 /**
- * <p> This is an event that is fired under three conditions: <ul> <li>Sending a
+ * <p>
+ * This is an event that is fired under three conditions: <ul> <li>Sending a
  * message to a user who is marked as away.</li> <li>User of the lib marks self
  * as away.</li> <li>User of the lib returns from away.</li> </ul> You can
  * determine under which circumstance the event was fired by looking at the
  * {@link me.mast3rplan.phantombot.jerklib.events.AwayEvent.EventType}.</p>
  *
- * @author <a href="mailto:robby.oconnor@gmail.com">Robert O'Connor<a/>
+ * @author <a href="mailto:robby.oconnor@gmail.com">Robert O'Connor</a>
  */
 public class AwayEvent extends IRCEvent
 {
 
     private final boolean isAway, isYou;
     private final String awayMessage, nick;
-    private EventType eventType;
+    private final EventType eventType;
 
     /**
      * An enum to determine the type of event that was fired. <br>WENT_AWAY is
@@ -101,6 +102,7 @@ public class AwayEvent extends IRCEvent
      *
      * @return the nick of the user who caused the event to fire.
      */
+    @Override
     public String getNick()
     {
         return nick;

@@ -26,7 +26,7 @@ import me.mast3rplan.phantombot.jerklib.Session;
 public class ConnectionLostEvent extends IRCEvent
 {
 
-    private Exception e;
+    private final Exception e;
 
     public ConnectionLostEvent(String data, Session session, Exception e)
     {

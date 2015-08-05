@@ -29,7 +29,7 @@ public interface IRCEventListener
     /**
      * recieveEvent() - receive IRCEvents
      *
-     * @param e <code>IrcEvent<code> the event
+     * @param e <code>IrcEvent</code> the event
      */
     public void receiveEvent(IRCEvent e);
 }

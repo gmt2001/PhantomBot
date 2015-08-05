@@ -37,12 +37,14 @@ import me.mast3rplan.phantombot.jerklib.events.TopicEvent;
  */
 public class Channel
 {
-    /* channel name */
+    /*
+     * channel name
+     */
 
-    private String name;
-    private Session session;
-    private Map<String, List<ModeAdjustment>> userMap;
-    private List<ModeAdjustment> channelModes = new ArrayList<ModeAdjustment>();
+    private final String name;
+    private final Session session;
+    private final Map<String, List<ModeAdjustment>> userMap;
+    private List<ModeAdjustment> channelModes = new ArrayList<>();
     private TopicEvent topicEvent;
     private ConcurrentLinkedQueue<String> messages = new ConcurrentLinkedQueue<>();
     private ConcurrentLinkedQueue<String> prioritymessages = new ConcurrentLinkedQueue<>();
@@ -102,7 +104,9 @@ public class Channel
      */
     public Channel(String name, Session session)
     {
-        /* create a map that will match exact and key to lowercase */
+        /*
+         * create a map that will match exact and key to lowercase
+         */
         userMap = new HashMap<String, List<ModeAdjustment>>()
         {
             @Override
@@ -171,14 +175,19 @@ public class Channel
     void updateModes(List<ModeAdjustment> modes)
     {
         ServerInformation info = session.getServerInformation();
-        List<String> nickModes = new ArrayList<String>(info.getNickPrefixMap().values());
+        List<String> nickModes = new ArrayList<>(info.getNickPrefixMap().values());
 
         for (ModeAdjustment mode : modes)
         {
             if (nickModes.contains(String.valueOf(mode.getMode())) && userMap.containsKey(mode.getArgument()))
             {
                 updateMode(mode, userMap.get(mode.getArgument()));
-            } /* filter out channel modes that apply to users that are not in prefix map */ /* like +b - this behviour might not be desired , time will tell */ else if (mode.getMode() != 'q' && mode.getMode() != 'b')
+            } /*
+             * filter out channel modes that apply to users that are not in
+             * prefix map
+             */ /*
+             * like +b - this behviour might not be desired , time will tell
+             */ else if (mode.getMode() != 'q' && mode.getMode() != 'b')
             {
                 updateMode(mode, channelModes);
             }
@@ -258,10 +267,10 @@ public class Channel
     {
         if (userMap.containsKey(nick))
         {
-            return new ArrayList<ModeAdjustment>(userMap.get(nick));
+            return new ArrayList<>(userMap.get(nick));
         } else
         {
-            return new ArrayList<ModeAdjustment>();
+            return new ArrayList<>();
         }
     }
 
@@ -278,7 +287,7 @@ public class Channel
      */
     public List<String> getNicksForMode(Action action, char mode)
     {
-        List<String> nicks = new ArrayList<String>();
+        List<String> nicks = new ArrayList<>();
         for (String nick : getNicks())
         {
             List<ModeAdjustment> modes = userMap.get(nick);
@@ -302,7 +311,7 @@ public class Channel
      */
     public List<ModeAdjustment> getChannelModes()
     {
-        return new ArrayList<ModeAdjustment>(channelModes);
+        return new ArrayList<>(channelModes);
     }
 
     /**
@@ -385,7 +394,7 @@ public class Channel
      * @param message - what to say
      */
     public void say(String message)
-    {                   
+    {
         if (message.startsWith(".timeout ") || message.startsWith(".ban ")
                 || message.startsWith(".unban ") || message.equals(".clear") || message.equals(".mods"))
         {
@@ -412,7 +421,7 @@ public class Channel
             }
         } else
         {
-            if(message.startsWith("/w "))
+            if (message.startsWith("/w "))
             {
                 message = message.replace("/w ", "PRIVMSG #jtv :/w ");
                 me.mast3rplan.phantombot.PhantomBot.tgcSession.sayRaw(message);
@@ -464,7 +473,7 @@ public class Channel
 
             ServerInformation info = session.getServerInformation();
             Map<String, String> nickPrefixMap = info.getNickPrefixMap();
-            List<ModeAdjustment> modes = new ArrayList<ModeAdjustment>();
+            List<ModeAdjustment> modes = new ArrayList<>();
             for (String prefix : nickPrefixMap.keySet())
             {
                 if (nick.startsWith(prefix))
@@ -633,14 +642,16 @@ public class Channel
 
     /**
      * Return the Session this Channel belongs to
+     *
+     * @return
      */
     public Session getSession()
     {
         return session;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
+    /*
+     * (non-Javadoc) @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
     public boolean equals(Object o)
@@ -658,16 +669,11 @@ public class Channel
         {
             return false;
         }
-        if (!name.equals(channel.getName()))
-        {
-            return false;
-        }
-
-        return true;
+        return name.equals(channel.getName());
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
+    /*
+     * (non-Javadoc) @see java.lang.Object#hashCode()
      */
     @Override
     public int hashCode()
@@ -678,8 +684,8 @@ public class Channel
         return result;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
+    /*
+     * (non-Javadoc) @see java.lang.Object#toString()
      */
     @Override
     public String toString()

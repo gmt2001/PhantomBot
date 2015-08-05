@@ -98,6 +98,7 @@ public class WhoisEvent extends IRCEvent
      *
      * @return nick
      */
+    @Override
     public String getNick()
     {
         return nick;

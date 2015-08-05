@@ -21,7 +21,7 @@ import me.mast3rplan.phantombot.musicplayer.MusicPlayerState;
 public class MusicPlayerStateEvent extends MusicPlayerEvent
 {
 
-    private MusicPlayerState state;
+    private final MusicPlayerState state;
 
     public MusicPlayerStateEvent(MusicPlayerState state)
     {

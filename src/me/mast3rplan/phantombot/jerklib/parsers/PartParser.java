@@ -25,6 +25,7 @@ import me.mast3rplan.phantombot.jerklib.events.PartEvent;
 public class PartParser implements CommandParser
 {
 
+    @Override
     public PartEvent createEvent(IRCEvent event)
     {
         return new PartEvent(

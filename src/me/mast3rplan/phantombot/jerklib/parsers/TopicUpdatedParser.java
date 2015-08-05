@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 public class TopicUpdatedParser implements CommandParser
 {
 
+    @Override
     public IRCEvent createEvent(IRCEvent event)
     {
         Pattern p = Pattern.compile("^.+?TOPIC\\s+(.+?)\\s+.*$");

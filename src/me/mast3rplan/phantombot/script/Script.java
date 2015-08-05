@@ -29,11 +29,12 @@ public class Script
 {
 
     public static final NativeObject global = new NativeObject();
-    private List<ScriptDestroyable> destroyables = Lists.newArrayList();
-    private NativeObject vars = new NativeObject();
-    private ScriptFileWatcher fileWatcher;
-    private File file;
+    private final List<ScriptDestroyable> destroyables = Lists.newArrayList();
+    private final NativeObject vars = new NativeObject();
+    private final ScriptFileWatcher fileWatcher;
+    private final File file;
 
+    @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     public Script(File file)
     {
         this.fileWatcher = new ScriptFileWatcher(this);

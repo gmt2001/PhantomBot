@@ -32,7 +32,7 @@ import java.util.Map;
 public class DefaultInternalEventParser implements InternalEventParser
 {
 
-    private final Map<String, CommandParser> parsers = new HashMap<String, CommandParser>();
+    private final Map<String, CommandParser> parsers = new HashMap<>();
     private CommandParser defaultParser;
 
     public DefaultInternalEventParser()
@@ -40,6 +40,7 @@ public class DefaultInternalEventParser implements InternalEventParser
         initDefaultParsers();
     }
 
+    @Override
     public IRCEvent receiveEvent(IRCEvent e)
     {
         CommandParser parser = parsers.get(e.command());
@@ -77,7 +78,7 @@ public class DefaultInternalEventParser implements InternalEventParser
         return defaultParser;
     }
 
-    public void initDefaultParsers()
+    private void initDefaultParsers()
     {
         parsers.put("001", new ConnectionCompleteParser());
         parsers.put("002", new ServerVersionParser());
@@ -120,7 +121,6 @@ public class DefaultInternalEventParser implements InternalEventParser
         parsers.put("375", motdParser);
         parsers.put("376", motdParser);
 
-
         parsers.put("PRIVMSG", new PrivMsgParser());
         parsers.put("QUIT", new QuitParser());
         parsers.put("JOIN", new JoinParser());
@@ -131,7 +131,6 @@ public class DefaultInternalEventParser implements InternalEventParser
         parsers.put("NICK", new NickParser());
         parsers.put("MODE", new ModeParser());
         parsers.put("KICK", new KickParser());
-
 
         //numeric errors
         CommandParser errorParser = new NumericErrorParser();

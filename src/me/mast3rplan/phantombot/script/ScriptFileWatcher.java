@@ -21,7 +21,7 @@ import java.io.File;
 public class ScriptFileWatcher implements Runnable
 {
 
-    private Script script;
+    private final Script script;
 
     public ScriptFileWatcher(Script script)
     {
@@ -31,6 +31,10 @@ public class ScriptFileWatcher implements Runnable
     }
 
     @Override
+    @SuppressWarnings(
+    {
+        "SleepWhileInLoop", "UseSpecificCatch"
+    })
     public void run()
     {
         File file = script.getFile();

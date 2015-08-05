@@ -27,6 +27,7 @@ import me.mast3rplan.phantombot.jerklib.events.NickListEvent;
 public class NamesParser implements CommandParser
 {
 
+    @Override
     public IRCEvent createEvent(IRCEvent event)
     {
 

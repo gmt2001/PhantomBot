@@ -23,8 +23,7 @@ import me.mast3rplan.phantombot.jerklib.events.IRCEvent.Type;
 /**
  * An augmented {@link me.mast3rplan.phantombot.jerklib.tasks.TaskImpl} that
  * only executes once as it cancels itself out of the task queue once completed,
- * <em>even if it fails (= throws an
- * <code>Exception</code>)</em>.
+ * <em>even if it fails (= throws an <code>Exception</code>)</em>.
  *
  * @author pbleser
  * @see OnceUntilSucceedsTaskImpl
@@ -51,7 +50,10 @@ public abstract class OnceTaskImpl extends TaskImpl
 
     /**
      * {@inheritDoc}
+     *
+     * @param e
      */
+    @Override
     public final void receiveEvent(IRCEvent e)
     {
         try

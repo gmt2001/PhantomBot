@@ -25,6 +25,7 @@ import java.util.regex.Pattern;
 public class ChanListParser implements CommandParser
 {
 
+    @Override
     public IRCEvent createEvent(IRCEvent event)
     {
         String data = event.getRawEventData();

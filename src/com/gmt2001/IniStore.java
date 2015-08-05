@@ -39,12 +39,12 @@ import org.apache.commons.io.FileUtils;
 public class IniStore implements ActionListener
 {
 
-    private HashMap<String, IniFile> files = new HashMap<>();
-    private HashMap<String, Date> changed = new HashMap<>();
-    private Date nextSave = new Date(0);
-    private Timer t;
-    private Timer t2;
-    private static long saveInterval = 5 * 60 * 1000;
+    private final HashMap<String, IniFile> files = new HashMap<>();
+    private final HashMap<String, Date> changed = new HashMap<>();
+    private final Date nextSave = new Date(0);
+    private final Timer t;
+    private final Timer t2;
+    private static final long saveInterval = 5 * 60 * 1000;
     private static final IniStore instance = new IniStore();
 
     public static IniStore instance()
@@ -77,17 +77,17 @@ public class IniStore implements ActionListener
 
                 f.data.put(section, new HashMap<String, String>());
 
-                for (int i = 0; i < lines.length; i++)
+                for (String line : lines)
                 {
-                    if (!lines[i].trim().startsWith(";"))
+                    if (!line.trim().startsWith(";"))
                     {
-                        if (lines[i].trim().startsWith("[") && lines[i].trim().endsWith("]"))
+                        if (line.trim().startsWith("[") && line.trim().endsWith("]"))
                         {
-                            section = lines[i].trim().substring(1, lines[i].trim().length() - 1);
+                            section = line.trim().substring(1, line.trim().length() - 1);
                             f.data.put(section, new HashMap<String, String>());
-                        } else if (!lines[i].trim().isEmpty())
+                        } else if (!line.trim().isEmpty())
                         {
-                            String[] spl = lines[i].split("=", 2);
+                            String[] spl = line.split("=", 2);
                             f.data.get(section).put(spl[0], spl[1]);
                         }
                     }
@@ -136,13 +136,14 @@ public class IniStore implements ActionListener
                     wdata += ((String) akdata[b]) + "=" + ((String) avdata[b]) + "\r\n";
                 }
             }
-            if(!Files.isDirectory(Paths.get("./inistore/"))) {
+            if (!Files.isDirectory(Paths.get("./inistore/")))
+            {
                 Files.createDirectory(Paths.get("./inistore/"));
             }
 
             Files.write(Paths.get("./inistore/" + fName + ".ini"), wdata.getBytes(StandardCharsets.UTF_8),
                     StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
-            
+
             changed.remove(fName);
         } catch (IOException ex)
         {
@@ -184,19 +185,19 @@ public class IniStore implements ActionListener
 
                 com.gmt2001.Console.out.println(">>>Saving " + n.length + " files");
 
-                for (int i = 0; i < n.length; i++)
+                for (Object n1 : n)
                 {
                     try
                     {
-                        if (force || changed.get((String) n[i]).after(nextSave) || changed.get((String) n[i]).equals(nextSave))
+                        if (force || changed.get((String) n1).after(nextSave) || changed.get((String) n1).equals(nextSave))
                         {
-                            SaveFile((String) n[i], files.get((String) n[i]));
+                            SaveFile((String) n1, files.get((String) n1));
                         }
                     } catch (java.lang.NullPointerException e)
                     {
                         try
                         {
-                            SaveFile((String) n[i], files.get((String) n[i]));
+                            SaveFile((String) n1, files.get((String) n1));
                         } catch (java.lang.NullPointerException e2)
                         {
                         }
@@ -240,8 +241,8 @@ public class IniStore implements ActionListener
         if (!LoadFile(fName, false))
         {
             return new String[]
-                    {
-                    };
+            {
+            };
         }
 
         Set<String> o = files.get(fName).data.keySet();
@@ -264,8 +265,8 @@ public class IniStore implements ActionListener
         if (!LoadFile(fName, false))
         {
             return new String[]
-                    {
-                    };
+            {
+            };
         }
 
         Set<String> o = files.get(fName).data.get(section).keySet();
@@ -447,12 +448,7 @@ public class IniStore implements ActionListener
 
     public boolean HasKey(String fName, String section, String key)
     {
-        if (GetString(fName, section, key) == null)
-        {
-            return false;
-        }
-
-        return true;
+        return GetString(fName, section, key) != null;
     }
 
     public boolean exists(String type, String key)

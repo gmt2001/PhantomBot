@@ -40,30 +40,47 @@ import me.mast3rplan.phantombot.jerklib.listeners.WriteRequestListener;
 class Connection
 {
 
-    private Logger log = Logger.getLogger(this.getClass().getName());
+    @SuppressWarnings("NonConstantLogger")
+    private final Logger log = Logger.getLogger(this.getClass().getName());
 
-    /* ConnectionManager for this Connection */
+    /*
+     * ConnectionManager for this Connection
+     */
     private final ConnectionManager manager;
 
-    /* SocketChannel this connection will use for reading/writing */
+    /*
+     * SocketChannel this connection will use for reading/writing
+     */
     private final SocketChannel socChannel;
 
-    /* A Buffer for write request */
+    /*
+     * A Buffer for write request
+     */
     final List<WriteRequest> writeRequests = Collections.synchronizedList(new ArrayList<WriteRequest>());
 
-    /* ByteBuffer for readinging into */
+    /*
+     * ByteBuffer for readinging into
+     */
     private final ByteBuffer readBuffer = ByteBuffer.allocate(2048);
 
-    /* indicates if an event fragment is waiting */
+    /*
+     * indicates if an event fragment is waiting
+     */
     private boolean gotFragment;
 
-    /* buffer for event fragments */
+    /*
+     * buffer for event fragments
+     */
     private final StringBuffer stringBuff = new StringBuffer();
 
-    /* actual hostname connected to */
+    /*
+     * actual hostname connected to
+     */
     private String actualHostName;
 
-    /* Session Connection belongs to */
+    /*
+     * Session Connection belongs to
+     */
     private final Session session;
 
     /**
@@ -174,7 +191,7 @@ class Connection
         String tmpStr = new String(readBuffer.array(), 0, numRead);
 
         // read did not contain a \r\n
-        if (tmpStr.indexOf("\r\n") == -1)
+        if (!tmpStr.contains("\r\n"))
         {
             // append whole thing to buffer and set fragment flag
             stringBuff.append(tmpStr);
@@ -184,7 +201,6 @@ class Connection
         }
 
         // this read had a \r\n in it
-
         if (gotFragment)
         {
             // prepend fragment to front of current message
@@ -226,14 +242,11 @@ class Connection
     int maxBurst = 5;
     long nextWrite = -1;
     /*
-     *  if lastwrite was less than a second ago:
-     *  	if burst == limit return;
-     *  	else burst++; write packet; recordtime;
-     *  else
-     *  	burst = 0;
-     *  	write packet; record time;
-     * 
-     * 
+     * if lastwrite was less than a second ago: if burst == limit return; else
+     * burst++; write packet; recordtime; else burst = 0; write packet; record
+     * time;
+     *
+     *
      */
 
     int doWrites()
@@ -243,7 +256,7 @@ class Connection
             return 0;
         }
 
-        WriteRequest req = null;
+        WriteRequest req;
         if (nextWrite > System.currentTimeMillis())
         {
             return 0;
@@ -265,7 +278,6 @@ class Connection
         }
 
         req = writeRequests.remove(0);
-
 
         String data;
         if (req.getType() == WriteRequest.Type.CHANNEL_MSG)
@@ -316,65 +328,35 @@ class Connection
         fireWriteEvent(req);
 
         // com.gmt2001.Console.out.println("Wrote " + amount + " " + req.getType() + " " + req.getMessage() + " " + bursts);
-
         return amount;
     }
 
     /*
-     int doWrites()
-     {
-     int amount = 0;
-
-     List<WriteRequest> tmpReqs = new ArrayList<WriteRequest>();
-     synchronized (writeRequests)
-     {
-     tmpReqs.addAll(writeRequests);
-     writeRequests.clear();
-     }
-
-     for (WriteRequest request : tmpReqs)
-     {
-     String data;
-
-     if (request.getType() == WriteRequest.Type.CHANNEL_MSG)
-     {
-     data = "PRIVMSG " + request.getChannel().getName() + " :" + request.getMessage() + "\r\n";
-     }
-     else if (request.getType() == WriteRequest.Type.PRIVATE_MSG)
-     {
-     data = "PRIVMSG " + request.getNick() + " :" + request.getMessage() + "\r\n";
-     }
-     else
-     {
-     data = request.getMessage();
-     if (!data.endsWith("\r\n"))
-     {
-     data += "\r\n";
-     }
-     }
-
-     byte[] dataArray = data.getBytes();
-     ByteBuffer buff = ByteBuffer.allocate(dataArray.length);
-     buff.put(dataArray);
-     buff.flip();
-
-     try
-     {
-     amount += socChannel.write(buff);
-     }
-     catch (IOException e)
-     {
-     com.gmt2001.Console.err.printStackTrace(e);
-     session.disconnected();
-     }
-
-     if (session.getState() == State.DISCONNECTED) { return amount; }
-
-     fireWriteEvent(request);
-     }
-
-     return amount;
-     }
+     * int doWrites() { int amount = 0;
+     *
+     * List<WriteRequest> tmpReqs = new ArrayList<WriteRequest>(); synchronized
+     * (writeRequests) { tmpReqs.addAll(writeRequests); writeRequests.clear(); }
+     *
+     * for (WriteRequest request : tmpReqs) { String data;
+     *
+     * if (request.getType() == WriteRequest.Type.CHANNEL_MSG) { data = "PRIVMSG
+     * " + request.getChannel().getName() + " :" + request.getMessage() +
+     * "\r\n"; } else if (request.getType() == WriteRequest.Type.PRIVATE_MSG) {
+     * data = "PRIVMSG " + request.getNick() + " :" + request.getMessage() +
+     * "\r\n"; } else { data = request.getMessage(); if (!data.endsWith("\r\n"))
+     * { data += "\r\n"; } }
+     *
+     * byte[] dataArray = data.getBytes(); ByteBuffer buff =
+     * ByteBuffer.allocate(dataArray.length); buff.put(dataArray); buff.flip();
+     *
+     * try { amount += socChannel.write(buff); } catch (IOException e) {
+     * com.gmt2001.Console.err.printStackTrace(e); session.disconnected(); }
+     *
+     * if (session.getState() == State.DISCONNECTED) { return amount; }
+     *
+     * fireWriteEvent(request); }
+     *
+     * return amount; }
      */
     /**
      * Send a ping

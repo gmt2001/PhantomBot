@@ -65,7 +65,7 @@ public class ScriptEventManager implements Listener
             this.handler = handler;
         }
     }
-    private List<EventHandlerEntry> entries = Lists.newArrayList();
+    private final List<EventHandlerEntry> entries = Lists.newArrayList();
 
     @Subscribe
     public void onEvent(Event event)
@@ -115,7 +115,7 @@ public class ScriptEventManager implements Listener
 
     public void unregister(ScriptEventHandler handler)
     {
-        EventHandlerEntry entry = null;
+        EventHandlerEntry entry;
         Iterator<EventHandlerEntry> iterator = entries.iterator();
         while (iterator.hasNext())
         {

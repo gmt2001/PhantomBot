@@ -71,6 +71,7 @@ public class TwitchAPIv3
         return GetData(type, url, post, "", isJson);
     }
 
+    @SuppressWarnings("UseSpecificCatch")
     private JSONObject GetData(request_type type, String url, String post, String oauth, boolean isJson)
     {
         JSONObject j = new JSONObject("{}");
@@ -126,9 +127,10 @@ public class TwitchAPIv3
 
             if (!post.isEmpty())
             {
-                OutputStream o = c.getOutputStream();
-                IOUtils.write(post, o);
-                o.close();
+                try (OutputStream o = c.getOutputStream())
+                {
+                    IOUtils.write(post, o);
+                }
             }
 
             String content;
@@ -253,7 +255,7 @@ public class TwitchAPIv3
     /**
      * Sets the Twitch API OAuth header
      *
-     * @param clientid
+     * @param oauth
      */
     public void SetOAuth(String oauth)
     {
@@ -533,7 +535,7 @@ public class TwitchAPIv3
     /**
      * Gets a list of users hosting the channel
      *
-     * @param channel
+     * @param channelid
      * @return
      */
     public JSONObject GetHostUsers(int channelid)
@@ -544,6 +546,7 @@ public class TwitchAPIv3
     /**
      * Checks if a user is following a channel
      *
+     * @param user
      * @param channel
      * @return
      */

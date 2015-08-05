@@ -21,14 +21,17 @@ import me.mast3rplan.phantombot.jerklib.events.IRCEvent;
 import me.mast3rplan.phantombot.jerklib.events.ServerVersionEvent;
 
 /*
- "<version>.<debuglevel> <server> :<comments>"
- :kubrick.freenode.net 351 scripy hyperion-1.0.2b(382). kubrick.freenode.net :iM dncrTS/v4
- :kubrick.freenode.net 002 mohadib_ :Your host is kubrick.freenode.net[kubrick.freenode.net/6667], running version hyperion-1.0.2b
- :irc.nixgeeks.com 002 mohadib :Your host is irc.nixgeeks.com, running version Unreal3.2.3
+ * "<version>.<debuglevel> <server> :<comments>" :kubrick.freenode.net 351
+ * scripy hyperion-1.0.2b(382). kubrick.freenode.net :iM dncrTS/v4
+ * :kubrick.freenode.net 002 mohadib_ :Your host is
+ * kubrick.freenode.net[kubrick.freenode.net/6667], running version
+ * hyperion-1.0.2b :irc.nixgeeks.com 002 mohadib :Your host is irc.nixgeeks.com,
+ * running version Unreal3.2.3
  */
 public class ServerVersionParser implements CommandParser
 {
 
+    @Override
     public IRCEvent createEvent(IRCEvent event)
     {
 

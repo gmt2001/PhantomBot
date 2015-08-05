@@ -50,19 +50,19 @@ import me.mast3rplan.phantombot.jerklib.tasks.Task;
 public class Session extends RequestGenerator
 {
 
-    private final List<IRCEventListener> listenerList = new ArrayList<IRCEventListener>();
-    private final Map<Type, List<Task>> taskMap = new HashMap<Type, List<Task>>();
+    private final List<IRCEventListener> listenerList = new ArrayList<>();
+    private final Map<Type, List<Task>> taskMap = new HashMap<>();
     private final RequestedConnection rCon;
     private Connection con;
     private final ConnectionManager conman;
     private boolean rejoinOnKick = true, isAway, isLoggedIn, useAltNicks = true;
     private long lastRetry = -1, lastResponse = System.currentTimeMillis();
-    private ServerInformation serverInfo = new ServerInformation();
+    private final ServerInformation serverInfo = new ServerInformation();
     private State state = State.DISCONNECTED;
     private InternalEventParser parser;
     private IRCEventListener internalEventHandler;
-    private List<ModeAdjustment> userModes = new ArrayList<ModeAdjustment>();
-    private final Map<String, Channel> channelMap = new HashMap<String, Channel>();
+    private final List<ModeAdjustment> userModes = new ArrayList<>();
+    private final Map<String, Channel> channelMap = new HashMap<>();
     private int retries = 0;
     public boolean isClosing = false;
 
@@ -83,6 +83,7 @@ public class Session extends RequestGenerator
      * @param rCon
      * @param conman
      */
+    @SuppressWarnings("LeakingThisInConstructor")
     Session(RequestedConnection rCon, ConnectionManager conman)
     {
         this.rCon = rCon;
@@ -224,7 +225,7 @@ public class Session extends RequestGenerator
      */
     public List<ModeAdjustment> getUserModes()
     {
-        return new ArrayList<ModeAdjustment>(userModes);
+        return new ArrayList<>(userModes);
     }
 
     /**
@@ -240,7 +241,9 @@ public class Session extends RequestGenerator
     }
 
 
-    /* general methods */
+    /*
+     * general methods
+     */
     /**
      * Is this Session currently connected to an IRC server?
      *
@@ -340,9 +343,11 @@ public class Session extends RequestGenerator
         return getRequestedConnection().getProfile().getActualNick();
     }
 
-    /* (non-Javadoc)
-     * @see me.mast3rplan.phantombot.jerklib.RequestGenerator#changeNick(java.lang.String)
+    /*
+     * (non-Javadoc) @see
+     * me.mast3rplan.phantombot.jerklib.RequestGenerator#changeNick(java.lang.String)
      */
+    @Override
     public void changeNick(String newNick)
     {
         super.changeNick(newNick);
@@ -358,9 +363,11 @@ public class Session extends RequestGenerator
         return isAway;
     }
 
-    /* (non-Javadoc)
-     * @see me.mast3rplan.phantombot.jerklib.RequestGenerator#setAway(java.lang.String)
+    /*
+     * (non-Javadoc) @see
+     * me.mast3rplan.phantombot.jerklib.RequestGenerator#setAway(java.lang.String)
      */
+    @Override
     public void setAway(String message)
     {
         isAway = true;
@@ -372,7 +379,9 @@ public class Session extends RequestGenerator
      */
     public void unsetAway()
     {
-        /* if we're not away let's not bother even delegating */
+        /*
+         * if we're not away let's not bother even delegating
+         */
         if (isAway)
         {
             super.unSetAway();
@@ -380,7 +389,9 @@ public class Session extends RequestGenerator
         }
     }
 
-    /* methods to get information about connection and server */
+    /*
+     * methods to get information about connection and server
+     */
     /**
      * Get ServerInformation for Session
      *
@@ -478,7 +489,7 @@ public class Session extends RequestGenerator
             {
                 if (!taskMap.containsKey(type))
                 {
-                    List<Task> tasks = new ArrayList<Task>();
+                    List<Task> tasks = new ArrayList<>();
                     tasks.add(task);
                     taskMap.put(type, tasks);
                 } else
@@ -498,7 +509,7 @@ public class Session extends RequestGenerator
      */
     Map<Type, List<Task>> getTasks()
     {
-        return Collections.unmodifiableMap(new HashMap<Type, List<Task>>(taskMap));
+        return Collections.unmodifiableMap(new HashMap<>(taskMap));
     }
 
     /**
@@ -530,7 +541,7 @@ public class Session extends RequestGenerator
      */
     public List<Channel> getChannels()
     {
-        return Collections.unmodifiableList(new ArrayList<Channel>(channelMap.values()));
+        return Collections.unmodifiableList(new ArrayList<>(channelMap.values()));
     }
 
     /**
@@ -594,7 +605,7 @@ public class Session extends RequestGenerator
      */
     public List<Channel> removeNickFromAllChannels(String nick)
     {
-        List<Channel> returnList = new ArrayList<Channel>();
+        List<Channel> returnList = new ArrayList<>();
         for (Channel chan : channelMap.values())
         {
             if (chan.removeNick(nick))
@@ -605,7 +616,9 @@ public class Session extends RequestGenerator
         return Collections.unmodifiableList(returnList);
     }
 
-    /* methods to track connection attempts */
+    /*
+     * methods to track connection attempts
+     */
     /**
      * return time of last reconnect attempt
      *
@@ -762,8 +775,8 @@ public class Session extends RequestGenerator
      */
     public boolean isChannelToken(String token)
     {
-        ServerInformation serverInfo = getServerInformation();
-        String[] chanPrefixes = serverInfo.getChannelPrefixes();
+        ServerInformation lserverInfo = getServerInformation();
+        String[] chanPrefixes = lserverInfo.getChannelPrefixes();
         for (String prefix : chanPrefixes)
         {
             if (token.startsWith(prefix))
@@ -789,17 +802,19 @@ public class Session extends RequestGenerator
         sayRaw("USER " + rCon.getProfile().getName() + " 0 0 :" + rCon.getProfile().getRealName());
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
+    /*
+     * (non-Javadoc) @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode()
     {
         return rCon.getHostName().hashCode();
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
+    /*
+     * (non-Javadoc) @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object o)
     {
         if (o instanceof Session && o.hashCode() == hashCode())

@@ -34,7 +34,7 @@ public class UsernameCache
     {
         return instance;
     }
-    private Map<String, String> cache = Maps.newHashMap();
+    private final Map<String, String> cache = Maps.newHashMap();
     private Date timeoutExpire = new Date();
     private Date lastFail = new Date();
     private int numfail = 0;
@@ -61,15 +61,15 @@ public class UsernameCache
             if (tags.containsKey("display-name") && tags.get("display-name").equalsIgnoreCase(lusername))
             {
                 cache.put(lusername, tags.get("display-name"));
-                
+
                 if (PhantomBot.enableDebugging)
                 {
                     com.gmt2001.Console.out.println(">>UsernameCache detected using v3: " + tags.get("dispaly-name"));
                 }
-                
+
                 return tags.get("display-name");
             }
-            
+
             if (username.equalsIgnoreCase("jtv") || username.equalsIgnoreCase("twitchnotify") || new Date().before(timeoutExpire))
             {
                 return username;

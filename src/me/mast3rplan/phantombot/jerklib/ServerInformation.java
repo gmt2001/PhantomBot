@@ -37,14 +37,15 @@ public class ServerInformation
     private boolean supportsCNotice, supportsCPrivMsg, supportsBanExceptions, supportsInviteExceptions;
     private boolean supportsSafeList, supportsStatusNotice, supportsCAPAB, supportsNickPrefixes, supportsSilenceList;
     private boolean supportsKnock, supportsWhox, supportsWallchops, supportsWallVoices, supportsUserIP, supportsEtrace;
-    private Map<String, Integer> joinLimits = new HashMap<String, Integer>();
-    private Map<String, String> nickPrefixMap = new LinkedHashMap<String, String>();
-    private Map<String, ModeType> modeMap = new HashMap<String, ModeType>();
+    private final Map<String, Integer> joinLimits = new HashMap<>();
+    private final Map<String, String> nickPrefixMap = new LinkedHashMap<>();
+    private final Map<String, ModeType> modeMap = new HashMap<>();
 
     /**
-     * <p> <ul> <li> Type A: Modes that must add or remove an address to or from
-     * a list. These modes <b>MUST</b> always have a parameter when sent from
-     * the server to a client. A client MAY issue the mode without an argment to
+     * <p>
+     * <ul> <li> Type A: Modes that must add or remove an address to or from a
+     * list. These modes <b>MUST</b> always have a parameter when sent from the
+     * server to a client. A client MAY issue the mode without an argment to
      * obtain the current contents of the list. </li> <li> Type B: modes that
      * change a setting on a channel. These modes <b>MUST</b> always have a
      * parameter,</li>
@@ -82,14 +83,34 @@ public class ServerInformation
     }
 
     /*
-     * :irc.nixgeeks.com 005 mohadib CMDS=KNOCK,MAP,DCCALLOW,USERIP SAFELIST HCN MAXCHANNELS=20 CHANLIMIT=#:20 MAXLIST=b:60,e:60,I:60 NICKLEN=30 CHANNELLEN=32 TOPICLEN=307 KICKLEN=307 AWAYLEN=307 MAXTARGETS=20 WALLCHOPS :are supported by this server
-     * :irc.nixgeeks.com 005 mohadib WATCH=128 SILENCE=15 MODES=12 CHANTYPES=# PREFIX=(qaohv)~&@%+ CHANMODES=beI,kfL,lj,psmntirRcOAQKVGCuzNSMTG NETWORK=NixGeeks CASEMAPPING=ascii EXTBAN=~,cqnr ELIST=MNUCT STATUSMSG=~&@%+ EXCEPTS INVEX :are supported by this server
-     * :swiftco.wa.us.dal.net 005 r0bby_ NETWORK=DALnet SAFELIST MAXBANS=200 MAXCHANNELS=20 CHANNELLEN=32 KICKLEN=307 NICKLEN=30 TOPICLEN=307 MODES=6 CHANTYPES=# CHANLIMIT=#:20 PREFIX=(ov)@+ STATUSMSG=@+ :are available on this server
-     * :swiftco.wa.us.dal.net 005 r0bby_ CASEMAPPING=ascii WATCH=128 SILENCE=10 ELIST=cmntu EXCEPTS INVEX CHANMODES=beI,k,jl,cimMnOprRst MAXLIST=b:200,e:100,I:100 TARGMAX=DCCALLOW:,JOIN:,KICK:4,KILL:20,NOTICE:20,PART:,PRIVMSG:20,WHOIS:,WHOWAS: :are available on this server
-     * :Vancouver.BC.CA.Undernet.org 005 r0bby___ MAXNICKLEN=15 TOPICLEN=160 AWAYLEN=160 KICKLEN=160 CHANNELLEN=200 MAXCHANNELLEN=200 CHANTYPES=#& PREFIX=(ov)@+ STATUSMSG=@+ CHANMODES=b,k,l,imnpstrDd CASEMAPPING=rfc1459 NETWORK=UnderNet :are supported by this server
-     * :Vancouver.BC.CA.Undernet.org 005 r0bby___ WHOX WALLCHOPS WALLVOICES USERIP CPRIVMSG CNOTICE SILENCE=15 MODES=6 MAXCHANNELS=10 MAXBANS=45 NICKLEN=12 :are supported by this server
-     * :kubrick.freenode.net 005 BigDaddy IRCD=dancer CAPAB CHANTYPES=# EXCEPTS INVEX CHANMODES=bdeIq,k,lfJD,cgijLmnPQrRstz CHANLIMIT=#:20 PREFIX=(ov)@+ MAXLIST=bdeI:50 MODES=4 STATUSMSG=@ KNOCK NICKLEN=16 :are supported by this server
-     * :kubrick.freenode.net 005 BigDaddy SAFELIST CASEMAPPING=ascii CHANNELLEN=30 TOPICLEN=450 KICKLEN=450 KEYLEN=23 USERLEN=10 HOSTLEN=63 SILENCE=50 :are supported by this server
+     * :irc.nixgeeks.com 005 mohadib CMDS=KNOCK,MAP,DCCALLOW,USERIP SAFELIST HCN
+     * MAXCHANNELS=20 CHANLIMIT=#:20 MAXLIST=b:60,e:60,I:60 NICKLEN=30
+     * CHANNELLEN=32 TOPICLEN=307 KICKLEN=307 AWAYLEN=307 MAXTARGETS=20
+     * WALLCHOPS :are supported by this server :irc.nixgeeks.com 005 mohadib
+     * WATCH=128 SILENCE=15 MODES=12 CHANTYPES=# PREFIX=(qaohv)~&@%+
+     * CHANMODES=beI,kfL,lj,psmntirRcOAQKVGCuzNSMTG NETWORK=NixGeeks
+     * CASEMAPPING=ascii EXTBAN=~,cqnr ELIST=MNUCT STATUSMSG=~&@%+ EXCEPTS INVEX
+     * :are supported by this server :swiftco.wa.us.dal.net 005 r0bby_
+     * NETWORK=DALnet SAFELIST MAXBANS=200 MAXCHANNELS=20 CHANNELLEN=32
+     * KICKLEN=307 NICKLEN=30 TOPICLEN=307 MODES=6 CHANTYPES=# CHANLIMIT=#:20
+     * PREFIX=(ov)@+ STATUSMSG=@+ :are available on this server
+     * :swiftco.wa.us.dal.net 005 r0bby_ CASEMAPPING=ascii WATCH=128 SILENCE=10
+     * ELIST=cmntu EXCEPTS INVEX CHANMODES=beI,k,jl,cimMnOprRst
+     * MAXLIST=b:200,e:100,I:100
+     * TARGMAX=DCCALLOW:,JOIN:,KICK:4,KILL:20,NOTICE:20,PART:,PRIVMSG:20,WHOIS:,WHOWAS:
+     * :are available on this server :Vancouver.BC.CA.Undernet.org 005 r0bby___
+     * MAXNICKLEN=15 TOPICLEN=160 AWAYLEN=160 KICKLEN=160 CHANNELLEN=200
+     * MAXCHANNELLEN=200 CHANTYPES=#& PREFIX=(ov)@+ STATUSMSG=@+
+     * CHANMODES=b,k,l,imnpstrDd CASEMAPPING=rfc1459 NETWORK=UnderNet :are
+     * supported by this server :Vancouver.BC.CA.Undernet.org 005 r0bby___ WHOX
+     * WALLCHOPS WALLVOICES USERIP CPRIVMSG CNOTICE SILENCE=15 MODES=6
+     * MAXCHANNELS=10 MAXBANS=45 NICKLEN=12 :are supported by this server
+     * :kubrick.freenode.net 005 BigDaddy IRCD=dancer CAPAB CHANTYPES=# EXCEPTS
+     * INVEX CHANMODES=bdeIq,k,lfJD,cgijLmnPQrRstz CHANLIMIT=#:20 PREFIX=(ov)@+
+     * MAXLIST=bdeI:50 MODES=4 STATUSMSG=@ KNOCK NICKLEN=16 :are supported by
+     * this server :kubrick.freenode.net 005 BigDaddy SAFELIST CASEMAPPING=ascii
+     * CHANNELLEN=30 TOPICLEN=450 KICKLEN=450 KEYLEN=23 USERLEN=10 HOSTLEN=63
+     * SILENCE=50 :are supported by this server
      */
     public void parseServerInfo(String rawData)
     {
@@ -290,7 +311,7 @@ public class ServerInformation
      */
     public String[] getModes(ModeType type)
     {
-        List<String> modesList = new ArrayList<String>();
+        List<String> modesList = new ArrayList<>();
         for (String key : modeMap.keySet())
         {
             if (modeMap.get(key) == type || type == ModeType.ALL)
@@ -626,7 +647,7 @@ public class ServerInformation
      */
     public List<String> getNickPrefixes()
     {
-        return new ArrayList<String>(nickPrefixMap.values());
+        return new ArrayList<>(nickPrefixMap.values());
     }
 
     /**

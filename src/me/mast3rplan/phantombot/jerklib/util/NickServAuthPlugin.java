@@ -77,6 +77,7 @@ public class NickServAuthPlugin extends TaskImpl
      * @param session - Session this Task is attatched to
      * @param channels - A list of channel names to join on ident success
      */
+    @SuppressWarnings("LeakingThisInConstructor")
     public NickServAuthPlugin(
             String pass,
             char identMode,
@@ -92,9 +93,11 @@ public class NickServAuthPlugin extends TaskImpl
         session.onEvent(this, Type.CONNECT_COMPLETE, Type.MODE_EVENT);
     }
 
-    /* (non-Javadoc)
-     * @see me.mast3rplan.phantombot.jerklib.listeners.IRCEventListener#receiveEvent(me.mast3rplan.phantombot.jerklib.events.IrcEvent)
+    /*
+     * (non-Javadoc) @see
+     * me.mast3rplan.phantombot.jerklib.listeners.IRCEventListener#receiveEvent(me.mast3rplan.phantombot.jerklib.events.IrcEvent)
      */
+    @Override
     public void receiveEvent(IRCEvent e)
     {
         if (e.getType() == Type.CONNECT_COMPLETE)
@@ -117,7 +120,7 @@ public class NickServAuthPlugin extends TaskImpl
                 {
                     authed = true;
                     joinChannels();
-                    taskComplete(new Boolean(true));
+                    taskComplete(true);
                 }
             }
         }
@@ -130,11 +133,12 @@ public class NickServAuthPlugin extends TaskImpl
         final Timer t = new Timer();
         t.schedule(new TimerTask()
         {
+            @Override
             public void run()
             {
                 if (!authed)
                 {
-                    taskComplete(new Boolean(false));
+                    taskComplete(false);
                 }
                 this.cancel();
                 t.cancel();

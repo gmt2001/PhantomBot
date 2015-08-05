@@ -25,11 +25,11 @@ import me.mast3rplan.phantombot.event.Event;
 public class CommandEvent extends Event
 {
 
-    private String sender;
+    private final String sender;
     private String command;
-    private String arguments;
+    private final String arguments;
     private String[] args;
-    private Map<String, String> tags;
+    private final Map<String, String> tags;
 
     public CommandEvent(String sender, String command, String arguments)
     {
@@ -39,7 +39,7 @@ public class CommandEvent extends Event
         this.tags = new HashMap<>();
         parse();
     }
-    
+
     public CommandEvent(String sender, String command, String arguments, Map<String, String> tags)
     {
         this.sender = sender;
@@ -48,7 +48,7 @@ public class CommandEvent extends Event
         this.tags = tags;
         parse();
     }
-    
+
     private void parse()
     {
         List<String> tmpArgs = new LinkedList<>();
@@ -108,7 +108,7 @@ public class CommandEvent extends Event
     {
         return arguments;
     }
-    
+
     public Map<String, String> getTags()
     {
         return tags;

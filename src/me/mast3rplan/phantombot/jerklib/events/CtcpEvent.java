@@ -27,8 +27,8 @@ import me.mast3rplan.phantombot.jerklib.Session;
 public class CtcpEvent extends MessageEvent
 {
 
-    private String ctcpString, message;
-    private Channel channel;
+    private final String ctcpString, message;
+    private final Channel channel;
 
     public CtcpEvent(
             String ctcpString,
@@ -53,18 +53,22 @@ public class CtcpEvent extends MessageEvent
         return ctcpString;
     }
 
-    /* (non-Javadoc)
-     * @see me.mast3rplan.phantombot.jerklib.events.IrcMessageEvent#getChannel()
+    /*
+     * (non-Javadoc) @see
+     * me.mast3rplan.phantombot.jerklib.events.IrcMessageEvent#getChannel()
      */
+    @Override
     public Channel getChannel()
     {
         return channel;
     }
 
 
-    /* (non-Javadoc)
-     * @see me.mast3rplan.phantombot.jerklib.events.IrcMessageEvent#getMessage()
+    /*
+     * (non-Javadoc) @see
+     * me.mast3rplan.phantombot.jerklib.events.IrcMessageEvent#getMessage()
      */
+    @Override
     public String getMessage()
     {
         return message;

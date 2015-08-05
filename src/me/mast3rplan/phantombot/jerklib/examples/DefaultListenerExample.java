@@ -16,6 +16,7 @@
  */
 package me.mast3rplan.phantombot.jerklib.examples;
 
+import java.util.logging.Level;
 import me.mast3rplan.phantombot.jerklib.Channel;
 import me.mast3rplan.phantombot.jerklib.ConnectionManager;
 import me.mast3rplan.phantombot.jerklib.Profile;
@@ -34,6 +35,7 @@ public class DefaultListenerExample extends DefaultIRCEventListener implements R
     Session session;
     static final String CHANNEL_TO_JOIN = "#me.mast3rplan.phantombot.jerklib";
 
+    @Override
     public void run()
     {
         ConnectionManager manager = new ConnectionManager(new Profile("ble", "bleh bleh", "ble", "ble_", "ble__"));
@@ -58,7 +60,10 @@ public class DefaultListenerExample extends DefaultIRCEventListener implements R
     @Override
     protected void handleChannelMessage(MessageEvent event)
     {
-        log.info(event.getChannel().getName() + ":" + event.getNick() + ":" + event.getMessage());
+        log.log(Level.INFO, "{0}:{1}:{2}", new Object[]
+        {
+            event.getChannel().getName(), event.getNick(), event.getMessage()
+        });
         if ("now die".equalsIgnoreCase(event.getMessage()))
         {
             event.getChannel().say("Okay, fine, I'll die");

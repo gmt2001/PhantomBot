@@ -16,6 +16,7 @@
  */
 package me.mast3rplan.phantombot.jerklib.listeners;
 
+import java.util.logging.Level;
 import me.mast3rplan.phantombot.jerklib.events.*;
 import me.mast3rplan.phantombot.jerklib.events.IRCEvent.Type;
 
@@ -24,8 +25,10 @@ import java.util.logging.Logger;
 public abstract class DefaultIRCEventListener implements IRCEventListener
 {
 
-    protected Logger log = Logger.getLogger(this.getClass().getName());
+    @SuppressWarnings("NonConstantLogger")
+    protected final Logger log = Logger.getLogger(this.getClass().getName());
 
+    @Override
     public void receiveEvent(IRCEvent e)
     {
         Type t = e.getType();
@@ -34,7 +37,7 @@ public abstract class DefaultIRCEventListener implements IRCEventListener
         handled |= handleOnChannelEvents(t, e);
         if (!handled)
         {
-            log.info("Unhandled event: " + e.getRawEventData());
+            log.log(Level.INFO, "Unhandled event: {0}", e.getRawEventData());
         }
     }
 

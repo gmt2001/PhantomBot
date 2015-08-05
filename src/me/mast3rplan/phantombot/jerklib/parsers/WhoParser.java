@@ -25,6 +25,7 @@ import java.util.regex.Pattern;
 public class WhoParser implements CommandParser
 {
 
+    @Override
     public IRCEvent createEvent(IRCEvent event)
     {
         String data = event.getRawEventData();
@@ -44,7 +45,7 @@ public class WhoParser implements CommandParser
                     m.group(4), // server name
                     event.getSession(), // session
                     m.group(2) // username
-                    );
+            );
         }
         return event;
     }

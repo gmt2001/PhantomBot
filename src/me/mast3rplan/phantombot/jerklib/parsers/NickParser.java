@@ -23,6 +23,7 @@ import me.mast3rplan.phantombot.jerklib.events.NickChangeEvent;
 public class NickParser implements CommandParser
 {
 
+    @Override
     public IRCEvent createEvent(IRCEvent event)
     {
         Session session = event.getSession();
@@ -31,6 +32,6 @@ public class NickParser implements CommandParser
                 session,
                 event.getNick(), // old
                 event.arg(0)// new nick
-                );
+        );
     }
 }

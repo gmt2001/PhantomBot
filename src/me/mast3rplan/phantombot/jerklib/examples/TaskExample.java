@@ -39,10 +39,13 @@ public class TaskExample
         Session session = conman.requestConnection("irc.freenode.net");
 
 
-        /* Add a Task to join a channel when the connection is complete 
-         This task will only ever be notified of ConnectionCompleteEvents */
+        /*
+         * Add a Task to join a channel when the connection is complete This
+         * task will only ever be notified of ConnectionCompleteEvents
+         */
         session.onEvent(new TaskImpl("join_channels")
         {
+            @Override
             public void receiveEvent(IRCEvent e)
             {
                 e.getSession().join("#me.mast3rplan.phantombot.jerklib");
@@ -50,9 +53,12 @@ public class TaskExample
         }, Type.CONNECT_COMPLETE);
 
 
-        /* Add a Task to say hello */
+        /*
+         * Add a Task to say hello
+         */
         session.onEvent(new TaskImpl("hello")
         {
+            @Override
             public void receiveEvent(IRCEvent e)
             {
                 JoinCompleteEvent jce = (JoinCompleteEvent) e;
@@ -60,11 +66,12 @@ public class TaskExample
             }
         }, Type.JOIN_COMPLETE);
 
-
-
-        /* Add a Task to be notified on MOTD and JoinComplete events */
+        /*
+         * Add a Task to be notified on MOTD and JoinComplete events
+         */
         session.onEvent(new TaskImpl("motd_join")
         {
+            @Override
             public void receiveEvent(IRCEvent e)
             {
                 if (e.getType() == Type.MOTD)
@@ -79,11 +86,12 @@ public class TaskExample
             }
         }, Type.MOTD, Type.JOIN_COMPLETE);
 
-
-
-        /* Add a Task that will be notified of all events */
+        /*
+         * Add a Task that will be notified of all events
+         */
         session.onEvent(new TaskImpl("print")
         {
+            @Override
             public void receiveEvent(IRCEvent e)
             {
                 com.gmt2001.Console.out.println(e.getRawEventData());
@@ -92,6 +100,7 @@ public class TaskExample
 
     }
 
+    @SuppressWarnings("ResultOfObjectAllocationIgnored")
     public static void main(String[] args)
     {
         new TaskExample();

@@ -27,8 +27,8 @@ import me.mast3rplan.phantombot.jerklib.Session;
 public class UnresolvedHostnameErrorEvent extends ErrorEvent
 {
 
-    private String hostName;
-    private UnresolvedAddressException exception;
+    private final String hostName;
+    private final UnresolvedAddressException exception;
 
     public UnresolvedHostnameErrorEvent(
             Session session,
@@ -56,6 +56,7 @@ public class UnresolvedHostnameErrorEvent extends ErrorEvent
      *
      * @return hostname that could not be resloved
      */
+    @Override
     public String getHostName()
     {
         return hostName;

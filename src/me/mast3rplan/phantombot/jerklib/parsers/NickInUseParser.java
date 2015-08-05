@@ -22,6 +22,7 @@ import me.mast3rplan.phantombot.jerklib.events.NickInUseEvent;
 public class NickInUseParser implements CommandParser
 {
 
+    @Override
     public IRCEvent createEvent(IRCEvent event)
     {
         return new NickInUseEvent(

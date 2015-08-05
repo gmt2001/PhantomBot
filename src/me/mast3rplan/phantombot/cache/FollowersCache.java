@@ -49,9 +49,9 @@ public class FollowersCache implements Runnable
         return instance;
     }
     private Map<String, JSONObject> cache = Maps.newHashMap();
-    private String channel;
+    private final String channel;
     private int count = 0;
-    private Thread updateThread;
+    private final Thread updateThread;
     private boolean firstUpdate = true;
     private Date timeoutExpire = new Date();
     private Date nextFull = new Date();
@@ -59,6 +59,7 @@ public class FollowersCache implements Runnable
     private int numfail = 0;
     private boolean hasFail = false;
 
+    @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     public FollowersCache(String channel)
     {
         this.channel = channel;
@@ -124,6 +125,7 @@ public class FollowersCache implements Runnable
     }
 
     @Override
+    @SuppressWarnings("SleepWhileInLoop")
     public void run()
     {
         try
@@ -142,16 +144,19 @@ public class FollowersCache implements Runnable
                 {
                     int newCount = quickUpdate(channel);
 
-                    /*if (new Date().after(timeoutExpire) && (Math.abs(newCount - count) > 30 || firstUpdate || new Date().after(nextFull)))
-                     {
-                     this.updateCache(newCount);
-                     }*/
+                    /*
+                     * if (new Date().after(timeoutExpire) && (Math.abs(newCount
+                     * - count) > 30 || firstUpdate || new
+                     * Date().after(nextFull))) { this.updateCache(newCount);
+                     }
+                     */
 
-                    /*if (firstUpdate)
-                    {
-                        firstUpdate = false;
-                        EventBus.instance().post(new TwitchFollowsInitializedEvent());
-                    }*/
+                    /*
+                     * if (firstUpdate) { firstUpdate = false;
+                     * EventBus.instance().post(new
+                     * TwitchFollowsInitializedEvent());
+                    }
+                     */
                 }
             } catch (Exception e)
             {

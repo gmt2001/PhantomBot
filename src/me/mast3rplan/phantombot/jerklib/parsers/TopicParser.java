@@ -24,14 +24,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 /*
- :sterling.freenode.net 332 scrip #test :Welcome to #test - This channel is
- :sterling.freenode.net 333 scrip #test LuX 1159267246
+ * :sterling.freenode.net 332 scrip #test :Welcome to #test - This channel is
+ * :sterling.freenode.net 333 scrip #test LuX 1159267246
  */
 public class TopicParser implements CommandParser
 {
 
-    private Map<Channel, TopicEvent> topicMap = new HashMap<Channel, TopicEvent>();
+    private final Map<Channel, TopicEvent> topicMap = new HashMap<>();
 
+    @Override
+    @SuppressWarnings("element-type-mismatch")
     public IRCEvent createEvent(IRCEvent event)
     {
         if (event.numeric() == 332)

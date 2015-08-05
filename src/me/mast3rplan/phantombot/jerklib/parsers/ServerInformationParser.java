@@ -23,6 +23,7 @@ import me.mast3rplan.phantombot.jerklib.events.ServerInformationEvent;
 public class ServerInformationParser implements CommandParser
 {
 
+    @Override
     public IRCEvent createEvent(IRCEvent event)
     {
         Session session = event.getSession();

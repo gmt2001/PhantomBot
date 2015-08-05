@@ -27,6 +27,7 @@ import me.mast3rplan.phantombot.jerklib.events.KickEvent;
 public class KickParser implements CommandParser
 {
 
+    @Override
     public IRCEvent createEvent(IRCEvent event)
     {
         Session session = event.getSession();

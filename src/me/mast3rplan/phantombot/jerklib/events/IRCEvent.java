@@ -130,6 +130,7 @@ public class IRCEvent extends EventToken
      *
      * @return Raw IRC event text.
      */
+    @Override
     public String getRawEventData()
     {
         return data;
@@ -146,8 +147,8 @@ public class IRCEvent extends EventToken
     }
 
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
+    /*
+     * (non-Javadoc) @see java.lang.Object#toString()
      */
     @Override
     public String toString()

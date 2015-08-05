@@ -30,6 +30,7 @@ public class JoinParser implements CommandParser
 
     // :r0bby!n=wakawaka@guifications/user/r0bby JOIN :#me.mast3rplan.phantombot.jerklib
     // :mohadib_!~mohadib@68.35.11.181 JOIN &test
+    @Override
     public IRCEvent createEvent(IRCEvent event)
     {
         Session session = event.getSession();

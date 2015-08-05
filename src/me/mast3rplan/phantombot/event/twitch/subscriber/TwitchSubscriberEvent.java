@@ -21,10 +21,10 @@ import me.mast3rplan.phantombot.event.twitch.TwitchEvent;
 public abstract class TwitchSubscriberEvent extends TwitchEvent
 {
 
-    private String subscriber;
-    private Type type;
+    private final String subscriber;
+    private final Type type;
 
-    enum Type
+    public enum Type
     {
 
         SUBSCRIBE,

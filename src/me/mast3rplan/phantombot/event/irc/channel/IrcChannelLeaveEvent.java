@@ -22,8 +22,8 @@ import me.mast3rplan.phantombot.jerklib.Session;
 public class IrcChannelLeaveEvent extends IrcChannelEvent
 {
 
-    private String user;
-    private String message;
+    private final String user;
+    private final String message;
 
     public IrcChannelLeaveEvent(Session session, Channel channel, String user, String message)
     {

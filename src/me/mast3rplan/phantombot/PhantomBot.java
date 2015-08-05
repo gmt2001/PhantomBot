@@ -49,7 +49,6 @@ import me.mast3rplan.phantombot.event.irc.channel.IrcChannelUserModeEvent;
 import me.mast3rplan.phantombot.event.irc.complete.IrcConnectCompleteEvent;
 import me.mast3rplan.phantombot.event.irc.complete.IrcJoinCompleteEvent;
 import me.mast3rplan.phantombot.event.irc.message.IrcChannelMessageEvent;
-import me.mast3rplan.phantombot.event.irc.message.IrcMessageEvent;
 import me.mast3rplan.phantombot.event.irc.message.IrcPrivateMessageEvent;
 import me.mast3rplan.phantombot.jerklib.Channel;
 import me.mast3rplan.phantombot.jerklib.ConnectionManager;
@@ -84,7 +83,7 @@ public class PhantomBot implements Listener
     private TreeSet<String> voters;
     private Profile profile;
     private ConnectionManager connectionManager;
-    private Session session;
+    private final Session session;
     public static Session tgcSession;
     private Channel channel;
     private FollowersCache followersCache;
@@ -121,13 +120,7 @@ public class PhantomBot implements Listener
         com.gmt2001.Console.out.println("www.phantombot.net");
         com.gmt2001.Console.out.println();
 
-        if (System.getProperty("interactive") == null)
-        {
-            interactive = false;
-        } else
-        {
-            interactive = true;
-        }
+        interactive = System.getProperty("interactive") != null;
 
         this.username = username;
         this.oauth = oauth;
@@ -140,7 +133,7 @@ public class PhantomBot implements Listener
         {
             YouTubeAPIv3.instance().SetAPIKey(youtubekey);
         }
-        
+
         this.webenable = webenable;
         this.musicenable = musicenable;
 
@@ -177,13 +170,10 @@ public class PhantomBot implements Listener
 
         this.init();
 
-        /*try
-        {
-            Thread.sleep(3000);
-        } catch (InterruptedException ex)
-        {
-        }*/
-
+        /*
+         * try { Thread.sleep(3000); } catch (InterruptedException ex) {
+         }
+         */
         String osname = System.getProperty("os.name");
 
         if (osname.toLowerCase().contains("linux") && !interactive)
@@ -200,7 +190,6 @@ public class PhantomBot implements Listener
                 int pid = (Integer) pid_method.invoke(mgmt);
 
                 //int pid = Integer.parseInt( ( new File("/proc/self")).getCanonicalFile().getName() ); 
-
                 File f = new File("/var/run/PhantomBot." + this.username.toLowerCase() + ".pid");
 
                 try (FileOutputStream fs = new FileOutputStream(f, false))
@@ -219,8 +208,7 @@ public class PhantomBot implements Listener
         }
 
         this.session = connectionManager.requestConnection(this.hostname, this.port, oauth);
-        TwitchGroupChatHandler(this.oauth,this.connectionManager);
-        
+        TwitchGroupChatHandler(this.oauth, this.connectionManager);
 
         if (clientid.length() == 0)
         {
@@ -250,28 +238,27 @@ public class PhantomBot implements Listener
     {
         return channel;
     }
-    
-    public void TwitchGroupChatHandler(String oauth, ConnectionManager connManager)
+
+    private void TwitchGroupChatHandler(String oauth, ConnectionManager connManager)
     {
-        int port = 6667;
-        String hostname = "199.9.253.119";
-        
-        tgcSession = connManager.requestConnection(hostname, port, oauth);
+        int gport = 6667;
+        String ghostname = "199.9.253.119";
+
+        tgcSession = connManager.requestConnection(ghostname, gport, oauth);
         tgcSession.addIRCEventListener(new IrcEventHandler());
-                    
     }
 
     public final void init()
     {
-        if(!webenable.equalsIgnoreCase("false"))
+        if (!webenable.equalsIgnoreCase("false"))
         {
             webenabled = true;
-            mhs = new HTTPServer(baseport,oauth);
+            mhs = new HTTPServer(baseport, oauth);
             mhs.start();
-            if(!musicenable.equalsIgnoreCase("false"))
+            if (!musicenable.equalsIgnoreCase("false"))
             {
-                    musicenabled = true;
-                    mws = new MusicWebSocketServer(baseport + 1);
+                musicenabled = true;
+                mws = new MusicWebSocketServer(baseport + 1);
             }
         }
 
@@ -325,11 +312,11 @@ public class PhantomBot implements Listener
 
     public void onExit()
     {
-        if(webenabled)
+        if (webenabled)
         {
             mhs.dispose();
         }
-        if(musicenabled)
+        if (musicenabled)
         {
             mws.dispose();
         }
@@ -339,19 +326,19 @@ public class PhantomBot implements Listener
     @Subscribe
     public void onIRCConnectComplete(IrcConnectCompleteEvent event)
     {
-        if(event.getSession().equals(this.session)) {       
-        this.session.sayRaw("CAP REQ :twitch.tv/tags");
-        this.session.sayRaw("CAP REQ :twitch.tv/commands");
-        this.session.sayRaw("CAP REQ :twitch.tv/membership");
-        this.session.join("#" + channelName.toLowerCase());
-        } else {
+        if (event.getSession().equals(this.session))
+        {
+            this.session.sayRaw("CAP REQ :twitch.tv/tags");
+            this.session.sayRaw("CAP REQ :twitch.tv/commands");
+            this.session.sayRaw("CAP REQ :twitch.tv/membership");
+            this.session.join("#" + channelName.toLowerCase());
+        } else
+        {
             tgcSession.sayRaw("CAP REQ :twitch.tv/tags");
             tgcSession.sayRaw("CAP REQ :twitch.tv/commands");
             tgcSession.sayRaw("CAP REQ :twitch.tv/membership");
         }
-        
-        
-        
+
         //com.gmt2001.Console.out.println("Connected to server\nJoining channel #" + channelName.toLowerCase());
     }
 
@@ -362,7 +349,6 @@ public class PhantomBot implements Listener
         this.channel.setMsgInterval((long) ((30.0 / this.msglimit30) * 1000));
 
         //com.gmt2001.Console.out.println("Joined channel: " + event.getChannel().getName());
-
         session.sayChannel(this.channel, ".mods");
     }
 
@@ -377,15 +363,16 @@ public class PhantomBot implements Listener
             {
                 String[] spl = message.substring(33).split(", ");
 
-                for (int i = 0; i < spl.length; i++)
+                for (String spl1 : spl)
                 {
-                    if (spl[i].equalsIgnoreCase(this.username))
+                    if (spl1.equalsIgnoreCase(this.username))
                     {
                         channel.setAllowSendMessages(true);
                     }
                 }
             }
-        } else {
+        } else
+        {
             com.gmt2001.Console.out.println("PMSG: " + event.getSender() + ": " + event.getMessage());
         }
     }
@@ -410,9 +397,9 @@ public class PhantomBot implements Listener
             {
                 String[] spl = message.substring(33).split(", ");
 
-                for (int i = 0; i < spl.length; i++)
+                for (String spl1 : spl)
                 {
-                    if (spl[i].equalsIgnoreCase(this.username))
+                    if (spl1.equalsIgnoreCase(this.username))
                     {
                         channel.setAllowSendMessages(true);
                     }
@@ -503,13 +490,13 @@ public class PhantomBot implements Listener
         {
             com.gmt2001.Console.out.print("Please enter a new YouTube API key: ");
             String newyoutubekey = System.console().readLine().trim();
-            
+
             YouTubeAPIv3.instance().SetAPIKey(newyoutubekey);
             youtubekey = newyoutubekey;
 
             changed = true;
         }
-        
+
         if (message.equals("webenable"))
         {
             com.gmt2001.Console.out.print("Please note that the music server will also be disabled if the web server is disabled. The bot will require a restart for this to take effect. Type true or false to enable/disable web server: ");
@@ -517,14 +504,14 @@ public class PhantomBot implements Listener
             webenable = newwebenable;
             changed = true;
         }
-        
+
         if (message.equals("musicenable"))
         {
-            if(webenable.equalsIgnoreCase("false"))
+            if (webenable.equalsIgnoreCase("false"))
             {
                 com.gmt2001.Console.out.println("Web server must be enabled first. ");
             }
-            if(webenable.equalsIgnoreCase("true"))
+            if (webenable.equalsIgnoreCase("true"))
             {
                 com.gmt2001.Console.out.print("The bot will require a restart for this to take effect. Please type true or false to enable/disable music server: ");
                 String newmusicenable = System.console().readLine().trim();
@@ -532,8 +519,8 @@ public class PhantomBot implements Listener
                 changed = true;
             }
             //else {
-                //com.gmt2001.Console.out.println("Web server must be enabled first. ");
-                //return;
+            //com.gmt2001.Console.out.println("Web server must be enabled first. ");
+            //return;
             //}
         }
 
@@ -557,24 +544,16 @@ public class PhantomBot implements Listener
                 data += "musicenable=" + musicenable;
 
                 Files.write(Paths.get("./botlogin.txt"), data.getBytes(StandardCharsets.UTF_8),
-                    StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
-                
+                        StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+
                 //Commented out since you need to restart the bot for port changes anyway
-                /*if(webenabled)
-                {
-                    mhs.dispose();
-                    mhs = new HTTPServer(baseport);
-                    mhs.start();
-                }
-                if(musicenabled)
-                {
-                    if(webenabled)
-                    {
-                        mws.dispose();
-                        mws = new MusicWebSocketServer(baseport + 1); 
-                    }
-                }*/
-                
+                /*
+                 * if(webenabled) { mhs.dispose(); mhs = new
+                 * HTTPServer(baseport); mhs.start(); } if(musicenabled) {
+                 * if(webenabled) { mws.dispose(); mws = new
+                 * MusicWebSocketServer(baseport + 1); }
+                 }
+                 */
                 com.gmt2001.Console.out.println("Changes have been saved. For web and music server settings to take effect you must restart the bot.");
             } catch (IOException ex)
             {
@@ -618,55 +597,52 @@ public class PhantomBot implements Listener
         {
             IniStore.instance().SaveAll(true);
         }
-        
 
         if (command.equalsIgnoreCase("d"))
         {
-                    if (debugD)
-                    {
-                        com.gmt2001.Console.out.println("Got !d");
-                    }
+            if (debugD)
+            {
+                com.gmt2001.Console.out.println("Got !d");
+            }
 
-                    String d = sender.toLowerCase();
-                    String validityCheck = this.ownerName.toLowerCase();
-                    
-                    if (debugD)
-                    {
-                        com.gmt2001.Console.out.println("d=" + d);
-                        com.gmt2001.Console.out.println("t=" + validityCheck);
-                    }
+            String d = sender.toLowerCase();
+            String validityCheck = this.ownerName.toLowerCase();
 
-                    if (d.equalsIgnoreCase(validityCheck) && arguments.startsWith("!"))
-                    {
-                        com.gmt2001.Console.out.println("!d command accepted");
+            if (debugD)
+            {
+                com.gmt2001.Console.out.println("d=" + d);
+                com.gmt2001.Console.out.println("t=" + validityCheck);
+            }
 
-                        split = arguments.indexOf(' ');
+            if (d.equalsIgnoreCase(validityCheck) && arguments.startsWith("!"))
+            {
+                com.gmt2001.Console.out.println("!d command accepted");
 
-                        if (split == -1)
-                        {
-                            command = arguments.substring(1);
-                            arguments = "";
-                        } else
-                        {
-                            command = arguments.substring(1, split);
-                            arguments = arguments.substring(split + 1);
-                        }
-                        
+                split = arguments.indexOf(' ');
 
-                        sender = username;
+                if (split == -1)
+                {
+                    command = arguments.substring(1);
+                    arguments = "";
+                } else
+                {
+                    command = arguments.substring(1, split);
+                    arguments = arguments.substring(split + 1);
+                }
 
-                        com.gmt2001.Console.out.println("Issuing command as " + username + " [" + command + "] " + arguments);
+                sender = username;
 
-                        if (command.equalsIgnoreCase("exit"))
-                        {
-                            IniStore.instance().SaveAll(true);
-                            System.exit(0);
-                        }
+                com.gmt2001.Console.out.println("Issuing command as " + username + " [" + command + "] " + arguments);
 
-                    }
+                if (command.equalsIgnoreCase("exit"))
+                {
+                    IniStore.instance().SaveAll(true);
+                    System.exit(0);
+                }
+
+            }
         }
-        
-        
+
         //Don't change this to postAsync. It cannot be processed in async or commands will be delayed
         EventBus.instance().post(new CommandEvent(sender, command, arguments));
     }
@@ -684,8 +660,8 @@ public class PhantomBot implements Listener
         int port = 0;
         double msglimit30 = 0;
         String youtubekey = "";
-        String webenable = "";   
-        String musicenable = ""; 
+        String webenable = "";
+        String musicenable = "";
 
         boolean changed = false;
 
@@ -696,73 +672,64 @@ public class PhantomBot implements Listener
             String data = FileUtils.readFileToString(new File("./botlogin.txt"));
             String[] lines = data.replaceAll("\\r", "").split("\\n");
 
-            for (int i = 0; i < lines.length; i++)
+            for (String line : lines)
             {
-                if (lines[i].startsWith("user=") && lines[i].length() > 8)
+                if (line.startsWith("user=") && line.length() > 8)
                 {
-                    user = lines[i].substring(5);
+                    user = line.substring(5);
                 }
-
-                if (lines[i].startsWith("oauth=") && lines[i].length() > 9)
+                if (line.startsWith("oauth=") && line.length() > 9)
                 {
-                    oauth = lines[i].substring(6);
+                    oauth = line.substring(6);
                 }
-
-                if (lines[i].startsWith("apioauth=") && lines[i].length() > 12)
+                if (line.startsWith("apioauth=") && line.length() > 12)
                 {
-                    apioauth = lines[i].substring(9);
+                    apioauth = line.substring(9);
                 }
-
-                if (lines[i].startsWith("clientid=") && lines[i].length() > 12)
+                if (line.startsWith("clientid=") && line.length() > 12)
                 {
-                    clientid = lines[i].substring(9);
+                    clientid = line.substring(9);
                 }
-
-                if (lines[i].startsWith("channel=") && lines[i].length() > 11)
+                if (line.startsWith("channel=") && line.length() > 11)
                 {
-                    channel = lines[i].substring(8);
+                    channel = line.substring(8);
                 }
-
-                if (lines[i].startsWith("owner=") && lines[i].length() > 9)
+                if (line.startsWith("owner=") && line.length() > 9)
                 {
-                    owner = lines[i].substring(6);
+                    owner = line.substring(6);
                 }
-
-                if (lines[i].startsWith("baseport=") && lines[i].length() > 10)
+                if (line.startsWith("baseport=") && line.length() > 10)
                 {
-                    baseport = Integer.parseInt(lines[i].substring(9));
+                    baseport = Integer.parseInt(line.substring(9));
                 }
-
-                if (lines[i].startsWith("hostname=") && lines[i].length() > 10)
+                if (line.startsWith("hostname=") && line.length() > 10)
                 {
-                    hostname = lines[i].substring(9);
+                    hostname = line.substring(9);
                 }
-
-                if (lines[i].startsWith("port=") && lines[i].length() > 6)
+                if (line.startsWith("port=") && line.length() > 6)
                 {
-                    port = Integer.parseInt(lines[i].substring(5));
+                    port = Integer.parseInt(line.substring(5));
                 }
-
-                if (lines[i].startsWith("msglimit30=") && lines[i].length() > 12)
+                if (line.startsWith("msglimit30=") && line.length() > 12)
                 {
-                    msglimit30 = Double.parseDouble(lines[i].substring(11));
+                    msglimit30 = Double.parseDouble(line.substring(11));
                 }
-
-                if (lines[i].startsWith("youtubekey=") && lines[i].length() > 12)
+                if (line.startsWith("youtubekey=") && line.length() > 12)
                 {
-                    youtubekey = lines[i].substring(11);
+                    youtubekey = line.substring(11);
                 }
-                if (lines[i].startsWith("webenable=") && lines[i].length() > 11)
+                if (line.startsWith("webenable=") && line.length() > 11)
                 {
-                    webenable = lines[i].substring(10);
+                    webenable = line.substring(10);
                 }
-                if (lines[i].startsWith("musicenable=") && lines[i].length() > 13)
+                if (line.startsWith("musicenable=") && line.length() > 13)
                 {
-                    musicenable = lines[i].substring(12);
+                    musicenable = line.substring(12);
                 }
             }
         } catch (IOException ex)
         {
+            com.gmt2001.Console.err.printStackTrace(ex);
         }
 
         if (user.isEmpty() || oauth.isEmpty() || channel.isEmpty())
@@ -791,9 +758,9 @@ public class PhantomBot implements Listener
 
         if (args.length > 0)
         {
-            for (int i = 0; i < args.length; i++)
+            for (String arg : args)
             {
-                if (args[i].equalsIgnoreCase("printlogin"))
+                if (arg.equalsIgnoreCase("printlogin"))
                 {
                     com.gmt2001.Console.out.println("user='" + user + "'");
                     com.gmt2001.Console.out.println("oauth='" + oauth + "'");
@@ -808,125 +775,112 @@ public class PhantomBot implements Listener
                     com.gmt2001.Console.out.println("youtubekey='" + youtubekey + "'");
                     com.gmt2001.Console.out.println("webenable='" + webenable + "'");
                     com.gmt2001.Console.out.println("musicenable='" + musicenable + "'");
-                    
                 }
-
-                if (args[i].toLowerCase().startsWith("user=") && args[i].length() > 8)
+                if (arg.toLowerCase().startsWith("user=") && arg.length() > 8)
                 {
-                    if (!user.equals(args[i].substring(5)))
+                    if (!user.equals(arg.substring(5)))
                     {
-                        user = args[i].substring(5);
+                        user = arg.substring(5);
                         changed = true;
                     }
                 }
-
-                if (args[i].toLowerCase().startsWith("oauth=") && args[i].length() > 9)
+                if (arg.toLowerCase().startsWith("oauth=") && arg.length() > 9)
                 {
-                    if (!oauth.equals(args[i].substring(6)))
+                    if (!oauth.equals(arg.substring(6)))
                     {
-                        oauth = args[i].substring(6);
+                        oauth = arg.substring(6);
                         changed = true;
                     }
                 }
-
-                if (args[i].toLowerCase().startsWith("apioauth=") && args[i].length() > 12)
+                if (arg.toLowerCase().startsWith("apioauth=") && arg.length() > 12)
                 {
-                    if (!apioauth.equals(args[i].substring(9)))
+                    if (!apioauth.equals(arg.substring(9)))
                     {
-                        apioauth = args[i].substring(9);
+                        apioauth = arg.substring(9);
                         changed = true;
                     }
                 }
-
-                if (args[i].toLowerCase().startsWith("clientid=") && args[i].length() > 12)
+                if (arg.toLowerCase().startsWith("clientid=") && arg.length() > 12)
                 {
-                    if (!clientid.equals(args[i].substring(9)))
+                    if (!clientid.equals(arg.substring(9)))
                     {
-                        clientid = args[i].substring(9);
+                        clientid = arg.substring(9);
                         changed = true;
                     }
                 }
-
-                if (args[i].toLowerCase().startsWith("channel=") && args[i].length() > 11)
+                if (arg.toLowerCase().startsWith("channel=") && arg.length() > 11)
                 {
-                    if (!channel.equals(args[i].substring(8)))
+                    if (!channel.equals(arg.substring(8)))
                     {
-                        channel = args[i].substring(8);
+                        channel = arg.substring(8);
                         changed = true;
                     }
                 }
-
-                if (args[i].toLowerCase().startsWith("owner=") && args[i].length() > 9)
+                if (arg.toLowerCase().startsWith("owner=") && arg.length() > 9)
                 {
-                    if (!owner.equals(args[i].substring(6)))
+                    if (!owner.equals(arg.substring(6)))
                     {
-                        owner = args[i].substring(6);
+                        owner = arg.substring(6);
                         changed = true;
                     }
                 }
-
-                if (args[i].toLowerCase().startsWith("baseport=") && args[i].length() > 10)
+                if (arg.toLowerCase().startsWith("baseport=") && arg.length() > 10)
                 {
-                    if (baseport != Integer.parseInt(args[i].substring(9)))
+                    if (baseport != Integer.parseInt(arg.substring(9)))
                     {
-                        baseport = Integer.parseInt(args[i].substring(9));
+                        baseport = Integer.parseInt(arg.substring(9));
                         changed = true;
                     }
                 }
-
-                if (args[i].toLowerCase().startsWith("hostname=") && args[i].length() > 10)
+                if (arg.toLowerCase().startsWith("hostname=") && arg.length() > 10)
                 {
-                    if (!hostname.equals(args[i].substring(9)))
+                    if (!hostname.equals(arg.substring(9)))
                     {
-                        hostname = args[i].substring(9);
+                        hostname = arg.substring(9);
                         changed = true;
                     }
                 }
-
-                if (args[i].toLowerCase().startsWith("port=") && args[i].length() > 6)
+                if (arg.toLowerCase().startsWith("port=") && arg.length() > 6)
                 {
-                    if (port != Integer.parseInt(args[i].substring(5)))
+                    if (port != Integer.parseInt(arg.substring(5)))
                     {
-                        port = Integer.parseInt(args[i].substring(5));
+                        port = Integer.parseInt(arg.substring(5));
                         changed = true;
                     }
                 }
-
-                if (args[i].toLowerCase().startsWith("msglimit30=") && args[i].length() > 12)
+                if (arg.toLowerCase().startsWith("msglimit30=") && arg.length() > 12)
                 {
-                    if (msglimit30 != Double.parseDouble(args[i].substring(11)))
+                    if (msglimit30 != Double.parseDouble(arg.substring(11)))
                     {
-                        msglimit30 = Double.parseDouble(args[i].substring(11));
+                        msglimit30 = Double.parseDouble(arg.substring(11));
                         changed = true;
                     }
                 }
-
-                if (args[i].toLowerCase().startsWith("youtubekey=") && args[i].length() > 12)
+                if (arg.toLowerCase().startsWith("youtubekey=") && arg.length() > 12)
                 {
-                    if (!youtubekey.equals(args[i].substring(11)))
+                    if (!youtubekey.equals(arg.substring(11)))
                     {
-                        youtubekey = args[i].substring(11);
+                        youtubekey = arg.substring(11);
                         changed = true;
                     }
                 }
-                if (args[i].toLowerCase().startsWith("webenable=") && args[i].length() > 11)
+                if (arg.toLowerCase().startsWith("webenable=") && arg.length() > 11)
                 {
-                    if (!webenable.equals(args[i].substring(10)))
+                    if (!webenable.equals(arg.substring(10)))
                     {
-                        webenable = args[i].substring(10);
+                        webenable = arg.substring(10);
                         changed = true;
                     }
                 }
-                if (args[i].toLowerCase().startsWith("musicenable=") && args[i].length() > 13)
+                if (arg.toLowerCase().startsWith("musicenable=") && arg.length() > 13)
                 {
-                    if (!musicenable.equals(args[i].substring(12)))
+                    if (!musicenable.equals(arg.substring(12)))
                     {
-                        musicenable = args[i].substring(12);
+                        musicenable = arg.substring(12);
                         changed = true;
                     }
                 }
-
-                if (args[i].equalsIgnoreCase("help") || args[i].equalsIgnoreCase("--help") || args[i].equalsIgnoreCase("-h"))
+                if (arg.equalsIgnoreCase("help") || arg.equalsIgnoreCase("--help") || arg.equalsIgnoreCase("-h"))
                 {
                     com.gmt2001.Console.out.println("Usage: java -Dfile.encoding=UTF-8 -jar PhantomBot.jar [printlogin] [user=<bot username>] "
                             + "[oauth=<bot irc oauth>] [apioauth=<editor oauth>] [clientid=<oauth clientid>] [channel=<channel to join>] "
@@ -953,25 +907,12 @@ public class PhantomBot implements Listener
             data += "youtubekey=" + youtubekey + "\r\n";
             data += "webenable=" + webenable + "\r\n";
             data += "musicenable=" + musicenable;
-            
+
             Files.write(Paths.get("./botlogin.txt"), data.getBytes(StandardCharsets.UTF_8),
                     StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
         }
 
         PhantomBot.instance = new PhantomBot(user, oauth, apioauth, clientid, channel, owner, baseport, hostname, port, msglimit30, youtubekey, webenable, musicenable);
-    }
-
-    public static boolean isLink(String message)
-    {
-        String[] arr = message.split(" ");
-        for (String s : arr)
-        {
-            if (IrcMessageEvent.addressPtn.matcher(s).matches())
-            {
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override

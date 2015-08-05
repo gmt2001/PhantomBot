@@ -23,17 +23,17 @@ import me.mast3rplan.phantombot.jerklib.events.IRCEvent;
 public class AwayParser implements CommandParser
 {
 
+    @Override
     public IRCEvent createEvent(IRCEvent event)
     {
 
         /*
-         * :swiftco.wa.us.dal.net 306 mohadib__ :You have been marked as being away
-         * :swiftco.wa.us.dal.net 305 mohadib__ :You are no longer marked as being away 
-         * :card.freenode.net 301 r0bby_ r0bby :foo
-         * :calvino.freenode.net 301 jetirc1 jetirc :gone 
+         * :swiftco.wa.us.dal.net 306 mohadib__ :You have been marked as being
+         * away :swiftco.wa.us.dal.net 305 mohadib__ :You are no longer marked
+         * as being away :card.freenode.net 301 r0bby_ r0bby :foo
+         * :calvino.freenode.net 301 jetirc1 jetirc :gone
          * :jetirc!jetirc@745d63.host 301 jetirc1 :gone for now
          */
-
         switch (event.numeric())
         {
             case 305:

@@ -34,8 +34,9 @@ public class NumericErrorEvent extends ErrorEvent
         this.errMsg = errMsg;
     }
 
-    /* (non-Javadoc)
-     * @see me.mast3rplan.phantombot.jerklib.events.NumericErrorEvent#getErrorMsg()
+    /*
+     * (non-Javadoc) @see
+     * me.mast3rplan.phantombot.jerklib.events.NumericErrorEvent#getErrorMsg()
      */
     public String getErrorMsg()
     {

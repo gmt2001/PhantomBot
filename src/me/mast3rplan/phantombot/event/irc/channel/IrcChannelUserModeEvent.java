@@ -22,9 +22,9 @@ import me.mast3rplan.phantombot.jerklib.Session;
 public class IrcChannelUserModeEvent extends IrcChannelEvent
 {
 
-    private String user;
-    private String mode;
-    private Boolean add;
+    private final String user;
+    private final String mode;
+    private final Boolean add;
 
     public IrcChannelUserModeEvent(Session session, Channel channel, String user, String mode, Boolean add)
     {

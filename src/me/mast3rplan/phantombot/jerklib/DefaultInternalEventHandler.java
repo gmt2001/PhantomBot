@@ -40,8 +40,8 @@ import me.mast3rplan.phantombot.jerklib.listeners.IRCEventListener;
 public class DefaultInternalEventHandler implements IRCEventListener
 {
 
-    private ConnectionManager manager;
-    private Map<Type, IRCEventListener> stratMap = new HashMap<>();
+    private final ConnectionManager manager;
+    private final Map<Type, IRCEventListener> stratMap = new HashMap<>();
 
     /**
      * Creates a new DefaultInternalEventHandler associated with the given
@@ -91,8 +91,9 @@ public class DefaultInternalEventHandler implements IRCEventListener
     }
 
 
-    /* (non-Javadoc)
-     * @see me.mast3rplan.phantombot.jerklib.listeners.IRCEventListener#receiveEvent(me.mast3rplan.phantombot.jerklib.events.IrcEvent)
+    /*
+     * (non-Javadoc) @see
+     * me.mast3rplan.phantombot.jerklib.listeners.IRCEventListener#receiveEvent(me.mast3rplan.phantombot.jerklib.events.IrcEvent)
      */
     @Override
     public void receiveEvent(IRCEvent event)
@@ -203,7 +204,9 @@ public class DefaultInternalEventHandler implements IRCEventListener
             String newNick = "";
             if (usedNick.equals(p.getFirstNick()))
             {
-                /* if first nick same as second will cause a loop*/
+                /*
+                 * if first nick same as second will cause a loop
+                 */
                 if (p.getFirstNick().equals(p.getSecondNick()))
                 {
                     return;
@@ -211,7 +214,9 @@ public class DefaultInternalEventHandler implements IRCEventListener
                 newNick = p.getSecondNick();
             } else if (usedNick.equals(p.getSecondNick()))
             {
-                /* if second nick same as third will cause a loop*/
+                /*
+                 * if second nick same as third will cause a loop
+                 */
                 if (p.getSecondNick().equals(p.getThirdNick()))
                 {
                     return;
@@ -251,9 +256,10 @@ public class DefaultInternalEventHandler implements IRCEventListener
      */
     public void connectionComplete(IRCEvent e)
     {
-        /* sometimes the server will change the nick when connecting
-         * for instance , if the nick is too long it will be trunckated
-         * need to check if this happend and send a nick update event
+        /*
+         * sometimes the server will change the nick when connecting for
+         * instance , if the nick is too long it will be trunckated need to
+         * check if this happend and send a nick update event
          */
         Session session = e.getSession();
         String nick = e.arg(0);

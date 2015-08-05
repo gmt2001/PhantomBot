@@ -23,6 +23,7 @@ public class ConsoleInputListener extends Thread
 {
 
     @Override
+    @SuppressWarnings("SleepWhileInLoop")
     public void run()
     {
         while (true)

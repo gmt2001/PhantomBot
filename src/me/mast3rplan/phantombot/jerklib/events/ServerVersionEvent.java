@@ -58,6 +58,7 @@ public class ServerVersionEvent extends IRCEvent
      *
      * @return hostname
      */
+    @Override
     public String getHostName()
     {
         return hostName;

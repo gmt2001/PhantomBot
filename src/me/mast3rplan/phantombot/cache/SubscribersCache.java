@@ -50,14 +50,15 @@ public class SubscribersCache implements Runnable
         return instance;
     }
     private Map<String, JSONObject> cache;
-    private String channel;
+    private final String channel;
     private int count;
-    private Thread updateThread;
+    private final Thread updateThread;
     private boolean firstUpdate = true;
     private Date timeoutExpire = new Date();
     private Date lastFail = new Date();
     private int numfail = 0;
 
+    @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     public SubscribersCache(String channel)
     {
         this.channel = channel;
@@ -109,6 +110,7 @@ public class SubscribersCache implements Runnable
     }
 
     @Override
+    @SuppressWarnings("SleepWhileInLoop")
     public void run()
     {
         try

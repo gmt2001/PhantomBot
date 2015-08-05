@@ -17,7 +17,6 @@
 package me.mast3rplan.phantombot;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import me.mast3rplan.phantombot.event.EventBus;
@@ -37,7 +36,7 @@ import me.mast3rplan.phantombot.jerklib.listeners.IRCEventListener;
 public class IrcEventHandler implements IRCEventListener
 {
 
-    private ArrayList<String> mods = new ArrayList<>();
+    private final ArrayList<String> mods = new ArrayList<>();
 
     @Override
     public void receiveEvent(IRCEvent event)
@@ -69,17 +68,17 @@ public class IrcEventHandler implements IRCEventListener
             case CHANNEL_MESSAGE:
                 MessageEvent cmessageEvent = (MessageEvent) event;
                 Map<String, String> cmessageTags = cmessageEvent.tags();
-                
+
                 if (PhantomBot.enableDebugging)
                 {
                     com.gmt2001.Console.out.println(">>Channel Message Tags");
                     com.gmt2001.Console.out.println(">>>>Raw: " + cmessageEvent.tagsString());
-                    
-                    for (Map.Entry<String, String> tag: cmessageTags.entrySet())
+
+                    for (Map.Entry<String, String> tag : cmessageTags.entrySet())
                     {
                         com.gmt2001.Console.out.println(">>>>" + tag.getKey() + " = " + tag.getValue());
                     }
-                    
+
                     com.gmt2001.Console.out.println(">>End of Tags");
                 }
 
@@ -177,7 +176,7 @@ public class IrcEventHandler implements IRCEventListener
                     Channel ctcchannel = ctcmessageEvent.getChannel();
                     String ctcusername = ctcmessageEvent.getNick();
                     String ctcmessage = ctcmessageEvent.getCtcpString().replace("ACTION", "/me");
-                    
+
                     //Don't change this to postAsync. It cannot be processed in async or messages will be delayed
                     eventBus.post(new IrcChannelMessageEvent(session, ctcusername, ctcmessage, ctcchannel, ctcmessageTags));
                 }
@@ -196,12 +195,8 @@ public class IrcEventHandler implements IRCEventListener
                         && modeEvent.getModeType() == ModeEvent.ModeType.CHANNEL)
                 {
                     List<ModeAdjustment> l = modeEvent.getModeAdjustments();
-                    Iterator it = l.iterator();
-
-                    while (it.hasNext())
+                    for (ModeAdjustment adj : l)
                     {
-                        ModeAdjustment adj = (ModeAdjustment) it.next();
-
                         com.gmt2001.Console.out.println("MODE [" + modeEvent.getChannel().getName() + "] " + adj.toString());
 
                         if (adj.getArgument().length() > 0)
@@ -263,9 +258,9 @@ public class IrcEventHandler implements IRCEventListener
                 }
                 if (event.command().equalsIgnoreCase("WHISPER"))
                 {
-                    Map<String, String> weventTags = event.tags();                    
+                    Map<String, String> weventTags = event.tags();
                     String wusername = event.getNick();
-                    String message = event.arg(1);                    
+                    String message = event.arg(1);
                     eventBus.postAsync(new IrcPrivateMessageEvent(session, wusername, message, weventTags));
                 }
                 break;

@@ -93,17 +93,19 @@ public class RequestedConnection
         return requestedTime;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
+    /*
+     * (non-Javadoc) @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode()
     {
         return hostName.hashCode() + port + profile.hashCode();
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
+    /*
+     * (non-Javadoc) @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object o)
     {
         if (o instanceof RequestedConnection && o.hashCode() == hashCode())

@@ -50,14 +50,15 @@ public class ChannelHostCache implements Runnable
         return instance;
     }
     private Map<String, JSONObject> cache;
-    private String channel;
-    private Thread updateThread;
+    private final String channel;
+    private final Thread updateThread;
     private boolean firstUpdate = true;
     private Date timeoutExpire = new Date();
     private Date lastFail = new Date();
     private int numfail = 0;
     private int id = 0;
 
+    @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     public ChannelHostCache(String channel)
     {
         this.channel = channel;
@@ -85,6 +86,7 @@ public class ChannelHostCache implements Runnable
     }
 
     @Override
+    @SuppressWarnings("SleepWhileInLoop")
     public void run()
     {
 
@@ -150,7 +152,7 @@ public class ChannelHostCache implements Runnable
         if (id == 0)
         {
             j = TwitchAPIv3.instance().GetChannel(channel);
-            
+
             if (j.getBoolean("_success"))
             {
                 if (j.getInt("_http") == 200)
@@ -159,7 +161,7 @@ public class ChannelHostCache implements Runnable
                 }
             }
         }
-        
+
         if (id == 0)
         {
             return;

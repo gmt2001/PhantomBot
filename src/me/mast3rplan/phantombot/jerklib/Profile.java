@@ -180,11 +180,12 @@ public class Profile
     public void setRealName(String realName)
     {
         this.realName = realName;
-    }/* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
+    }/*
+     * (non-Javadoc) @see java.lang.Object#equals(java.lang.Object)
      */
 
 
+    @Override
     public boolean equals(Object o)
     {
         if (this == o)
@@ -202,17 +203,13 @@ public class Profile
         {
             return false;
         }
-        if (name != null ? !name.equals(profile.getName()) : profile.getName() != null)
-        {
-            return false;
-        }
-
-        return true;
+        return !(name != null ? !name.equals(profile.getName()) : profile.getName() != null);
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
+    /*
+     * (non-Javadoc) @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode()
     {
         int result;
@@ -221,9 +218,14 @@ public class Profile
         return result;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#clone()
+    /*
+     * (non-Javadoc) @see java.lang.Object#clone()
      */
+    @Override
+    @SuppressWarnings(
+    {
+        "CloneDoesntCallSuperClone", "CloneDeclaresCloneNotSupported"
+    })
     public Profile clone()
     {
         Profile impl = new Profile(name, realName, firstNick, secondNick, thirdNick);

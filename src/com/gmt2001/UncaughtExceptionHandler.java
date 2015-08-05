@@ -54,18 +54,18 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
 
         try
         {
-            FileOutputStream fos = new FileOutputStream("stacktrace.txt", true);
-            PrintStream ps = new PrintStream(fos);
+            try (FileOutputStream fos = new FileOutputStream("stacktrace.txt", true))
+            {
+                PrintStream ps = new PrintStream(fos);
 
-            SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss");
-            datefmt.setTimeZone(TimeZone.getTimeZone("GMT"));
+                SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss");
+                datefmt.setTimeZone(TimeZone.getTimeZone("GMT"));
 
-            String timestamp = datefmt.format(new Date());
+                String timestamp = datefmt.format(new Date());
 
-            ps.println(timestamp + "Z (" + t.toString() + ") " + trace.toString());
-            ps.println();
-
-            fos.close();
+                ps.println(timestamp + "Z (" + t.toString() + ") " + trace.toString());
+                ps.println();
+            }
         } catch (FileNotFoundException ex)
         {
             com.gmt2001.Console.err.printStackTrace(ex);

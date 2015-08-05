@@ -26,6 +26,7 @@ import java.util.List;
 public class QuitParser implements CommandParser
 {
 
+    @Override
     public QuitEvent createEvent(IRCEvent event)
     {
         Session session = event.getSession();

@@ -37,9 +37,9 @@ import java.util.List;
 public abstract class TaskImpl implements Task
 {
 
-    private final List<TaskCompletionListener> listeners = new ArrayList<TaskCompletionListener>();
+    private final List<TaskCompletionListener> listeners = new ArrayList<>();
     private boolean canceled;
-    private String name;
+    private final String name;
 
     public TaskImpl(String name)
     {
@@ -47,25 +47,29 @@ public abstract class TaskImpl implements Task
     }
 
 
-    /* (non-Javadoc)
-     * @see me.mast3rplan.phantombot.jerklib.tasks.Task#getName()
+    /*
+     * (non-Javadoc) @see me.mast3rplan.phantombot.jerklib.tasks.Task#getName()
      */
+    @Override
     public String getName()
     {
         return name;
     }
 
-    /* (non-Javadoc)
-     * @see me.mast3rplan.phantombot.jerklib.tasks.Task#cancel()
+    /*
+     * (non-Javadoc) @see me.mast3rplan.phantombot.jerklib.tasks.Task#cancel()
      */
+    @Override
     public void cancel()
     {
         canceled = true;
     }
 
-    /* (non-Javadoc)
-     * @see me.mast3rplan.phantombot.jerklib.tasks.Task#isCanceled()
+    /*
+     * (non-Javadoc) @see
+     * me.mast3rplan.phantombot.jerklib.tasks.Task#isCanceled()
      */
+    @Override
     public boolean isCanceled()
     {
         return canceled;

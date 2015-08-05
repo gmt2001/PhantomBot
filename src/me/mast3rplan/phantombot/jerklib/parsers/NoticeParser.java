@@ -25,12 +25,15 @@ public class NoticeParser implements CommandParser
 {
 
     /*
-     *:DIBLET!n=fran@c-68-35-11-181.hsd1.nm.comcast.net NOTICE #me.mast3rplan.phantombot.jerklib :test
-     *:anthony.freenode.net NOTICE mohadib_ :NickServ set your hostname to foo
-     *:DIBLET!n=fran@c-68-35-11-181.hsd1.nm.comcast.net NOTICE #me.mast3rplan.phantombot.jerklib :test
-     *:NickServ!NickServ@services. NOTICE mohadib_ :This nickname is owned by someone else
-     * NOTICE AUTH :*** No identd (auth) response
+     * :DIBLET!n=fran@c-68-35-11-181.hsd1.nm.comcast.net NOTICE
+     * #me.mast3rplan.phantombot.jerklib :test :anthony.freenode.net NOTICE
+     * mohadib_ :NickServ set your hostname to foo
+     * :DIBLET!n=fran@c-68-35-11-181.hsd1.nm.comcast.net NOTICE
+     * #me.mast3rplan.phantombot.jerklib :test :NickServ!NickServ@services.
+     * NOTICE mohadib_ :This nickname is owned by someone else NOTICE AUTH :***
+     * No identd (auth) response
      */
+    @Override
     public IRCEvent createEvent(IRCEvent event)
     {
         Session session = event.getSession();

@@ -29,6 +29,7 @@ public class IdentServer implements Runnable
     private Socket soc;
     private Thread t = null;
 
+    @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     public IdentServer(String login)
     {
 
@@ -44,6 +45,7 @@ public class IdentServer implements Runnable
         }
     }
 
+    @Override
     public void run()
     {
         if (socket == null)

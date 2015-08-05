@@ -19,7 +19,7 @@ package me.mast3rplan.phantombot.script;
 public abstract class ScriptDestroyable<T>
 {
 
-    private T object;
+    private final T object;
 
     protected ScriptDestroyable(T object)
     {

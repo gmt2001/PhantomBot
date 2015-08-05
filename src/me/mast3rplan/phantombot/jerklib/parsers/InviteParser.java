@@ -21,9 +21,14 @@ import me.mast3rplan.phantombot.jerklib.events.InviteEvent;
 
 public class InviteParser implements CommandParser
 {
-    /* :r0bby!n=wakawaka@guifications/user/r0bby INVITE scripy1 :#jerklib2 */
-    /* :yaloki!~yaloki@localhost INVITE SuSEmeet #test */
+    /*
+     * :r0bby!n=wakawaka@guifications/user/r0bby INVITE scripy1 :#jerklib2
+     */
+    /*
+     * :yaloki!~yaloki@localhost INVITE SuSEmeet #test
+     */
 
+    @Override
     public IRCEvent createEvent(IRCEvent event)
     {
         return new InviteEvent(

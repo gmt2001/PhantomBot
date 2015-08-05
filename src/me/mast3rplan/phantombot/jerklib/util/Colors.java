@@ -108,7 +108,7 @@ public final class Colors
      * Light gray colored text.
      */
     public static final String LIGHT_GRAY = "\u000315";
-    private static final List<String> colorList = new ArrayList<String>();
+    private static final List<String> colorList = new ArrayList<>();
 
     /*
      * Do not allow instantiation.

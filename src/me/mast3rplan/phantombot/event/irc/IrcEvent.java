@@ -22,7 +22,7 @@ import me.mast3rplan.phantombot.jerklib.Session;
 public abstract class IrcEvent extends Event
 {
 
-    private Session session;
+    private final Session session;
 
     protected IrcEvent(Session session)
     {

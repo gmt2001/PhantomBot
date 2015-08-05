@@ -33,8 +33,9 @@ import me.mast3rplan.phantombot.jerklib.listeners.IRCEventListener;
 public class Example implements IRCEventListener
 {
 
-    private ConnectionManager manager;
+    private final ConnectionManager manager;
 
+    @SuppressWarnings("LeakingThisInConstructor")
     public Example()
     {
         /*
@@ -44,9 +45,9 @@ public class Example implements IRCEventListener
 
         /*
          * One instance of ConnectionManager can connect to many IRC networks.
-         * ConnectionManager#requestConnection(String) will return a Session object.
-         * The Session is the main way users will interact with this library and IRC
-         * networks
+         * ConnectionManager#requestConnection(String) will return a Session
+         * object. The Session is the main way users will interact with this
+         * library and IRC networks
          */
         Session session = manager.requestConnection("irc.freenode.net");
 
@@ -61,12 +62,12 @@ public class Example implements IRCEventListener
     /*
      * This method is for implementing an IRCEventListener. This method will be
      * called anytime Jerklib parses an event from the Session its attached to.
-     * All events are sent as IRCEvents. You can check its actual type and cast it
-     * to a more specific type.
+     * All events are sent as IRCEvents. You can check its actual type and cast
+     * it to a more specific type.
      */
+    @Override
     public void receiveEvent(IRCEvent e)
     {
-
 
         if (e.getType() == Type.CONNECT_COMPLETE)
         {
@@ -79,7 +80,9 @@ public class Example implements IRCEventListener
         } else if (e.getType() == Type.JOIN_COMPLETE)
         {
             JoinCompleteEvent jce = (JoinCompleteEvent) e;
-            /* say hello */
+            /*
+             * say hello
+             */
             jce.getChannel().say("Hello from Jerklib!");
         } else
         {
@@ -87,6 +90,7 @@ public class Example implements IRCEventListener
         }
     }
 
+    @SuppressWarnings("ResultOfObjectAllocationIgnored")
     public static void main(String[] args)
     {
         new Example();

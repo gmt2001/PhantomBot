@@ -22,6 +22,7 @@ import me.mast3rplan.phantombot.jerklib.events.NumericErrorEvent;
 public class NumericErrorParser implements CommandParser
 {
 
+    @Override
     public IRCEvent createEvent(IRCEvent event)
     {
         return new NumericErrorEvent(

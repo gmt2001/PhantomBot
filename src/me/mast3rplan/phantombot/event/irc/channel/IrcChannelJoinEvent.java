@@ -22,7 +22,7 @@ import me.mast3rplan.phantombot.jerklib.Session;
 public class IrcChannelJoinEvent extends IrcChannelEvent
 {
 
-    private String user;
+    private final String user;
 
     public IrcChannelJoinEvent(Session session, Channel channel, String user)
     {

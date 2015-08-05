@@ -81,8 +81,9 @@ public class MusicHtmlServer extends Thread
             com.gmt2001.Console.err.println(e);
         }
     }
-    private int port;
+    private final int port;
 
+    @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     public MusicHtmlServer(int port)
     {
         this.port = port;
@@ -95,6 +96,7 @@ public class MusicHtmlServer extends Thread
         String wwwhome = "./web";
 
         // open server socket
+        @SuppressWarnings("UnusedAssignment")
         ServerSocket socket = null;
         try
         {
@@ -145,8 +147,8 @@ public class MusicHtmlServer extends Thread
                 } else
                 {
                     String req = request.substring(4, request.length() - 9).trim();
-                    if (req.indexOf("..") != -1
-                            || req.indexOf("/.ht") != -1 || req.endsWith("~"))
+                    if (req.contains("..")
+                            || req.contains("/.ht") || req.endsWith("~"))
                     {
                         // evil hacker trying to read non-wwwhome or secret file
                         errorReport(pout, connection, "403", "Forbidden",

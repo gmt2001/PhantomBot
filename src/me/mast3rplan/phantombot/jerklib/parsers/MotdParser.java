@@ -22,6 +22,7 @@ import me.mast3rplan.phantombot.jerklib.events.MotdEvent;
 public class MotdParser implements CommandParser
 {
 
+    @Override
     public IRCEvent createEvent(IRCEvent event)
     {
         return new MotdEvent(

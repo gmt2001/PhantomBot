@@ -172,23 +172,29 @@ public class MusicWebSocketServer extends WebSocketServer
     {
         try
         {
-            BufferedReader in = new BufferedReader(new FileReader("addons/youtubePlayer/playlist.txt"));         //playlist reader
-            BufferedWriter out = new BufferedWriter(new FileWriter("addons/youtubePlayer/stealsong.txt", true)); //writes stolen songs read from playlist
-            File playlist = new File("addons/youtubePlayer/playlist.txt");                                       //make the playlist known
-            File stealsong = new File("addons/youtubePlayer/stealsong.txt");                                     //this is where the stolen playlist songs go
-            String data;                                                                    //establish variable for playlist lines
-            out.write("");                                                                  //write new blank file stealsong.txt
-            while ((data = in.readLine()) != null)                                          //read each playlist line
+            BufferedWriter out;
+            File playlist;
+            File stealsong;
+            try (BufferedReader in = new BufferedReader(new FileReader("addons/youtubePlayer/playlist.txt")) //playlist reader
+                    )
             {
-                data = data.trim();                                                     // remove leading and trailing whitespace
-                if (!data.equals(""))                                                   // don't write out blank lines that exist on playlist.txt
+                out = new BufferedWriter(new FileWriter("addons/youtubePlayer/stealsong.txt", true)); //writes stolen songs read from playlist
+                playlist = new File("addons/youtubePlayer/playlist.txt"); //make the playlist known
+                stealsong = new File("addons/youtubePlayer/stealsong.txt"); //this is where the stolen playlist songs go
+                String data;                                                                    //establish variable for playlist lines
+                out.write("");                                                                  //write new blank file stealsong.txt
+                while ((data = in.readLine()) != null)                                          //read each playlist line
                 {
-                    out.append(data);                                                    //write playlist data to stealsong
-                    out.newLine();                                                      //append a blank line so our stolen song doesnt get put side by side
-                }
-            }                                                                               //after line reading, and writing all data to stealsong.txt, exit the loop
-            out.append(songurl);                                                //add our stolen song
-            in.close();                                                         //close playlist
+                    data = data.trim();                                                     // remove leading and trailing whitespace
+                    if (!data.equals(""))                                                   // don't write out blank lines that exist on playlist.txt
+                    {
+                        out.append(data);                                                    //write playlist data to stealsong
+                        out.newLine();                                                      //append a blank line so our stolen song doesnt get put side by side
+                    }
+                }                                                                               //after line reading, and writing all data to stealsong.txt, exit the loop
+                out.append(songurl);                                                //add our stolen song
+                in.close();                                                         //close playlist
+            } //writes stolen songs read from playlist
             out.close();                                                        //close stealsong
             playlist.delete();                                                  //delete playlist
             stealsong.renameTo(playlist);                                       //rename stealsong to our new playlist

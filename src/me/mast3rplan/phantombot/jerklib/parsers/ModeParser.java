@@ -43,10 +43,11 @@ public class ModeParser implements CommandParser
     //channel//  :kubrick.freenode.net 324 mohadib__ #test +mnPzlfJ 101 #flood 1,2
     //usermode// :services. MODE mohadib :+e
 
+    @Override
     public IRCEvent createEvent(IRCEvent event)
     {
         boolean userMode = event.numeric() != 324 && !event.getSession().isChannelToken(event.arg(0));
-        char[] modeTokens = new char[0];
+        char[] modeTokens;
         String[] arguments = new String[0];
 
         int modeOffs = event.numeric() == 324 ? 2 : 1;
@@ -60,7 +61,7 @@ public class ModeParser implements CommandParser
 
         int argumntOffset = 0;
         char action = '+';
-        List<ModeAdjustment> modeAdjustments = new ArrayList<ModeAdjustment>();
+        List<ModeAdjustment> modeAdjustments = new ArrayList<>();
 
         for (char mode : modeTokens)
         {

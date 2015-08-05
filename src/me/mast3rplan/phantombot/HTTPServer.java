@@ -22,7 +22,6 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URLDecoder;
@@ -55,6 +54,10 @@ public class HTTPServer extends Thread
     }
 
     @Override
+    @SuppressWarnings(
+    {
+        "SleepWhileInLoop", "null"
+    })
     public void run()
     {
         String webhome = "./web";
@@ -114,120 +117,119 @@ public class HTTPServer extends Thread
 
                 if (request.length == 3)
                 {
-                    if (request[0].equals("GET"))
+                    switch (request[0])
                     {
-                        File target = null;
+                        case "GET":
+                            File target = null;
+                            if (args.containsKey("password"))
+                            {
+                                String password = URLDecoder.decode(args.get("password"), "UTF-8").replace("oauth:", "");
 
-                        if (args.containsKey("password"))
-                        {
-                            String password = URLDecoder.decode(args.get("password"), "UTF-8").replace("oauth:", "");
-
-                            if (password.equals(pass) && (request[1].startsWith("inistore") || request[1].startsWith("/inistore")
-                                    || request[1].startsWith("addons") || request[1].startsWith("/addons")))
+                                if (password.equals(pass) && (request[1].startsWith("inistore") || request[1].startsWith("/inistore")
+                                        || request[1].startsWith("addons") || request[1].startsWith("/addons")))
+                                {
+                                    if (request[1].startsWith("/"))
+                                    {
+                                        target = new File("." + request[1]);
+                                    } else
+                                    {
+                                        target = new File("." + "/" + request[1]);
+                                    }
+                                }
+                            }
+                            if (target == null)
                             {
                                 if (request[1].startsWith("/"))
                                 {
-                                    target = new File("." + request[1]);
+                                    target = new File(webhome + request[1]);
                                 } else
                                 {
-                                    target = new File("." + "/" + request[1]);
+                                    target = new File(webhome + "/" + request[1]);
+                                }
+
+                                if (target.exists() && target.isDirectory())
+                                {
+                                    if (request[1].endsWith("/"))
+                                    {
+                                        target = new File(webhome + "/" + request[1] + "index.html");
+                                    } else
+                                    {
+                                        target = new File(webhome + "/" + request[1] + "/" + "index.html");
+                                    }
                                 }
                             }
-                        }
-
-                        if (target == null)
-                        {
-                            if (request[1].startsWith("/"))
+                            if (target.exists())
                             {
-                                target = new File(webhome + request[1]);
+                                FileInputStream fis = new FileInputStream(target);
+                                int length = fis.available();
+
+                                out.print("HTTP/1.0 200 OK\n"
+                                        + "ContentType: " + inferContentType(target.getPath()) + "\n"
+                                        + "Date: " + new Date() + "\n"
+                                        + "Server: basic HTTP server\n"
+                                        + "Content-Length: " + length + "\n"
+                                        + "\n");
+
+                                byte[] b = new byte[length + 1];
+                                fis.read(b);
+
+                                out.write(b, 0, length);
+
+                                out.print("\n");
                             } else
                             {
-                                target = new File(webhome + "/" + request[1]);
+                                out.print("HTTP/1.0 404 Not Found\n"
+                                        + "ContentType: " + "text/text" + "\n"
+                                        + "Date: " + new Date() + "\n"
+                                        + "Server: basic HTTP server\n"
+                                        + "Content-Length: " + "18" + "\n"
+                                        + "\n"
+                                        + "HTTP 404 Not Found"
+                                        + "\n");
                             }
-
-                            if (target.exists() && target.isDirectory())
+                            break;
+                        case "PUT":
+                            if (args.containsKey("password"))
                             {
-                                if (request[1].endsWith("/"))
+                                String password = URLDecoder.decode(args.get("password"), "UTF-8").replace("oauth:", "");
+
+                                if (password.equals(pass))
                                 {
-                                    target = new File(webhome + "/" + request[1] + "index.html");
+                                    if (!args.containsKey("user") || !args.containsKey("message"))
+                                    {
+                                        out.print("HTTP/1.0 400 Bad Request\n"
+                                                + "ContentType: " + "text/text" + "\n"
+                                                + "Date: " + new Date() + "\n"
+                                                + "Server: basic HTTP server\n"
+                                                + "Content-Length: " + "17" + "\n"
+                                                + "\n"
+                                                + "missing parameter"
+                                                + "\n");
+                                    } else
+                                    {
+                                        String user = URLDecoder.decode(args.get("user"), "UTF-8");
+                                        String message = URLDecoder.decode(args.get("message"), "UTF-8");
+
+                                        EventBus.instance().post(new IrcChannelMessageEvent(PhantomBot.instance().getSession(), user, message, PhantomBot.instance().getChannel()));
+
+                                        out.print("HTTP/1.0 200 OK\n"
+                                                + "ContentType: " + "text/text" + "\n"
+                                                + "Date: " + new Date() + "\n"
+                                                + "Server: basic HTTP server\n"
+                                                + "Content-Length: " + "12" + "\n"
+                                                + "\n"
+                                                + "event posted"
+                                                + "\n");
+                                    }
                                 } else
                                 {
-                                    target = new File(webhome + "/" + request[1] + "/" + "index.html");
-                                }
-                            }
-                        }
-
-                        if (target.exists())
-                        {
-                            FileInputStream fis = new FileInputStream(target);
-                            int length = fis.available();
-
-                            out.print("HTTP/1.0 200 OK\n"
-                                    + "ContentType: " + inferContentType(target.getPath()) + "\n"
-                                    + "Date: " + new Date() + "\n"
-                                    + "Server: basic HTTP server\n"
-                                    + "Content-Length: " + length + "\n"
-                                    + "\n");
-
-                            byte[] b = new byte[length + 1];
-                            fis.read(b);
-
-                            out.write(b, 0, length);
-
-                            out.print("\n");
-                        } else
-                        {
-                            out.print("HTTP/1.0 404 Not Found\n"
-                                    + "ContentType: " + "text/text" + "\n"
-                                    + "Date: " + new Date() + "\n"
-                                    + "Server: basic HTTP server\n"
-                                    + "Content-Length: " + "18" + "\n"
-                                    + "\n"
-                                    + "HTTP 404 Not Found"
-                                    + "\n");
-                        }
-                    } else if (request[0].equals("PUT"))
-                    {
-                        if (args.containsKey("password"))
-                        {
-                            String password = URLDecoder.decode(args.get("password"), "UTF-8").replace("oauth:", "");
-
-                            if (password.equals(pass))
-                            {
-                                if (!args.containsKey("user") || !args.containsKey("message"))
-                                {
-                                    out.print("HTTP/1.0 400 Bad Request\n"
-                                            + "ContentType: " + "text/text" + "\n"
-                                            + "Date: " + new Date() + "\n"
-                                            + "Server: basic HTTP server\n"
-                                            + "Content-Length: " + "17" + "\n"
-                                            + "\n"
-                                            + "missing parameter"
-                                            + "\n");
-                                } else
-                                {
-                                    String user = URLDecoder.decode(args.get("user"), "UTF-8");
-                                    String message = URLDecoder.decode(args.get("message"), "UTF-8");
-
-                                    EventBus.instance().post(new IrcChannelMessageEvent(PhantomBot.instance().getSession(), user, message, PhantomBot.instance().getChannel()));
-
-                                    out.print("HTTP/1.0 200 OK\n"
-                                            + "ContentType: " + "text/text" + "\n"
-                                            + "Date: " + new Date() + "\n"
-                                            + "Server: basic HTTP server\n"
-                                            + "Content-Length: " + "12" + "\n"
-                                            + "\n"
-                                            + "event posted"
-                                            + "\n");
+                                    com.gmt2001.Console.out.println("Invalid password recieved for remote http PUT request. Recieved: " + password + " Expected: " + pass);
                                 }
                             } else
                             {
-                                com.gmt2001.Console.out.println("Invalid password recieved for remote http PUT request. Recieved: " + password + " Expected: " + pass);
+                                com.gmt2001.Console.out.println("No password recieved for remote http PUT request.");
                             }
-                        } else
-                        {
-                            com.gmt2001.Console.out.println("No password recieved for remote http PUT request.");
-                        }
+                            break;
                     }
                 }
 

@@ -26,11 +26,13 @@ import me.mast3rplan.phantombot.jerklib.events.MessageEvent;
 public class PrivMsgParser implements CommandParser
 {
     /*
-     * :gh00p!~ghoti@nix-58E3BFC5.cpe.net.cable.rogers.com PRIVMSG #tvtorrents :gotcha
-     * :NeWtoz!jimmy@nix-2F996C9F.dhcp.aldl.mi.charter.com PRIVMSG #tvtorrents :No problem
-     * :cute_bettong!n=elphias@about/apple/IIe/B0FH PRIVMSG #ubuntu :Elphias (elphias)
+     * :gh00p!~ghoti@nix-58E3BFC5.cpe.net.cable.rogers.com PRIVMSG #tvtorrents
+     * :gotcha :NeWtoz!jimmy@nix-2F996C9F.dhcp.aldl.mi.charter.com PRIVMSG
+     * #tvtorrents :No problem :cute_bettong!n=elphias@about/apple/IIe/B0FH
+     * PRIVMSG #ubuntu :Elphias (elphias)
      */
 
+    @Override
     public MessageEvent createEvent(IRCEvent event)
     {
         Session session = event.getSession();

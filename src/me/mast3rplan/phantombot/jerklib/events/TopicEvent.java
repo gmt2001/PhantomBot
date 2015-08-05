@@ -32,8 +32,8 @@ public class TopicEvent extends IRCEvent
 
     private String setBy, hostname;
     private Date setWhen;
-    private Channel channel;
-    private StringBuffer buff = new StringBuffer();
+    private final Channel channel;
+    private final StringBuffer buff = new StringBuffer();
 
     public TopicEvent(String rawEventData, Session session, Channel channel, String topic)
     {
@@ -55,6 +55,7 @@ public class TopicEvent extends IRCEvent
     /**
      * @return hostname
      */
+    @Override
     public String getHostName()
     {
         return hostname;
@@ -96,8 +97,9 @@ public class TopicEvent extends IRCEvent
         return setWhen;
     }
 
-    /* (non-Javadoc)
-     * @see me.mast3rplan.phantombot.jerklib.events.TopicEvent#getChannel()
+    /*
+     * (non-Javadoc) @see
+     * me.mast3rplan.phantombot.jerklib.events.TopicEvent#getChannel()
      */
     public Channel getChannel()
     {
@@ -112,17 +114,19 @@ public class TopicEvent extends IRCEvent
         buff.append(topic);
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
+    /*
+     * (non-Javadoc) @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode()
     {
         return channel.hashCode();
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
+    /*
+     * (non-Javadoc) @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object o)
     {
         if (o == this)

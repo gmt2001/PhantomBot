@@ -47,8 +47,8 @@ public class EventToken
 
     private final String data;
     private String tagsString = "", argumentsString = "", prefix = "", command = "";
-    private List<String> arguments = new ArrayList<>();
-    private Map<String, String> tags = new HashMap<>();
+    private final List<String> arguments = new ArrayList<>();
+    private final Map<String, String> tags = new HashMap<>();
     private int offset = 0;
 
     /**
@@ -182,7 +182,6 @@ public class EventToken
 
         //increment offset , +1 is for @ removed
         //offset += tagsString.length() + 1;
-        
         if (data.charAt(offset) == '@')
         {
             offset++;
@@ -201,10 +200,12 @@ public class EventToken
                     if (data.charAt(i) != '=')
                     {
                         tag += data.charAt(i);
-                    } else {
+                    } else
+                    {
                         onTag = false;
                     }
-                } else {
+                } else
+                {
                     value += data.charAt(i);
                 }
 
@@ -271,7 +272,7 @@ public class EventToken
      */
     public String getNick()
     {
-        if (prefix.indexOf("!") != -1)
+        if (prefix.contains("!"))
         {
             return prefix.substring(0, prefix.indexOf('!'));
         }
@@ -361,9 +362,10 @@ public class EventToken
         return i;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
+    /*
+     * (non-Javadoc) @see java.lang.Object#toString()
      */
+    @Override
     public String toString()
     {
         return data;

@@ -41,34 +41,50 @@ import me.mast3rplan.phantombot.jerklib.util.IdentServer;
  */
 public final class ConnectionManager
 {
-    /* maps to index sessions by name and socketchannel */
+    /*
+     * maps to index sessions by name and socketchannel
+     */
 
     final Map<String, Session> sessionMap = Collections.synchronizedMap(new HashMap<String, Session>());
     final Map<SocketChannel, Session> socChanMap = Collections.synchronizedMap(new HashMap<SocketChannel, Session>());
 
-    /* event listener lists */
+    /*
+     * event listener lists
+     */
     private final List<WriteRequestListener> writeListeners = Collections.synchronizedList(new ArrayList<WriteRequestListener>(1));
 
-    /* event queues */
-    private final List<IRCEvent> eventQueue = new ArrayList<IRCEvent>();
-    private final List<IRCEvent> relayQueue = new ArrayList<IRCEvent>();
-    private final List<WriteRequest> requestForWriteListenerEventQueue = new ArrayList<WriteRequest>();
+    /*
+     * event queues
+     */
+    private final List<IRCEvent> eventQueue = new ArrayList<>();
+    private final List<IRCEvent> relayQueue = new ArrayList<>();
+    private final List<WriteRequest> requestForWriteListenerEventQueue = new ArrayList<>();
 
-    /* internal event parser */
+    /*
+     * internal event parser
+     */
     // private InternalEventParser parser = new InternalEventParserImpl(this);
     private IRCEventListener internalEventHandler = new DefaultInternalEventHandler(this);
     private InternalEventParser internalEventParser = new DefaultInternalEventParser();
 
-    /* main loop timer */
+    /*
+     * main loop timer
+     */
     private Timer loopTimer;
 
-    /* event dispatch timer */
+    /*
+     * event dispatch timer
+     */
     private Timer dispatchTimer;
 
-    /* default user profile to use for new connections */
+    /*
+     * default user profile to use for new connections
+     */
     private Profile defaultProfile;
 
-    /* NIO Selector */
+    /*
+     * NIO Selector
+     */
     private Selector selector;
 
     /**
@@ -120,7 +136,7 @@ public final class ConnectionManager
      */
     public List<Session> getSessions()
     {
-        return Collections.unmodifiableList(new ArrayList<Session>(sessionMap.values()));
+        return Collections.unmodifiableList(new ArrayList<>(sessionMap.values()));
     }
 
     /**
@@ -199,6 +215,7 @@ public final class ConnectionManager
      * @return the {@link me.mast3rplan.phantombot.jerklib.Session} for this
      * connection
      */
+    @SuppressWarnings("ResultOfObjectAllocationIgnored")
     public Session requestConnection(String hostName, int port, Profile profile)
     {
         RequestedConnection rCon = new RequestedConnection(hostName, port, profile);
@@ -212,6 +229,7 @@ public final class ConnectionManager
         return session;
     }
 
+    @SuppressWarnings("ResultOfObjectAllocationIgnored")
     public Session requestConnection(String hostName, int port, String pass, Profile profile)
     {
         RequestedConnection rCon = new RequestedConnection(hostName, port, pass, profile);
@@ -237,7 +255,7 @@ public final class ConnectionManager
 
         dispatchTimer.cancel();
 
-        for (Session session : new ArrayList<Session>(sessionMap.values()))
+        for (Session session : new ArrayList<>(sessionMap.values()))
         {
             session.close(quitMsg);
         }
@@ -418,6 +436,7 @@ public final class ConnectionManager
      * Makes read and write request via Connections when they can be done
      * without blocking.
      */
+    @SuppressWarnings("element-type-mismatch")
     void doNetworkIO()
     {
         try
@@ -552,9 +571,8 @@ public final class ConnectionManager
         Map<Type, List<Task>> tasks = session.getTasks();
         synchronized (tasks)
         {
-            for (Iterator<List<Task>> it = tasks.values().iterator(); it.hasNext();)
+            for (List<Task> thisTasks : tasks.values())
             {
-                List<Task> thisTasks = it.next();
                 for (Iterator<Task> x = thisTasks.iterator(); x.hasNext();)
                 {
                     Task rmTask = x.next();
@@ -573,9 +591,9 @@ public final class ConnectionManager
      */
     void relayEvents()
     {
-        List<IRCEvent> events = new ArrayList<IRCEvent>();
-        List<IRCEventListener> templisteners = new ArrayList<IRCEventListener>();
-        Map<Type, List<Task>> tempTasks = new HashMap<Type, List<Task>>();
+        List<IRCEvent> events = new ArrayList<>();
+        List<IRCEventListener> templisteners = new ArrayList<>();
+        Map<Type, List<Task>> tempTasks = new HashMap<>();
 
         synchronized (relayQueue)
         {
@@ -638,8 +656,8 @@ public final class ConnectionManager
      */
     void notifyWriteListeners()
     {
-        List<WriteRequestListener> list = new ArrayList<WriteRequestListener>();
-        List<WriteRequest> wRequests = new ArrayList<WriteRequest>();
+        List<WriteRequestListener> list = new ArrayList<>();
+        List<WriteRequest> wRequests = new ArrayList<>();
 
         synchronized (requestForWriteListenerEventQueue)
         {
@@ -672,9 +690,8 @@ public final class ConnectionManager
     {
         synchronized (sessionMap)
         {
-            for (Iterator<Session> it = sessionMap.values().iterator(); it.hasNext();)
+            for (Session session : sessionMap.values())
             {
-                Session session = it.next();
                 State state = session.getState();
 
                 if (state == State.NEED_TO_RECONNECT)

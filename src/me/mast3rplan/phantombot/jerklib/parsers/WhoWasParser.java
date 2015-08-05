@@ -22,8 +22,11 @@ import me.mast3rplan.phantombot.jerklib.events.WhowasEvent;
 public class WhoWasParser implements CommandParser
 {
 
-    /* :kubrick.freenode.net 314 scripy1 ty n=ty 71.237.206.180 * :ty
-     "<nick> <user> <host> * :<real name>" */
+    /*
+     * :kubrick.freenode.net 314 scripy1 ty n=ty 71.237.206.180 * :ty "<nick>
+     * <user> <host> * :<real name>"
+     */
+    @Override
     public IRCEvent createEvent(IRCEvent event)
     {
         return new WhowasEvent(

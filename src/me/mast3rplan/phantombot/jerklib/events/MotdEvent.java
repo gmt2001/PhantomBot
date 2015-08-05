@@ -50,6 +50,7 @@ public class MotdEvent extends IRCEvent
      *
      * @return hostname
      */
+    @Override
     public String getHostName()
     {
         return hostName;
