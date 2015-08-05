@@ -17,7 +17,6 @@
 package com.gmt2001;
 
 import java.io.IOException;
-//import java.io.OutputStream;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.net.MalformedURLException;

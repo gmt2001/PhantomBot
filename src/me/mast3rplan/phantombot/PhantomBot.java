@@ -91,10 +91,8 @@ public class PhantomBot implements Listener
     private SubscribersCache subscribersCache;
     private ChannelUsersCache channelUsersCache;
     private MusicWebSocketServer mws;
-    //private MusicHtmlServer mhs;
     private HTTPServer mhs;
     ConsoleInputListener cil;
-    private static final boolean enableD = true;
     private static final boolean debugD = false;
     public static boolean enableDebugging = false;
     public static boolean interactive;
@@ -639,7 +637,6 @@ public class PhantomBot implements Listener
                     IniStore.instance().SaveAll(true);
                     System.exit(0);
                 }
-
             }
         }
 
