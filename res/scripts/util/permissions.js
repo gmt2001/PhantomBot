@@ -43,14 +43,7 @@ $.isMod = function (user) {
 }
 
 $.isModv3 = function (user, tags) {
-    if($.isAdmin(user)) {
-        return true;
-    }
-    if(tags!=null && tags!="{}") {
-        return (tags.get("user-type").equalsIgnoreCase("mod")) || $.isOwner(user) || $.isBot(user);
-    } else {
-        return $.isMod(user);
-    }
+    return (tags != null && !tags.get("user-type").trim().isEmpty()) || $.isMod(user);
 }
 
 $.isSub = function (user) {
@@ -64,18 +57,11 @@ $.isSub = function (user) {
 }
 
 $.isSubv3 = function (user, tags) {
-    if(tags!=null && tags!="{}") {
-        return (tags.get("subscriber").equalsIgnoreCase("1")) || $.isOwner(user) || $.isBot(user);
-    } else {
-        return $.isSub(user);
-    }
+    return (tags != null && tags.get("subscriber").equalsIgnoreCase("1")) || $.isSub(user);
 }
 
 $.isTurbo = function (user, tags) {
-    if(tags!=null && tags!="{}") {
-        return (tags.get("turbo").equalsIgnoreCase("1"));
-    }
-    return false;
+    return (tags != null && tags.get("subscriber").equalsIgnoreCase("1")) || false;
 }
 
 $.isDonator = function (user) {
