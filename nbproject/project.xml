@@ -74,7 +74,7 @@ auxiliary.show.customizer.message=<message>
         <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/3">
             <compilation-unit>
                 <package-root>src</package-root>
-                <classpath mode="compile">lib/commons-io-2.4.jar;lib/commons-lang3-3.3.2.jar;lib/commons-pool2-2.0.jar;lib/core-1.47.1.jar;lib/java_websocket.jar;lib/javax.mail.jar;lib/js.jar;lib/joda-time-2.4.jar;lib/guava-18.0.jar</classpath>
+                <classpath mode="compile">lib/commons-io-2.4.jar;lib/commons-lang3-3.3.2.jar;lib/commons-pool2-2.0.jar;lib/core-1.47.1.jar;lib/java_websocket.jar;lib/javax.mail.jar;lib/joda-time-2.4.jar;lib/guava-18.0.jar;lib/rhino-1.7.7.jar</classpath>
                 <source-level>1.7</source-level>
             </compilation-unit>
             <compilation-unit>
