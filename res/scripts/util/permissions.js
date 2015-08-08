@@ -43,7 +43,7 @@ $.isMod = function (user) {
 }
 
 $.isModv3 = function (user, tags) {
-    return (tags != null && !tags.get("user-type").trim().isEmpty()) || $.isMod(user);
+    return $.isAdmin(user) || (tags != null && tags!="{}" && tags.get("user-type").equalsIgnoreCase("mod")) || $.isMod(user);
 }
 
 $.isSub = function (user) {
@@ -57,11 +57,11 @@ $.isSub = function (user) {
 }
 
 $.isSubv3 = function (user, tags) {
-    return (tags != null && tags.get("subscriber").equalsIgnoreCase("1")) || $.isSub(user);
+    return (tags != null && tags!="{}" && tags.get("subscriber").equalsIgnoreCase("1")) || $.isSub(user);
 }
 
 $.isTurbo = function (user, tags) {
-    return (tags != null && tags.get("subscriber").equalsIgnoreCase("1")) || false;
+    return (tags != null && tags!="{}" && tags.get("turbo").equalsIgnoreCase("1")) || false;
 }
 
 $.isDonator = function (user) {
