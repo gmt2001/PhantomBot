@@ -28,7 +28,7 @@ $.lang.load = function() {
 
 $.lang.load();
 
-$.lang.get = function(str_name, args) {
+$.lang.get = function(str_name) {
     if ($.lang.data[str_name] == undefined || $.lang.data[str_name] == null) {
         if (str_name.equalsIgnoreCase("net.phantombot.lang.not-exists")) {
             return "!!! Missing string in lang file !!!";
@@ -39,9 +39,9 @@ $.lang.get = function(str_name, args) {
     
     var s = $.lang.data[str_name];
     var i;
-    for (i = 0; i < args.length; i++) {
-        while (s.indexOf("$" + (i + 1)) >= 0) {
-            s = s.replace("$" + (i + 1), args[i]);
+    for (i = 1; i < arguments.length; i++) {
+        while (s.indexOf("$" + i) >= 0) {
+            s = s.replace("$" + i, arguments[i]);
         }
     }
     
@@ -61,17 +61,17 @@ $.on('command', function(event) {
         }
         
         if (args.length == 0) {
-            $.say($.lang.get("net.phantombot.lang.curlang", new Array($.lang.curlang)));
+            $.say($.lang.get("net.phantombot.lang.curlang", $.lang.curlang));
         } else {
             if (!$.fileExists("./scripts/lang/lang-" + args[0].toLowerCase() + ".js")) {
-                $.say($.lang.get("net.phantombot.lang.lang-not-exists", new Array()));
+                $.say($.lang.get("net.phantombot.lang.lang-not-exists"));
                 return; 
             } else {
                 $.inidb.set("settings", "lang", args[0].toLowerCase());
                 $.lang.curlang = args[0].toLowerCase();
                 $.lang.load();
                 
-                $.say($.lang.get("net.phantombot.lang.lang-changed", new Array(args[0].toLowerCase())));
+                $.say($.lang.get("net.phantombot.lang.lang-changed", args[0].toLowerCase()));
             }
         }
     }
