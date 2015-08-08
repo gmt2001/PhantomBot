@@ -330,7 +330,7 @@ $.permCom = function(user, command) {
     var keys = $.inidb.GetKeyList("permcom", "");
     var permGroupName = "";
     var userGroup = $.getUserGroupName(user.toLowerCase());
-    var noPermission = "Your user group : " + userGroup + " does not have permission to use the command: "+ command +".";
+    var noPermission = $.lang.get("net.phantombot.cmd.noperm", new Array(userGroup, command));
     
         if($.isAdmin(user)) {
             return true;
@@ -387,13 +387,13 @@ $api.on($script, 'command', function(event) {
     
     if ($.moduleEnabled("./systems/pointSystem.js") && !$.isModv3(sender, event.getTags()) && $.inidb.exists("pricecom", command.toLowerCase())) {
         if (parseInt($.inidb.get("points", sender)) < parseInt($.inidb.get("pricecom", command.toLowerCase()))) {
-            $.say("That command costs " + $.inidb.get("pricecom", command.toLowerCase()) + " " + $.pointname + ", which you don't have.");
+            $.say($.lang.get("net.phantombot.cmd.needpoints", new Array($.inidb.get("pricecom", command.toLowerCase()), $.pointname)));
             return;
         } else {
             if(parseInt($.inidb.get("pricecom", command.toLowerCase()))>0)
             {
                 $.inidb.decr("points", sender, parseInt($.inidb.get("pricecom", command.toLowerCase())));
-                $.println("[Paid]" + sender + "s balance is now: " + $.inidb.get('points', sender) + " " + $.pointname + "");
+                $.println($.lang.get("net.phantombot.cmd.paid", new Array(sender, $.inidb.get('points', sender), $.pointname)));
             }
         }
     }
@@ -497,7 +497,7 @@ $.botname = $.botName;
 $.botowner = $.ownerName;
 
 $.castermsg = "Only a Caster has access to that command!";
-$.adminmsg = "Only a Administrator has access to that command!";
+$.adminmsg = "Only an Administrator has access to that command!";
 $.modmsg = "Only a Moderator has access to that command!";  
 
 
@@ -514,6 +514,10 @@ $.loadScript('./util/commandList.js');
 $.loadScript('./util/patternDetector.js');
 $.loadScript('./util/fileSystem.js');
 $.loadScript('./util/lang.js');
+
+$.castermsg = $.lang.get("net.phantombot.cmd.casteronly", new Array());
+$.adminmsg = $.lang.get("net.phantombot.cmd.adminonly", new Array());
+$.modmsg = $.lang.get("net.phantombot.cmd.modonly", new Array()); 
 
 $.logEvent("init.js", 410, "Initializing...");
 
@@ -570,7 +574,7 @@ $api.on(initscript, 'command', function(event) {
         $.logEvent("init.js", 457, username + " changed the connected message to: " + argsString);
         
         $.inidb.set('settings', 'connectedMessage', argsString);
-        $.say("Connected message set!");
+        $.say($.lang.get("net.phantombot.init.cmsgset", new Array()));
     }
    
     if (command.equalsIgnoreCase("reconnect")) {
@@ -582,7 +586,7 @@ $api.on(initscript, 'command', function(event) {
         $.logEvent("init.js", 469, username + " requested a reconnect");
         
         $.connmgr.reconnectSession($.hostname);
-        $.say("Reconnect scheduled!");
+        $.say($.lang.get("net.phantombot.init.reconn", new Array()));
     }
     
     if (command.equalsIgnoreCase("module")) {
@@ -653,7 +657,7 @@ $api.on(initscript, 'command', function(event) {
                 index = $.getModuleIndex(args[1]);
                 
                 if (index == -1) {
-                    $.say("That module does not exist or is not loaded!");
+                    $.say($.lang.get("net.phantombot.init.module-not-exists", new Array()));
                 } else {
                     $.logEvent("init.js", 545, username + " enabled module " + args[1]);
                     
@@ -661,7 +665,7 @@ $api.on(initscript, 'command', function(event) {
                     
                     $.inidb.set('modules', modules[index][0] + '_enabled', "1");
                     
-                    $.say("Module enabled!");
+                    $.say($.lang.get("net.phantombot.init.module-enable", new Array()));
                 }
             }
             
@@ -673,7 +677,7 @@ $api.on(initscript, 'command', function(event) {
                 index = $.getModuleIndex(args[1]);
                 
                 if (index == -1) {
-                    $.say("That module does not exist or is not loaded!");
+                    $.say($.lang.get("net.phantombot.init.module-not-exists", new Array()));
                 } else {
                     $.logEvent("init.js", 565, username + " disabled module " + args[1]);
                     
@@ -681,7 +685,7 @@ $api.on(initscript, 'command', function(event) {
                     
                     $.inidb.set('modules', modules[index][0] + '_enabled', "0");
                     
-                    $.say("Module disabled!");
+                    $.say($.lang.get("net.phantombot.init.module-disable", new Array()));
                 }
             }
             
@@ -693,12 +697,12 @@ $api.on(initscript, 'command', function(event) {
                 index = $.getModuleIndex(args[1]);
                 
                 if (index == -1) {
-                    $.say("That module does not exist or is not loaded!");
+                    $.say($.lang.get("net.phantombot.init.module-not-exists", new Array()));
                 } else {
                     if (modules[index][1]) {
-                        $.say("The module " + modules[index][0] + " is currently enabled!");
+                        $.say($.lang.get("net.phantombot.init.module-enabled", new Array(modules[index][0])));
                     } else {
-                        $.say("The module " + modules[index][0] + " is currently disabled!");
+                        $.say($.lang.get("net.phantombot.init.module-disabled", new Array(modules[index][0])));
                     }
                 }
             }

@@ -35,7 +35,7 @@ $.ssay = function(s) {
         $.logChat($.botname, str);
         
         if (!$.inidb.exists("settings", "response_@all") || $.inidb.get("settings", "response_@all").equalsIgnoreCase("1")
-            || str.indexOf("Bot responses are disabled") != -1 || str.indexOf(".timeout ") != -1 || str.indexOf(".ban ") != -1
+            || str.equals($.lang.get("net.phantombot.misc.response-disable", new Array())) != -1 || str.indexOf(".timeout ") != -1 || str.indexOf(".ban ") != -1
             || str.indexOf(".unban ") != -1 || str.equalsIgnoreCase(".clear") || str.equalsIgnoreCase(".mods")) {
             $.channel.say(str);
         }
@@ -246,15 +246,15 @@ $.on('command', function(event) {
         }
         
         if (args.length == 0) {
-            var msg = "Logging is currently ";
+            var msg;
             
             if ($.logEnable) {
-                msg = msg + "enabled";
+                msg = "enabled";
             } else {
-                msg = msg + "disabled";
+                msg = "disabled";
             }
             
-            msg = msg + "! Logs are kept for " + $.logRotateDays + " days! To change this use '!log <enable or disable>' or '!log days <number of days>'";
+            msg = $.lang.get("net.phantombot.misc.log-status", new Array(msg, $.logRotateDays));
             
             $.say(msg);
             
@@ -268,7 +268,7 @@ $.on('command', function(event) {
             
             $.inidb.set('settings', 'logenable', '1');
             
-            $.say("Logging enabled!");
+            $.say($.lang.get("net.phantombot.misc.log-enable", new Array()));
         }
         
         if (args[0].equalsIgnoreCase("disable")) {
@@ -278,12 +278,12 @@ $.on('command', function(event) {
             
             $.inidb.set('settings', 'logenable', '0');
             
-            $.say("Logging disabled!");
+            $.say($.lang.get("net.phantombot.misc.log-disable", new Array()));
         }
         
         if (args[0].equalsIgnoreCase("days")) {
             if (args.length == 1 || isNaN(args[1]) || parseInt(args[1]) < 1) {
-                $.say("Please enter a valid number of days greater than 0. Usage: '!log days <number of days>'");
+                $.say($.lang.get("net.phantombot.misc.log-bad-days", new Array()));
                 
                 return;
             }
@@ -294,7 +294,7 @@ $.on('command', function(event) {
             
             $.inidb.set('settings', 'logrotatedays', args[1]);
             
-            $.say("Logs are now kept for " + args[1] + " days!");
+            $.say($.lang.get("net.phantombot.misc.log-days", new Array(args[1])));
         }
     }
     
@@ -308,9 +308,9 @@ $.on('command', function(event) {
         if (args.length == 0) {
             if ($.inidb.exists("settings", "response_@all")
                 && $.inidb.get("settings", "response_@all").equalsIgnoreCase("0")) {
-                $.say("Bot responses are disabled for everyone. To turn them on,  say: !response enable");
+                $.say($.lang.get("net.phantombot.misc.response-disabled", new Array()));
             } else {
-                $.say("Bot responses are enabled for everyone. To turn them off, say: !response disable");
+                $.say($.lang.get("net.phantombot.misc.response-enabled", new Array()));
             }
         } else {
             if (args[0].equalsIgnoreCase("enable")) {
@@ -320,13 +320,13 @@ $.on('command', function(event) {
                 
                 $.logEvent("misc.js", 313, username + " enabled bot responses");
                 
-                $.say("Responses are now enabled! To disable them, say: !response disable");
+                $.say($.lang.get("net.phantombot.misc.response-enable", new Array()));
             } else if (args[0].equalsIgnoreCase("disable")) {
                 $.inidb.set("settings", "response_@all", "0");
                 
                 $.logEvent("misc.js", 319, username + " disabled bot responses");
                 
-                $.say("Responses are now disabled! To enable them, say: !response enable");
+                $.say($.lang.get("net.phantombot.misc.response-disable", new Array()));
             }
         }
     }
