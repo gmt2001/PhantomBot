@@ -26,6 +26,8 @@ $.lang.load = function() {
     }
 }
 
+$.lang.load();
+
 $.lang.get = function(str_name, args) {
     if ($.lang.data[str_name] == undefined || $.lang.data[str_name] == null) {
         if (str_name.equalsIgnoreCase("net.phantombot.lang.not-exists")) {
