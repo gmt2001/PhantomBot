@@ -114,7 +114,7 @@ function autoPurgeUser(user, warnmessage) {
     
     count++;
     
-    warning = user + " -> " + warnmessage;
+    warning = $.username.resolve(user) + " -> " + warnmessage;
     
     if (count == 1) {
         if ($.strlen(warningmessages[0]) > 0) {
@@ -126,19 +126,19 @@ function autoPurgeUser(user, warnmessage) {
             
             timeoutUser(user, 1);
             
-            warning += " [Purged]";
+            warning += $.lang.get("net.phantombot.chatmoderator.purged");
         } else if (warningtypes[0].equalsIgnoreCase("ban")) {
             $.logEvent("chatModerator.js", 130, ">> Strike 1 >> Banned");
             
             banUser(user);
             
-            warning += " [Banned]";
+            warning += $.lang.get("net.phantombot.chatmoderator.banned");
         } else {
             $.logEvent("chatModerator.js", 136, ">> Strike 1 >> Timed out (" + warningtypes[0] + ")");
             
             timeoutUserFor(user, parseInt(warningtypes[0]));
             
-            warning += " [Timed Out (" + warningtypes[0] + ")]";
+            warning += $.lang.get("net.phantombot.chatmoderator.timedout", warningtypes[0]);
         }
     } else if (count == 2) {
         if ($.strlen(warningmessages[1]) > 0) {
@@ -150,19 +150,19 @@ function autoPurgeUser(user, warnmessage) {
             
             timeoutUser(user, 1);
             
-            warning += " [Purged]";
+            warning += $.lang.get("net.phantombot.chatmoderator.purged");
         } else if (warningtypes[1].equalsIgnoreCase("ban")) {
             $.logEvent("chatModerator.js", 154, ">> Strike 2 >> Banned");
             
             banUser(user);
             
-            warning += " [Banned]";
+            warning += $.lang.get("net.phantombot.chatmoderator.banned");
         } else {
             $.logEvent("chatModerator.js", 160, ">> Strike 2 >> Timed out (" + warningtypes[1] + ")");
             
             timeoutUserFor(user, parseInt(warningtypes[1]));
             
-            warning += " [Timed Out (" + warningtypes[1] + ")]";
+            warning += $.lang.get("net.phantombot.chatmoderator.timedout", warningtypes[1]);
         }
     } else {
         if ($.strlen(warningmessages[2]) > 0) {
@@ -174,19 +174,19 @@ function autoPurgeUser(user, warnmessage) {
             
             timeoutUser(user, 1);
             
-            warning += " [Purged]";
+            warning += $.lang.get("net.phantombot.chatmoderator.purged");
         } else if (warningtypes[2].equalsIgnoreCase("ban")) {
             $.logEvent("chatModerator.js", 178, ">> Strike 3 >> Banned");
             
             banUser(user);
             
-            warning += " [Banned]";
+            warning += $.lang.get("net.phantombot.chatmoderator.banned");
         } else {
             $.logEvent("chatModerator.js", 184, ">> Strike 3 >> Timed out (" + warningtypes[2] + ")");
             
             timeoutUserFor(user, parseInt(warningtypes[2]));
             
-            warning += " [Timed Out (" + warningtypes[2] + ")]";
+            warning += $.lang.get("net.phantombot.chatmoderator.timedout", warningtypes[2]);
         }
     }
     
@@ -226,9 +226,9 @@ $.on('command', function(event) {
 			
         if (args.length > 0) {
             $.inidb.set('whitelist', 'link', args[0]);
-            $.say("The URL: " + args[0] + " has been added to the whitelist!");
+            $.say($.lang.get("net.phantombot.chatmoderator.whitelist-add", args[0]));
         } else {
-            $.say("Usage: !whitelist <link>");
+            $.say($.lang.get("net.phantombot.chatmoderator.whitelist-usage"));
             return;
         }
 			
@@ -243,7 +243,7 @@ $.on('command', function(event) {
                 
                 timeoutUser (args[0], 1);
             } else {
-                $.say ("You must specify a user to purge")
+                $.say ($.lang.get("net.phantombot.common.err-user"));
             }
         } else {
             $.say ($.modmsg);
@@ -258,7 +258,7 @@ $.on('command', function(event) {
                         
                         $.logEvent("chatModerator.js", 242, username + " forgave " + args[0] + ". Now at " + sinbin[i][1] + " strike(s)");
                         
-                        $.say("Reduced " + args[0] + " to " + sinbin[i][1] + " strike(s)!");
+                        $.say($.lang.get("net.phantombot.chatmoderator.forgive", $.username.resolve(args[0]), sinbin[i][1]));
                     }
                 }
      
@@ -279,7 +279,7 @@ $.on('command', function(event) {
     
                 $.saveArray(lines, "sinbin", false);
             } else {
-                $.say ("You must specify a user to forgive");
+                $.say ($.lang.get("net.phantombot.common.err-user"));
             }
         } else {
             $.say ($.adminmsg);
@@ -296,7 +296,7 @@ $.on('command', function(event) {
                         
                         $.logEvent("chatModerator.js", 280, username + " gave a strike to " + args[0] + ". Now at " + sinbin[i][1] + " strike(s)");
                         
-                        $.say("Increased " + args[0] + " to " + sinbin[i][1] + " strike(s)!");
+                        $.say($.lang.get("net.phantombot.chatmoderator.increase", $.username.resolve(args[0]), sinbin[i][1]));
                         
                         found = true;
                     }
@@ -307,7 +307,7 @@ $.on('command', function(event) {
                     
                     $.logEvent("chatModerator.js", 291, username + " gave a strike to " + args[0] + ". Now at 1 strike(s)");
                     
-                    $.say("Increased " + args[0] + " to 1 strike(s)!");
+                    $.say($.lang.get("net.phantombot.chatmoderator.increase", $.username.resolve(args[0]), 1));
                 }
      
                 lines = new Array();
@@ -320,7 +320,7 @@ $.on('command', function(event) {
     
                 $.saveArray(lines, "sinbin", false);
             } else {
-                $.say ("You must specify a user to increase");
+                $.say ($.lang.get("net.phantombot.common.err-user"));
             }
         } else {
             $.say ($.adminmsg);
@@ -336,7 +336,7 @@ $.on('command', function(event) {
                 
                 timeoutUserFor (args[0], args[1]);
             } else {
-                $.say ("You must specify a user to timeout")
+                $.say ($.lang.get("net.phantombot.common.err-user"));
             }
         } else {
             $.say ($.adminmsg);
@@ -344,11 +344,11 @@ $.on('command', function(event) {
     } else if (command.equalsIgnoreCase("permit")) {
         if ($.isModv3(sender, event.getTags())) {
             if ($.strlen(argsString) > 0 && linksallowed == false) {
-                permitList.push(new Array(argsString, System.currentTimeMillis() + (permittime * 1000)));
+                permitList.push(new Array(argsString.toLowerCase(), System.currentTimeMillis() + (permittime * 1000)));
                 
-                $.logEvent("chatModerator.js", 344, username + " permitted " + args[0]);
+                $.logEvent("chatModerator.js", 344, username + " permitted " + argsString);
                 
-                $.say (argsString + " is permitted to post a link during the next " + permittime + " seconds!");
+                $.say ($.lang.get("net.phantombot.chatmoderator.permit", $.username.resolve(argsString), permittime));
             }
         } else {
             $.say ($.modmsg);
@@ -359,24 +359,20 @@ $.on('command', function(event) {
                 var time = parseInt(args[1]);
                 
                 if (time <= 0) {
-                    $.say (time + " is not a valid amount of time");
+                    $.say ($.lang.get("net.phantombot.chatmoderator.ban-err-time", time));
                 }
                 
                 $.logEvent("chatModerator.js", 360, username + " banned " + args[0] + " for " + time + " hour(s)");
                 
                 banUserFor (args[0], time * 60 * 60);
                 
-                if (time != 1) {
-                    $.say (args[0] + " banned for " + time + " hours");
-                } else {
-                    $.say (args[0] + " banned for 1 hour");
-                }
+                $.say ($.lang.get("net.phantombot.chatmoderator.ban", $.username.resolve(args[0]), time));
             } else {
                 $.logEvent("chatModerator.js", 370, username + " banned " + args[0] + " indefinitely");
                 
                 banUser (args[0]);
                 
-                $.say (args[0] + " banned indefinitely");
+                $.say ($.lang.get("net.phantombot.chatmoderator.ban-indef", $.username.resolve(args[0])));
             }
         } else {
             $.say ($.modmsg);
@@ -387,7 +383,7 @@ $.on('command', function(event) {
 			
             unbanUser (args[0]);
             
-            $.say (args[0] + " is no longer banned");
+            $.say ($.lang.get("net.phantombot.chatmoderator.unban", $.username.resolve(args[0])));
         } else {
             $.say ($.modmsg);
         }
@@ -398,10 +394,10 @@ $.on('command', function(event) {
             clearChat();
             
             setTimeout(function() {
-                $.say(username + " cleared chat!");
+                $.say($.lang.get("net.phantombot.chatmoderator.clearchat", username));
             }, 1000);
         } else {
-            $.say ("Only a Moderator can use this command! " + username);
+            $.say ($.modmsg);
         }	
     } else if (command.equalsIgnoreCase("autoban")) {
         if ($.isModv3(sender, event.getTags())) {
@@ -419,7 +415,7 @@ $.on('command', function(event) {
                 $.inidb.set("autobanphrases", "phrase_" + num_phrases, argsString);
                 $.inidb.incr("autobanphrases", "num_phrases", 1);
             
-                $.say("Added a phrase to the autoban list! This can only be undone manually!");
+                $.say($.lang.get("net.phantombot.chatmoderator.autoban"));
             }
         } else {
             $.say ($.modmsg);
@@ -440,7 +436,7 @@ $.on('command', function(event) {
                 $.inidb.set("autopurgephrases", "phrase_" + num_phrases, argsString);
                 $.inidb.incr("autopurgephrases", "num_phrases", 1);
             
-                $.say("Added a phrase to the autopurge list! This can only be undone manually!");
+                $.say($.lang.get("net.phantombot.chatmoderator.autopurge"));
             }
         } else {
             $.say ($.modmsg);
@@ -448,12 +444,11 @@ $.on('command', function(event) {
     } else if (command.equalsIgnoreCase("chatmod")) {
         if ($.isModv3(sender, event.getTags())) {
             if (args.length < 1 || args[0].equalsIgnoreCase("help")) {
-                $.say("Usage: !chatmod <option> [new value]");
-                $.say("-Options: warningcountresettime, timeouttype, autopurgemessage, capsallowed, capstriggerratio, capstriggerlength, "
+                $.say($.lang.get("net.phantombot.chatmoderator.chatmod-help-1"));
+                $.say($.lang.get("net.phantombot.chatmoderator.chatmod-help-2") + "warningcountresettime, timeouttype, autopurgemessage, capsallowed, capstriggerratio, capstriggerlength, "
                     + "capsmessage, linksallowed, permittime, youtubeallowed, subsallowed, regsallowed, linksmessage, spamallowed, spamlimit, spammessage");
                 $.say(">>symbolsallowed, symbolslimit, symbolsrepeatlimit, symbolsmessage, repeatallowed, repeatlimit, repeatmessage, graphemeallowed, "
-                    + "graphemelimit, graphememessage, "
-                    + "warning1type, warning2type, warning3type, warning1message, warning2message, warning3message");
+                    + "graphemelimit, graphememessage, warning1type, warning2type, warning3type, warning1message, warning2message, warning3message");
             } else {
                 var val;
                 

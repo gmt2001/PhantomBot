@@ -597,10 +597,10 @@ $api.on(initscript, 'command', function (event) {
         }
 
         if (args.length == 0) {
-            $.say("Usage: !module list, !module enable <module name>, !module disable <module name>, !module status <module name>");
+            $.say($.lang.get("net.phantombot.init.module-usage"));
         } else {
             if (args[0].equalsIgnoreCase("list")) {
-                var lstr = "Modules: ";
+                var lstr = $.lang.get("net.phantombot.init.module-list");
                 var first = true;
                 var utils = 0;
 
@@ -634,9 +634,9 @@ $api.on(initscript, 'command', function (event) {
                         lstr += modules[i][0] + " (";
 
                         if (modules[i][1]) {
-                            lstr += "enabled";
+                            lstr += $.lang.get("net.phantombot.common.enabled");
                         } else {
-                            lstr += "disabled";
+                            lstr += $.lang.get("net.phantombot.common.disabled");
                         }
 
                         lstr += ")";

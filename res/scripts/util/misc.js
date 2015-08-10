@@ -249,9 +249,9 @@ $.on('command', function(event) {
             var msg;
             
             if ($.logEnable) {
-                msg = "enabled";
+                msg = $.lang.get("net.phantombot.common.enabled");
             } else {
-                msg = "disabled";
+                msg = $.lang.get("net.phantombot.common.disabled");
             }
             
             msg = $.lang.get("net.phantombot.misc.log-status", msg, $.logRotateDays);
@@ -283,7 +283,7 @@ $.on('command', function(event) {
         
         if (args[0].equalsIgnoreCase("days")) {
             if (args.length == 1 || isNaN(args[1]) || parseInt(args[1]) < 1) {
-                $.say($.lang.get("net.phantombot.misc.log-bad-days"));
+                $.say($.lang.get("net.phantombot.misc.log-err-bad-days"));
                 
                 return;
             }

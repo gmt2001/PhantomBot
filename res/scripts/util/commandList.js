@@ -203,14 +203,14 @@ $.on('command', function(event) {
             if (args.length > 0 && !isNaN(parseInt(args[0]))) {
                 start = commandsPerPage * (parseInt(args[0]) - 1);
                 
-                page = " page " + args[0] + " of " + numPages + " ";
+                page = $.lang.get("net.phantombot.commandlist.page", args[0], numPages);
             } else {
-                page = " page 1 of " + numPages + " ";
+                page = $.lang.get("net.phantombot.commandlist.page", 1, numPages);
             }
             
             num = Math.min(commandsPerPage, length - start);
             
-            more = " >> Type '!commands < #>' for more"
+            more = $.lang.get("net.phantombot.commandlist.more");
         } else {
             num = length;
         }
@@ -272,9 +272,9 @@ $.on('command', function(event) {
         }
         
         if (length == 0) {
-            $.say("There are currently no commands available to you");
+            $.say($.lang.get("net.phantombot.commandlist.nocommands"));
         } else {
-            $.say("Commands" + page + ": " + cmdList + more);
+            $.say($.lang.get("net.phantombot.commandlist.commands") + page + ": " + cmdList + more);
         }
     }
     
@@ -285,11 +285,11 @@ $.on('command', function(event) {
             $.commandsPerPage = parseInt(args[0]);
             $.inidb.set("commands", "_commandsPerPage", args[0]);
             
-            $.say("There will now be " + args[0] + " commands per page when using !commands");
+            $.say($.lang.get("net.phantombot.commandlist.commands-per-page", args[0]));
         } else if (!$.isAdmin(sender)) {
             $.say($.adminmsg);
         } else {
-            $.say("Usage: !commandsperpage <number no less than 10>");
+            $.say($.lang.get("net.phantombot.commandlist.commands-per-page-usage"));
         }
     }
 });
