@@ -254,8 +254,7 @@ public class ChannelUsersCache implements Runnable
          *
          * for (String parted : part) { EventBus.instance().post(new
          * IrcChannelLeaveEvent(PhantomBot.instance().getSession(),
-         * PhantomBot.instance().getChannel(), parted, "Left"));
-        }
+         * PhantomBot.instance().getChannel(), parted, "Left")); }
          */
     }
 

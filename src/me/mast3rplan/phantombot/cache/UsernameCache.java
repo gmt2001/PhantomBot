@@ -64,7 +64,7 @@ public class UsernameCache
 
                 if (PhantomBot.enableDebugging)
                 {
-                    com.gmt2001.Console.out.println(">>UsernameCache detected using v3: " + tags.get("dispaly-name"));
+                    com.gmt2001.Console.out.println(">>UsernameCache detected using v3: " + tags.get("display-name"));
                 }
 
                 return tags.get("display-name");

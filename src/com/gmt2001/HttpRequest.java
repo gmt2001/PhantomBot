@@ -22,7 +22,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-
 import java.util.Map.Entry;
 import javax.net.ssl.HttpsURLConnection;
 import org.apache.commons.io.IOUtils;
@@ -49,6 +48,8 @@ public class HttpRequest
 
     public static HttpResponse getData(RequestType type, String url, String post, HashMap<String, String> headers)
     {
+        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
+        
         HttpResponse r = new HttpResponse();
         boolean isHttps = url.startsWith("https");
 
@@ -78,6 +79,7 @@ public class HttpRequest
                 h.setRequestProperty("Content-length", "0");
                 if (!post.isEmpty())
                 {
+                    h.setRequestProperty("Content-length", "" + post.length());
                     h.setDoOutput(true);
                 }
 
@@ -116,6 +118,7 @@ public class HttpRequest
                 h.setRequestProperty("Content-length", "0");
                 if (!post.isEmpty())
                 {
+                    h.setRequestProperty("Content-length", "" + post.length());
                     h.setDoOutput(true);
                 }
 

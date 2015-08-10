@@ -35,8 +35,6 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
 {
 
     private static final UncaughtExceptionHandler instance = new UncaughtExceptionHandler();
-
-    ;
     
     public static UncaughtExceptionHandler instance()
     {

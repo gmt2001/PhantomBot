@@ -55,9 +55,9 @@ public class HTTPServer extends Thread
 
     @Override
     @SuppressWarnings(
-    {
-        "SleepWhileInLoop", "null"
-    })
+            {
+                "SleepWhileInLoop", "null"
+            })
     public void run()
     {
         String webhome = "./web";
@@ -77,7 +77,6 @@ public class HTTPServer extends Thread
         {
             try
             {
-
                 Socket conn = socket.accept();
                 Scanner scan = new Scanner(new BufferedInputStream(conn.getInputStream()));
                 PrintStream out = new PrintStream(new BufferedOutputStream(conn.getOutputStream()));
