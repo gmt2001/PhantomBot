@@ -84,3 +84,6 @@ $.lang.data["net.phantombot.chatmoderator.autoban"] = "Added a phrase to the aut
 $.lang.data["net.phantombot.chatmoderator.autopurge"] = "Added a phrase to the autopurge list! This can only be undone manually!";
 $.lang.data["net.phantombot.chatmoderator.chatmod-help-1"] = "Usage: !chatmod <option> [new value]";
 $.lang.data["net.phantombot.chatmoderator.chatmod-help-2"] = "-Options: ";
+$.lang.data["net.phantombot.chatmoderator.chatmod-warn-reset-time"] = "The current amount of time, in seconds, after which a users link/caps warning count is reset is $1 seconds. To change it use: !chatmod warningcountresettime <-1 for never, time>";
+$.lang.data["net.phantombot.chatmoderator.chatmod-warn-reset-time-never"] = "Changed warning count reset time to never!";
+$.lang.data["net.phantombot.chatmoderator.chatmod-warn-reset-time-set"] = "Changed warning count reset time to $1 seconds!";

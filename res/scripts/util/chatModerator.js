@@ -4,7 +4,6 @@ var autoPurgePhrases = new Array();
 var permitList = new Array();
 var sinbin = new Array();
 var warningcountresettime = parseInt($.inidb.get("settings", "warningcountresettime")) * 1000;
-var timeouttype = $.inidb.get("settings", "timeouttype");
 var autopurgemessage = $.inidb.get("settings", "autopurgemessage");
 var capsallowed = $.inidb.get("settings", "capsallowed").equalsIgnoreCase("1");
 var capstriggerratio = parseFloat($.inidb.get("settings", "capstriggerratio"));
@@ -74,11 +73,7 @@ function clearChat () {
 }
 
 function timeoutUserFor (user, fortime) {
-    if (timeouttype.equalsIgnoreCase("ban")) {
-        banUserFor(user, fortime);
-    } else {
-        timeoutUser(user, fortime);
-    }
+    timeoutUser(user, fortime);
 }
 
 function timeoutUser (user, fortime) {
@@ -445,7 +440,7 @@ $.on('command', function(event) {
         if ($.isModv3(sender, event.getTags())) {
             if (args.length < 1 || args[0].equalsIgnoreCase("help")) {
                 $.say($.lang.get("net.phantombot.chatmoderator.chatmod-help-1"));
-                $.say($.lang.get("net.phantombot.chatmoderator.chatmod-help-2") + "warningcountresettime, timeouttype, autopurgemessage, capsallowed, capstriggerratio, capstriggerlength, "
+                $.say($.lang.get("net.phantombot.chatmoderator.chatmod-help-2") + "warningcountresettime, autopurgemessage, capsallowed, capstriggerratio, capstriggerlength, "
                     + "capsmessage, linksallowed, permittime, youtubeallowed, subsallowed, regsallowed, linksmessage, spamallowed, spamlimit, spammessage");
                 $.say(">>symbolsallowed, symbolslimit, symbolsrepeatlimit, symbolsmessage, repeatallowed, repeatlimit, repeatmessage, graphemeallowed, "
                     + "graphemelimit, graphememessage, warning1type, warning2type, warning3type, warning1message, warning2message, warning3message");
@@ -462,7 +457,7 @@ $.on('command', function(event) {
                     val = parseInt(argsString);
                     
                     if (args.length == 1 || isNaN(val)) {
-                        $.say("The current amount of time, in seconds, after which a users link/caps warning count is reset is " + warningcountresettime + " seconds. To change it use: !chatmod warningcountresettime <-1 for never, time>");
+                        $.say($.lang.get("net.phantombot.chatmoderator.chatmod-warn-reset-time", warningcountresettime));
                     } else {
                         if (val < 0) {
                             val = -1;
@@ -473,22 +468,10 @@ $.on('command', function(event) {
                         warningcountresettime = val;
                         
                         if (val < 0) {
-                            $.say("Changed warning count reset time to never!");
+                            $.say($.lang.get("net.phantombot.chatmoderator.chatmod-warn-reset-time-never"));
                         } else {
-                            $.say("Changed warning count reset time to " + val + " seconds!");
+                            $.say($.lang.get("net.phantombot.chatmoderator.chatmod-warn-reset-time-set", val));
                         }
-                    }
-                } else if (args[0].equalsIgnoreCase("timeouttype")) {
-                    val = argsString;
-                    
-                    if (args.length == 1 || (!val.equalsIgnoreCase("ban") && !val.equalsIgnoreCase("timeout"))) {
-                        $.say("Timeouts are currently issued using " + timeouttype + "s. To change it use: !chatmod timeouttype <'ban' or 'timeout'>");
-                    } else {
-                        $.inidb.set("settings", "timeouttype", val);
-                        
-                        timeouttype = val;
-                        
-                        $.say("Timeouts are now issues using " + val + "s!");
                     }
                 } else if (args[0].equalsIgnoreCase("autopurgemessage")) {
                     val = argsString;

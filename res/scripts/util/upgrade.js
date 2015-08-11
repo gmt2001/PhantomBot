@@ -96,10 +96,6 @@ if ($.inidb.GetInteger("init", "upgrade", "version") < 2) {
         $.inidb.set("settings", "warningcountresettime", "600");
     }
     
-    if (!$.inidb.exists("settings", "timeouttype")) {
-        $.inidb.set("settings", "timeouttype", "timeout");
-    }
-    
     if (!$.inidb.exists("settings", "autopurgemessage")) {
         $.inidb.set("settings", "autopurgemessage", "follow the rules!");
     }
