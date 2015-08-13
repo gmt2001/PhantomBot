@@ -390,6 +390,14 @@ $.on('ircChannelMessage', function(event) {
  
             $.inidb.decr('points', sender, $var.raffle_price);
         }
+        
+        if ($var.raffle_followers == true) {
+            var follower = $.inidb.get('followed', sender);
+                if (follower == null) {            
+                $.say("You need to be following to enter the raffle "+ username +"!");
+                 return;
+             }
+         }
  
         $var.raffle_entrants.push(sender);
         if ($var.raffle_toggle == false) {
