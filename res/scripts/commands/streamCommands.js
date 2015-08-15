@@ -42,8 +42,23 @@ $.getUptime = function(channel) {
     }
 
     var datefmt = new java.text.SimpleDateFormat("EEEE MMMM d, yyyy @ h:mm a z");
+    var gtf = new java.text.SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+    datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.timezone));
+    var cal = java.util.Calendar.getInstance(java.util.TimeZone.getTimeZone($.timezone));
+    var now = cal.getTime();
     var timestamp = datefmt.format(df.parse( createdAt ));
-    return timestamp.toString();
+
+    var starttime = new java.util.Date(gtf.format(df.parse( createdAt )));
+    var currenttime = new java.util.Date(gtf.format(now));
+    
+    var diff = (currenttime.getTime() - starttime.getTime())
+    var diffHrs = diff / (60 * 60 * 1000) % 24;
+    var diffMinutes = diff / (60 * 1000) % 60;
+    
+    diffHrs = diffHrs.toString().substring(0, diffHrs.toString().indexOf("."));
+    diffMinutes = diffMinutes.toString().substring(0, diffMinutes.toString().indexOf("."));
+    
+    return diffHrs + " hrs and " + diffMinutes + " minutes since " + timestamp.toString();
 }
 
 $.getViewers = function(channel) {

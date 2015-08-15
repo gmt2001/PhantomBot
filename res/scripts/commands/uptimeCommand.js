@@ -26,7 +26,7 @@ $.on('command', function (event) {
 	
     if (command.equalsIgnoreCase("uptime")) {
         if ($.isOnline($.channelName)) {
-            $.say("Stream has been live since " + $.getUptime($.channelName) + ".");
+            $.say("/me " + $.username.resolve($.channelName) + " has been live for " + $.getUptime($.channelName) + ".");
         } else {
             $.say("Stream is Offline!");
         }
