@@ -46,6 +46,22 @@ $.on('command', function(event) {
         self.push(sender + " went kablewy!");
         self.push(sender + " figured out how to divide by 0!");
         self.push(sender + " took a long walk off a short pier.");
+		self.push(sender + " fell off a ladder.");
+		self.push(sender + " fell off a tree.");
+		self.push(sender + " fell off himself.");
+		self.push(sender + " bursts into flames.");
+		self.push(sender + " was struck by lightening.");
+		self.push(sender + " starved to death.");
+		self.push(sender + " was stabbed to death by (random).");
+		self.push(sender + " fell victim to gravity.");
+		self.push(sender + "'s plead for death was answered.");
+		self.push(sender + "'s vital organs were ruptured.");
+		self.push(sender + "'s innards were made outwards.");
+		self.push(sender + " was licked to death. Don't ask.");
+		self.push(sender + " was deleted.");
+		self.push(sender + " had to split.");
+		self.push(sender + " Food is a gift from God. Spices are a gift from the devil. I guess it was a little too spicy for you.");
+
  
         do {
             s = $.randElement(self);
@@ -197,7 +213,7 @@ ar.push("(sender) atacó a (1) con un consolador grande!");
 ar.push("(1) was poked a bit too hard by (sender) with a spoon!");
 ar.push("(sender) got his hands on a steamroller and steam rolled (1) flat! So, yeah (1) did die from that.")
 ar.push("(sender) attacked (1) with a rusty spoon as the weapon...and managed to (1) with very little effort.");
-ar.push("(sender) used anal beads on (1) incorrectly and thus killing (1) almost instantly.");
+ar.push("(sender) stole a car known as 'KITT' and ran over (1).");
 ar.push("(sender) tickled (1) to death!");
 ar.push("(1)'s skull was crushed by (sender)!");
 ar.push("(1) is in several pieces after a tragic accident involving (sender) and spoons.");
@@ -205,6 +221,10 @@ ar.push("(sender) licked (1) until (sender) was squishy, yeah.. squishy.");
 ar.push("(sender) catapulted a huge load of rusty spoons on to (1). (1) died.");
 ar.push("(sender) ran out of rusty spoons and unicorn horns to kill (1) with and so instead used a rusty hanger.");
 ar.push("(sender) came in like a mystical being of awesomeness and destroyed (1)!");
+ar.push("(1) drowned whilst trying to escape from (sender)");
+ar.push("(1) walked into a cactus while trying to escape from (sender)");
+ar.push("(1) was attacked by (sender) behind a Taco Bell restaurant.");
+ar.push("(sender) went back in time to prevent himself from killing (1), apparently the time machine landed (1) when (sender) jumped back in time.");
 
 
 if ($.inidb.get("kills", "num_kills") == null || $.inidb.get("kills", "num_kills") == 0 ) {
