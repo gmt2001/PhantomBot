@@ -359,7 +359,7 @@ if (command.equalsIgnoreCase("letitrain")) {
 					$.inidb.decr('points', sender, args[0]);
                     var name;
                     var i;
-					var reward = args[0]/($.users.length - 1);
+					var reward = args[0]/($.users.length);
 					
                     for (i = 0; i < $.users.length; i++) {
                         name = $.users[i][0];
