@@ -350,7 +350,27 @@ $.on('command', function (event) {
             $.getPoints(points_user);
         }
     }
- 
+if (command.equalsIgnoreCase("letitrain")) {
+
+                if (args[0] < 0) {
+                    $.say($.username.resolve(sender, event.getTags()) + " seems like you want to give everyone negative " + $.pointname + "!");
+                    return;
+                } else {
+					$.inidb.decr('points', sender, args[0]);
+                    var name;
+                    var i;
+					var reward = args[0]/($.users.length - 1);
+					
+                    for (i = 0; i < $.users.length; i++) {
+                        name = $.users[i][0];
+                        $.inidb.incr('points', name.toLowerCase(), reward.toFixed(0));
+						
+
+                    }
+                    $.say(sender+ " offered " + args[0] + " " + $.pointname + " to be split into " + reward.toFixed(0) + " " + $.pointname + " for everyone!");
+					$.inidb.decr('points', sender, reward.toFixed(0));
+                }
+}
     if (command.equalsIgnoreCase("gift") || command.equalsIgnoreCase("transfer")) {
         username = args[0].toLowerCase();
         if (username == sender) {
@@ -381,8 +401,10 @@ $.on('command', function (event) {
             }
 
         }
+
     }
-         
+
+
 });
 
 $.timer.addTimer("./systems/pointSystem.js", "pointsystem", true, function() {
