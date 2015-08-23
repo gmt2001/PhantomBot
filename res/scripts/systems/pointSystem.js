@@ -444,6 +444,7 @@ $.timer.addTimer("./systems/pointSystem.js", "pointsystem", true, function() {
 setTimeout(function(){ 
     if ($.moduleEnabled('./systems/pointSystem.js')) {
         $.registerChatCommand("./systems/pointSystem.js", "points");
+	$.registerChatCommand("./systems/pointSystem.js", "letitrain");
     }
 },10*1000);
 
