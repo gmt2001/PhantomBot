@@ -350,7 +350,7 @@ $.on('command', function (event) {
             $.getPoints(points_user);
         }
     }
-if (command.equalsIgnoreCase("letitrain")) {
+if (command.equalsIgnoreCase("makeitrain")) {
 
                 if (args[0] < 0) {
                     $.say($.username.resolve(sender, event.getTags()) + " seems like you want to give everyone negative " + $.pointname + "!");
@@ -444,7 +444,7 @@ $.timer.addTimer("./systems/pointSystem.js", "pointsystem", true, function() {
 setTimeout(function(){ 
     if ($.moduleEnabled('./systems/pointSystem.js')) {
         $.registerChatCommand("./systems/pointSystem.js", "points");
-	$.registerChatCommand("./systems/pointSystem.js", "letitrain");
+	$.registerChatCommand("./systems/pointSystem.js", "makeitrain");
     }
 },10*1000);
 
