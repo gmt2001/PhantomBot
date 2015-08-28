@@ -267,7 +267,7 @@ public class YouTubeAPIv3
             com.gmt2001.Console.out.println(">>>[DEBUG] YouTubeAPIv3.GetData Timers " + (preconnect.getTime() - start.getTime()) + " "
                     + (postconnect.getTime() - start.getTime()) + " " + (prejson.getTime() - start.getTime()) + " "
                     + (postjson.getTime() - start.getTime()) + " " + start.toString() + " " + postjson.toString());
-            com.gmt2001.Console.out.println(">>>[DEBUG] YouTubeAPIv3.GetData Exception " + j.getString("_exception"));
+            com.gmt2001.Console.out.println(">>>[DEBUG] YouTubeAPIv3.GetData Exception " + j.getString("_exception") + " " + j.getString("_exceptionMessage"));
             com.gmt2001.Console.out.println(">>>[DEBUG] YouTubeAPIv3.GetData HTTP/Available " + j.getInt("_http") + "/" + j.getInt("_available"));
             com.gmt2001.Console.out.println(">>>[DEBUG] YouTubeAPIv3.GetData RawContent[0,100] " + j.getString("_content").substring(0, Math.min(100, j.getString("_content").length())));
         }
