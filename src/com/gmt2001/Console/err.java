@@ -16,10 +16,7 @@
  */
 package com.gmt2001.Console;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
+import com.gmt2001.Logger;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -49,26 +46,12 @@ public class err
     {
         System.err.print(o);
 
-        try
-        {
-            try (FileOutputStream fos = new FileOutputStream("stderr.txt", true))
-            {
-                PrintStream ps = new PrintStream(fos);
+        SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss");
+        datefmt.setTimeZone(TimeZone.getTimeZone("GMT"));
 
-                SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss");
-                datefmt.setTimeZone(TimeZone.getTimeZone("GMT"));
+        String timestamp = datefmt.format(new Date());
 
-                String timestamp = datefmt.format(new Date());
-
-                ps.println(">>" + timestamp + "Z " + o.toString());
-            }
-        } catch (FileNotFoundException ex)
-        {
-            ex.printStackTrace(System.err);
-        } catch (IOException ex)
-        {
-            ex.printStackTrace(System.err);
-        }
+        Logger.instance().log(Logger.LogType.Error, timestamp + "Z " + o.toString());
     }
 
     public static void println()
@@ -80,27 +63,13 @@ public class err
     {
         System.err.println(o);
 
-        try
-        {
-            try (FileOutputStream fos = new FileOutputStream("stderr.txt", true))
-            {
-                PrintStream ps = new PrintStream(fos);
+        SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss");
+        datefmt.setTimeZone(TimeZone.getTimeZone("GMT"));
 
-                SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss");
-                datefmt.setTimeZone(TimeZone.getTimeZone("GMT"));
+        String timestamp = datefmt.format(new Date());
 
-                String timestamp = datefmt.format(new Date());
-
-                ps.println(timestamp + "Z " + o.toString());
-                ps.println();
-            }
-        } catch (FileNotFoundException ex)
-        {
-            ex.printStackTrace(System.err);
-        } catch (IOException ex)
-        {
-            ex.printStackTrace(System.err);
-        }
+        Logger.instance().log(Logger.LogType.Error, timestamp + "Z " + o.toString());
+        Logger.instance().log(Logger.LogType.Blank, "");
     }
 
     public static void printStackTrace(Throwable e)
@@ -112,26 +81,12 @@ public class err
 
         e.printStackTrace(ptrace);
 
-        try
-        {
-            try (FileOutputStream fos = new FileOutputStream("stderr.txt", true))
-            {
-                PrintStream ps = new PrintStream(fos);
+        SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss");
+        datefmt.setTimeZone(TimeZone.getTimeZone("GMT"));
 
-                SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss");
-                datefmt.setTimeZone(TimeZone.getTimeZone("GMT"));
+        String timestamp = datefmt.format(new Date());
 
-                String timestamp = datefmt.format(new Date());
-
-                ps.println(timestamp + "Z " + trace.toString());
-                ps.println();
-            }
-        } catch (FileNotFoundException ex)
-        {
-            ex.printStackTrace(System.err);
-        } catch (IOException ex)
-        {
-            ex.printStackTrace(System.err);
-        }
+        Logger.instance().log(Logger.LogType.Error, timestamp + "Z " + trace.toString());
+        Logger.instance().log(Logger.LogType.Blank, "");
     }
 }

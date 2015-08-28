@@ -773,6 +773,10 @@ public class PhantomBot implements Listener
                     com.gmt2001.Console.out.println("webenable='" + webenable + "'");
                     com.gmt2001.Console.out.println("musicenable='" + musicenable + "'");
                 }
+                if (arg.equalsIgnoreCase("debugon"))
+                {
+                    PhantomBot.enableDebugging = true;
+                }
                 if (arg.toLowerCase().startsWith("user=") && arg.length() > 8)
                 {
                     if (!user.equals(arg.substring(5)))

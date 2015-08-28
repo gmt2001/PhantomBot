@@ -16,6 +16,12 @@
  */
 package com.gmt2001.Console;
 
+import com.gmt2001.Logger;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+import me.mast3rplan.phantombot.PhantomBot;
+
 /**
  *
  * @author Gary Tekulsky
@@ -36,6 +42,16 @@ public class out
 
     public static void print(Object o)
     {
+        if (PhantomBot.enableDebugging)
+        {
+            SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss");
+            datefmt.setTimeZone(TimeZone.getTimeZone("GMT"));
+
+            String timestamp = datefmt.format(new Date());
+
+            Logger.instance().log(Logger.LogType.Output, timestamp + "Z " + o.toString());
+        }
+
         System.out.print(o);
     }
 
@@ -46,6 +62,17 @@ public class out
 
     public static void println(Object o)
     {
+        if (PhantomBot.enableDebugging)
+        {
+            SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss");
+            datefmt.setTimeZone(TimeZone.getTimeZone("GMT"));
+
+            String timestamp = datefmt.format(new Date());
+
+            Logger.instance().log(Logger.LogType.Output, timestamp + "Z " + o.toString());
+            Logger.instance().log(Logger.LogType.Blank, "");
+        }
+
         System.out.println(o);
     }
 }

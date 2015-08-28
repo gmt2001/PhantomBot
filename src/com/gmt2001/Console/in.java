@@ -16,8 +16,13 @@
  */
 package com.gmt2001.Console;
 
+import com.gmt2001.Logger;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+import me.mast3rplan.phantombot.PhantomBot;
 
 /**
  *
@@ -40,6 +45,19 @@ public class in
 
     public static String readLine() throws Exception
     {
-        return br.readLine();
+        String s = br.readLine();
+
+        if (PhantomBot.enableDebugging)
+        {
+            SimpleDateFormat datefmt = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss");
+            datefmt.setTimeZone(TimeZone.getTimeZone("GMT"));
+
+            String timestamp = datefmt.format(new Date());
+
+            Logger.instance().log(Logger.LogType.Input, timestamp + "Z " + s);
+            Logger.instance().log(Logger.LogType.Blank, "");
+        }
+
+        return s;
     }
 }
