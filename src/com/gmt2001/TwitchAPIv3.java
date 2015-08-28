@@ -143,7 +143,7 @@ public class TwitchAPIv3
                 i = c.getErrorStream();
             }
 
-            if (c.getResponseCode() == 204 || i == null || i.available() == 0)
+            if (c.getResponseCode() == 204 || i == null)
             {
                 content = "{}";
             } else
