@@ -466,13 +466,13 @@ $api.on($script, 'ircPrivateMessage', function (event) {
     $.hook.call('ircPrivateMessage', event, false);
 });
 
-$api.on($script, 'ircChannelMessage', function (event) {
+/*$api.on($script, 'ircChannelMessage', function (event) {
     if (event.getSender().equalsIgnoreCase("jtv") || event.getSender().equalsIgnoreCase("twitchnotify")) {
         $.hook.call('ircPrivateMessage', event, false);
     } else {
         $.hook.call('ircChannelMessage', event, false);
     }
-});
+});*/
 
 $api.on($script, 'musicPlayerConnect', function (event) {
     $.hook.call('musicPlayerConnect', event, false);

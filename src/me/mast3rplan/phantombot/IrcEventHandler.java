@@ -81,7 +81,14 @@ public class IrcEventHandler implements IRCEventListener
 
                     com.gmt2001.Console.out.println(">>End of Tags");
                 }
-
+                
+                if (event.getNick().equalsIgnoreCase("twitchnotify"))
+                {
+                    Map<String, String> weventTags = event.tags();
+                    String message = event.arg(1);
+                    eventBus.postAsync(new IrcPrivateMessageEvent(session, "twitchnotify", message, weventTags));
+                }
+                
                 if (cmessageTags.containsKey("subscriber"))
                 {
                     if (cmessageTags.get("subscriber").equalsIgnoreCase("1"))

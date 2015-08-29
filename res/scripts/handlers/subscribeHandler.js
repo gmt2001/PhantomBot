@@ -20,13 +20,9 @@ $.on('twitchSubscribe', function(event) {
     var username = $.username.resolve(subscriber);
     var subscribed = $.inidb.get('subscribed', subscriber);
     
-    if (subscribed == null || subscribed == undefined || subscribed.isEmpty()) {
+    if (subscribed == null || subscribed == undefined || subscribed.isEmpty() || parseInt(subscribed)==0) {
         $.inidb.set('subscribed', subscriber, 1);      
     } 
-    
-    if (subscribed.equalsIgnoreCase("0")) {
-        $.inidb.set('subscribed', subscriber, 1);
-    }
     
     if($.isAdmin(subscriber)==false || $.isModv3(subscriber, event.getTags())==false) {
         $.inidb.set("tempsubgroup", subscriber, $.inidb.get("group",subscriber));
@@ -95,9 +91,7 @@ $.on('twitchUnsubscribe', function(event) {
 
 $.on('twitchSubscribesInitialized', function(event) {
     println(">>Enabling new subscriber announcements");
-    if($.sub_silentmode==0) {
-        $.announceSubscribes = true;
-    }
+    $.announceSubscribes = true;
 });
 
 $.on('command', function(event) {
@@ -228,7 +222,7 @@ $.on('ircPrivateMessage', function(event) {
     if (event.getSender().equalsIgnoreCase("twitchnotify")) {
         var message = event.getMessage().toLowerCase();
 
-        if (message.indexOf("just subscribed!") != -1 && message.indexOf("months in a row!") == -1) {
+        if (message.indexOf("subscribed") != -1) {
             var spl = message.split(" ");
             var EventBus = Packages.me.mast3rplan.phantombot.event.EventBus;
             var TwitchSubscribeEvent = Packages.me.mast3rplan.phantombot.event.twitch.subscriber.TwitchSubscribeEvent;
