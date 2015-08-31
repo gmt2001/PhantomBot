@@ -16,11 +16,18 @@
  */
 package me.mast3rplan.phantombot.event.twitch.follower;
 
+import me.mast3rplan.phantombot.jerklib.Channel;
+
 public class TwitchFollowEvent extends TwitchFollowerEvent
 {
 
     public TwitchFollowEvent(String follower)
     {
         super(follower, Type.FOLLOW);
+    }
+    
+    public TwitchFollowEvent(String follower, Channel channel)
+    {
+        super(follower, Type.FOLLOW, channel);
     }
 }

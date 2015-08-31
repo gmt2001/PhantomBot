@@ -23,6 +23,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import me.mast3rplan.phantombot.PhantomBot;
 import me.mast3rplan.phantombot.event.EventBus;
 import me.mast3rplan.phantombot.event.twitch.subscriber.TwitchSubscribeEvent;
 import me.mast3rplan.phantombot.event.twitch.subscriber.TwitchSubscribesInitializedEvent;
@@ -59,7 +60,7 @@ public class SubscribersCache implements Runnable
     private int numfail = 0;
 
     @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
-    public SubscribersCache(String channel)
+    private SubscribersCache(String channel)
     {
         this.channel = channel;
         this.updateThread = new Thread(this);
@@ -293,18 +294,18 @@ public class SubscribersCache implements Runnable
 
         for (String subscriber : subscribers)
         {
-            EventBus.instance().post(new TwitchSubscribeEvent(subscriber));
+            EventBus.instance().post(new TwitchSubscribeEvent(subscriber, PhantomBot.instance().getChannel(this.channel)));
         }
 
         for (String subscriber : unsubscribers)
         {
-            EventBus.instance().post(new TwitchUnsubscribeEvent(subscriber));
+            EventBus.instance().post(new TwitchUnsubscribeEvent(subscriber, PhantomBot.instance().getChannel(this.channel)));
         }
 
         if (firstUpdate)
         {
             firstUpdate = false;
-            EventBus.instance().post(new TwitchSubscribesInitializedEvent());
+            EventBus.instance().post(new TwitchSubscribesInitializedEvent(PhantomBot.instance().getChannel(this.channel)));
         }
     }
 

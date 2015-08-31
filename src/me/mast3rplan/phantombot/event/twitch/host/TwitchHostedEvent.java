@@ -16,11 +16,18 @@
  */
 package me.mast3rplan.phantombot.event.twitch.host;
 
+import me.mast3rplan.phantombot.jerklib.Channel;
+
 public class TwitchHostedEvent extends TwitchHostEvent
 {
 
     public TwitchHostedEvent(String hoster)
     {
         super(hoster, Type.HOST);
+    }
+    
+    public TwitchHostedEvent(String hoster, Channel channel)
+    {
+        super(hoster, Type.HOST, channel);
     }
 }

@@ -17,6 +17,7 @@
 package me.mast3rplan.phantombot;
 
 import com.gmt2001.IniStore;
+import com.gmt2001.TempStore;
 import com.gmt2001.TwitchAPIv3;
 import com.gmt2001.YouTubeAPIv3;
 import com.google.common.eventbus.Subscribe;
@@ -30,6 +31,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.security.SecureRandom;
+import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.logging.Level;
@@ -86,6 +88,7 @@ public class PhantomBot implements Listener
     private final Session session;
     public static Session tgcSession;
     private Channel channel;
+    private HashMap<String, Channel> channels;
     private FollowersCache followersCache;
     private ChannelHostCache hostCache;
     private SubscribersCache subscribersCache;
@@ -141,7 +144,7 @@ public class PhantomBot implements Listener
         this.followersCache = FollowersCache.instance(channel.toLowerCase());
         this.hostCache = ChannelHostCache.instance(channel.toLowerCase());
         this.subscribersCache = SubscribersCache.instance(channel.toLowerCase());
-        this.channelUsersCache = ChannelUsersCache.instance(channel.toLowerCase());
+        //this.channelUsersCache = ChannelUsersCache.instance(channel.toLowerCase());
 
         rng = new SecureRandom();
         bancache = new BannedCache();
@@ -204,6 +207,8 @@ public class PhantomBot implements Listener
                 Logger.getLogger(PhantomBot.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        
+        channels = new HashMap<>();
 
         this.session = connectionManager.requestConnection(this.hostname, this.port, oauth);
         TwitchGroupChatHandler(this.oauth, this.connectionManager);
@@ -235,6 +240,16 @@ public class PhantomBot implements Listener
     public Channel getChannel()
     {
         return channel;
+    }
+
+    public Channel getChannel(String channelName)
+    {
+        return channels.get(channelName);
+    }
+
+    public HashMap<String, Channel> getChannels()
+    {
+        return channels;
     }
 
     private void TwitchGroupChatHandler(String oauth, ConnectionManager connManager)
@@ -270,6 +285,7 @@ public class PhantomBot implements Listener
         EventBus.instance().register(ScriptEventManager.instance());
 
         Script.global.defineProperty("inidb", IniStore.instance(), 0);
+        Script.global.defineProperty("tempdb", TempStore.instance(), 0);
         Script.global.defineProperty("bancache", bancache, 0);
         Script.global.defineProperty("username", UsernameCache.instance(), 0);
         Script.global.defineProperty("twitch", TwitchAPIv3.instance(), 0);
@@ -279,6 +295,7 @@ public class PhantomBot implements Listener
         Script.global.defineProperty("channelUsers", channelUsersCache, 0);
         Script.global.defineProperty("botName", username, 0);
         Script.global.defineProperty("channelName", channelName, 0);
+        Script.global.defineProperty("channels", channels, 0);
         Script.global.defineProperty("ownerName", ownerName, 0);
         Script.global.defineProperty("channelStatus", channelStatus, 0);
         Script.global.defineProperty("musicplayer", mws, 0);
@@ -329,7 +346,18 @@ public class PhantomBot implements Listener
             this.session.sayRaw("CAP REQ :twitch.tv/tags");
             this.session.sayRaw("CAP REQ :twitch.tv/commands");
             this.session.sayRaw("CAP REQ :twitch.tv/membership");
-            this.session.join("#" + channelName.toLowerCase());
+            
+            if (channelName.toLowerCase().contains(","))
+            {
+                String[] c = channelName.toLowerCase().split(",");
+                
+                for (String ch : c)
+                {
+                    this.session.join("#" + ch);
+                }
+            } else {
+                this.session.join("#" + channelName.toLowerCase());
+            }
         } else
         {
             tgcSession.sayRaw("CAP REQ :twitch.tv/tags");
@@ -345,6 +373,8 @@ public class PhantomBot implements Listener
     {
         this.channel = event.getChannel();
         this.channel.setMsgInterval((long) ((30.0 / this.msglimit30) * 1000));
+        
+        this.channels.put(this.channel.getName(), this.channel);
 
         //com.gmt2001.Console.out.println("Joined channel: " + event.getChannel().getName());
         session.sayChannel(this.channel, ".mods");

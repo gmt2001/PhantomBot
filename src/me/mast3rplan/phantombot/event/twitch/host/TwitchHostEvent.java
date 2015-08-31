@@ -17,6 +17,7 @@
 package me.mast3rplan.phantombot.event.twitch.host;
 
 import me.mast3rplan.phantombot.event.twitch.TwitchEvent;
+import me.mast3rplan.phantombot.jerklib.Channel;
 
 public abstract class TwitchHostEvent extends TwitchEvent
 {
@@ -33,6 +34,13 @@ public abstract class TwitchHostEvent extends TwitchEvent
 
     protected TwitchHostEvent(String hoster, Type type)
     {
+        this.hoster = hoster;
+        this.type = type;
+    }
+    
+    protected TwitchHostEvent(String hoster, Type type, Channel channel)
+    {
+        super(channel);
         this.hoster = hoster;
         this.type = type;
     }

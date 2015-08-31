@@ -16,6 +16,8 @@
  */
 package me.mast3rplan.phantombot.event.musicplayer;
 
+import me.mast3rplan.phantombot.jerklib.Channel;
+
 public class MusicPlayerCurrentVolumeEvent extends MusicPlayerEvent
 {
 
@@ -23,6 +25,12 @@ public class MusicPlayerCurrentVolumeEvent extends MusicPlayerEvent
 
     public MusicPlayerCurrentVolumeEvent(double volume)
     {
+        this.volume = volume;
+    }
+    
+    public MusicPlayerCurrentVolumeEvent(double volume, Channel channel)
+    {
+        super(channel);
         this.volume = volume;
     }
 

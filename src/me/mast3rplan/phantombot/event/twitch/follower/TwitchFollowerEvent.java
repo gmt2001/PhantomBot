@@ -17,6 +17,7 @@
 package me.mast3rplan.phantombot.event.twitch.follower;
 
 import me.mast3rplan.phantombot.event.twitch.TwitchEvent;
+import me.mast3rplan.phantombot.jerklib.Channel;
 
 public abstract class TwitchFollowerEvent extends TwitchEvent
 {
@@ -33,6 +34,13 @@ public abstract class TwitchFollowerEvent extends TwitchEvent
 
     protected TwitchFollowerEvent(String follower, Type type)
     {
+        this.follower = follower;
+        this.type = type;
+    }
+
+    protected TwitchFollowerEvent(String follower, Type type, Channel channel)
+    {
+        super(channel);
         this.follower = follower;
         this.type = type;
     }

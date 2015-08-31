@@ -23,6 +23,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import me.mast3rplan.phantombot.PhantomBot;
 import me.mast3rplan.phantombot.event.EventBus;
 import me.mast3rplan.phantombot.event.twitch.host.TwitchHostedEvent;
 import me.mast3rplan.phantombot.event.twitch.host.TwitchHostsInitializedEvent;
@@ -59,7 +60,7 @@ public class ChannelHostCache implements Runnable
     private int id = 0;
 
     @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
-    public ChannelHostCache(String channel)
+    private ChannelHostCache(String channel)
     {
         this.channel = channel;
         this.updateThread = new Thread(this);
@@ -250,18 +251,18 @@ public class ChannelHostCache implements Runnable
 
         for (String hoster : hosted)
         {
-            EventBus.instance().post(new TwitchHostedEvent(hoster));
+            EventBus.instance().post(new TwitchHostedEvent(hoster, PhantomBot.instance().getChannel(this.channel)));
         }
 
         for (String unhoster : unhosted)
         {
-            EventBus.instance().post(new TwitchUnhostedEvent(unhoster));
+            EventBus.instance().post(new TwitchUnhostedEvent(unhoster, PhantomBot.instance().getChannel(this.channel)));
         }
 
         if (firstUpdate)
         {
             firstUpdate = false;
-            EventBus.instance().post(new TwitchHostsInitializedEvent());
+            EventBus.instance().post(new TwitchHostsInitializedEvent(PhantomBot.instance().getChannel(this.channel)));
         }
     }
 

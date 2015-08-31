@@ -17,11 +17,17 @@
 package me.mast3rplan.phantombot.event.twitch.host;
 
 import me.mast3rplan.phantombot.event.twitch.TwitchEvent;
+import me.mast3rplan.phantombot.jerklib.Channel;
 
 public class TwitchHostsInitializedEvent extends TwitchEvent
 {
 
     public TwitchHostsInitializedEvent()
     {
+    }
+    
+    public TwitchHostsInitializedEvent(Channel channel)
+    {
+        super(channel);
     }
 }

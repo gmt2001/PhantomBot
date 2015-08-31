@@ -53,7 +53,7 @@ public class ChannelUsersCache implements Runnable
     private int numfail = 0;
 
     @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
-    public ChannelUsersCache(String channel)
+    private ChannelUsersCache(String channel)
     {
         this.channel = channel;
         this.updateThread = new Thread(this);
@@ -250,11 +250,11 @@ public class ChannelUsersCache implements Runnable
         /*
          * for (String joined : join) { EventBus.instance().post(new
          * IrcChannelJoinEvent(PhantomBot.instance().getSession(),
-         * PhantomBot.instance().getChannel(), joined)); }
+         * PhantomBot.instance().getChannel(this.channel), joined)); }
          *
          * for (String parted : part) { EventBus.instance().post(new
          * IrcChannelLeaveEvent(PhantomBot.instance().getSession(),
-         * PhantomBot.instance().getChannel(), parted, "Left")); }
+         * PhantomBot.instance().getChannel(this.channel), parted, "Left")); }
          */
     }
 

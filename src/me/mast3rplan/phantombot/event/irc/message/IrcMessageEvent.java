@@ -19,6 +19,7 @@ package me.mast3rplan.phantombot.event.irc.message;
 import java.util.HashMap;
 import java.util.Map;
 import me.mast3rplan.phantombot.event.irc.IrcEvent;
+import me.mast3rplan.phantombot.jerklib.Channel;
 import me.mast3rplan.phantombot.jerklib.Session;
 import org.apache.commons.lang3.CharUtils;
 
@@ -28,6 +29,7 @@ public abstract class IrcMessageEvent extends IrcEvent
     private final String sender;
     private final String message;
     private final Map<String, String> tags;
+    private final Channel channel;
 
     protected IrcMessageEvent(Session session, String sender, String message)
     {
@@ -35,6 +37,7 @@ public abstract class IrcMessageEvent extends IrcEvent
         this.sender = sender;
         this.message = message;
         this.tags = new HashMap<>();
+        this.channel = null;
     }
 
     protected IrcMessageEvent(Session session, String sender, String message, Map<String, String> tags)
@@ -42,7 +45,31 @@ public abstract class IrcMessageEvent extends IrcEvent
         super(session);
         this.sender = sender;
         this.message = message;
-        this.tags = tags;
+        this.channel = null;
+
+        if (tags == null)
+        {
+            this.tags = new HashMap<>();
+        } else
+        {
+            this.tags = tags;
+        }
+    }
+
+    protected IrcMessageEvent(Session session, String sender, String message, Map<String, String> tags, Channel channel)
+    {
+        super(session);
+        this.sender = sender;
+        this.message = message;
+        this.channel = channel;
+
+        if (tags == null)
+        {
+            this.tags = new HashMap<>();
+        } else
+        {
+            this.tags = tags;
+        }
     }
 
     public String getSender()
@@ -71,5 +98,10 @@ public abstract class IrcMessageEvent extends IrcEvent
             }
         }
         return count;
+    }
+
+    public Channel getChannel()
+    {
+        return channel;
     }
 }

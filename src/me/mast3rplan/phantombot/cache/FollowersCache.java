@@ -23,6 +23,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import me.mast3rplan.phantombot.PhantomBot;
 import me.mast3rplan.phantombot.event.EventBus;
 import me.mast3rplan.phantombot.event.twitch.follower.TwitchFollowEvent;
 import me.mast3rplan.phantombot.event.twitch.follower.TwitchFollowsInitializedEvent;
@@ -60,7 +61,7 @@ public class FollowersCache implements Runnable
     private boolean hasFail = false;
 
     @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
-    public FollowersCache(String channel)
+    private FollowersCache(String channel)
     {
         this.channel = channel;
         this.updateThread = new Thread(this);
@@ -95,7 +96,7 @@ public class FollowersCache implements Runnable
                     if (cache == null || !cache.containsKey(key))
                     {
                         cache.put(key, newCache.get(key));
-                        EventBus.instance().post(new TwitchFollowEvent(key));
+                        EventBus.instance().post(new TwitchFollowEvent(key, PhantomBot.instance().getChannel(this.channel)));
                     }
                 }
 
@@ -135,7 +136,36 @@ public class FollowersCache implements Runnable
         {
             com.gmt2001.Console.out.println("FollowersCache.run>>Failed to initial sleep: [InterruptedException] " + e.getMessage());
         }
-        EventBus.instance().post(new TwitchFollowsInitializedEvent());
+        try
+        {
+            quickUpdate(channel);
+        } catch (Exception e)
+        {
+            if (e.getMessage().startsWith("[SocketTimeoutException]") || e.getMessage().startsWith("[IOException]"))
+            {
+                Calendar c = Calendar.getInstance();
+
+                if (lastFail.after(new Date()))
+                {
+                    numfail++;
+                } else
+                {
+                    numfail = 1;
+                }
+
+                c.add(Calendar.MINUTE, 1);
+
+                lastFail = c.getTime();
+
+                if (numfail >= 5)
+                {
+                    timeoutExpire = c.getTime();
+                }
+            }
+
+            com.gmt2001.Console.out.println("FollowersCache.run>>Failed to update followers: " + e.getMessage());
+        }
+        EventBus.instance().post(new TwitchFollowsInitializedEvent(PhantomBot.instance().getChannel(this.channel)));
         while (true)
         {
             try
@@ -147,15 +177,13 @@ public class FollowersCache implements Runnable
                     /*
                      * if (new Date().after(timeoutExpire) && (Math.abs(newCount
                      * - count) > 30 || firstUpdate || new
-                     * Date().after(nextFull))) { this.updateCache(newCount);
-                     }
+                     * Date().after(nextFull))) { this.updateCache(newCount); }
                      */
 
                     /*
                      * if (firstUpdate) { firstUpdate = false;
                      * EventBus.instance().post(new
-                     * TwitchFollowsInitializedEvent());
-                    }
+                     * TwitchFollowsInitializedEvent(PhantomBot.instance().getChannel(this.channel))); }
                      */
                 }
             } catch (Exception e)
@@ -326,18 +354,18 @@ public class FollowersCache implements Runnable
 
         for (String follower : followers)
         {
-            EventBus.instance().post(new TwitchFollowEvent(follower));
+            EventBus.instance().post(new TwitchFollowEvent(follower, PhantomBot.instance().getChannel(this.channel)));
         }
 
         for (String follower : unfollowers)
         {
-            EventBus.instance().post(new TwitchUnfollowEvent(follower));
+            EventBus.instance().post(new TwitchUnfollowEvent(follower, PhantomBot.instance().getChannel(this.channel)));
         }
 
         if (firstUpdate)
         {
             firstUpdate = false;
-            EventBus.instance().post(new TwitchFollowsInitializedEvent());
+            EventBus.instance().post(new TwitchFollowsInitializedEvent(PhantomBot.instance().getChannel(this.channel)));
         }
     }
 

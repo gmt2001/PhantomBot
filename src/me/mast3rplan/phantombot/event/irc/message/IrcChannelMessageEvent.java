@@ -23,22 +23,13 @@ import me.mast3rplan.phantombot.jerklib.Session;
 public class IrcChannelMessageEvent extends IrcMessageEvent
 {
 
-    private final Channel channel;
-
     public IrcChannelMessageEvent(Session session, String sender, String message, Channel channel)
     {
-        super(session, sender, message);
-        this.channel = channel;
+        super(session, sender, message, null, channel);
     }
 
     public IrcChannelMessageEvent(Session session, String sender, String message, Channel channel, Map<String, String> tags)
     {
-        super(session, sender, message, tags);
-        this.channel = channel;
-    }
-
-    public Channel getChannel()
-    {
-        return channel;
+        super(session, sender, message, tags, channel);
     }
 }

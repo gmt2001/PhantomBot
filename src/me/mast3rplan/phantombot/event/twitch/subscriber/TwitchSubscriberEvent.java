@@ -17,6 +17,7 @@
 package me.mast3rplan.phantombot.event.twitch.subscriber;
 
 import me.mast3rplan.phantombot.event.twitch.TwitchEvent;
+import me.mast3rplan.phantombot.jerklib.Channel;
 
 public abstract class TwitchSubscriberEvent extends TwitchEvent
 {
@@ -33,6 +34,13 @@ public abstract class TwitchSubscriberEvent extends TwitchEvent
 
     protected TwitchSubscriberEvent(String subscriber, Type type)
     {
+        this.subscriber = subscriber;
+        this.type = type;
+    }
+
+    protected TwitchSubscriberEvent(String subscriber, Type type, Channel channel)
+    {
+        super(channel);
         this.subscriber = subscriber;
         this.type = type;
     }

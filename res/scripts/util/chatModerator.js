@@ -59,6 +59,13 @@ function banUserFor (user, time) {
     banUser(user);
 }
 
+function cbanUserFor (user, time, channel) {
+    $.bancache.addUser (user, time, channel);
+    $.bancache.syncToFile ("bannedUsers.bin");
+    
+    banUser(user);
+}
+
 function banUser (user) {
     issueCommand(ircPrefix + "ban " + user);
 }
@@ -66,6 +73,12 @@ function banUser (user) {
 function unbanUser (user) {
     issueCommand(ircPrefix + "unban " + user);
     $.bancache.removeUser (user);
+}
+
+function cunbanUser (user, channel) {
+    issueCommand(ircPrefix + "unban " + user);
+    $.bancache.removeUser (user, channel);
+    $.bancache.syncToFile ("bannedUsers.bin");
 }
  
 function clearChat () {

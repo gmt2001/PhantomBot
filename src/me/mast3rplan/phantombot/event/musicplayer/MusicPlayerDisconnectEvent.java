@@ -16,6 +16,16 @@
  */
 package me.mast3rplan.phantombot.event.musicplayer;
 
+import me.mast3rplan.phantombot.jerklib.Channel;
+
 public class MusicPlayerDisconnectEvent extends MusicPlayerEvent
 {
+    public MusicPlayerDisconnectEvent()
+    {
+    }
+    
+    public MusicPlayerDisconnectEvent(Channel channel)
+    {
+        super(channel);
+    }
 }

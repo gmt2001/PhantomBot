@@ -16,11 +16,18 @@
  */
 package me.mast3rplan.phantombot.event.twitch.host;
 
+import me.mast3rplan.phantombot.jerklib.Channel;
+
 public class TwitchUnhostedEvent extends TwitchHostEvent
 {
 
     public TwitchUnhostedEvent(String hoster)
     {
         super(hoster, Type.UNHOST);
+    }
+    
+    public TwitchUnhostedEvent(String hoster, Channel channel)
+    {
+        super(hoster, Type.UNHOST, channel);
     }
 }

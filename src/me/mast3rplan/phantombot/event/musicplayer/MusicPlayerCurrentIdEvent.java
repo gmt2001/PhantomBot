@@ -16,6 +16,8 @@
  */
 package me.mast3rplan.phantombot.event.musicplayer;
 
+import me.mast3rplan.phantombot.jerklib.Channel;
+
 public class MusicPlayerCurrentIdEvent extends MusicPlayerEvent
 {
 
@@ -23,6 +25,12 @@ public class MusicPlayerCurrentIdEvent extends MusicPlayerEvent
 
     public MusicPlayerCurrentIdEvent(String id)
     {
+        this.id = id;
+    }
+    
+    public MusicPlayerCurrentIdEvent(String id, Channel channel)
+    {
+        super(channel);
         this.id = id;
     }
 

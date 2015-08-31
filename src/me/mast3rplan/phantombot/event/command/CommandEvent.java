@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import me.mast3rplan.phantombot.event.Event;
+import me.mast3rplan.phantombot.jerklib.Channel;
 
 public class CommandEvent extends Event
 {
@@ -30,6 +31,7 @@ public class CommandEvent extends Event
     private final String arguments;
     private String[] args;
     private final Map<String, String> tags;
+    private final Channel channel;
 
     public CommandEvent(String sender, String command, String arguments)
     {
@@ -37,6 +39,7 @@ public class CommandEvent extends Event
         this.command = command;
         this.arguments = arguments;
         this.tags = new HashMap<>();
+        this.channel = null;
         parse();
     }
 
@@ -46,6 +49,17 @@ public class CommandEvent extends Event
         this.command = command;
         this.arguments = arguments;
         this.tags = tags;
+        this.channel = null;
+        parse();
+    }
+
+    public CommandEvent(String sender, String command, String arguments, Map<String, String> tags, Channel channel)
+    {
+        this.sender = sender;
+        this.command = command;
+        this.arguments = arguments;
+        this.tags = tags;
+        this.channel = channel;
         parse();
     }
 
@@ -112,5 +126,10 @@ public class CommandEvent extends Event
     public Map<String, String> getTags()
     {
         return tags;
+    }
+
+    public Channel getChannel()
+    {
+        return channel;
     }
 }

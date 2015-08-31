@@ -16,6 +16,7 @@
  */
 package me.mast3rplan.phantombot.event.musicplayer;
 
+import me.mast3rplan.phantombot.jerklib.Channel;
 import me.mast3rplan.phantombot.musicplayer.MusicPlayerState;
 
 public class MusicPlayerStateEvent extends MusicPlayerEvent
@@ -25,6 +26,12 @@ public class MusicPlayerStateEvent extends MusicPlayerEvent
 
     public MusicPlayerStateEvent(MusicPlayerState state)
     {
+        this.state = state;
+    }
+    
+    public MusicPlayerStateEvent(MusicPlayerState state, Channel channel)
+    {
+        super(channel);
         this.state = state;
     }
 

@@ -17,7 +17,24 @@
 package me.mast3rplan.phantombot.event.musicplayer;
 
 import me.mast3rplan.phantombot.event.Event;
+import me.mast3rplan.phantombot.jerklib.Channel;
 
 public class MusicPlayerEvent extends Event
 {
+    private final Channel channel;
+    
+    protected MusicPlayerEvent()
+    {
+        this.channel = null;
+    }
+    
+    protected MusicPlayerEvent(Channel channel)
+    {
+        this.channel = channel;
+    }
+    
+    public Channel getChannel()
+    {
+        return this.channel;
+    }
 }
