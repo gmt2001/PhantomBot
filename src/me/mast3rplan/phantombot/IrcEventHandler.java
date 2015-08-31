@@ -81,7 +81,7 @@ public class IrcEventHandler implements IRCEventListener
 
                     com.gmt2001.Console.out.println(">>End of Tags");
                 }
-
+                
                 if (cmessageTags.containsKey("subscriber"))
                 {
                     if (cmessageTags.get("subscriber").equalsIgnoreCase("1"))

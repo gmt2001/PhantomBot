@@ -1,13 +1,24 @@
 $.noticeinterval = parseInt($.inidb.get('notice', 'interval'));
 $.noticemessages = parseInt($.inidb.get('notice', 'reqmessages'));
+$.notices_toggle = $.inidb.get('notice', 'notices_toggle');
 
 if ($.noticeinterval == undefined || $.noticeinterval == null || isNaN($.noticeinterval) || $.noticeinterval < 2) {
     $.noticeinterval = 10;
 }
 
-if ($.noticemessages == undefined || $.noticemessages == null || isNaN($.noticemessages) || $.noticemessages < 5) {
+if ($.noticemessages == undefined || $.noticemessages == null || isNaN($.noticemessages)) {
     $.noticemessages = 25;
 }
+
+if ($.notices_toggle == undefined || $.notices_toggle == null) {
+    $.notices_toggle = true;
+}
+
+$.messageCount = 0;
+
+$.on('ircChannelMessage', function (event) {
+    $.messageCount++;
+});
 
 
 $.on('command', function (event) {
@@ -132,7 +143,7 @@ $.on('command', function (event) {
                 if (args.length < 2) {
                     $.say("The current amount is " + $.noticemessages + " messages. Set it with !notice req <amount> (Minimum is 5 messages)")
                 } else {
-                    if (!isNaN(message) && parseInt(message) >= 5) {
+                    if (!isNaN(message) && parseInt(message) >= 0) {
                         $.inidb.set('notice', 'reqmessages', message);
                         $.noticemessages = parseInt(message);
 
@@ -212,12 +223,8 @@ setTimeout(function(){
     }
 },10*1000);
 
-var messageCount = 0
-var messageTime = 0
-var messageIndex = 0
-if ($.notices_toggle == undefined || $.notices_toggle == null) {
-    $.notices_toggle = true;
-}
+$.messageTime = 0;
+$.messageIndex = 0;
 
 function sendMessage() {
 
@@ -227,34 +234,38 @@ function sendMessage() {
         return;
     }
 	
-    if ($.inidb.get('notices', 'message_' + messageIndex) ==  null || $.inidb.get('notices', 'message_' + messageIndex) ==  " ") {
+    if ($.inidb.get('notices', 'message_' + $.messageIndex) ==  null || $.inidb.get('notices', 'message_' + $.messageIndex) ==  " ") {
         return;
     }
 
-    var message = $.inidb.get('notices', 'message_' + messageIndex);
+    var message = $.inidb.get('notices', 'message_' + $.messageIndex);
 
-    messageIndex++;
+    $.messageIndex++;
 
-    if (messageIndex >= num_messages) {
-        messageIndex = 0;
+    if ($.messageIndex >= num_messages) {
+        $.messageIndex = 0;
     }
     $.say(message);
 }
 
-$.on('ircChannelMessage', function (event) {
-    messageCount++;
-});
 
 $.timer.addTimer("./handlers/noticeHandler.js", "notices", true, function() {
-    if (!$.moduleEnabled("./handlers/noticeHandler.js") || ($.notices_toggle != undefined && $.notices_toggle != null && !$.notices_toggle)) {
+    if (!$.moduleEnabled("./handlers/noticeHandler.js")) {
         return;
     }
+        
+    if (($.messageTime + ($.noticeinterval * 60 * 1000)) < System.currentTimeMillis()) {
+        if(($.messageCount >= $.noticemessages)) {
 
-    if (messageCount >= $.noticemessages && messageTime + ($.noticeinterval * 60 * 1000) < System.currentTimeMillis()) {
-        messageCount = 0;
+            if($.notices_toggle==true) {
+                sendMessage();
+                $.messageCount = 0;
+            }
 
-        sendMessage();
+            $.messageTime = System.currentTimeMillis();
+            
 
-        messageTime = System.currentTimeMillis();
+        }
+        
     }
 }, 10000);
