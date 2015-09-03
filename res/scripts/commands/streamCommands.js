@@ -71,6 +71,11 @@ $.getViewers = function(channel) {
     }
 }
 
+$.getFollows = function(channel) {
+    var channelData = $.twitch.GetChannel(channel);
+    
+    return channelData.getInt("followers").toString();
+}
 $.on('command', function(event) {
     var sender = event.getSender();
     var username = $.username.resolve(sender);
@@ -85,6 +90,12 @@ $.on('command', function(event) {
         }
         else {
             $.say("Stream is online!");
+        }
+    }
+    
+    if (command.equalsIgnoreCase("follows")) {
+        if (!$.getFollows($.channelName)!=null) {
+            $.say($.getFollows($.channelName));
         }
     }
 	
@@ -291,6 +302,8 @@ $.registerChatCommand("./commands/streamCommands.js", "title", "caster");
 $.registerChatCommand("./commands/streamCommands.js", "commercial", "caster");
 $.registerChatCommand("./commands/streamCommands.js", "commercial help", "caster");
 $.registerChatCommand("./commands/streamCommands.js", "viewers");
+$.registerChatCommand("./commands/streamCommands.js", "follows");
+
 }
 },10*1000);
 

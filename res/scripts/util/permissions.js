@@ -281,9 +281,9 @@ $.on('command', function (event) {
                     $.say($.lang.get("net.phantombot.permissions.group-not-exists"));
                 }
                 else {
-                    if ((parseInt($.getUserGroupId(sender)) < $.parseInt($.getUserGroupId($.username.resolve(args[1])))))
+                    if ((parseInt($.getUserGroupId(sender)) < $.parseInt($.getUserGroupId($.username.resolve(args[1])))) || sender.equalsIgnoreCase(args[1]))
                     {
-                        if ((parseInt($.getUserGroupId(sender)) < parseInt($.getGroupIdByName(name))))
+                        if ((parseInt($.getUserGroupId(sender)) < parseInt($.getGroupIdByName(name))) || sender.equalsIgnoreCase(args[1]))
                         {
                             $.setUserGroupByName(args[1], name);
                             $.say($.lang.get("net.phantombot.permissions.group-set", $.username.resolve(args[1]), $.getUserGroupName($.username.resolve(args[1]))));

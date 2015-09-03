@@ -328,6 +328,7 @@ $.hook.call = function (hook, arg, alwaysrun) {
 
 
 $.permCom = function (user, command) {
+    command = command.toLowerCase();
     var keys = $.inidb.GetKeyList("permcom", "");
     var permGroupName = "";
     var userGroup = $.getUserGroupName(user.toLowerCase());
