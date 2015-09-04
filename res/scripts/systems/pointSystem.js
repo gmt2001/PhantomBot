@@ -369,7 +369,9 @@ if (command.equalsIgnoreCase("makeitrain")) {
                     }
                     $.say(sender+ " offered " + args[0] + " " + $.pointname + " to be split into " + reward.toFixed(0) + " " + $.pointname + " for everyone!");
 					$.inidb.decr('points', sender, reward.toFixed(0));
-                }
+                } else if (args[0] > $.inidb.get('points', sender)) {
+                        $.say($.username.resolve(sender, event.getTags()) + " , you don't have that many " + $.pointname + " to make it rain, " + $.username.resolve(username) + "!");
+                        return;  
 }
     if (command.equalsIgnoreCase("gift") || command.equalsIgnoreCase("transfer")) {
         username = args[0].toLowerCase();
