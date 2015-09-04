@@ -352,7 +352,7 @@ $.on('command', function (event) {
     }
 		if (command.equalsIgnoreCase("makeitrain")) {
 				if (args[0] > $.inidb.get('points', sender)) {
-                        $.say($.username.resolve(sender, event.getTags()) + " , you don't have that many " + $.pointname + " to make it rain, " + $.username.resolve(username) + "!");
+                        $.say($.username.resolve(sender, event.getTags()) + " , you don't have that many " + $.pointname + " to make it rain!");
                         return; 
 				}
 			
