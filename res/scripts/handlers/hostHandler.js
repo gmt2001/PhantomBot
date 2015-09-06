@@ -15,10 +15,15 @@ if ($.hostreward == null || $.hostreward == undefined) {
     $.hostreward = 0;
 }
 
-
-
 $.on('twitchHosted', function(event) {
     var username = $.username.resolve(event.getHoster());
+    var group = $.inidb.get('group', username.toLowerCase());
+    
+    if (group == null) {
+    	group = 'Viewer';
+    }
+    
+    var temphostgroup = $.inidb.get('temphostgroup', username.toLowerCase());
     
     if ($.announceHosts && $.moduleEnabled("./handlers/hostHandler.js")
         && ($.hostlist[event.getHoster()] == null || $.hostlist[event.getHoster()] == undefined
@@ -37,8 +42,8 @@ $.on('twitchHosted', function(event) {
         while (s.indexOf('(name)') != -1) {
             s = s.replace('(name)', username);
         }
-        $.inidb.set("temphostgroup", username.toLowerCase(), $.inidb.get("group",username.toLowerCase()));
-        $.inidb.set("group", username.toLowerCase(), 5);
+        $.inidb.set('temphostgroup', username.toLowerCase(), group);
+        $.inidb.set('group', username.toLowerCase(), 5);
         $.say(s);
     }
     
@@ -55,7 +60,7 @@ $.on('twitchUnhosted', function(event) {
     for (var i = 0; i < $.hostlist.length; i++) {
         if ($.hostlist[i].equalsIgnoreCase(username)) {
             $.hostlist.splice(i, 1);
-            $.inidb.set("group", username.toLowerCase(), $.inidb.get("temphostgroup", username.toLowerCase()));
+            $.inidb.set('group', username.toLowerCase(), 7);
             break;
         }
     }
