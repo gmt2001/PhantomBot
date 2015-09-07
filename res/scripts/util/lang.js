@@ -30,6 +30,9 @@ $.lang.load();
 
 $.lang.get = function(str_name) {
     if ($.lang.data[str_name] == undefined || $.lang.data[str_name] == null) {
+        $.logError("./util/lang.js", 33, "Lang string missing: " + str_name);
+        Packages.com.gmt2001.Console.err.println("[lang.js] Lang string missing: " + str_name);
+        
         if (str_name.equalsIgnoreCase("net.phantombot.lang.not-exists")) {
             return "!!! Missing string in lang file !!!";
         } else {
