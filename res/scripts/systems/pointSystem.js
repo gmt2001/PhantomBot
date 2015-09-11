@@ -646,6 +646,7 @@ setTimeout(function(){
     if ($.moduleEnabled('./systems/pointSystem.js')) {
         $.registerChatCommand("./systems/pointSystem.js", "points");
 	$.registerChatCommand("./systems/pointSystem.js", "makeitrain");
+	$.registerChatCommand("./systems/pointSystem.js", "whisperpoints", "mod");
     }
 },10*1000);
 
