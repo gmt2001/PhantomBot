@@ -615,14 +615,16 @@ $.on('ircChannelLeave', function (event) {
             $.modeOUsers.splice(i, 1);
             if ($.inidb.exists("subscribed", username) && $.isSub(username) == false) {
                 $.inidb.del("subscribed", username);
-                if ($.inidb.exists("tempsubgroup", username) && $.isAdmin(username) == false) {
+                if ($.inidb.exists("tempsubgroup", username) && $.isAdmin(username) == false && $.isBot(username)==false) {
                     $.inidb.set("group", username, $.inidb.get("tempsubgroup", username));
                 }
-                if ($.inidb.exists("group", username) == false && $.isAdmin(username) == false) {
-                    $.inidb.set("group", username, 7);
+                if ($.inidb.exists("group", username) == false && $.isAdmin(username) == false && $.isBot(username)==false) {
+                        $.inidb.set("group", username, 7);
                 }
             }
-            println("-Moderator: " + username);
+            if($.isAdmin(username) == false && $.isBot(username)==false) {
+                println("-Moderator: " + username);
+            }
         }
     }
 });
@@ -653,15 +655,16 @@ $.on('ircChannelUserMode', function (event) {
 
                     if ($.inidb.exists("subscribed", username) && $.isSub(username) == false) {
                         $.inidb.del("subscribed", username);
-                        if ($.inidb.exists("tempsubgroup", username) && $.isAdmin(username) == false) {
+                        if ($.inidb.exists("tempsubgroup", username) && $.isAdmin(username) == false && $.isBot(username)==false) {
                             $.inidb.set("group", username, $.inidb.get("tempsubgroup", username));
                         }
-                        if ($.inidb.exists("group", username) == false && $.isAdmin(username) == false) {
+                        if ($.inidb.exists("group", username) == false && $.isAdmin(username) == false && $.isBot(username)==false ) {
                             $.inidb.set("group", username, 7);
                         }
                     }
-
-                    println("-Moderator: " + event.getUser().toLowerCase());
+                    if($.isAdmin(username) == false && $.isBot(username)==false) {
+                        println("-Moderator: " + username);
+                    }
                 }
             }
         }
