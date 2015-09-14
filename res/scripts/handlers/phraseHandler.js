@@ -32,6 +32,7 @@ $.on('command', function (event) {
     var sender = event.getSender();
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
+	var argsString2 = argsString.substring(argsString.indexOf(" ") + 1, argsString.length());
     var args = event.getArgs();
     var triggerphrase = "";
     var response = "";
@@ -61,7 +62,7 @@ $.on('command', function (event) {
         triggerphrase = new String(triggerphrase);
         triggerphrase = triggerphrase.replace(/[^a-zA-Z0-9\s]+/g,'');
         
-        response = args[1];
+        response = argsString2;
          
         $.inidb.set('phrases', triggerphrase, response);
 	if (whispermode == "true") {
