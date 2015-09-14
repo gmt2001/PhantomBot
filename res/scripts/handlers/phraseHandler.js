@@ -39,18 +39,18 @@ $.on('command', function (event) {
 	
 	if (command.equalsIgnoreCase("whisperphrases") && $.isModv3(sender, event.getTags())) {
 				
-				if (whispermode != "true") {
-				$.inidb.set("settings", "whisper_phrases", "true");
-				whispermode = "true";
-				$.say("[Whisper Mode] has been activated for the Phrase Trigger!");			
-				return;	
-				} else if (whispermode == "true"){
-				$.inidb.set("settings", "whisper_phrases", "false");
-				whispermode = "false";
-				$.say("[Whisper Mode] has been deactivated for the Phrase Trigger!");		
-				}
+	if (whispermode != "true") {
+		$.inidb.set("settings", "whisper_phrases", "true");
+			whispermode = "true";
+		$.say("[Whisper Mode] has been activated for the Phrase Trigger!");			
+			return;	
+		} else if (whispermode == "true"){
+			$.inidb.set("settings", "whisper_phrases", "false");
+			whispermode = "false";
+		$.say("[Whisper Mode] has been deactivated for the Phrase Trigger!");		
+		}
 
-				}
+		}
 	
     if (command.equalsIgnoreCase("addphrase")) {
         if (!$.isModv3(sender, event.getTags())) {
