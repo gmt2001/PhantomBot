@@ -1,4 +1,5 @@
  var arrSlotLimiter = new Array();
+ var whispermode = $.inidb.get("settings", "whisper_slot");
 $var.lastSlotWin = "";
 $var.lastSlotLoss = "";
 
@@ -127,6 +128,9 @@ if ($.slotHalfRewards === "" || $.slotHalfRewards === null) {
     $.slotHalfRewards = 1;
 }
 
+if (whispermode === "" || whispermode === null) {
+    whispermode  = "false";
+}
 $.on('command', function (event) {
     var sender = event.getSender().toLowerCase();
     var username = $.username.resolve(sender);
@@ -137,6 +141,23 @@ $.on('command', function (event) {
     var s;
     var action = args[0];
 
+    if (command.equalsIgnoreCase("whisperslot")) {
+      if (!$.isMod(sender)) {
+          $.say($.modmsg);
+          return;
+      }
+      if (whispermode === "false") {
+       whispermode ="true";
+       $.inidb.set("settings", "whisper_slot", "true");
+       $.say("[Whisper Mode] has been activated for the Slot Machine!");
+      } else if (whispermode === "true") {
+       whispermode ="false";
+       $.inidb.set("settings", "whisper_slot", "false");
+       $.say("[Whisper Mode] has been deactivated for the Slot Machine!");
+      }
+      
+    }
+    
     if (command.equalsIgnoreCase("slot") && argsString.isEmpty()) {
 
         var found = false;
@@ -151,7 +172,11 @@ $.on('command', function (event) {
                         arrSlotLimiter[i][1] = System.currentTimeMillis() + ($.slotTimer * 1000);
                         break;
                     } else if (slotCMessages == 1){
+                     if (whispermode === "true") {
+                       $.say("/w " + username + " You can only use !slot once every " + $.slotTimer + " seconds!");
+                     } else {
                         $.say(username + ", you can only use !slot once every " + $.slotTimer + " seconds!");
+                     }
                         return;
                     } else {
                         return;
@@ -240,9 +265,9 @@ $.on('command', function (event) {
             lost.push("Better luck next time!");
             lost.push("I understand, slot machines are hard for you.");
             lost.push("Dreamin', don't give it up " + sender );
-            lost.push("This is sad.");
+            lost.push("You have ignited a nuclear war! And no, there is no animated display of a mushroom cloud with parts of bodies flying through the air. We do not reward failure.");
             lost.push("Can you like.. win? please?");
-            lost.push("You're not doing too good.");
+            lost.push("Game Over.");
             lost.push("Don't looooose your waaaaaaay!");
             lost.push("You just weren't good enough.");
             lost.push("Will " + username + " finally win? Find out on the next episode of DragonBall Z!");
@@ -250,11 +275,11 @@ $.on('command', function (event) {
             lost.push("Perhaps if you trained in the mountains in solitude, you could learn the art to winning.");
             lost.push("Believe in the heart of the cards!");
             lost.push("Believe in me who believes in you!");
-            lost.push("This reeks of loss.");
+            lost.push("404 Win Not Found.");
             lost.push("The gods have forsaken you!");
             lost.push("To win you must gain sight beyond sight!");
             lost.push("You're great at losing! Don't let anyone tell you otherwise.");
-            lost.push("So tell me, what’s it like living in a constant haze of losses?");
+            lost.push("So tell me, what?s it like living in a constant haze of losses?");
 
             var win = new Array(0); //Add win messages
             win.push("Congratulations!");
@@ -368,8 +393,12 @@ $.on('command', function (event) {
                 do {
                     s = $.randElement(lost);
                 } while (s.equalsIgnoreCase($var.lastRandomLost) && lost.length > 1);
-
-                $.say(symbol1  + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + " " + s);
+                     if (whispermode === "true") {
+                       $.say("/w " + username + " " + symbol1  + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + " " + s);
+                     } else {
+                        $.say(symbol1  + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + " " + s);
+                     }
+                
             }
         }
     }
@@ -627,3 +656,4 @@ $.on('command', function (event) {
 });
 
 $.registerChatCommand("./commands/slotCommand.js", "slot");
+$.registerChatCommand("./commands/slotCommand.js", "whisperslot", "mod");
