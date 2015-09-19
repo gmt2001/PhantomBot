@@ -93,8 +93,7 @@ $.on('command', function(event) {
     var points_user = sender;
     var args;
     var points;
-    $.whisper = "/w " + sender + " ";
-    $.whisper2 = "/w " + args[0] + " ";
+
     
     points = $.inidb.get('points', points_user);
 
@@ -103,7 +102,10 @@ $.on('command', function(event) {
     } else {
         args = argsString.split(" ");
     }
-
+	
+    $.whisper = "/w " + sender + " ";
+    $.whisper2 = "/w " + args[0] + " ";
+	
     if (command.equalsIgnoreCase("whisperpoints")) {
         if (!$.isModv3(sender, event.getTags())) {
             $.say($.modmsg);
@@ -604,7 +606,7 @@ $.on('command', function(event) {
                     $.inidb.incr('points', username.toLowerCase(), parseInt(args[1]));
                     if (whispermode == "true") {
                         $.say($.whisper + " You transferred " + args[1] + " " + $.pointname + " to " + $.username.resolve(args[0]) + " who now has: " + $.inidb.get('points', $.username.resolve(args[0]).toLowerCase()) + " " + $.pointname + ". " + $.username.resolve(sender) + ", you're left with: " + $.inidb.get('points', sender.toLowerCase()) + " " + $.pointname + ".");
-                        $.say($.whisper2 + $.username.resolve(sender) + " has transfered " + args[1] + " " + $.pointname + " to you. Your new balance is now:" + $.inidb.get('points', $.username.resolve(args[0]).toLowerCase()) + " " + $.pointname + ".");
+                        $.say($.whisper2 + $.username.resolve(sender) + " has transferred " + args[1] + " " + $.pointname + " to you. Your new balance is now: " + $.inidb.get('points', $.username.resolve(args[0]).toLowerCase()) + " " + $.pointname + ".");
                     } else {
                         $.say("Transferred " + args[1] + " " + $.pointname + " to " + $.username.resolve(args[0]) + " who now has: " + $.inidb.get('points', $.username.resolve(args[0]).toLowerCase()) + " " + $.pointname + ". " + $.username.resolve(sender) + ", you're left with: " + $.inidb.get('points', sender.toLowerCase()) + " " + $.pointname + ".");
                     }
