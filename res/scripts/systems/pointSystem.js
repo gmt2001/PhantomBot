@@ -94,7 +94,8 @@ $.on('command', function(event) {
     var args;
     var points;
     $.whisper = "/w " + sender + " ";
-
+    $.whisper2 = "/w " + args[0] + " ";
+    
     points = $.inidb.get('points', points_user);
 
     if (argsString.isEmpty()) {
@@ -199,6 +200,7 @@ $.on('command', function(event) {
                         $.inidb.decr('points', username.toLowerCase(), points);
                         if (whispermode == "true") {
                             $.say($.whisper + points + " " + $.pointname + " was withdrawn from " + $.username.resolve(username) + ". New balance is: " + $.inidb.get('points', username.toLowerCase()) + " " + $.pointname + ".");
+                            $.say($.whisper2 + points + " " + $.pointname + " was withdrawn from your wallet by " + $.username.resolve(sender) + ". Your new balance is: " + $.inidb.get('points', username.toLowerCase()) + " " + $.pointname + ".");
                         } else {
                             $.say(points + " " + $.pointname + " was withdrawn from " + $.username.resolve(username) + ". New balance is: " + $.inidb.get('points', username.toLowerCase()) + " " + $.pointname + ".");
 
@@ -243,8 +245,9 @@ $.on('command', function(event) {
                         $.inidb.set('points', username.toLowerCase(), points);
                         if (whispermode == "true") {
                             $.say($.whisper + $.username.resolve(username) + "'s " + $.pointname + " were set to " + points + " " + $.pointname + ". New balance is: " + $.inidb.get('points', username.toLowerCase()) + " " + $.pointname + ".");
+                            $.say($.whisper + $.username.resolve(username) + ", your " + $.pointname + " was set to " + points + " " + $.pointname + " by " + $.username.resolve(sender) + ". Your new balance is: " + $.inidb.get('points', username.toLowerCase()) + " " + $.pointname + ".");
                         } else {
-                            $.say($.username.resolve(username) + "'s " + $.pointname + " were set to " + points + " " + $.pointname + ". New balance is: " + $.inidb.get('points', username.toLowerCase()) + " " + $.pointname + ".");
+                            $.say($.username.resolve(username) + "'s " + $.pointname + " was set to " + points + " " + $.pointname + ". New balance is: " + $.inidb.get('points', username.toLowerCase()) + " " + $.pointname + ".");
 
                         }
                     } else {
@@ -467,9 +470,9 @@ $.on('command', function(event) {
                 $.inidb.RemoveFile("points");
                 $.inidb.ReloadFile("points");
                 if (whispermode == "true") {
-                    $.say($.whisper + ", all " + $.pointname + " were reset to 0!");
+                    $.say($.whisper + ", all account's " + $.pointname + " has been reset.");
                 } else {
-                    $.say(username + ", all " + $.pointname + " were reset to 0!");
+                    $.say(username + ", all account's " + $.pointname + " has been reset.");
 
                 }
 
@@ -485,9 +488,9 @@ $.on('command', function(event) {
                     $var.perm_toggle = true;
                     $.inidb.set('settings', 'perm_toggle', 1);
                     if (whispermode == "true") {
-                        $.say($.whisper + "From now on Mods will be able to use privileged point commands!");
+                        $.say($.whisper + "From now on Mods will be able to use privileged point commands.");
                     } else {
-                        $.say("From now on Mods will be able to use privileged point commands!");
+                        $.say("From now on Mods will be able to use privileged point commands.");
 
                     }
 
@@ -496,9 +499,9 @@ $.on('command', function(event) {
                     $var.perm_toggle = false;
                     $.inidb.set('settings', 'perm_toggle', 2);
                     if (whispermode == "true") {
-                        $.say($.whisper + "From now on only Admins will be able to use privileged point commands!");
+                        $.say($.whisper + "From now on only Admins will be able to use privileged point commands.");
                     } else {
-                        $.say("From now on only Admins will be able to use privileged point commands!");
+                        $.say("From now on only Admins will be able to use privileged point commands.");
 
                     }
                 }
@@ -601,6 +604,7 @@ $.on('command', function(event) {
                     $.inidb.incr('points', username.toLowerCase(), parseInt(args[1]));
                     if (whispermode == "true") {
                         $.say($.whisper + " You transferred " + args[1] + " " + $.pointname + " to " + $.username.resolve(args[0]) + " who now has: " + $.inidb.get('points', $.username.resolve(args[0]).toLowerCase()) + " " + $.pointname + ". " + $.username.resolve(sender) + ", you're left with: " + $.inidb.get('points', sender.toLowerCase()) + " " + $.pointname + ".");
+                        $.say($.whisper2 + $.username.resolve(sender) + " has transfered " + args[1] + " " + $.pointname + " to you. Your new balance is now:" + $.inidb.get('points', $.username.resolve(args[0]).toLowerCase()) + " " + $.pointname + ".");
                     } else {
                         $.say("Transferred " + args[1] + " " + $.pointname + " to " + $.username.resolve(args[0]) + " who now has: " + $.inidb.get('points', $.username.resolve(args[0]).toLowerCase()) + " " + $.pointname + ". " + $.username.resolve(sender) + ", you're left with: " + $.inidb.get('points', sender.toLowerCase()) + " " + $.pointname + ".");
                     }
