@@ -167,6 +167,10 @@ $.on('command', function(event) {
                 $.say(">>" + m);
             }
         }
+        
+        if ($.hostlist.length == 0) {
+        	$.say("This channel is currently being hosted by nobody.");
+        }
     }
 	
 });
