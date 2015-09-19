@@ -38,40 +38,53 @@ if (whispermode == undefined || whispermode == null) {
     whispermode = "false";
 }
 
-$.getPoints = function (user) {
+if (whispermode == "true") {
+    $.modmsg = $.whisper + $.modmsg;
+    $.adminmsg = $.whisper + $.adminmsg;
+}
+
+$.getPoints = function(user) {
     var points = $.inidb.get('points', user.toLowerCase());
     var time = $.inidb.get('time', user.toLowerCase());
+    var args;
 
     if (points == null) points = 0;
     if (time == null) time = 0;
 
     var minutes = parseInt((time / 60) % 60);
     var hours = parseInt(time / 3600);
-
-    var timeString = " -- ";
-    if (hours>0)
-    {
-        timeString+=hours.toString();
-        timeString+=" Hrs ";
+    if (hours === 0) {
+        var timeString = " ";
+    } else {
+        var timeString = " -- ";
     }
-    if (minutes>0)
-    {
-        timeString+=minutes.toString();
-        timeString+=" Min"
+
+    if (hours > 0) {
+        timeString += hours.toString();
+        if (hours > 1) {
+            timeString += " Hrs ";
+        } else {
+            timeString += " Hr ";
+        }
+
+    }
+    if (minutes > 0) {
+        timeString += minutes.toString();
+        timeString += " Min"
     }
     if ($.inidb.get('settings', 'timetoggle') == "false") {
         timeString = "";
     }
     if (whispermode == "true") {
-       $.say("/w " + $.username.resolve(user) + " has " + points + " " + $.pointname + timeString);		
+        $.say($.whisper + $.username.resolve(user) + " has " + points + " " + $.pointname + timeString);
     } else {
-        $.say($.username.resolve(user) + " has " + points + " " + $.pointname + timeString);	
+        $.say($.username.resolve(user) + " has " + points + " " + $.pointname + timeString);
     }
 
 }
 
 
-$.on('command', function (event) {
+$.on('command', function(event) {
     var sender = event.getSender().toLowerCase();
     var username = $.username.resolve(sender, event.getTags());
     var command = event.getCommand();
@@ -80,34 +93,35 @@ $.on('command', function (event) {
     var points_user = sender;
     var args;
     var points;
-    
+    $.whisper = "/w " + sender + " ";
+
     points = $.inidb.get('points', points_user);
-	
+
     if (argsString.isEmpty()) {
         args = [];
     } else {
         args = argsString.split(" ");
     }
 
-		if (command.equalsIgnoreCase("whisperpoints")) {
-			if (!$.isModv3(sender, event.getTags())) {
-                        $.say($.modmsg);
-                        return;
-                    }
-			if (whispermode == "false") {
-			$.inidb.set("settings", "whisper_points", "true");
-			whispermode = "true";
-			$.say("[Whisper Mode] for Points System has been Activated!");
-			} else if (whispermode == "true") {
-			$.inidb.set("settings", "whisper_points", "false");
-			whispermode = "false";
-			$.say("[Whisper Mode] for Points System has been Deactivated!");
-			}
-		}
-		
+    if (command.equalsIgnoreCase("whisperpoints")) {
+        if (!$.isModv3(sender, event.getTags())) {
+            $.say($.modmsg);
+            return;
+        }
+        if (whispermode == "false") {
+            $.inidb.set("settings", "whisper_points", "true");
+            whispermode = "true";
+            $.say("[Whisper Mode] for Points System has been activated.");
+        } else if (whispermode == "true") {
+            $.inidb.set("settings", "whisper_points", "false");
+            whispermode = "false";
+            $.say("[Whisper Mode] for Points System has been deactivated.");
+        }
+    }
+
     if (command.equalsIgnoreCase("points") || command.equalsIgnoreCase($.pointname)) {
-		
-        if (args.length >=1) {
+
+        if (args.length >= 1) {
             var action = args[0];
 
 
@@ -130,29 +144,29 @@ $.on('command', function (event) {
                         return;
                     }
                 }
-            
+
                 username = args[1].toLowerCase();
                 points = parseInt(args[2]);
-            
-                if (points < 0){
-          	if (whispermode == "true") {
-		       $.say("/w " + $.username.resolve(sender, event.getTags()) + ", you can't send a negative amount.");		
-    		} else {
-                    $.say($.username.resolve(sender, event.getTags()) + ", you can't send a negative amount.");
-             
-    		}
-    		       return;
+
+                if (points < 0) {
+                    if (whispermode == "true") {
+                        $.say($.whisper + ", you can't send a negative amount.");
+                    } else {
+                        $.say($.username.resolve(sender, event.getTags()) + ", you can't send a negative amount.");
+
+                    }
+                    return;
                 } else {
                     if ($.inidb.get("visited", username.toLowerCase()) == "visited") {
                         $.inidb.incr('points', username.toLowerCase(), points);
                         $.say(points + " " + $.pointname + " was sent to " + $.username.resolve(username) + ". New balance is: " + $.inidb.get('points', username.toLowerCase()) + " " + $.pointname + ".");
                     } else {
-          	if (whispermode == "true") {
-		       $.say("/w " + $.username.resolve(sender, event.getTags()) + "This person has never visited this channel, thus doesn't have an account.");		
-    		} else {
-                $.say("This person has never visited this channel, thus doesn't have an account.");
-             
-    		}
+                        if (whispermode == "true") {
+                            $.say($.whisper + "This person has never visited this channel, thus doesn't have an account.");
+                        } else {
+                            $.say("This person has never visited this channel, thus doesn't have an account.");
+
+                        }
                         return;
                     }
                 }
@@ -168,34 +182,34 @@ $.on('command', function (event) {
                         return;
                     }
                 }
-            
+
                 username = args[1].toLowerCase();
                 points = parseInt(args[2]);
-            
+
                 if (points > $.inidb.get('points', username.toLowerCase())) {
-				if (whispermode == "true") {
-					$.say("/w " + $.username.resolve(sender, event.getTags()) + ", why are you trying to take more than what " + $.username.resolve(username) + " has in " + $.pointname + "?");		
-				} else {
-					$.say($.username.resolve(sender, event.getTags()) + ", why are you trying to take more than what " + $.username.resolve(username) + " has in " + $.pointname + "?");
-             
-				}
-					return;
-                } else {
-                    if ($.inidb.get("visited", username.toLowerCase()) == "visited")  {
-                        $.inidb.decr('points', username.toLowerCase(), points);
-				if (whispermode == "true") {
-					$.say("/w " + $.username.resolve(sender, event.getTags()) + points + " " + $.pointname + " was withdrawn from " + $.username.resolve(username) + ". New balance is: " + $.inidb.get('points', username.toLowerCase()) + " " + $.pointname + ".");
-				} else {
-					$.say(points + " " + $.pointname + " was withdrawn from " + $.username.resolve(username) + ". New balance is: " + $.inidb.get('points', username.toLowerCase()) + " " + $.pointname + ".");
-             
-				}
+                    if (whispermode == "true") {
+                        $.say($.whisper + ", why are you trying to take more than what " + $.username.resolve(username) + " has in " + $.pointname + "?");
                     } else {
-				if (whispermode == "true") {
-					$.say("/w " + $.username.resolve(sender, event.getTags()) + "This person has never visited this channel, thus doesn't have an account.");
-				} else {
-					$.say("This person has never visited this channel, thus doesn't have an account.");
-       
-				}
+                        $.say($.username.resolve(sender, event.getTags()) + ", why are you trying to take more than what " + $.username.resolve(username) + " has in " + $.pointname + "?");
+
+                    }
+                    return;
+                } else {
+                    if ($.inidb.get("visited", username.toLowerCase()) == "visited") {
+                        $.inidb.decr('points', username.toLowerCase(), points);
+                        if (whispermode == "true") {
+                            $.say($.whisper + points + " " + $.pointname + " was withdrawn from " + $.username.resolve(username) + ". New balance is: " + $.inidb.get('points', username.toLowerCase()) + " " + $.pointname + ".");
+                        } else {
+                            $.say(points + " " + $.pointname + " was withdrawn from " + $.username.resolve(username) + ". New balance is: " + $.inidb.get('points', username.toLowerCase()) + " " + $.pointname + ".");
+
+                        }
+                    } else {
+                        if (whispermode == "true") {
+                            $.say($.whisper + "This person has never visited this channel, thus doesn't have an account.");
+                        } else {
+                            $.say("This person has never visited this channel, thus doesn't have an account.");
+
+                        }
                         return;
                     }
                 }
@@ -212,34 +226,34 @@ $.on('command', function (event) {
                         return;
                     }
                 }
-            
+
                 username = args[1].toLowerCase();
                 points = parseInt(args[2]);
-            
+
                 if (points < 0) {
-				if (whispermode == "true") {
-					$.say("/w " + $.username.resolve(sender, event.getTags()) + ", you know very well you can't set someone's " + $.pointname + " to a negative number.");
-				} else {
-					$.say($.username.resolve(sender, event.getTags()) + ", you know very well you can't set someone's " + $.pointname + " to a negative number.");
-       
-				}
-                    
-                } else {
-                    if ($.inidb.get("visited", username.toLowerCase()) == "visited")  {
-                        $.inidb.set('points', username.toLowerCase(), points);
-				if (whispermode == "true") {
-					$.say("/w " + $.username.resolve(sender, event.getTags()) + $.username.resolve(username) + "'s " + $.pointname + " were set to " + points + " " + $.pointname + ". New balance is: " + $.inidb.get('points', username.toLowerCase()) + " " + $.pointname + ".");
-				} else {
-					$.say($.username.resolve(username) + "'s " + $.pointname + " were set to " + points + " " + $.pointname + ". New balance is: " + $.inidb.get('points', username.toLowerCase()) + " " + $.pointname + ".");
-       
-				}
+                    if (whispermode == "true") {
+                        $.say($.whisper + ", you know very well you can't set someone's " + $.pointname + " to a negative number.");
                     } else {
-				if (whispermode == "true") {
-					$.say("/w " + $.username.resolve(sender, event.getTags()) + "This person has never visited this channel, thus doesn't have an account.");
-				} else {
-					$.say("This person has never visited this channel, thus doesn't have an account.");
-       
-				}
+                        $.say($.username.resolve(sender, event.getTags()) + ", you know very well you can't set someone's " + $.pointname + " to a negative number.");
+
+                    }
+
+                } else {
+                    if ($.inidb.get("visited", username.toLowerCase()) == "visited") {
+                        $.inidb.set('points', username.toLowerCase(), points);
+                        if (whispermode == "true") {
+                            $.say($.whisper + $.username.resolve(username) + "'s " + $.pointname + " were set to " + points + " " + $.pointname + ". New balance is: " + $.inidb.get('points', username.toLowerCase()) + " " + $.pointname + ".");
+                        } else {
+                            $.say($.username.resolve(username) + "'s " + $.pointname + " were set to " + points + " " + $.pointname + ". New balance is: " + $.inidb.get('points', username.toLowerCase()) + " " + $.pointname + ".");
+
+                        }
+                    } else {
+                        if (whispermode == "true") {
+                            $.say($.whisper + "This person has never visited this channel, thus doesn't have an account.");
+                        } else {
+                            $.say("This person has never visited this channel, thus doesn't have an account.");
+
+                        }
                         return;
                     }
                 }
@@ -250,24 +264,24 @@ $.on('command', function (event) {
                 }
 
                 if (args[1] < 0) {
-				if (whispermode == "true") {
-					$.say("/w " + $.username.resolve(sender, event.getTags()) + "That'll cause people to lose " + $.pointname + ". Don't use negatives!");
-				} else {
-					$.say("That'll cause people to lose " + $.pointname + ". Don't use negatives!");
-       
-				}
-                 
+                    if (whispermode == "true") {
+                        $.say($.whisper + "That'll cause people to lose " + $.pointname + ". Don't use negatives!");
+                    } else {
+                        $.say("That'll cause people to lose " + $.pointname + ". Don't use negatives!");
+
+                    }
+
                     return;
                 } else {
                     $.inidb.set('settings', 'pointgain', args[1]);
                     $.pointgain = parseInt(args[1]);
-				if (whispermode == "true") {
-					$.say("/w " + $.username.resolve(sender, event.getTags()) + " You have set the current point earnings to " + $.pointgain + " " + $.pointname + " every " + $.pointinterval + " minute(s) while stream is online.");
-				} else {
-					$.say(username + " has set the current point earnings to " + $.pointgain + " " + $.pointname + " every " + $.pointinterval + " minute(s) while stream is online.");
-       
-				}
-                    
+                    if (whispermode == "true") {
+                        $.say($.whisper + " You have set the current point earnings to " + $.pointgain + " " + $.pointname + " every " + $.pointinterval + " minute(s) while stream is online.");
+                    } else {
+                        $.say(username + " has set the current point earnings to " + $.pointgain + " " + $.pointname + " every " + $.pointinterval + " minute(s) while stream is online.");
+
+                    }
+
                 }
             } else if (action.equalsIgnoreCase("offlinegain")) {
                 if (!$.isAdmin(sender)) {
@@ -276,23 +290,23 @@ $.on('command', function (event) {
                 }
 
                 if (args[1] < 0) {
-			if (whispermode == "true") {
-					$.say("/w " + $.username.resolve(sender, event.getTags()) + "That'll cause people to lose " + $.pointname + ". Don't use negatives!");
-				} else {
-					$.say("That'll cause people to lose " + $.pointname + ". Don't use negatives!");
-       
-				}
+                    if (whispermode == "true") {
+                        $.say($.whisper + "That'll cause people to lose " + $.pointname + ". Don't use negatives!");
+                    } else {
+                        $.say("That'll cause people to lose " + $.pointname + ". Don't use negatives!");
+
+                    }
                     return;
                 } else {
                     $.inidb.set('settings', 'offlinegain', args[1]);
                     $.offlinegain = parseInt(args[1]);
-			if (whispermode == "true") {
-					$.say("/w " + $.username.resolve(sender, event.getTags()) + " You have set the offline point earnings to " + $.offlinegain + " " + $.pointname + " every " + $.offlineinterval + " minute(s) while stream is offline.");
-				} else {
-					$.say(username + " has set the offline point earnings to " + $.offlinegain + " " + $.pointname + " every " + $.offlineinterval + " minute(s) while stream is offline.");
-       
-				}
-                    
+                    if (whispermode == "true") {
+                        $.say($.whisper + " You have set the offline point earnings to " + $.offlinegain + " " + $.pointname + " every " + $.offlineinterval + " minute(s) while stream is offline.");
+                    } else {
+                        $.say(username + " has set the offline point earnings to " + $.offlinegain + " " + $.pointname + " every " + $.offlineinterval + " minute(s) while stream is offline.");
+
+                    }
+
                 }
             } else if (action.equalsIgnoreCase("all")) {
                 if ($var.perm_toggle == true) {
@@ -308,13 +322,13 @@ $.on('command', function (event) {
                 }
 
                 if (args[1] < 0) {
-			if (whispermode == "true") {
-					$.say("/w " + $.username.resolve(sender, event.getTags()) + " Seems like you want to give everyone negative " + $.pointname + "!");
-				} else {
-					$.say($.username.resolve(sender, event.getTags()) + ", seems like you want to give everyone negative " + $.pointname + "!");
-       
-				}
-                  
+                    if (whispermode == "true") {
+                        $.say($.whisper + " Seems like you want to give everyone negative " + $.pointname + "!");
+                    } else {
+                        $.say($.username.resolve(sender, event.getTags()) + ", seems like you want to give everyone negative " + $.pointname + "!");
+
+                    }
+
                     return;
                 } else {
                     var name;
@@ -332,23 +346,23 @@ $.on('command', function (event) {
                 }
 
                 if (args[1] < 0) {
-			if (whispermode == "true") {
-					$.say("/w" + $.username.resolve(sender, event.getTags()) + "That'll cause people to lose " + $.pointname + ". Don't use negatives!");
-				} else {
-					$.say("That'll cause people to lose " + $.pointname + ". Don't use negatives!");
-       
-				}
+                    if (whispermode == "true") {
+                        $.say($.whisper + "That'll cause people to lose " + $.pointname + ". Don't use negatives!");
+                    } else {
+                        $.say("That'll cause people to lose " + $.pointname + ". Don't use negatives!");
+
+                    }
                     return;
                 } else {
                     $.inidb.set('settings', 'pointbonus', args[1]);
                     $.pointbonus = parseInt(args[1]);
-			if (whispermode == "true") {
-					$.say("/w" + $.username.resolve(sender, event.getTags()) +  "You have set the current point bonus to " + $.pointbonus + " " + $.pointname + " per group level.");
-				} else {
-					$.say(username + " has set the current point bonus to " + $.pointbonus + " " + $.pointname + " per group level.");
-       
-				}
-                    
+                    if (whispermode == "true") {
+                        $.say($.whisper + "You have set the current point bonus to " + $.pointbonus + " " + $.pointname + " per group level.");
+                    } else {
+                        $.say(username + " has set the current point bonus to " + $.pointbonus + " " + $.pointname + " per group level.");
+
+                    }
+
                 }
 
             } else if (action.equalsIgnoreCase("interval")) {
@@ -358,23 +372,23 @@ $.on('command', function (event) {
                 }
 
                 if (args[1] < 0) {
-			if (whispermode == "true") {
-					$.say("/w" + $.username.resolve(sender, event.getTags()) + "Can't set the interval with negative minutes.");
-				} else {
-					$.say("Can't set the interval with negative minutes.");
-       
-				}
+                    if (whispermode == "true") {
+                        $.say($.whisper + "Can't set the interval with negative minutes.");
+                    } else {
+                        $.say("Can't set the interval with negative minutes.");
+
+                    }
                     return;
                 } else {
                     $.inidb.set('settings', 'pointinterval', args[1]);
                     $.pointinterval = parseInt(args[1]);
-			if (whispermode == "true") {
-					$.say("/w" + $.username.resolve(sender, event.getTags()) + "You have set the interval time for earning points to " + $.pointinterval + " minutes.");
-				} else {
-					$.say(username + " has set the interval time for earning points to " + $.pointinterval + " minutes.");
-       
-				}
-                    
+                    if (whispermode == "true") {
+                        $.say($.whisper + "You have set the interval time for earning points to " + $.pointinterval + " minutes.");
+                    } else {
+                        $.say(username + " has set the interval time for earning points to " + $.pointinterval + " minutes.");
+
+                    }
+
                 }
 
             } else if (action.equalsIgnoreCase("offlineinterval")) {
@@ -384,23 +398,23 @@ $.on('command', function (event) {
                 }
 
                 if (args[1] < 0) {
-			if (whispermode == "true") {
-					$.say("/w" + $.username.resolve(sender, event.getTags()) + "Can't set the interval with negative minutes.");
-				} else {
-					$.say("Can't set the interval with negative minutes.");
-       
-				}    
+                    if (whispermode == "true") {
+                        $.say($.whisper + "Can't set the interval with negative minutes.");
+                    } else {
+                        $.say("Can't set the interval with negative minutes.");
+
+                    }
                     return;
                 } else {
                     $.inidb.set('settings', 'offlineinterval', args[1]);
                     $.offlineinterval = parseInt(args[1]);
-			if (whispermode == "true") {
-					$.say("/w" + $.username.resolve(sender, event.getTags()) + "You have set the interval time for earning points to " + $.offlineinterval + " minutes while the stream is offline.");
-				} else {
-					$.say(username + " has set the interval time for earning points to " + $.offlineinterval + " minutes while the stream is offline.");
-       
-				}
-                    
+                    if (whispermode == "true") {
+                        $.say($.whisper + "You have set the interval time for earning points to " + $.offlineinterval + " minutes while the stream is offline.");
+                    } else {
+                        $.say(username + " has set the interval time for earning points to " + $.offlineinterval + " minutes while the stream is offline.");
+
+                    }
+
                 }
 
             } else if (action.equalsIgnoreCase("mingift")) {
@@ -410,23 +424,23 @@ $.on('command', function (event) {
                 }
 
                 if (args[1] < 0 || args[1] == null) {
-			if (whispermode == "true") {
-					$.say("/w" + $.username.resolve(sender, event.getTags()) + "Usage: !points mingift <amount> - Sets the minimum amount of points that can be gifted to others. Must be 0 or higher.");
-				} else {
-					$.say("Usage: !points mingift <amount> - Sets the minimum amount of points that can be gifted to others. Must be 0 or higher.");
-       
-				}
+                    if (whispermode == "true") {
+                        $.say($.whisper + "Usage: !points mingift <amount> - Sets the minimum amount of points that can be gifted to others. Must be 0 or higher.");
+                    } else {
+                        $.say("Usage: !points mingift <amount> - Sets the minimum amount of points that can be gifted to others. Must be 0 or higher.");
+
+                    }
                     return;
                 } else {
                     $.inidb.set('settings', 'mingift', args[1]);
                     $.mingift = parseInt($.inidb.get('settings', 'mingift'));
-			if (whispermode == "true") {
-					$.say("/w" + $.username.resolve(sender, event.getTags()) + "You have set the minimum amount of " + $.pointname + " that can be gifted to: " + args[1] + " " + $.pointname + ".");
-				} else {
-					$.say(username + " has set the minimum amount of " + $.pointname + " that can be gifted to: " + args[1] + " " + $.pointname + ".");
-       
-				}
-                   
+                    if (whispermode == "true") {
+                        $.say($.whisper + "You have set the minimum amount of " + $.pointname + " that can be gifted to: " + args[1] + " " + $.pointname + ".");
+                    } else {
+                        $.say(username + " has set the minimum amount of " + $.pointname + " that can be gifted to: " + args[1] + " " + $.pointname + ".");
+
+                    }
+
                 }
 
             } else if (action.equalsIgnoreCase("name")) {
@@ -436,12 +450,12 @@ $.on('command', function (event) {
                 }
 
                 $.inidb.set('settings', 'pointname', argsString2);
-			if (whispermode == "true") {
-					$.say("/w" + $.username.resolve(sender, event.getTags()) + "you have changed the name of " + $.pointname + " to '" + argsString2 + "'!");
-				} else {
-					$.say(username + " has changed the name of " + $.pointname + " to '" + argsString2 + "'!");
-       
-				}
+                if (whispermode == "true") {
+                    $.say($.whisper + "you have changed the name of " + $.pointname + " to '" + argsString2 + "'!");
+                } else {
+                    $.say(username + " has changed the name of " + $.pointname + " to '" + argsString2 + "'!");
+
+                }
                 $.pointname = argsString2;
 
             } else if (action.equalsIgnoreCase("reset")) {
@@ -450,16 +464,16 @@ $.on('command', function (event) {
                     return;
                 }
 
-            $.inidb.RemoveFile("points");
-            $.inidb.ReloadFile("points");
-			if (whispermode == "true") {
-					$.say("/w" + $.username.resolve(sender, event.getTags()) + ", all "+ $.pointname + " were reset to 0!");
-				} else {
-					$.say(username + ", all "+ $.pointname + " were reset to 0!");
-       
-				}
+                $.inidb.RemoveFile("points");
+                $.inidb.ReloadFile("points");
+                if (whispermode == "true") {
+                    $.say($.whisper + ", all " + $.pointname + " were reset to 0!");
+                } else {
+                    $.say(username + ", all " + $.pointname + " were reset to 0!");
 
-                
+                }
+
+
             } else if (action.equalsIgnoreCase("toggle") && !argsString.isEmpty()) {
                 if (!$.isAdmin(sender)) {
                     $.say($.adminmsg);
@@ -470,133 +484,132 @@ $.on('command', function (event) {
 
                     $var.perm_toggle = true;
                     $.inidb.set('settings', 'perm_toggle', 1);
-			if (whispermode == "true") {
-					$.say("/w" + $.username.resolve(sender, event.getTags()) + "From now on Mods will be able to use privileged point commands!");
-				} else {
-					$.say("From now on Mods will be able to use privileged point commands!");
-       
-				}
-                    
+                    if (whispermode == "true") {
+                        $.say($.whisper + "From now on Mods will be able to use privileged point commands!");
+                    } else {
+                        $.say("From now on Mods will be able to use privileged point commands!");
+
+                    }
+
                 } else if ($var.perm_toggle == true) {
 
                     $var.perm_toggle = false;
                     $.inidb.set('settings', 'perm_toggle', 2);
-			if (whispermode == "true") {
-					$.say("/w" + $.username.resolve(sender, event.getTags()) + "From now on only Admins will be able to use privileged point commands!");
-				} else {
-					$.say("From now on only Admins will be able to use privileged point commands!");
-       
-				}
+                    if (whispermode == "true") {
+                        $.say($.whisper + "From now on only Admins will be able to use privileged point commands!");
+                    } else {
+                        $.say("From now on only Admins will be able to use privileged point commands!");
+
+                    }
                 }
-            } else if (action.equalsIgnoreCase("gain") || action.equalsIgnoreCase("bonus") || action.equalsIgnoreCase("interval") || action.equalsIgnoreCase("offlineinterval") || action.equalsIgnoreCase("name") || action.equalsIgnoreCase("config") ||  action.equalsIgnoreCase("mingift")) {
-			if (whispermode == "true") {
-					$.say("/w" + $.username.resolve(sender, event.getTags()) + "[Point Settings] - [Name: " + $.pointname + "] - [Gain: " + $.pointgain + " " + $.pointname + "] - [Interval: " + $.pointinterval + " minutes] - [Offline Gain: " + $.offlinegain + " " + $.pointname + "] - [Offline interval: " + $.offlineinterval + " minutes] - [Bonus: " + $.pointbonus + " " + $.pointname + "] - [Gifting Minimum: " + $.mingift + "]");
-				} else {
-					$.say("[Point Settings] - [Name: " + $.pointname + "] - [Gain: " + $.pointgain + " " + $.pointname + "] - [Interval: " + $.pointinterval + " minutes] - [Offline Gain: " + $.offlinegain + " " + $.pointname + "] - [Offline interval: " + $.offlineinterval + " minutes] - [Bonus: " + $.pointbonus + " " + $.pointname + "] - [Gifting Minimum: " + $.mingift + "]");
-       
-				}
-                
+            } else if (action.equalsIgnoreCase("gain") || action.equalsIgnoreCase("bonus") || action.equalsIgnoreCase("interval") || action.equalsIgnoreCase("offlineinterval") || action.equalsIgnoreCase("name") || action.equalsIgnoreCase("config") || action.equalsIgnoreCase("mingift")) {
+                if (whispermode == "true") {
+                    $.say($.whisper + "[Point Settings] - [Name: " + $.pointname + "] - [Gain: " + $.pointgain + " " + $.pointname + "] - [Interval: " + $.pointinterval + " minutes] - [Offline Gain: " + $.offlinegain + " " + $.pointname + "] - [Offline interval: " + $.offlineinterval + " minutes] - [Bonus: " + $.pointbonus + " " + $.pointname + "] - [Gifting Minimum: " + $.mingift + "]");
+                } else {
+                    $.say("[Point Settings] - [Name: " + $.pointname + "] - [Gain: " + $.pointgain + " " + $.pointname + "] - [Interval: " + $.pointinterval + " minutes] - [Offline Gain: " + $.offlinegain + " " + $.pointname + "] - [Offline interval: " + $.offlineinterval + " minutes] - [Bonus: " + $.pointbonus + " " + $.pointname + "] - [Gifting Minimum: " + $.mingift + "]");
+
+                }
+
             } else if (action.equalsIgnoreCase("help")) {
-			if (whispermode == "true") {
-					$.say("/w" + $.username.resolve(sender, event.getTags()) + "Usage: '!points give <name> <amount>' -- '!points take <name> <amount>' -- '!points set <name> <amount>' -- '!points gift <name> <amount>' -- '!points gain <amount>' -- '!points bonus <amount>' -- '!points name <amount>'");
-				} else {
-					$.say("Usage: '!points give <name> <amount>' -- '!points take <name> <amount>' -- '!points set <name> <amount>' -- '!points gift <name> <amount>' -- '!points gain <amount>' -- '!points bonus <amount>' -- '!points name <amount>'");
-       
-				}
-                
+                if (whispermode == "true") {
+                    $.say($.whisper + "Usage: '!points give <name> <amount>' -- '!points take <name> <amount>' -- '!points set <name> <amount>' -- '!points gift <name> <amount>' -- '!points gain <amount>' -- '!points bonus <amount>' -- '!points name <amount>'");
+                } else {
+                    $.say("Usage: '!points give <name> <amount>' -- '!points take <name> <amount>' -- '!points set <name> <amount>' -- '!points gift <name> <amount>' -- '!points gain <amount>' -- '!points bonus <amount>' -- '!points name <amount>'");
+
+                }
+
                 return;
             } else {
                 points_user = args[0].toLowerCase();
                 $.getPoints(points_user);
             }
-        }
-        else {
+        } else {
             $.getPoints(points_user);
         }
     }
-		if (command.equalsIgnoreCase("makeitrain")) {
-				if (args[0] > $.inidb.get('points', sender)) {
-			if (whispermode == "true") {
-					$.say("/w" + $.username.resolve(sender, event.getTags()) + "You don't have that many " + $.pointname + " to make it rain!");
-				} else {
-					$.say($.username.resolve(sender, event.getTags()) + " , you don't have that many " + $.pointname + " to make it rain!");
-				}
-                        return; 
-				}
-			
+    if (command.equalsIgnoreCase("makeitrain")) {
+        if (args[0] > $.inidb.get('points', sender)) {
+            if (whispermode == "true") {
+                $.say($.whisper + "You don't have that many " + $.pointname + " to make it rain!");
+            } else {
+                $.say($.username.resolve(sender, event.getTags()) + " , you don't have that many " + $.pointname + " to make it rain!");
+            }
+            return;
+        }
 
-                if (args[0] < 0) {
-			if (whispermode == "true") {
-					 $.say("/w" + $.username.resolve(sender, event.getTags()) + " Seems like you want to give everyone negative " + $.pointname + "!");
-				} else {
-					 $.say($.username.resolve(sender, event.getTags()) + ", seems like you want to give everyone negative " + $.pointname + "!");
-				}
-                    return;
-                } else {
-					$.inidb.decr('points', sender, args[0]);
-                    var name;
-                    var i;
-					var reward = args[0]/($.users.length);
-					
-                    for (i = 0; i < $.users.length; i++) {
-                        name = $.users[i][0];
-                        $.inidb.incr('points', name.toLowerCase(), reward.toFixed(0));
-						
 
-                    }
-                    $.say(sender + " offered " + args[0] + " " + $.pointname + " to be split into " + reward.toFixed(0) + " " + $.pointname + " for everyone!");
-					$.inidb.decr('points', sender, reward.toFixed(0));
-                } 
-}
+        if (args[0] < 0) {
+            if (whispermode == "true") {
+                $.say($.whisper + " Seems like you want to give everyone negative " + $.pointname + "!");
+            } else {
+                $.say($.username.resolve(sender, event.getTags()) + ", seems like you want to give everyone negative " + $.pointname + "!");
+            }
+            return;
+        } else {
+            $.inidb.decr('points', sender, args[0]);
+            var name;
+            var i;
+            var reward = args[0] / ($.users.length);
+
+            for (i = 0; i < $.users.length; i++) {
+                name = $.users[i][0];
+                $.inidb.incr('points', name.toLowerCase(), reward.toFixed(0));
+
+
+            }
+            $.say(sender + " offered " + args[0] + " " + $.pointname + " to be split into " + reward.toFixed(0) + " " + $.pointname + " for everyone!");
+            $.inidb.decr('points', sender, reward.toFixed(0));
+        }
+    }
     if (command.equalsIgnoreCase("gift") || command.equalsIgnoreCase("transfer")) {
         username = args[0].toLowerCase();
         if (username == sender) {
-			if (whispermode == "true") {
-					 $.say("/w" + $.username.resolve(sender, event.getTags()) + "Why would you need to transfer " + $.pointname + " to yourself DansGame ?!");
-				} else {
-					 $.say("Why would you need to transfer " + $.pointname + " to yourself DansGame ?!");
-				}
+            if (whispermode == "true") {
+                $.say($.whisper + "Why would you need to transfer " + $.pointname + " to yourself DansGame ?!");
+            } else {
+                $.say("Why would you need to transfer " + $.pointname + " to yourself DansGame ?!");
+            }
             return;
         }
 
         if (points > $.inidb.get('points', sender)) {
-			if (whispermode == "true") {
-					 $.say("/w " + $.username.resolve(sender, event.getTags()) + " You don't have that much " + $.pointname + " to transfer " + $.username.resolve(username) + "!");
-				} else {
-					 $.say($.username.resolve(sender, event.getTags()) + ", you don't have that much " + $.pointname + " to transfer " + $.username.resolve(username) + "!");
-				}
+            if (whispermode == "true") {
+                $.say($.whisper + " You don't have that much " + $.pointname + " to transfer " + $.username.resolve(username) + "!");
+            } else {
+                $.say($.username.resolve(sender, event.getTags()) + ", you don't have that much " + $.pointname + " to transfer " + $.username.resolve(username) + "!");
+            }
             return;
 
         } else {
             if (parseInt(args[1]) < $.mingift) {
-			if (whispermode == "true") {
-					 $.say("/w " + $.username.resolve(sender, event.getTags()) + " You can't transfer " + $.pointname + " that's lower than the minimum amount! Minimum: " + $.mingift + " " + $.pointname + ".");
-				} else {
-					 $.say($.username.resolve(sender, event.getTags()) + ", you can't transfer " + $.pointname + " that's lower than the minimum amount! Minimum: " + $.mingift + " " + $.pointname + ".");
-				}
+                if (whispermode == "true") {
+                    $.say($.whisper + " You can't transfer " + $.pointname + " that's lower than the minimum amount! Minimum: " + $.mingift + " " + $.pointname + ".");
+                } else {
+                    $.say($.username.resolve(sender, event.getTags()) + ", you can't transfer " + $.pointname + " that's lower than the minimum amount! Minimum: " + $.mingift + " " + $.pointname + ".");
+                }
                 return;
-            } else if (points < parseInt(args[1])){
-			if (whispermode == "true") {
-					 $.say("/w " + $.username.resolve(sender, event.getTags()) + " You can't transfer " + $.pointname + " what you don't have.");
-				} else {
-					 $.say($.username.resolve(sender, event.getTags()) + ", you can't transfer " + $.pointname + " what you don't have.");
-				}
+            } else if (points < parseInt(args[1])) {
+                if (whispermode == "true") {
+                    $.say($.whisper + " You can't transfer " + $.pointname + " what you don't have.");
+                } else {
+                    $.say($.username.resolve(sender, event.getTags()) + ", you can't transfer " + $.pointname + " what you don't have.");
+                }
                 return;
             } else {
                 if ($.inidb.get("visited", username.toLowerCase()) == "visited") {
                     $.inidb.decr('points', sender.toLowerCase(), parseInt(args[1]));
                     $.inidb.incr('points', username.toLowerCase(), parseInt(args[1]));
-			if (whispermode == "true") {
-					 $.say("/w " + $.username.resolve(sender, event.getTags()) + " You transferred " + args[1] + " " + $.pointname + " to " + $.username.resolve(args[0]) + " who now has: " + $.inidb.get('points', $.username.resolve(args[0]).toLowerCase()) + " " + $.pointname + ". " + $.username.resolve(sender) + ", you're left with: " + $.inidb.get('points', sender.toLowerCase()) + " " + $.pointname + ".");
-				} else {
-					 $.say("Transferred " + args[1] + " " + $.pointname + " to " + $.username.resolve(args[0]) + " who now has: " + $.inidb.get('points', $.username.resolve(args[0]).toLowerCase()) + " " + $.pointname + ". " + $.username.resolve(sender) + ", you're left with: " + $.inidb.get('points', sender.toLowerCase()) + " " + $.pointname + ".");
-				}
+                    if (whispermode == "true") {
+                        $.say($.whisper + " You transferred " + args[1] + " " + $.pointname + " to " + $.username.resolve(args[0]) + " who now has: " + $.inidb.get('points', $.username.resolve(args[0]).toLowerCase()) + " " + $.pointname + ". " + $.username.resolve(sender) + ", you're left with: " + $.inidb.get('points', sender.toLowerCase()) + " " + $.pointname + ".");
+                    } else {
+                        $.say("Transferred " + args[1] + " " + $.pointname + " to " + $.username.resolve(args[0]) + " who now has: " + $.inidb.get('points', $.username.resolve(args[0]).toLowerCase()) + " " + $.pointname + ". " + $.username.resolve(sender) + ", you're left with: " + $.inidb.get('points', sender.toLowerCase()) + " " + $.pointname + ".");
+                    }
                 } else {
-			if (whispermode == "true") {
-					 $.say("/w " + $.username.resolve(sender, event.getTags()) + " This person has never visited this channel, thus doesn't have an account.");
-				} else {
-					 $.say("This person has never visited this channel, thus doesn't have an account.");
-				} 
+                    if (whispermode == "true") {
+                        $.say($.whisper + " This person has never visited this channel, thus doesn't have an account.");
+                    } else {
+                        $.say("This person has never visited this channel, thus doesn't have an account.");
+                    }
                     return;
                 }
             }
@@ -642,11 +655,10 @@ $.timer.addTimer("./systems/pointSystem.js", "pointsystem", true, function() {
     $.lastpointinterval = System.currentTimeMillis();
 }, 60 * 1000);
 
-setTimeout(function(){ 
+setTimeout(function() {
     if ($.moduleEnabled('./systems/pointSystem.js')) {
         $.registerChatCommand("./systems/pointSystem.js", "points");
-	$.registerChatCommand("./systems/pointSystem.js", "makeitrain");
-	$.registerChatCommand("./systems/pointSystem.js", "whisperpoints", "mod");
+        $.registerChatCommand("./systems/pointSystem.js", "makeitrain");
+        $.registerChatCommand("./systems/pointSystem.js", "whisperpoints", "mod");
     }
-},10*1000);
-
+}, 10 * 1000);
