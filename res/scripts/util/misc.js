@@ -35,7 +35,7 @@ $.ssay = function(s) {
         $.logChat($.botname, str);
         
         if (!$.inidb.exists("settings", "response_@all") || $.inidb.get("settings", "response_@all").equalsIgnoreCase("1")
-            || str.equals($.lang.get("net.phantombot.misc.response-disable")) != -1 || str.indexOf(".timeout ") != -1 || str.indexOf(".ban ") != -1
+            || str.equals($.lang.get("net.phantombot.misc.response-disable")) == true || str.indexOf(".timeout ") != -1 || str.indexOf(".ban ") != -1
             || str.indexOf(".unban ") != -1 || str.equalsIgnoreCase(".clear") || str.equalsIgnoreCase(".mods")) {
             $.channel.say(str);
         }
