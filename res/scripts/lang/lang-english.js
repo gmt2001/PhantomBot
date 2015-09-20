@@ -112,7 +112,7 @@ $.lang.data["net.phantombot.pointsystem.gift-error-negative"] = "You can not gif
 $.lang.data["net.phantombot.pointsystem.gift-error-notenough"] = "You can not afford to transfer $1 to $2.";
 $.lang.data["net.phantombot.pointsystem.gift-error-notminimum"] = "You have to transfer at least $1.";
 $.lang.data["net.phantombot.pointsystem.gift-error-toself"] = "Oops! Something went wrong! Maybe you shouldn't try gifting yourself $1... OMGScoots";
-$.lang.data["net.phantombot.pointsystem.gift-success"] = "Ka-tching! You successfully transferred $1 to $2. $2 now has $3, and you now have $4.";
+$.lang.data["net.phantombot.pointsystem.gift-success"] = "Ka-tching! You successfully transfered $1 to $2. $2 now has $3, and you now have $4.";
 $.lang.data["net.phantombot.pointsystem.gift-received"] = "Ka-tching! You were gifted $1 by $2.";
 $.lang.data["net.phantombot.pointsystem.gift-usage"] = "Usage: \"!gift <name> <amount>\"";
 $.lang.data["net.phantombot.pointsystem.give-all-error-negative"] = "You can not give everybody negative $1.";
@@ -147,9 +147,9 @@ $.lang.data["net.phantombot.pointsystem.set-usage"] = "Usage: \"!points set <nam
 $.lang.data["net.phantombot.pointsystem.take-error-toomuch"] = "You can not take more than what $1 has in $2.";
 $.lang.data["net.phantombot.pointsystem.take-success"] = "Taken $1 from $2. New balance is $3.";
 $.lang.data["net.phantombot.pointsystem.take-usage"] = "Usage: \"!points take <name> <amount>\"";
+$.lang.data["net.phantombot.pointsystem.timetoggle-disabled"] = "Set the time to not be displayed when viewing $1 count.";
+$.lang.data["net.phantombot.pointsystem.timetoggle-enabled"] = "Set the time to be displayed when viewing $1 count.";
 $.lang.data["net.phantombot.pointsystem.toggle-success"] = "Users in the group $1 or higher are now able to use point management commands.";
-+$.lang.data["net.phantombot.pointsystem.timetoggle-disabled"] = "Set the time to not be displayed when viewing $1 count.";
-+$.lang.data["net.phantombot.pointsystem.timetoggle-enabled"] = "Set the time to be displayed when viewing $1 count.";
 
 // timeSystem.js
 $.lang.data["net.phantombot.timesystem.autolevel-disabled"] = "Users will no longer be promoted to $1 when they have been in the chat for $2 hour(s).";
@@ -179,6 +179,10 @@ $.lang.data["net.phantombot.timezone.error-invalid"] = "\"$1\" is not a valid ti
 $.lang.data["net.phantombot.timezone.get"] = "The streamer's time zone is currently set to \"$1\".";
 $.lang.data["net.phantombot.timezone.success"] = "The time zone has been set to \"$1\".";
 $.lang.data["net.phantombot.timezone.usage"] = "Usage: \"!timezone <name>\"";
+
+// raidSystem.js
+$.lang.data["net.phantombot.raidsystem.success"] = "Thank you for the raid, $1! This is the $2 time $1 has raided! Please give them a follow at \"http://twitch.tv/$3\"!";
+$.lang.data["net.phantombot.raidsystem.usage"] = "Usage: \"!raider <name>\"";
 
 //addCommand.js
 $.lang.data["net.phantombot.addcommand.addcom-success"] = "$1, has successfully created the command: !$2";
