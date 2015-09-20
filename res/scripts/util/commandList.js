@@ -164,7 +164,7 @@ $.on('command', function(event) {
     var command = event.getCommand();
     var args = event.getArgs();
     
-    if (command.equalsIgnoreCase("commands")) {
+    if (command.equalsIgnoreCase("botcommands")) {
         var cmdList = "";
         var length = 0;
         var start = 0;
