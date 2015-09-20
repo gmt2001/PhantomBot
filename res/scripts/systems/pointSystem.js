@@ -613,7 +613,7 @@ $.on('command', function (event) {
 
     if (command.equalsIgnoreCase("makeitrain")) {
         if (args[0] == null || isNaN(parseInt(args[0]))) {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.makeitrain-usage"));
+            $.say($.lang.get("net.phantombot.pointsystem.makeitrain-usage"));
             return;
         }
 
