@@ -59,11 +59,11 @@ $.lang.data["net.phantombot.permissions.mods"] = "Mods in channel: ";
 $.lang.data["net.phantombot.permissions.admins"] = "Admins in channel: ";
 
 //commandList.js
-$.lang.data["net.phantombot.commandlist.commands"] = "Bot Commands";
+$.lang.data["net.phantombot.commandlist.commands"] = "Commands";
 $.lang.data["net.phantombot.commandlist.page"] = " page $1 of $2 ";
-$.lang.data["net.phantombot.commandlist.more"] = " >> Type '!botcommands 2' or higher for more commands.";
-$.lang.data["net.phantombot.commandlist.nocommands"] = "There are currently no commands available to you.";
-$.lang.data["net.phantombot.commandlist.commands-per-page"] = "There will now be $1 commands per page when using !botcommands.";
+$.lang.data["net.phantombot.commandlist.more"] = " >> Type '!commands 2, 3 etc... for more";
+$.lang.data["net.phantombot.commandlist.nocommands"] = "There are currently no commands available to you";
+$.lang.data["net.phantombot.commandlist.commands-per-page"] = "There will now be $1 commands per page when using !commands";
 $.lang.data["net.phantombot.commandlist.commands-per-page-usage"] = "Usage: !commandsperpage <number no less than 10>";
 
 //chatModerator.js
@@ -92,6 +92,8 @@ $.lang.data["net.phantombot.chatmoderator.chatmod-warn-reset-time-set"] = "Chang
 $.lang.data["net.phantombot.common.user-404"] = "The user \"$1\" has not visited this channel yet.";
 $.lang.data["net.phantombot.common.whisper-disabled"] = "[Whisper Mode] for $1 has been disabled.";
 $.lang.data["net.phantombot.common.whisper-enabled"] = "[Whisper Mode] for $1 has been enabled.";
+
+
 $.lang.data["net.phantombot.pointsystem.bonus-error-negative"] = "You can not set the bonus per group level to negative $1.";
 $.lang.data["net.phantombot.pointsystem.bonus-success"] = "Set the $1 bonus to $2 per group level.";
 $.lang.data["net.phantombot.pointsystem.bonus-usage"] = "Usage: \"!points bonus <amount>\"";
@@ -168,3 +170,36 @@ $.lang.data["net.phantombot.timesystem.time-promote-hours-minimum"] = "Minimum p
 $.lang.data["net.phantombot.timesystem.time-promote-hours-grater-then-0"] = "Promotion time must be a number greater than 0.";
 $.lang.data["net.phantombot.timesystem.time-promote-hours-set"] = "Group promotion time is now $1 hour(s).";
 $.lang.data["net.phantombot.timesystem.error"] = "Error! Invalid time zone specified. Time zone has not been changed.";
+
+//addCommand.js
+$.lang.data["net.phantombot.addcommand.addcom-success"] = "$1, has successfully created the command: !$2";
+$.lang.data["net.phantombot.addcommand.addcom-error"] = "That command already exists, $1";
+$.lang.data["net.phantombot.addcommand.addcom-error-usage"] = "Usage: \"!addcom (command) (message)\"";
+$.lang.data["net.phantombot.addcommand.delcom-success"] = "$1, has successfully removed the command: !$2";
+$.lang.data["net.phantombot.addcommand.delcom-error-usage"] = "Usage: \"!delcom (command)\"";
+$.lang.data["net.phantombot.addcommand.editcom-success"] = "$1, has modified the command: !$2";
+$.lang.data["net.phantombot.addcommand.editcom-error"] = "There is no such command, $1";
+$.lang.data["net.phantombot.addcommand.editcom-error-usage"] = "Usage: \"!editcom (command) (message)\"";
+$.lang.data["net.phantombot.addcommand.pricecom-current-set-price"] = "The command !$1 costs $2 $3!";
+$.lang.data["net.phantombot.addcommand.pricecom-current-set-price2"] = "The command !$1 currently costs 0 $2!";
+$.lang.data["net.phantombot.addcommand.pricecom-success"] = "The price for !$1 has been set to $2 $3.";
+$.lang.data["net.phantombot.addcommand.pricecom-error1"] = "Please select a command that exists and is available to non-mods.";
+$.lang.data["net.phantombot.addcommand.pricecom-error2"] = "Please enter a valid price, 0 or greater.";
+$.lang.data["net.phantombot.addcommand.pricecom-error-usage"] = "Usage: \"!pricecom (command) (price)\"";
+$.lang.data["net.phantombot.addcommand.helpcom-error-usage"] = "Usage: \"!addcom (command) (message) / !delcom (command) / !editcom (command) (message / !permcom (command) (group) / !pricecom (command) (amount))\"";
+$.lang.data["net.phantombot.addcommand.helpcom-command-tags"] = "When using !addcom, you can put the text '(sender)' to have the name of any user who says the new command inserted into it. ex. '!addcom hello Hello there (sender)!'";
+$.lang.data["net.phantombot.addcommand.helpcom-command-tags2"] = "When using !addcom, you can also put '(1)', '(2)', and so on to allow arguments. ex. '!addcom kill (sender) just killed (1) with a (2)!'";
+$.lang.data["net.phantombot.addcommand.helpcom-command-tags3"] = "Additional special tags: '(count)' will add the number of times the command was used (including the current usage)";
+$.lang.data["net.phantombot.addcommand.aliascom-success"] = "$1, the command !$2 was successfully aliased to !$3";
+$.lang.data["net.phantombot.addcommand.aliascom-error-no-command"] = "The target command does not exist $1!";
+$.lang.data["net.phantombot.addcommand.aliascom-failed"] = "You can only overwrite an alias $1!";
+$.lang.data["net.phantombot.addcommand.aliascom-error-usage"] = "Usage: \"!aliascom (existing command) (alias name)\"";
+$.lang.data["net.phantombot.addcommand.custom-commands"] = "Current custom commands: $1";
+$.lang.data["net.phantombot.addcommand.delalias-success"] = "$1, the alias !$2 was successfully deleted!";
+$.lang.data["net.phantombot.addcommand.delalias-error-no-command"] = "That alias does not exist $1!";
+$.lang.data["net.phantombot.addcommand.delalias-error-usage"] = "Usage: \"!delalias (alias name)\"";
+$.lang.data["net.phantombot.addcommand.permcom-success"] = "Permissions for command: $1 set for group: $2 and higher.";
+$.lang.data["net.phantombot.addcommand.permcom-removed-success"] = "All recursive permissions for the command: $1 and any of its aliases have been removed.";
+$.lang.data["net.phantombot.addcommand.permcom-syntax-error"] = "You must specify a permission mode of 1 or 2! 1 specifies only a single group, multiple single groups can be added for the same command. 2 specifies recursive (all groups higher than the group specified).";
+$.lang.data["net.phantombot.addcommand.permcom-error-no-command"] = "The command !$1 does not exist!";
+$.lang.data["net.phantombot.addcommand.permcom-error-usage"] = "Usage: \"!permcom (command name) (group name) (1/2). Restricts usage of a command to viewers with a certain permission level. 1 specifies only a single group, multiple single groups can be added for the same command. 2 specifies recursive (all groups higher than the group specified).\"";
