@@ -59,11 +59,11 @@ $.lang.data["net.phantombot.permissions.mods"] = "Mods in channel: ";
 $.lang.data["net.phantombot.permissions.admins"] = "Admins in channel: ";
 
 //commandList.js
-$.lang.data["net.phantombot.commandlist.commands"] = "Commands";
+$.lang.data["net.phantombot.commandlist.commands"] = "Bot Commands";
 $.lang.data["net.phantombot.commandlist.page"] = " page $1 of $2 ";
-$.lang.data["net.phantombot.commandlist.more"] = " >> Type '!commands < #>' for more";
-$.lang.data["net.phantombot.commandlist.nocommands"] = "There are currently no commands available to you";
-$.lang.data["net.phantombot.commandlist.commands-per-page"] = "There will now be $1 commands per page when using !commands";
+$.lang.data["net.phantombot.commandlist.more"] = " >> Type '!botcommands 2' or higher for more commands.";
+$.lang.data["net.phantombot.commandlist.nocommands"] = "There are currently no commands available to you.";
+$.lang.data["net.phantombot.commandlist.commands-per-page"] = "There will now be $1 commands per page when using !botcommands.";
 $.lang.data["net.phantombot.commandlist.commands-per-page-usage"] = "Usage: !commandsperpage <number no less than 10>";
 
 //chatModerator.js
