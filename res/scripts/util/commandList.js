@@ -1,5 +1,4 @@
 
-
 if ($.commandList == null || $.commandList == undefined) {
     $.commandList = new Array();
 }
@@ -158,13 +157,29 @@ $.getCommandGroup = function(command) {
     return "";
 }
 
+$.getWhisperString = function(sender) {
+    var whispermode = $.inidb.get("settings", "whisper_commands");
+    // Just put this logic in here. The odds that an entire string is different are slim.
+    if (whispermode == "true") {
+        return "/w " + sender + " ";
+    } else {
+        return "";
+    }
+}
+
+$.getWhisperStringStatic = function(sender) {
+    var whispermode = $.inidb.get("settings", "whisper_commands");
+        return "/w " + sender + " ";
+}
+
 $.on('command', function(event) {
     var sender = event.getSender().toLowerCase();
     var username = $.username.resolve(sender, event.getTags());
     var command = event.getCommand();
     var args = event.getArgs();
+    var whispermode = $.inidb.get("settings", "whisper_commands");
     
-    if (command.equalsIgnoreCase("commands")) {
+    if (command.equalsIgnoreCase("botcommands")) { // change !botcommands for all commands and !commands for custom commands.
         var cmdList = "";
         var length = 0;
         var start = 0;
@@ -174,6 +189,11 @@ $.on('command', function(event) {
         var more = ""
         var commandsPerPage = $.commandsPerPage;
         var i;
+        var whispermode = $.inidb.get("settings", "whisper_commands");
+
+    if (whispermode == undefined || whispermode == null) {
+        whispermode = "false";
+    }
         
         for (i = 0; i < $.commandList.length + $.customCommandList.length; i++) {
             if (i < $.commandList.length) {
@@ -199,6 +219,8 @@ $.on('command', function(event) {
         
         if (length > commandsPerPage) {
             numPages = Math.ceil(length / commandsPerPage);
+            num = 1
+            var i;
             
             if (args.length > 0 && !isNaN(parseInt(args[0]))) {
                 start = commandsPerPage * (parseInt(args[0]) - 1);
@@ -209,7 +231,6 @@ $.on('command', function(event) {
             }
             
             num = Math.min(commandsPerPage, length - start);
-            
             more = $.lang.get("net.phantombot.commandlist.more");
         } else {
             num = length;
@@ -272,9 +293,9 @@ $.on('command', function(event) {
         }
         
         if (length == 0) {
-            $.say($.lang.get("net.phantombot.commandlist.nocommands"));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.commandlist.nocommands"));
         } else {
-            $.say($.lang.get("net.phantombot.commandlist.commands") + page + ": " + cmdList + more);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.commandlist.commands") + page + ": " + cmdList + more);
         }
     }
     
@@ -285,17 +306,17 @@ $.on('command', function(event) {
             $.commandsPerPage = parseInt(args[0]);
             $.inidb.set("commands", "_commandsPerPage", args[0]);
             
-            $.say($.lang.get("net.phantombot.commandlist.commands-per-page", args[0]));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.commandlist.commands-per-page", args[0]));
         } else if (!$.isAdmin(sender)) {
-            $.say($.adminmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
         } else {
-            $.say($.lang.get("net.phantombot.commandlist.commands-per-page-usage"));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.commandlist.commands-per-page-usage"));
         }
     }
 });
 
 $.registerChatCommand("./util/commandList.js", "commandsperpage", "admin");
-$.registerChatCommand("./util/commandList.js", "commands", "mod");
+$.registerChatCommand("./util/commandList.js", "botcommands", "mod");
 
 var commandsPerPage = $.inidb.get("command", "_commandsPerPage");
 
