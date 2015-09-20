@@ -644,6 +644,74 @@ if ($.inidb.GetInteger("init", "upgrade", "version") < 15) {
     println("   End version 15 upgrades...");
 }
 
+if ($.inidb.GetInteger("init", "upgrade", "version") < 16) {
+    println("   Starting version 16 upgrades...");
+    
+    println("     Updating pointsystem.js setting files");
+     if ($.inidb.exists("settings", "pointname")) {
+        $.inidb.set("settings", "pointNameSingle", $.inidb.get("settings", "pointname"));
+        
+        $.inidb.del("settings", "pointname");
+    }
+    
+     if ($.inidb.exists("settings", "pointgain")) {
+        $.inidb.set("settings", "pointGain", $.inidb.get("settings", "pointgain"));
+        
+        $.inidb.del("settings", "pointgain");
+    }
+    
+     if ($.inidb.exists("settings", "offlinegain")) {
+        $.inidb.set("settings", "pointGainOffline", $.inidb.get("settings", "offlinegain"));
+        
+        $.inidb.del("settings", "offlinegain");
+    }
+    
+     if ($.inidb.exists("settings", "pointbonus")) {
+        $.inidb.set("settings", "pointBonus", $.inidb.get("settings", "pointbonus"));
+        
+        $.inidb.del("settings", "pointbonus");
+    }
+    
+     if ($.inidb.exists("settings", "pointinverval")) {
+        $.inidb.set("settings", "pointInterval", $.inidb.get("settings", "pointinterval"));
+        
+        $.inidb.del("settings", "pointinterval");
+    }
+    
+     if ($.inidb.exists("settings", "offlineinterval")) {
+        $.inidb.set("settings", "pointIntervalOffline", $.inidb.get("settings", "offlineinterval"));
+        
+        $.inidb.del("settings", "offlineinterval");
+    }
+    
+     if ($.inidb.exists("settings", "mingift")) {
+        $.inidb.set("settings", "pointGiftMin", $.inidb.get("settings", "mingift"));
+        
+        $.inidb.del("settings", "mingift");
+    }
+     println("     Updating timesystem.js setting files");
+     
+     if ($.inidb.exists("settings", "timelevel")) {
+        $.inidb.set("settings", "timeLevel", $.inidb.get("settings", "timelevel"));
+        
+        $.inidb.del("settings", "timelevel");
+    }
+    
+     if ($.inidb.exists("settings", "timepromotehours")) {
+        $.inidb.set("settings", "timePromoteHours", $.inidb.get("settings", "timepromotehours"));
+        
+        $.inidb.del("settings", "timepromotehours");
+    }
+    
+     if ($.inidb.exists("settings", "timezone")) {
+        $.inidb.set("settings", "timeZone", $.inidb.get("settings", "timezone"));
+        
+        $.inidb.del("settings", "timezone");
+    }
+    
+    println("   End version 16 upgrades...");
+}
+
 println("   Saving...");
 
 $.inidb.SetInteger("init", "upgrade", "version", parseInt($.upgrade_version));
