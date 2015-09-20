@@ -92,7 +92,6 @@ $.lang.data["net.phantombot.chatmoderator.chatmod-warn-reset-time-set"] = "Chang
 $.lang.data["net.phantombot.common.user-404"] = "The user \"$1\" has not visited this channel yet.";
 $.lang.data["net.phantombot.common.whisper-disabled"] = "[Whisper Mode] for $1 has been disabled.";
 $.lang.data["net.phantombot.common.whisper-enabled"] = "[Whisper Mode] for $1 has been enabled.";
-
 $.lang.data["net.phantombot.pointsystem.bonus-error-negative"] = "You can not set the bonus per group level to negative $1.";
 $.lang.data["net.phantombot.pointsystem.bonus-success"] = "Set the $1 bonus to $2 per group level.";
 $.lang.data["net.phantombot.pointsystem.bonus-usage"] = "Usage: \"!points bonus <amount>\"";
@@ -149,3 +148,23 @@ $.lang.data["net.phantombot.pointsystem.take-error-toomuch"] = "You can not take
 $.lang.data["net.phantombot.pointsystem.take-success"] = "Taken $1 from $2. New balance is $3.";
 $.lang.data["net.phantombot.pointsystem.take-usage"] = "Usage: \"!points take <name> <amount>\"";
 $.lang.data["net.phantombot.pointsystem.toggle-success"] = "Users in the group $1 or higher are now able to use point management commands.";
+
+//timeSystem.js
+$.lang.data["net.phantombot.timesystem.set-time"] = "$1's time was set to $2 seconds.";
+$.lang.data["net.phantombot.timesystem.give-time"] = "$1 seconds was added towards $2";
+$.lang.data["net.phantombot.timesystem.take-time"] = "$1's time was deducted by $2 seconds.";
+$.lang.data["net.phantombot.timesystem.help-usage"] = "Usage: \"!time give <username> <amount in seconds>, !time take <username> <amount in seconds>, !time set <username> <amount in seconds>\"";
+$.lang.data["net.phantombot.timesystem.timecheck"] = "$1 has been in this channel for a total of $2";
+$.lang.data["net.phantombot.timesystem.time-promote"] = "$1 has been promoted to a $2! Congratulations!";
+$.lang.data["net.phantombot.timesystem.time-toggle-off"] = "Time won't be displayed when viewing your $1 any more.";
+$.lang.data["net.phantombot.timesystem.time-toggle-on"] = "Time will be displayed when viewing your $1 now.";
+$.lang.data["net.phantombot.timesystem.streamer-local-time"] = "It is currently $1 where $2 is located.";
+$.lang.data["net.phantombot.timesystem.time-level-off"] = "Earning higher group rank by spending time in chat has been disabled.";
+$.lang.data["net.phantombot.timesystem.time-level-on"] = "Earning higher group rank by spending time in chat has been enabled.";
+$.lang.data["net.phantombot.timesystem.timezone-list"] = "A list of time zones can be found here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones.";
+$.lang.data["net.phantombot.timesystem.current-timezone"] = "The current time zone is '$1'.";
+$.lang.data["net.phantombot.timesystem.current-timezone-usage"] = "The current time zone is '$1'. To change it use '!timezone <timezone>'.";
+$.lang.data["net.phantombot.timesystem.time-promote-hours-minimum"] = "Minimum promotion time must be at least 1 hour";
+$.lang.data["net.phantombot.timesystem.time-promote-hours-grater-then-0"] = "Promotion time must be a number greater than 0.";
+$.lang.data["net.phantombot.timesystem.time-promote-hours-set"] = "Group promotion time is now $1 hour(s).";
+$.lang.data["net.phantombot.timesystem.error"] = "Error! Invalid time zone specified. Time zone has not been changed.";
