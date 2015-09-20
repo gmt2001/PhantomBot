@@ -183,7 +183,7 @@ $.on('command', function (event) {
             $.inidb.set("settings", "whisper_points", "false");
             whispermode = "false";
 
-            $.say($.lang.get("net.phantombot.common.whisper-enabled", "Points System"));
+            $.say($.lang.get("net.phantombot.common.whisper-disabled", "Points System"));
         }
     }
         
