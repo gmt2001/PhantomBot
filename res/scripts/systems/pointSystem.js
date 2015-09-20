@@ -54,6 +54,10 @@ $.getWhisperString = function(sender) {
     }
 }
 
+$.getWhisperStringStatic = function(sender) {
+        return "/w " + sender + " ";
+}
+
 $.getPoints = function (user) {
     var points = $.inidb.get('points', user.toLowerCase());
     if (points == null) points = 0;
@@ -678,6 +682,7 @@ $.on('command', function (event) {
                     $.inidb.incr('points', username.toLowerCase(), parseInt(args[1]));
 
                     $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.gift-success", getPointsString(args[1]), $.username.resolve(args[0]), getPointsString($.inidb.get('points', $.username.resolve(args[0]).toLowerCase())), getPointsString($.inidb.get('points', sender.toLowerCase()))));
+					$.say($.getWhisperStringStatic(args[0]) + $.lang.get("net.phantombot.pointsystem.gift-received", getPointsString(args[1]), $.username.resolve(sender), getPointsString($.inidb.get('points', $.username.resolve(args[0]).toLowerCase())), getPointsString($.inidb.get('points', sender.toLowerCase()))));
                     return;
                 } else {
                     $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.common.user-404", $.username.resolve(username)));
