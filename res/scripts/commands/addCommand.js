@@ -76,7 +76,7 @@ $.on('command', function(event) {
             return;
         }
     }
-    if (command.equalsIgnoreCase("customcommands")) {
+    if (command.equalsIgnoreCase("commands")) {
 
         var customcommands = "";
         var keys = $.inidb.GetKeyList("command", "");
