@@ -1,57 +1,43 @@
+$.getOrdinal = function (n) {
+   var s = ["th","st","nd","rd"],
+       v = n % 100;
+   return n + (s[(v - 20) % 10] || s[v] || s[0]);
+}
+
 $.on('command', function(event) {
     var sender = event.getSender();
     var username = $.username.resolve(sender, event.getTags());
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
-    var args = event.getArgs();
-    
-    if (command.equalsIgnoreCase("raider")) {
-        if (!$.isModv3(sender, event.getTags())) {
-            $.say($.modmsg);
+    var args;
+
+    if (argsString.isEmpty()) {
+        args = [];
+    } else {
+        args = argsString.split(" ");
+    }
+
+    if (command.equalsIgnoreCase("raid") || command.equalsIgnoreCase("raider")) {
+        if (args.length >= 1) {
+            if (!$.isModv3(sender, event.getTags())) {
+                $.say($.modmsg);
+                return;
+            }
+
+            $.inidb.incr('raiders', args[0].toLowerCase() + "_count", 1);
+
+            $.say($.lang.get("net.phantombot.raidsystem.success", $.username.resolve(args[0]), getOrdinal($.inidb.get('raiders', args[0].toLowerCase()  + "_count")), args[0].toLowerCase()));  
             return;
-        }
-        
-        if ($.recentraider == null || $.recentraider == undefined) {
-            $.recentraider = new Array();
-        }
-        
-        if (args.length == 0) {
-            $.say("Records an incoming raid. Usage: !raider <raider>");
         } else {
-            var raider = args[0].toLowerCase();
-            var raiderR = $.username.resolve(args[0]);
-            
-            for (var i = 0; i < $.recentraider.length; i++) {
-                if (raider.equalsIgnoreCase($.recentraider[i][0]) && System.currentTimeMillis() - $.recentraider[i][1] < 5 * 60 * 1000) {
-                    return;
-                } else if (raider.equalsIgnoreCase($.recentraider[i][0])) {
-                    $.recentraider.splice(i, 1);
-                    break;
-                }
-            }
-            
-            $.recentraider.push(new Array(raider, System.currentTimeMillis()));
-            
-            $.inidb.incr("raiders", raider + "_count", 1);
-                
-            var num = $.inidb.get("raiders", raider + "_count");
-                
-            if (parseInt(num) % 10 == 1 && parseInt(num) % 100 != 11) {
-                num = num + "st";
-            } else if (parseInt(num) % 10 == 2 && parseInt(num) % 100 != 12) {
-                num = num + "nd";
-            } else if (parseInt(num) % 10 == 3 && parseInt(num) % 100 != 13) {
-                num = num + "rd";
-            } else {
-                num = num + "th";
-            }
-                
-            $.say("Thanks for the raid " + raiderR + "! This is the " + num + " time " + raiderR + " has raided! Please give them a follow at twitch.tv/" + raiderR);
+            $.say($.lang.get("net.phantombot.raidsystem.usage"));       
+            return;
         }
     }
 });
+
 setTimeout(function(){ 
     if ($.moduleEnabled('./systems/raidSystem.js')) {
+        $.registerChatCommand("./systems/raidSystem.js", "raid", "mod");
         $.registerChatCommand("./systems/raidSystem.js", "raider", "mod");
     }
 },10*1000);
