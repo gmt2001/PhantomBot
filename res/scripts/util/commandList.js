@@ -179,7 +179,7 @@ $.on('command', function(event) {
     var args = event.getArgs();
     var whispermode = $.inidb.get("settings", "whisper_commands");
     
-    if (command.equalsIgnoreCase("botcommands")) { // change !botcommands for all commands and !commands for custom commands.
+    if (command.equalsIgnoreCase("bot")) { // !bot for bot commands and !commands for custom commands.
         var cmdList = "";
         var length = 0;
         var start = 0;
