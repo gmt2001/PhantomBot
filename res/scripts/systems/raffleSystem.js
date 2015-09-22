@@ -409,11 +409,16 @@ $.on('command', function (event) {
                     return;
                 }
             } else if (action.equalsIgnoreCase("entries") || action.equalsIgnoreCase("entrants")) {
-                var raffleEntrants = $.inidb.get('raffles', 'players');
                 var arrayRaffleEntrants = raffleEntrants.split(',');
                 var maxRaffleEntrants = arrayRaffleEntrants.length;
                 var maxResults = 15;
                 var returnString = "";
+
+                if ($.raffleEntrants != null && $.raffleEntrants != undefined) {
+                    var raffleEntrants = $.raffleEntrants;
+                } else {
+                    var raffleEntrants = $.inidb.get('raffles', 'players');
+                }
 
                 if (args[1] != null && isNaN(parseInt(args[1]))) {
                     $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.usage"));
