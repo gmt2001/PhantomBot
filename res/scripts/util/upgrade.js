@@ -709,6 +709,12 @@ if ($.inidb.GetInteger("init", "upgrade", "version") < 16) {
         $.inidb.del("settings", "timezone");
     }
     
+     if ($.inidb.exists("settings", "raffle_toggle")) {
+        $.inidb.set("settings", "raffleToggle", $.inidb.get("settings", "raffle_toggle"));
+        
+        $.inidb.del("settings", "raffle_toggle");
+    }
+    
     println("   End version 16 upgrades...");
 }
 
