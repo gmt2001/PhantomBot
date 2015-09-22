@@ -1,358 +1,515 @@
-$.on('command', function(event) {
-    var sender = event.getSender();
+$.raffleToggle = $.inidb.get("settings", "raffleToggle");
+$.whisperRaffle = $.inidb.get("settings", "whisperRaffle");
+
+if ($.raffleToggle == undefined || $.raffleToggle == null) {
+    $.raffleToggle = "true";
+}
+
+if ($.whisperRaffle == undefined || $.whisperRaffle == null) {
+    $.whisperRaffle = "false";
+}
+
+$.getWhisperString = function(sender) {
+    // TODO: Incorporate $.whisper once it is available.
+    if ($.whisperRaffle == "true") {
+        return "/w " + sender + " ";
+    } else {
+        return "";
+    }
+}
+
+$.getPointsString = function (points) {
+    points = parseInt(points);
+    var pointsString;
+
+    if (points == 1) {
+        pointsString = points + " " + $.inidb.get('settings', 'pointNameSingle');
+    } else {
+        pointsString = points + " " + $.inidb.get('settings', 'pointNameMultiple');
+    }
+
+    return pointsString;
+}
+
+$.getRewardString = function(reward) {
+    if (!$.moduleEnabled("./systems/pointSystem.js") || isNaN(reward)) {
+        $.raffleMode = 0;
+        return reward;
+    } else {
+        $.raffleMode = 1;
+        return getPointsString(Math.max(parseInt(reward), 0));
+    }
+}
+
+$.enterRaffle = function(user, message) {
+    // List of return codes:
+    // - 0: Wrong keyword.
+    // - 1: Successfully entered the raffle.
+    // - 2: Raffle isn't running.
+    // - 3: User already entered the raffle.
+    // - 4: User doesn't have enough points to enter.
+    // - 5: The broadcaster tried to enter.
+    // - 6: User isn't following but following is required to enter.
+
+    if ($.raffleRunning == 1) {
+        if ($.raffleKeyword == "!raffle" && message.toLowerCase() != "!raffle") {
+            return 0;
+        } else if (!message.toLowerCase().contains($.raffleKeyword.toLowerCase())) {
+            return 0;
+        }
+
+        if ($.array.contains($.raffleEntrants, user)) {
+            return 3;
+        }
+
+        if ($.moduleEnabled("./systems/pointSystem.js") && $.rafflePrice > 0) {
+            var points = $.inidb.get('points', user);
+
+            if (points == null || isNaN(points)) {
+                points = 0;
+            } else {
+                points = parseInt(points);
+            }
+
+            if ($.rafflePrice > points) {
+                return 4;
+            }
+
+            $.inidb.decr('points', user, $.rafflePrice);
+        }
+        
+        if ($.raffleFollowers == 1) {
+            var userFollows = $.inidb.get('followed', user);
+            if (userFollows == null || userFollows == undefined) {
+                // Let's give the user a fair chance, check again.
+                var userFollowsCheck = $.twitch.GetUserFollowsChannel($.username.resolve(user.toLowerCase()), $.channelName);
+                
+                if (userFollowsCheck.getInt("_http") != 200) {
+                    if (user.toLowerCase() == $.channelName.toLowerCase()) {
+                        return 5;
+                    } else {
+                        return 6;
+                    }
+                }
+            }
+        }
+    
+        $.raffleEntrants.push(user);
+        return 1;
+    } else {
+        return 2;
+    }
+}
+
+$.on('command', function (event) {
+    var sender = event.getSender().toLowerCase();
     var username = $.username.resolve(sender, event.getTags());
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
-    var args = event.getArgs();
-    var action = args[0];
-    var currentTime = new Date();
-    var month = currentTime.getMonth() + 1;
-    var day = currentTime.getDate();
-    var year = currentTime.getFullYear();
-    var date = month + "/" + day + "/" + year;
+    var args;
 
- 
-    if(command.equalsIgnoreCase("raffle")) {
-        var followers;
-        var prices;
-        var winner;
-        var followed;
-        var i;
-        var userfollowschannel;
-        var rMode;
-        
-        if (args.length == 0) {
-            if ($var.raffle_running) {
-                followers = "";
-                prices = "";
-                
-                if ($var.raffle_followers) {
-                    followers = " You must be following the channel to win!";
-                }
-                
-                if ($.moduleEnabled("./systems/pointSystem.js") && $var.raffle_price > 0) {
-                    prices = " Entering costs " + $var.raffle_price + " " + $.pointname + "!";
-                }
-                
-                $.say("/me A Raffle is still in progress! Type '" + $var.raffle_keyword + "' to enter for a chance to win " + $var.raffle_win + "! " + followers + prices +" Type '!raffle end' to choose a winner");
-            } else {
-                prices = "";
-                followers = "";
-                
-                if ($.moduleEnabled("./systems/pointSystem.js")) {
-                    prices = "<price> ";
-                }
-                
-                $.say("Usage: '!raffle start [-followers] " + prices + "<keyword> <reward>' -- '!raffle results' -- '!raffle repick' -- '!raffle end'");
-            }
+    if (argsString.isEmpty()) {
+        args = [];
+    } else {
+        args = argsString.split(" ");
+    }
+
+    if (command.equalsIgnoreCase("whisperraffle")) {
+        if (!$.isModv3(sender, event.getTags())) {
+            $.say($.modmsg);
             return;
         }
+        if ($.whisperRaffle == "false") {
+            $.inidb.set("settings", "whisperRaffle", "true");
+            $.whisperRaffle = $.inidb.get('settings', 'whisperRaffle');
 
-        $var.raffle_toggle = true;
-        if ($.inidb.get('settings', 'raffle_toggle') == 1) {
-            $var.raffle_toggle = true;
-        } else if ($.inidb.get('settings', 'raffle_toggle') == 2) {
-            $var.raffle_toggle = false;
+            $.say($.lang.get("net.phantombot.common.whisper-enabled", "Raffle System"));
+        } else if ($.whisperRaffle == "true") {
+            $.inidb.set("settings", "whisperRaffle", "false");
+            $.whisperRaffle = $.inidb.get('settings', 'whisperRaffle');
+
+            $.say($.lang.get("net.phantombot.common.whisper-disabled", "Raffle System"));
         }
+    }
 
+    if(command.equalsIgnoreCase("raffle")) {
+        if (args.length >= 1) {
+            var action = args[0];
 
-        if (action.equalsIgnoreCase("toggle") && !argsString.isEmpty()) {
-            if (!$.isAdmin(sender)) {
-                $.say($.adminmsg);
-                return;
-            }
-
-            if ($var.raffle_toggle == false) {
-
-                $var.raffle_toggle = true;
-                $.inidb.set('settings', 'raffle_toggle', 1);
-                $.say("Raffle messages have been turned on!");
-
-            } else if ($var.raffle_toggle == true) {
-
-                $var.raffle_toggle = false;
-                $.inidb.set('settings', 'raffle_toggle', 2);
-                $.say("Raffle messages have been turned off!");
-            }
-
-
-
-        }
-
-        if (action.equalsIgnoreCase("results") && !argsString.isEmpty()) {
-            if ($var.raffle_running) {
-
-                rMode = $var.raffle_mode;
-                if (rMode == 1) {
-
-                    rMode = "Normal";
-
-                } else if (rMode == 0) {
-                    rMode = "Followers Only";
-                }
-
-                $.say("/me [Current Results] - [Reward: " + $var.raffle_win + "] - [Entry Price: " + $var.raffle_price + "] - [Raffle Mode: " + rMode + "] - [Keyword: " + $var.raffle_keyword + "] - [Entries: " + $var.raffle_entrants.length + "]");
-            } else {
-                var rReward = $.inidb.get('raffles', 'reward');
-                var rPrice = $.inidb.get('raffles', 'price');
-                rMode = $.inidb.get('raffles', 'mode');
-                var rKey = $.inidb.get('raffles', 'keyword');
-                var rWinner = $.inidb.get('raffles', 'winner');
-                var rPlayers = $.inidb.get('raffles', 'players');
-                var rEntries = $.inidb.get('raffles', 'entries');
-                var rDate = $.inidb.get('raffles', 'date');
-
-                if (rWinner == null) {
-                    $.say("No past raffles!");
+            if (action.equalsIgnoreCase("start") || action.equalsIgnoreCase("new") || action.equalsIgnoreCase("run")) {
+                if ($.moduleEnabled("./systems/pointSystem.js") && $.inidb.get("settings", "permTogglePoints") == "true") {
+                    if (!$.isModv3(sender, event.getTags())) {
+                        $.say($.modmsg);
+                        return;
+                    }
                 } else {
+                    // This is the default. If points permtoggle allows mods, allow mods here as well.
+                    // If the points module is inactive, use isAdmin for safety reasons.
+                    if (!$.isAdmin(sender)) {
+                        $.say($.adminmsg);
+                        return;
+                    }
+                }
 
-                    if (rPrice == null) {
-                        rPrice = 0;
+                if ($.raffleRunning == 1) {
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.start-error-running"));
+                    return;
+                } else {
+                    $.raffleTime = new Date();
+                    $.raffleMonth = $.raffleTime.getMonth() + 1;
+                    $.raffleDay = $.raffleTime.getDate();
+                    $.raffleYear = $.raffleTime.getFullYear();
+                    $.raffleDateString = $.raffleMonth + "/" + $.raffleDay + "/" + $.raffleYear;
+
+                    $.raffleEntrants = [];
+                    $.raffleMode = 0;
+                    $.raffleRunning = 0;
+
+                    $.raffleFollowers = 0;
+                    $.rafflePrice = 0;
+                    $.raffleKeyword = "!raffle";
+                    $.raffleReward = "";
+                    $.raffleWinnings = "";
+
+                    var i = 1;
+
+                    if (args[i] != null && args[i] != undefined && (args[i].equalsIgnoreCase("-followers") || args[i].equalsIgnoreCase("-followed") || args[i].equalsIgnoreCase("-follow"))) {
+                        $.raffleFollowers = 1;
+                        i++;
+                    }
+                    if (args[i] != null && args[i] != undefined && !args[i].isEmpty()) {
+                        $.raffleReward = args[i];
+                        i++;
+                    }
+                    if ($.moduleEnabled("./systems/pointSystem.js") && args[i] != null && args[i] != undefined && !isNaN(args[i])) {
+                        $.rafflePrice = parseInt(args[i]);
+                        i++;
+                    }
+                    if (args[i] != null && args[i] != undefined && !args[i].isEmpty()) {
+                        if (args[i] == "!raffle") {
+                            $.raffleKeyword = args[i];
+                            i++;
+                        } else if(args[i].startsWith('!')) {
+                            if ($.moduleEnabled("./systems/pointSystem.js")) {
+                                $.say$.getWhisperString(sender) + ($.lang.get("net.phantombot.rafflesystem.start-error-invalid-points"));
+                                return;
+                            } else {
+                                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.start-error-invalid-default"));
+                                return;
+                            }
+                        } else {
+                            $.raffleKeyword = args[i];
+                            i++;
+                        }
                     }
 
-                    if (rMode == 0) {
-
-                        rMode = "Normal";
-
-                    } else if (rMode == 1) {
-                        rMode = "Followers";
+                    if ($.raffleReward == "") {
+                        if ($.moduleEnabled("./systems/pointSystem.js")) {
+                            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.start-usage-points"));
+                            return;
+                        } else {
+                            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.start-usage-default"));
+                            return;
+                        }
+                    } else {
+                        if ($.moduleEnabled("./systems/pointSystem.js")) {
+                            if ($.raffleFollowers == 1 && $.rafflePrice > 0) {
+                                $.say($.lang.get("net.phantombot.rafflesystem.start-success-followers-price", $.getRewardString($.raffleReward), $.getPointsString($.rafflePrice), $.raffleKeyword));
+                            } else if ($.raffleFollowers == 1 && $.rafflePrice <= 0) {
+                                $.say($.lang.get("net.phantombot.rafflesystem.start-success-followers", $.getRewardString($.raffleReward), $.raffleKeyword));
+                            } else if ($.raffleFollowers == 0 && $.rafflePrice > 0) {
+                                $.say($.lang.get("net.phantombot.rafflesystem.start-success-price", $.getRewardString($.raffleReward), $.getPointsString($.rafflePrice), $.raffleKeyword));
+                            } else {
+                                $.say($.lang.get("net.phantombot.rafflesystem.start-success-default", $.getRewardString($.raffleReward), $.raffleKeyword));
+                            }
+                        } else {
+                            if ($.raffleFollowers == 1) {
+                                $.say($.lang.get("net.phantombot.rafflesystem.start-success-followers", $.getRewardString($.raffleReward), $.raffleKeyword));
+                            } else {
+                                $.say($.lang.get("net.phantombot.rafflesystem.start-success-default", $.getRewardString($.raffleReward), $.raffleKeyword));
+                            }
+                        }
                     }
 
-                    if (rKey == null) {
+                    $.raffleRunning = 1;
 
-                        rKey = "None";
-                    }
+                    $.inidb.set('raffles', 'reward', $.raffleReward);
+                    $.inidb.set('raffles', 'winner', $.winnerUsername);
+                    $.inidb.set('raffles', 'price', $.rafflePrice);
+                    $.inidb.set('raffles', 'mode', $.raffleMode);
+                    $.inidb.set('raffles', 'follow', $.raffleFollowers);
+                    $.inidb.set('raffles', 'keyword', $.raffleKeyword);
+                    $.inidb.set('raffles', 'date', $.raffleDateString);
+                }
+            } else if (action.equalsIgnoreCase("close") || action.equalsIgnoreCase("stop") || action.equalsIgnoreCase("end") || action.equalsIgnoreCase("draw")) {
+                if (!$.isModv3(sender, event.getTags())) {
+                    $.say($.modmsg);
+                    return;
+                }
 
-                    if (rWinner == null) {
-                        rWinner = "None"
-                    }
+                $.raffleTime = new Date();
+                $.raffleMonth = $.raffleTime.getMonth() + 1;
+                $.raffleDay = $.raffleTime.getDate();
+                $.raffleYear = $.raffleTime.getFullYear();
+                $.raffleDateString = $.raffleMonth + "/" + $.raffleDay + "/" + $.raffleYear;
+     
+                if ($.raffleRunning == 0) {
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.close-error-notrunning"));
+                    return;
+                } else {
+                    $.raffleRunning = 0;
 
-                    if (rEntries == null) {
-                        rEntries = 0;
+                    if ($.raffleEntrants.length == 0) {
+                        $.say($.lang.get("net.phantombot.rafflesystem.close-success-noentries"));
+                        return;
                     }
                     
-                    if (rPlayers == null) {
-                        rPlayers = 0;
-                    }
-
-                    $.say("[" + rDate + "] - [Reward: " + rReward + "] - [Entry Price: " + rPrice + " " + $.pointname + "] - [Mode: " + rMode + "] - [Keyword: " + rKey + "] - [Winner: " + $.username.resolve(rWinner) + "] - [Entries: " + rEntries + "] - [Players: " + rPlayers + "]");
-                }
-            }
-        }
-
- 
-        if (action.equalsIgnoreCase("start")) {
-            if (!$.isModv3(sender, event.getTags())) {
-                $.say(username + ", " + $.getUserGroupName(sender) + "s aren't allowed to start raffles! Moderators only.");
-                return;
-            }
- 
-            if ($var.raffle_running || (($.moduleEnabled("./systems/pointSystem.js") && args.length < 4)
-                || (!$.moduleEnabled("./systems/pointSystem.js") && args.length < 3))) {
-                return;
-            }
-            
-            var followers_only = false;
-            var price = -1;
-            var keyword = "";
-            var reward = "";
-            i = 1;
-            
-            if (args[i] != null && args[i] != undefined && args[i].equalsIgnoreCase("-followers")) {
-                followers_only = true;
-                i++;
-            }
-            
-            if ($.moduleEnabled("./systems/pointSystem.js") && args[i] != null && args[i] != undefined && !isNaN(args[i])) {
-                price = parseInt(args[i]);
-                i++;
-            }
-            
-            if (args[i] != null && args[i] != undefined && !args[i].isEmpty()) {
-                keyword = args[i];
-                i++;
-            }
-            
-            if (args[i] != null && args[i] != undefined && !args[i].isEmpty()) {
-                reward = args[i];
-                i++;
-            }
-            
-            if (($.moduleEnabled("./systems/pointSystem.js") && price <= -1) || keyword.isEmpty() || reward.isEmpty()) {
-                prices = "";
-                
-                if ($.moduleEnabled("./systems/pointSystem.js")) {
-                    prices = "<price> ";
-                }
-                
-                $.say("Invalid format. Usage: '!raffle start [-follower] " + prices + "<keyword> <reward>'");
-                return;
-            }
- 
-            $var.raffle_entrants = [];
-            $var.raffle_price = Math.max(price, 0);
-            $var.raffle_mode = 0;
-            $var.raffle_keyword = keyword;
-            $var.raffle_followers = followers_only;
-            
-            followers = "";
-            prices = "";
-            
-            if (followers_only) {
-                followers = " You must be following the channel to win!";
-            }
-                
-            if (price > 0) {
-                prices = " Entering costs " + $var.raffle_price;
-            }
-            
-            if (!$.moduleEnabled("./systems/pointSystem.js") || isNaN(reward)) {
-                $var.raffle_mode = 1;
-                $var.raffle_win = reward;
-                
-                $.say("/me [Raffle] for -> [" + reward + "] <-" + followers + prices + " " + $.pointname + "! Enter to win by saying the keyword: " + keyword);
-            } else {
-                $var.raffle_win = Math.max(parseInt(reward), 0);
-                
-                $.say("/me [Raffle] for -> [" + reward + " " + $.pointname + "] <-" + followers + prices + " " + $.pointname + "! Enter to win by saying the keyword: " + keyword);
-
-            }
-            
-            $var.raffle_running = true;
-           
-        } else if (action.equalsIgnoreCase("end")) {
-            if (!$.isModv3(sender, event.getTags())) {
-                $.say($.modmsg);
-                return;
-            }
- 
-            if (!$var.raffle_running) {
-                return;
-            }
-            
-            $var.raffle_running = false;
- 
-            if ($var.raffle_entrants.length == 0) {
-                $.say("/me The raffle has ended! No one entered the raffle.");
-                return;
-            }
- 
-            i = 0;
- 
-            do {
-                if (i > ($var.raffle_entrants.length * 2)) {
-                    winner = null;
-                    break;
-                }
-                
-                winner = $var.raffle_entrants[$.randRange(1, $var.raffle_entrants.length) - 1];
-                followed = $.inidb.get('followed', winner.toLowerCase());
-                
-                if ($var.raffle_followers && (followed == null || followed == undefined || !followed.equalsIgnoreCase("1"))){
-                    userfollowschannel = $.twitch.GetUserFollowsChannel(winner.toLowerCase(), $.channelName);
+                    i = 0;
                     
-                    if (userfollowschannel.getInt("_http") == 200) {
-                        followed = "1";
-                    }
-                }
-                
-                i++;
-            } while ($var.raffle_followers && (followed == null || followed == undefined || !followed.equalsIgnoreCase("1")));
-            
-            if (winner == null) {
-                $.say("/me There is no winner!");
-                return;
-            }
-
-
-            if ($var.raffle_mode == 0) {
-                $.say("/me [Winner] -> " + $.username.resolve(winner) + "! Congratulations! " + $var.raffle_win + " " + $.pointname +  " has been credited to your account!");
-                
-                $.inidb.incr('points', winner.toLowerCase(), $var.raffle_win);
-            } else {
-                $.say("/me [Winner] for [" + $var.raffle_win + "] is " + winner + "! Congratulations!");
-            }
-            $.inidb.set('raffles', 'reward', $var.raffle_win);
-            $.inidb.set('raffles', 'winner', winner);
-            $.inidb.set('raffles', 'price', $var.raffle_price);
-            $.inidb.set('raffles', 'mode', $var.raffle_mode);
-            $.inidb.set('raffles', 'keyword', $var.raffle_keyword);
-            $.inidb.set('raffles', 'entries', $var.raffle_entrants.length);
-            $.inidb.set('raffles', 'players', $var.raffle_entrants);
-            $.inidb.set('raffles', 'date', date);
-
-        } else if (action.equalsIgnoreCase("entries")) {
-            if (!$.isModv3(sender, event.getTags())) {
-                $.say(username + ", only moderators may check the current list.");
-                return;
-            
-            }
-            
-            else if (!$var.raffle_running) {
-                return;
-            }
-            
-            else if($var.raffle_entrants.length == 0) {
-                $.say("/me No one entered the raffle yet!");
-                return;
-            }
-            else if ($var.raffle_running) {
-            
-                $.say("The current entrants are " + $var.raffle_entrants)
-                return;    
-            }
-            
-        }else if (action.equalsIgnoreCase("repick")) {
-            if (!$.isModv3(sender, event.getTags())) {
-                $.say($.modmsg);
-                return;
-            }
- 
-            if ($var.raffle_running || $var.raffle_entrants.length == 0) {
-
-                return;
-            }
-            
-            if ($var.raffle_mode == 0) {
-                $.say("You can not use re-pick on a points raffle!");
-                return;
-            }
- 
-            i = 0;
- 
-            do {
-                if (i > ($var.raffle_entrants.length * 2)) {
-                    winner = null;
-                    break;
-                }
-                
-                winner = $.randElement($var.raffle_entrants);
-                followed = $.inidb.get('followed', winner.toLowerCase());
-                
-                if ($var.raffle_followers && (followed == null || followed == undefined || !followed.equalsIgnoreCase("1"))){
-                    userfollowschannel = $.twitch.GetUserFollowsChannel(winner.toLowerCase(), $.channelName);
+                    do {
+                        if (i > ($.raffleEntrants.length * 2)) {
+                            $.winnerUsername = null;
+                            break;
+                        }
+                        
+                        $.winnerUsername = $.raffleEntrants[$.randRange(1, $.raffleEntrants.length) - 1];
+                        $.winnerFollows = $.inidb.get('followed', $.winnerUsername.toLowerCase());
+                        
+                        if ($.raffleFollowers && ($.winnerFollows == null || $.winnerFollows == undefined || $.winnerFollows == "1")){
+                            $.winnerFollowsCheck = $.twitch.GetUserFollowsChannel($.winnerUsername.toLowerCase(), $.channelName);
+                            
+                            if ($.winnerFollowsCheck.getInt("_http") == 200) {
+                                $.winnerFollows = "1";
+                            }
+                        }
+                        
+                        i++;
+                    } while ($.raffleFollowers == 1 && ($.winnerFollows == null || $.winnerFollows == undefined || $.winnerFollows != "1"));
                     
-                    if (userfollowschannel.getInt("_http") == 200) {
-                        followed = "1";
+                    if ($.winnerUsername == null) {
+                        $.say($.lang.get("net.phantombot.rafflesystem.close-success-nofollow"));
+                        return;
                     }
+
+                    if ($.raffleMode == 0) {
+                        $.say($.lang.get("net.phantombot.rafflesystem.close-success-default", $.username.resolve($.winnerUsername), $.getRewardString($.raffleReward)));
+                    } else {
+                        $.inidb.incr('points', $.winnerUsername.toLowerCase(), $.raffleReward);
+
+                        $.say($.lang.get("net.phantombot.rafflesystem.close-success-points", $.username.resolve($.winnerUsername), $.getRewardString($.raffleReward)));
+                    }
+
+                    $.inidb.set('raffles', 'reward', $.raffleReward);
+                    $.inidb.set('raffles', 'winner', $.winnerUsername);
+                    $.inidb.set('raffles', 'price', $.rafflePrice);
+                    $.inidb.set('raffles', 'mode', $.raffleMode);
+                    $.inidb.set('raffles', 'follow', $.raffleFollowers);
+                    $.inidb.set('raffles', 'keyword', $.raffleKeyword);
+                    $.inidb.set('raffles', 'entries', $.raffleEntrants.length);
+                    $.inidb.set('raffles', 'players', $.raffleEntrants);
+                    $.inidb.set('raffles', 'date', $.raffleDateString);
+                }
+            } else if (action.equalsIgnoreCase("repick") || action.equalsIgnoreCase("redraw")) {
+                if (!$.isModv3(sender, event.getTags())) {
+                    $.say($.modmsg);
+                    return;
+                }
+
+                $.raffleTime = new Date();
+                $.raffleMonth = $.raffleTime.getMonth() + 1;
+                $.raffleDay = $.raffleTime.getDate();
+                $.raffleYear = $.raffleTime.getFullYear();
+                $.raffleDateString = $.raffleMonth + "/" + $.raffleDay + "/" + $.raffleYear;
+     
+                if ($.raffleRunning == 1) {
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.redraw-error-running"));
+                    return;
+                }
+
+                if ($.raffleEntrants.length == 0) {
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.redraw-error-noentries"));
                 }
                 
-                i++;
-            } while ($var.raffle_followers && (followed == null || followed == undefined || !followed.equalsIgnoreCase("1")));
-            
-            if (winner == null) {
-                $.say("/me There is no winner!");
-            } else {
-                $.say("/me [Winner] for [" + $var.raffle_win + "] is " + winner + "! Congratulations!");
-                $.inidb.set('raffles', 'reward', $var.raffle_win);
-                $.inidb.set('raffles', 'winner', winner);
-                $.inidb.set('raffles', 'price', $var.raffle_price);
-                $.inidb.set('raffles', 'mode', $var.raffle_mode);
-                $.inidb.set('raffles', 'keyword', $var.raffle_keyword);
-                $.inidb.set('raffles', 'entries', $var.raffle_entrants.length);
-                $.inidb.set('raffles', 'players', $var.raffle_entrants);
-                $.inidb.set('raffles', 'date', date);
+                if ($.raffleMode == 1) {
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.redraw-error-pointraffle", $.inidb.get('settings', 'pointNameMultiple')));
+                    return;
+                }
+     
+                i = 0;
+                
+                do {
+                    if (i > ($.raffleEntrants.length * 2)) {
+                        $.winnerUsername = null;
+                        break;
+                    }
+                    
+                    $.winnerUsername = $.raffleEntrants[$.randRange(1, $.raffleEntrants.length) - 1];
+                    $.winnerFollows = $.inidb.get('followed', $.winnerUsername.toLowerCase());
+                    
+                    if ($.raffleFollowers && ($.winnerFollows == null || $.winnerFollows == undefined || $.winnerFollows == "1")){
+                        $.winnerFollowsCheck = $.twitch.GetUserFollowsChannel($.winnerUsername.toLowerCase(), $.channelName);
+                        
+                        if ($.winnerFollowsCheck.getInt("_http") == 200) {
+                            $.winnerFollows = "1";
+                        }
+                    }
+                    
+                    i++;
+                } while ($.raffleFollowers == 1 && ($.winnerFollows == null || $.winnerFollows == undefined || $.winnerFollows != "1"));
+                
+                if ($.winnerUsername == null) {
+                    $.say($.lang.get("net.phantombot.rafflesystem.redraw-success-nofollow"));
+                    return;
+                }
 
+                $.say($.lang.get("net.phantombot.rafflesystem.redraw-success-default", $.username.resolve($.winnerUsername), $.getRewardString($.raffleReward)));
+
+                $.inidb.set('raffles', 'reward', $.raffleReward);
+                $.inidb.set('raffles', 'winner', $.winnerUsername);
+                $.inidb.set('raffles', 'price', $.rafflePrice);
+                $.inidb.set('raffles', 'mode', $.raffleMode);
+                $.inidb.set('raffles', 'follow', $.raffleFollowers);
+                $.inidb.set('raffles', 'keyword', $.raffleKeyword);
+                $.inidb.set('raffles', 'entries', $.raffleEntrants.length);
+                $.inidb.set('raffles', 'players', $.raffleEntrants);
+                $.inidb.set('raffles', 'date', $.raffleDateString);
+            } else if (action.equalsIgnoreCase("results")) {
+                if (!$.isModv3(sender, event.getTags())) {
+                    $.say($.modmsg);
+                    return;
+                }
+
+                var prevRaffleReward = $.inidb.get('raffles', 'reward');
+                var prevRaffleWinner = $.inidb.get('raffles', 'winner');
+                var prevRafflePrice = $.inidb.get('raffles', 'price');
+                var prevRaffleMode = $.inidb.get('raffles', 'mode');
+                var prevRaffleFollowers = $.inidb.get('raffles', 'follow');
+                var prevRaffleKeyword = $.inidb.get('raffles', 'keyword');
+                var prevRaffleEntrantsCount = $.inidb.get('raffles', 'entries');
+                var prevRaffleDate = $.inidb.get('raffles', 'date');
+
+                if (prevRaffleWinner == null) prevRaffleWinner = "None";
+                if (prevRaffleWinner != null) prevRaffleWinner = $.username.resolve(prevRaffleWinner);
+                if (prevRaffleMode == 0) prevRaffleMode = "Other";
+                if (prevRaffleMode == 1) prevRaffleMode = "Points";
+                if (prevRaffleFollowers == 0) prevRaffleFollowers = "No";
+                if (prevRaffleFollowers == 1) prevRaffleFollowers = "Yes";
+                if (isNaN(prevRaffleEntrantsCount)) prevRaffleEntrantsCount = 0;
+
+                if (prevRaffleReward == null || prevRafflePrice == null || prevRaffleMode == null || prevRaffleKeyword == null || prevRaffleDate == null) {
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.result-error-notfound"));
+                    return;
+                }
+
+                if ($.raffleRunning == 1) {
+                    $.say($.lang.get("net.phantombot.rafflesystem.result-success-running", getRewardString(prevRaffleReward), getPointsString(prevRafflePrice), prevRaffleMode, prevRaffleFollowers, prevRaffleKeyword, prevRaffleEntrantsCount));
+                    return;
+                } else {
+                    $.say($.lang.get("net.phantombot.rafflesystem.result-success-norunning", getRewardString(prevRaffleReward), getPointsString(prevRafflePrice), prevRaffleMode, prevRaffleFollowers, prevRaffleKeyword, prevRaffleEntrantsCount, prevRaffleWinner, prevRaffleDate));
+                    return;
+                }
+            } else if (action.equalsIgnoreCase("entries") || action.equalsIgnoreCase("entrants")) {
+                var raffleEntrants = $.inidb.get('raffles', 'players');
+                var arrayRaffleEntrants = raffleEntrants.split(',');
+                var maxRaffleEntrants = arrayRaffleEntrants.length;
+                var maxResults = 15;
+                var returnString = "";
+
+                if (args[1] != null && isNaN(parseInt(args[1]))) {
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.usage"));
+                    return;
+                } else if (args[1] == null || parseInt(args[1]) <= 1) {
+                    for (i = 0; i < maxResults; i++) { 
+                        if (arrayRaffleEntrants[i] != null) {
+                            returnString += arrayRaffleEntrants[i] + ", ";
+                        }
+                    }
+                    if (returnString == "") {
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.entries-error-noresults"));
+                    } else {
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.entries-success", 1, Math.ceil(maxRaffleEntrants / maxResults), returnString.slice(0,-2)));
+                    }
+                    return;
+                } else if (parseInt(args[1])) {
+                    var offset = (Math.round(args[1]) - 1) * maxResults;
+
+                    for (i = 0; i < maxResults; i++) { 
+                        if (arrayRaffleEntrants[i + offset] != null) {
+                            returnString += arrayRaffleEntrants[i + offset] + ", ";
+                        }
+                    }
+                    if (returnString == "") {
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.entries-error-noresults"));
+                    } else {
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.entries-success", Math.round(args[1]), Math.ceil(maxRaffleEntrants / maxResults), returnString.slice(0,-2)));
+                    }
+                    return;
+                }
+            } else if (action.equalsIgnoreCase("toggle")) {
+                if (!$.isModv3(sender, event.getTags())) {
+                    $.say($.modmsg);
+                    return;
+                }
+                if ($.raffleToggle == "false") {
+                    $.inidb.set("settings", "raffleToggle", "true");
+                    $.raffleToggle = $.inidb.get('settings', 'raffleToggle');
+
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.toggle-enabled"));
+                } else if ($.raffleToggle == "true") {
+                    $.inidb.set("settings", "raffleToggle", "false");
+                    $.raffleToggle = $.inidb.get('settings', 'raffleToggle');
+
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.toggle-disabled"));
+                }
+            }
+        } else {
+            if ($.raffleRunning) {
+                if ($.raffleKeyword != "!raffle") {
+                    if ($.moduleEnabled("./systems/pointSystem.js")) {
+                        if ($.raffleFollowers == 1 && $.rafflePrice > 0) {
+                            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.enter-notcommand-followers-price", $.getRewardString($.raffleReward), $.getPointsString($.rafflePrice), $.raffleKeyword));
+                        } else if ($.raffleFollowers == 1 && $.rafflePrice <= 0) {
+                            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.enter-notcommand-followers", $.getRewardString($.raffleReward), $.raffleKeyword));
+                        } else if ($.raffleFollowers == 0 && $.rafflePrice > 0) {
+                            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.enter-notcommand-price", $.getRewardString($.raffleReward), $.getPointsString($.rafflePrice), $.raffleKeyword));
+                        } else {
+                            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.enter-notcommand-default", $.getRewardString($.raffleReward), $.raffleKeyword));
+                        }
+                    } else {
+                        if ($.raffleFollowers == 1) {
+                            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.enter-notcommand-followers", $.getRewardString($.raffleReward), $.raffleKeyword));
+                        } else {
+                            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.enter-notcommand-default", $.getRewardString($.raffleReward), $.raffleKeyword));
+                        }
+                    }
+                } else {
+                    switch ($.enterRaffle(sender, "!raffle")) {
+                        case 1:
+                            if ($.raffleToggle == "true") $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.enter-success"));
+                            break;
+                        case 2:
+                            // Don't know how we would get here, but it's there if it needs to be.
+                            if ($.raffleToggle == "true") $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.enter-error-notrunning", "Moderator"));
+                            break;
+                        case 3:
+                            if ($.raffleToggle == "true") $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.enter-error-entered"));
+                            break;
+                        case 4:
+                            if ($.raffleToggle == "true") $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.enter-error-notenough", $.inidb.get('settings', 'pointNameMultiple')));
+                            break;
+                        case 5:
+                            if ($.raffleToggle == "true") $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.enter-error-iscaster"));
+                            break;
+                        case 6:
+                            if ($.raffleToggle == "true") $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.enter-error-nofollow"));
+                            break;
+                        default:
+                            // We realistically aren't able to reach this. Just return.
+                            return;
+                    }
+                }
+            } else {
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.enter-error-notrunning", "Moderator"));
             }
         }
     }
@@ -360,56 +517,45 @@ $.on('command', function(event) {
 
 $.on('ircChannelMessage', function(event) {
     var sender = event.getSender();
-    var username = $.username.resolve(sender, event.getTags());
     var message = event.getMessage();
     
-    if ($var.raffle_running) {
-        if (message.toLowerCase().indexOf($var.raffle_keyword.toLowerCase()) == -1 || $.array.contains($var.raffle_entrants, sender)) {
-            if (message.toLowerCase().contains($var.raffle_keyword.toLowerCase())) {
-                if ($var.raffle_toggle == true) {
-                    $.say("You have already entered the raffle!");
-                }
+    if ($.raffleRunning == 1) {
+        switch ($.enterRaffle(sender, message)) {
+            case 0:
+                // We don't want spam. Just return.
                 return;
-            }
-            return;
-        }
-        
-        if ($var.raffle_price > 0) {
-            var points = $.inidb.get('points', sender);
-            
-            if (points == null) {
-                points = 0;
-            } else {
-                points = parseInt(points);
-            }
-           
-            if ($var.raffle_price > points) {
-                $.say(username + ", " + " you don't have enough " + $.pointname + " to enter!");
+                break;
+            case 1:
+                if ($.raffleToggle == "true") $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.enter-success"));
+                break;
+            case 2:
+                // We don't want spam. Just return.
                 return;
-            }
- 
-            $.inidb.decr('points', sender, $var.raffle_price);
+                break;
+            case 3:
+                if ($.raffleToggle == "true") $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.enter-error-entered"));
+                break;
+            case 4:
+                if ($.raffleToggle == "true") $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.enter-error-notenough", $.inidb.get('settings', 'pointNameMultiple')));
+                break;
+            case 5:
+                if ($.raffleToggle == "true") $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.enter-error-iscaster"));
+                break;
+            case 6:
+                if ($.raffleToggle == "true") $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.enter-error-nofollow"));
+                break;
+            default:
+                // We realistically aren't able to reach this. Just return.
+                return;
         }
-        
-        if ($var.raffle_followers == true) {
-            var follower = $.inidb.get('followed', sender);
-                if (follower == null) {            
-                $.say("You need to be following to enter the raffle "+ username +"!");
-                 return;
-             }
-         }
- 
-        $var.raffle_entrants.push(sender);
-        if ($var.raffle_toggle == false) {
-            println(username + " entered the raffle!");
-        } else {
-            $.say(username + " entered the raffle!");
-        }
-        
+    } else {
+        // We don't want spam. Just return.
+        return;
     }
 });
+
 setTimeout(function(){ 
     if ($.moduleEnabled('./systems/raffleSystem.js')) {
         $.registerChatCommand("./systems/raffleSystem.js", "raffle");
     }
-},10*1000);
+}, 10 * 1000);
