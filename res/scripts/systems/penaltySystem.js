@@ -1,71 +1,176 @@
-$.peninterval = parseInt($.inidb.get('settings', 'pointinterval'));
-$.penofflineinterval = parseInt($.inidb.get('settings', 'offlineinterval'));
+$.stopPoints = function(user) {
+    var penaltyPoints = parseInt($.inidb.get('penalty', user.toLowerCase() + "_points"));
+    var penaltyPointsCount = (isNaN(penaltyPoints)) ? 0 : penaltyPoints;
+
+    var penaltyUserPoints = parseInt($.inidb.get('penalty', user.toLowerCase() + "_pointscount"));
+    var penaltyUserPointsCount = (isNaN(penaltyUserPoints)) ? 0 : penaltyUserPoints;
+
+    var userPoints = parseInt($.inidb.get('points', user.toLowerCase()));
+    var userPointsCount = (isNaN(userPoints)) ? 0 : userPoints;
+
+    if ($.isOnline($.channelName)) {
+        var pointsGain = parseInt($.inidb.get('settings', 'pointGain'));
+        var pointsGainCount = (isNaN(pointsGain)) ? 1 : pointsGain;
+    } else {
+        var pointsGain = parseInt($.inidb.get('settings', 'pointGainOffline'));
+        var pointsGainCount = (isNaN(pointsGain)) ? 1 : pointsGain;
+    }
+
+    if (penaltyUserPointsCount == 0) {
+        $.inidb.set('penalty', user + "_pointscount", userPointsCount);
+        penaltyUserPointsCount = userPointsCount;
+    }
+
+    $.inidb.set('penalty', user + "_points", penaltyPointsCount + pointsGainCount);
+    $.inidb.set('points', user, penaltyUserPointsCount);
+}
+
+$.returnPoints = function(user) {
+    var penaltyPoints = parseInt($.inidb.get('penalty', user.toLowerCase() + "_points"));
+    var penaltyPointsCount = (isNaN(penaltyPoints)) ? 0 : penaltyPoints;
+
+    var penaltyUserPoints = parseInt($.inidb.get('penalty', user.toLowerCase() + "_pointscount"));
+    var penaltyUserPointsCount = (isNaN(userPoints)) ? 0 : userPoints;
+
+    var userPoints = parseInt($.inidb.get('points', user.toLowerCase()));
+    var userPointsCount = (isNaN(userPoints)) ? 0 : userPoints;
+
+    if (penaltyUserPointsCount == 0) {
+        $.inidb.set('penalty', user + "_pointscount", userPointsCount);
+        penaltyUserPointsCount = userPointsCount;
+    }
+
+    $.inidb.set('penalty', user + "_points", 0);
+    $.inidb.set('points', user, penaltyUserPointsCount + penaltyPointsCount);
+}
+
+$.getPointsString = function (points) {
+    points = parseInt(points);
+    var pointsString;
+
+    if (points == 1) {
+        pointsString = points + " " + $.inidb.get('settings', 'pointNameSingle');
+    } else {
+        pointsString = points + " " + $.inidb.get('settings', 'pointNameMultiple');
+    }
+
+    return pointsString;
+}
 
 $.on('command', function(event) {
-    var sender = event.getSender().toLowerCase();
+    var sender = event.getSender();
     var username = $.username.resolve(sender, event.getTags());
     var command = event.getCommand();
-    var args = event.getArgs();
+    var argsString = event.getArguments().trim();
+    var args;
 
-	
+    if (argsString.isEmpty()) {
+        args = [];
+    } else {
+        args = argsString.split(" ");
+    }
+
     if (command.equalsIgnoreCase("penalty")) {
+        if (!$.moduleEnabled("./systems/pointSystem.js")) {
+            $.say($.lang.get("net.phantombot.penaltysystem.points-disabled"));
+            return;
+        }
 
-        if ($.isModv3(sender, event.getTags())) {
-            var amount = parseInt($.inidb.get('penalty', args[0] + "_points")); 
-       
-            if (!args.length > 0) {
-                $.say("Usage: !penalty <name>, !penalty <name> <amount>");
-            } else if (args.length == 1) {
-                if ($.inidb.get('penalty', args[0]) == null || $.inidb.get('penalty', args[0]) == "false") {
-                    $.say($.username.resolve(args[0]) + " has been penalized by " + username);
-                    $.inidb.set('penalty', args[0], "true");
-                    $.inidb.set('penalty', args[0] + "_points", 0);
+        if (args.length == 0) {
+            if ($.inidb.get('penalty', sender.toLowerCase()) == null || $.inidb.get('penalty', sender.toLowerCase()) == "false") {
+                $.say($.lang.get("net.phantombot.penaltysystem.get-nopenalty"));
+                return;
+            } else {
+                if (parseInt($.inidb.get('penalty', sender.toLowerCase() + "_threshold")) == -1) {
+                    $.say($.lang.get("net.phantombot.penaltysystem.get-penalty-indefinitely", $.inidb.get('settings', 'pointNameMultiple'), "Moderator"));
+                    return;
                 } else {
-                    $.say(username + " has lifted the penalty on " + $.username.resolve(args[0]) + " thus returning " + amount + " " + $.pointname + ".");
-                    $.inidb.set('penalty', args[0], "false");
-                    $.inidb.incr('points', args[0], parseInt(amount));
-                    $.inidb.set('penalty', args[0] + "_threshold", 0);
-                } 
-            }
-        
-            if (args.length > 1) {
-        
-                if ($.inidb.get('penalty', args[0]) == null || $.inidb.get('penalty', args[0]) == "false") {
-                    $.say($.username.resolve(args[0]) + " has been penalized by " + username + " for " + args[1] + " " + $.pointname + ".");
-                    $.inidb.set('penalty', args[0], "true");
-                    $.inidb.set('penalty', args[0] + "_points", 0);
-                    $.inidb.set('penalty', args[0] + "_threshold", args[1]);
-                } else {
-                    $.say(username + " has lifted the penalty on " + $.username.resolve(args[0]) + " thus returning " + amount + " " + $.pointname + ".");
-                    $.inidb.set('penalty', args[0], "false");
-                    $.inidb.incr('points', args[0], parseInt(amount));
-                    $.inidb.set('penalty', args[0] + "_threshold", 0);
-                } 
-            }
-        /* Viewer else statement */
-        } else {
-            
-            if (!args.length > 0) {
-                $.say("Usage: !penalty <name>, !penalty <name> <amount>");
-            } else if (args.length == 1) {
-                if ($.inidb.get('penalty', args[0]) == null || $.inidb.get('penalty', args[0]) == "false") {
-                    $.say( $.username.resolve(args[0]) + " hasn't been penalized for anything.");
-                } else {
-                    var penaltythreshold = $.inidb.get('penalty', args[0] + "_threshold");
-                    if (penaltythreshold == null) {
-                        penaltythreshold = 0;
-                    }
-                    $.say ($.username.resolve(args[0]) + " was penalized for: " + penaltythreshold + " " + $.pointname + ".");  
+                    $.say($.lang.get("net.phantombot.penaltysystem.get-penalty", $.inidb.get('settings', 'pointNameMultiple'), getPointsString(parseInt($.inidb.get('penalty', sender + "_threshold")))));
+                    return;
                 }
-          
             }
+        } else if (args.length == 1) {
+            if ($.inidb.get("visited", args[0].toLowerCase()) == "visited") {
+                if (!$.isModv3(sender, event.getTags())) {
+                    if ($.inidb.get('penalty', args[0].toLowerCase()) == null || $.inidb.get('penalty', args[0].toLowerCase()) == "false") {
+                        $.say($.lang.get("net.phantombot.penaltysystem.get-other-nopenalty", $.username.resolve(args[0].toLowerCase())));
+                        return;
+                    } else {
+                        if (parseInt($.inidb.get('penalty', args[0].toLowerCase() + "_threshold")) == -1) {
+                            $.say($.lang.get("net.phantombot.penaltysystem.get-other-penalty-indefinitely", $.username.resolve(args[0].toLowerCase()), $.inidb.get('settings', 'pointNameMultiple'), "Moderator"));
+                            return;
+                        } else {
+                            $.say($.lang.get("net.phantombot.penaltysystem.get-other-penalty", $.username.resolve(args[0].toLowerCase()), $.inidb.get('settings', 'pointNameMultiple'), getPointsString(parseInt($.inidb.get('penalty', args[0].toLowerCase() + "_threshold")))));
+                            return;
+                        }
+                    }
+                } else {
+                    if ($.inidb.get('penalty', args[0].toLowerCase()) == null || $.inidb.get('penalty', args[0].toLowerCase()) == "false") {
+                        var penaltyPoints = parseInt($.inidb.get('penalty', args[0].toLowerCase() + "_points"));
+                        var penaltyPointsCount = (isNaN(penaltyPoints)) ? 0 : penaltyPoints;
+
+                        var userPoints = parseInt($.inidb.get('points', args[0].toLowerCase()));
+                        var userPointsCount = (isNaN(userPoints)) ? 0 : userPoints;
+
+                        $.inidb.set('penalty', args[0].toLowerCase(), "true");
+                        $.inidb.set('penalty', args[0].toLowerCase() + "_points", penaltyPointsCount);
+                        $.inidb.set('penalty', args[0].toLowerCase() + "_pointscount", userPointsCount);
+                        $.inidb.set('penalty', args[0].toLowerCase() + "_threshold", -1);
+
+                        $.say($.lang.get("net.phantombot.penaltysystem.set-enabled-indefinitely", $.username.resolve(args[0]), $.inidb.get('settings', 'pointNameMultiple'), "Moderator"));
+                        return;
+                    } else {
+                        $.returnPoints(args[0].toLowerCase());
+
+                        $.inidb.set('penalty', args[0].toLowerCase(), "false");
+                        $.inidb.set('penalty', args[0].toLowerCase() + "_points", 0);
+                        $.inidb.set('penalty', args[0].toLowerCase() + "_pointscount", 0);
+                        $.inidb.set('penalty', args[0].toLowerCase() + "_threshold", 0);
+
+                        $.say($.lang.get("net.phantombot.penaltysystem.set-disabled", $.username.resolve(args[0].toLowerCase())));
+                        return;
+                    }
+                }
+            } else {
+                $.say($.lang.get("net.phantombot.common.user-404", $.username.resolve(args[0].toLowerCase())));
+                return;
+            }
+        } else if (args.length == 2 && !isNaN(parseInt(args[1]))) {
+            if (!$.isModv3(sender, event.getTags())) {
+                $.say($.modmsg);
+                return;
+            }
+
+            if ($.inidb.get("visited", args[0].toLowerCase()) == "visited") {
+                // Instead of disabling when a penalty is running (old version), we want to always update the _threshold to args[1].
+
+                var penaltyPoints = parseInt($.inidb.get('penalty', args[0].toLowerCase() + "_points"));
+                var penaltyPointsCount = (isNaN(penaltyPoints)) ? 0 : penaltyPoints;
+
+                var userPoints = parseInt($.inidb.get('points', args[0].toLowerCase()));
+                var userPointsCount = (isNaN(userPoints)) ? 0 : userPoints;
+
+                $.inidb.set('penalty', args[0].toLowerCase(), "true");
+                $.inidb.set('penalty', args[0].toLowerCase() + "_points", penaltyPointsCount);
+                $.inidb.set('penalty', args[0].toLowerCase() + "_pointscount", userPointsCount);
+                $.inidb.set('penalty', args[0].toLowerCase() + "_threshold", args[1]);
+
+                $.say($.lang.get("net.phantombot.penaltysystem.set-enabled-threshold", $.username.resolve(args[0].toLowerCase()), $.inidb.get('settings', 'pointNameMultiple'), getPointsString(parseInt($.inidb.get('penalty', args[0].toLowerCase() + "_threshold")))));
+                return;
+            } else {
+                $.say($.lang.get("net.phantombot.common.user-404", $.username.resolve(args[0].toLowerCase())));
+                return;
+            }
+        } else {
+            $.say($.lang.get("net.phantombot.penaltysystem.usage"));
+            return;
         }
     }
 });
 
 $.timer.addTimer("./systems/penaltySystem.js", "penaltySystem", true, function() {
-    var amount;
     if (!$.moduleEnabled("./systems/pointSystem.js")) {
+        // No spammerino, pleaserino.
         return;
     }
 
@@ -75,38 +180,48 @@ $.timer.addTimer("./systems/penaltySystem.js", "penaltySystem", true, function()
     }
 
     if (!$.isOnline($.channelName)) {
-        amount = $.offlinegain;
-        if ($.penlastpointinterval + ($.penofflineinterval * 60 * 1000) >= System.currentTimeMillis()) {
+        if ($.penlastpointinterval + (parseInt($.inidb.get('settings', 'pointIntervalOffline')) * 60 * 1000) >= System.currentTimeMillis()) {
             return;
+        } else {
+            $.penlastpointinterval = System.currentTimeMillis();
         }
     } else {
-        amount = $.pointgain;
-        if ($.penlastpointinterval + ($.peninterval * 60 * 1000) >= System.currentTimeMillis()) {
+        if ($.penlastpointinterval + (parseInt($.inidb.get('settings', 'pointInterval')) * 60 * 1000) >= System.currentTimeMillis()) {
             return;
+        } else {
+            $.penlastpointinterval = System.currentTimeMillis();
         }
     }
 
     for (var i = 0; i < $.users.length; i++) {
         var nick = $.users[i][0].toLowerCase();
+
         if ($.inidb.get('penalty', nick) == "true") {
-            $.inidb.decr('points', nick, parseInt(amount));
-            $.inidb.incr('penalty', nick + "_points", parseInt(amount));
-        }
-        var penaltypoints = parseInt($.inidb.get('penalty', nick + "_points"));
-        var penaltythreshold = parseInt($.inidb.get('penalty', nick + "_threshold"));
-        
-        if (penaltypoints >= penaltythreshold && $.inidb.get('penalty', nick) == "true") {
-            $.say($.username.resolve(nick) + "'s penalty has been lifted thus returning " + penaltypoints + " " + $.pointname + ".");
-            $.inidb.set('penalty', nick, "false");
-            $.inidb.incr('points', nick, parseInt(penaltypoints));
-            $.inidb.set('penalty', nick + "_threshold", 0);
+            $.stopPoints(nick);
+
+            var penaltypoints = parseInt($.inidb.get('penalty', nick + "_points"));
+            var penaltythreshold = parseInt($.inidb.get('penalty', nick + "_threshold"));
+
+            if (penaltythreshold < 0) {
+                return;
+            }
+            
+            if (penaltypoints >= penaltythreshold && $.inidb.get('penalty', nick) == "true") {
+                $.returnPoints(nick);
+
+                $.inidb.set('penalty', nick, "false");
+                $.inidb.set('penalty', nick + "_points", 0);
+                $.inidb.set('penalty', nick + "_pointscount", 0);
+                $.inidb.set('penalty', nick + "_threshold", 0);
+
+                $.say($.lang.get("net.phantombot.penaltysystem.lifted", $.username.resolve(nick), getPointsString(penaltypoints)));
+            }
         }
     }
-
-    $.penlastpointinterval = System.currentTimeMillis();
 }, 1000);
+
 setTimeout(function(){ 
     if ($.moduleEnabled('./systems/penaltySystem.js')) {
         $.registerChatCommand("./systems/penaltySystem.js", "penalty");
     }
-},10*1000);
+}, 10 * 1000);
