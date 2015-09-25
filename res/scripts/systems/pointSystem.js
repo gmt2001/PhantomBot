@@ -167,11 +167,13 @@ $.on('command', function (event) {
             $.whisperPoints = $.inidb.get('settings', 'whisperPoints');
 
             $.say($.lang.get("net.phantombot.common.whisper-enabled", "Points System"));
+            return;
         } else if ($.whisperPoints == "true") {
             $.inidb.set("settings", "whisperPoints", "false");
             $.whisperPoints = $.inidb.get('settings', 'whisperPoints');
 
             $.say($.lang.get("net.phantombot.common.whisper-disabled", "Points System"));
+            return;
         }
     }
         
@@ -513,6 +515,7 @@ $.on('command', function (event) {
                 $.inidb.ReloadFile("points");
 
                 $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.reset-success", $.pointNameMultiple));
+                return;
             } else if (action.equalsIgnoreCase("toggle")) {
                 if (!$.isAdmin(sender)) {
                     $.say($.adminmsg);
@@ -524,13 +527,39 @@ $.on('command', function (event) {
                     $.permTogglePoints = $.inidb.get('settings', 'permTogglePoints');
 
                     $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.toggle-success", "Moderator"));
+                    return;
                 } else if ($.permTogglePoints == "true") {
                     $.inidb.set('settings', 'permTogglePoints', "false");
                     $.permTogglePoints = $.inidb.get('settings', 'permTogglePoints');
 
                     $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.toggle-success", "Administrator"));
+                    return;
                 }
-            } else if (action.equalsIgnoreCase("config")) {
+            } else if (action.equalsIgnoreCase("timetoggle") || action.equalsIgnoreCase("toggletime")) {
+                 if (!$.isAdmin(sender)) {
+                     return;
+                 }
+ 
++                if (getTimeEnabled() == false) {
+                    $.inidb.set('settings', 'pointTimeToggle', "false");
+
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.time-disabled"));
+                    return;
+                }
+
+                 if ($.pointTimeToggle == "false") {
+                     $.inidb.set('settings', 'pointTimeToggle', "true");
+                     $.pointTimeToggle = $.inidb.get('settings', 'pointTimeToggle');
+ 
+                     $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.timetoggle-enabled", $.pointNameSingle));
+                    return;
+                 } else if ($.pointTimeToggle == "true") {
+                     $.inidb.set('settings', 'pointTimeToggle', "false");
+                     $.pointTimeToggle = $.inidb.get('settings', 'pointTimeToggle');
+ 
+                     $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.timetoggle-disabled", $.pointNameSingle));
+                    return;
+                 } else if (action.equalsIgnoreCase("config")) {
                 if (!$.isAdmin(sender)) {
                     $.say($.adminmsg);
                     return;
@@ -633,9 +662,9 @@ $.on('command', function (event) {
                 $.inidb.incr('points', name.toLowerCase(), reward.toFixed(0));
             }
 
-            $.say($.lang.get("net.phantombot.pointsystem.makeitrain-success", username, getPointsString(args[0]), getPointsString(reward.toFixed(0))));
-            
             $.inidb.decr('points', sender, reward.toFixed(0));
+            $.say($.lang.get("net.phantombot.pointsystem.makeitrain-success", username, getPointsString(args[0]), getPointsString(reward.toFixed(0))));
+            return;
         } 
     }
 
