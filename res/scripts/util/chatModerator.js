@@ -198,7 +198,7 @@ function autoPurgeUser(user, warnmessage) {
         }
     }
     
-    $.say(warning);
+    $.say($.getWhisperString(user) + warning);
     
     if (idx == -1) {
         sinbin.push(new Array(user.toLowerCase(), count, lastincrease));

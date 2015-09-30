@@ -362,7 +362,7 @@ $.permCom = function (user, command) {
 
     for (var i = 0; i < keys.length; i++) {
         if (keys[i].contains(command)) {
-            $.say(noPermission);
+            $.say($.getWhisperString(user) + noPermission);
             return false;
         }
         if (!keys[i].contains(command) && (i == keys.length - 1)) {
@@ -371,7 +371,7 @@ $.permCom = function (user, command) {
     }
 
 
-    $.say(noPermission);
+    $.say($.getWhisperString(user) + noPermission);
     return false;
 
 };
