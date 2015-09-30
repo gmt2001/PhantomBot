@@ -8,7 +8,7 @@ $.pointIntervalOffline = parseInt($.inidb.get('settings', 'pointIntervalOffline'
 $.pointGiftMin = parseInt($.inidb.get('settings', 'pointGiftMin'));
 $.whisperPoints = $.inidb.get("settings", "whisperPoints");
 $.permTogglePoints = $.inidb.get("settings", "permTogglePoints");
-$.pointname = $.pointNameMultiple;
+$.pointname = $.pointNameSingle;
 
 if ($.pointNameSingle == undefined || $.pointNameSingle == null || $.pointNameSingle.isEmpty()) {
     $.pointNameSingle = "Point";
@@ -17,6 +17,7 @@ if ($.pointNameSingle == undefined || $.pointNameSingle == null || $.pointNameSi
 if ($.pointNameMultiple == undefined || $.pointNameMultiple == null || $.pointNameMultiple.isEmpty()) {
     $.pointNameMultiple = "Points";
 }
+
 
 if ($.pointGain == undefined || $.pointGain == null || isNaN($.pointGain) || $.pointGain < 0) {
     $.pointGain = 1;
@@ -68,13 +69,14 @@ $.getPoints = function (user) {
 
 $.getPointsString = function (points) {
     points = parseInt(points);
-    var pointsString;
-
+    var pointsString = "";
+    
     if (points == 1) {
-        pointsString = points + " " + $.pointNameSingle;
+        pointsString += points.toString() + " " + $.pointNameSingle;
     } else {
-        pointsString = points + " " + $.pointNameMultiple;
+        pointsString += points.toString() + " " + $.pointNameMultiple;
     }
+    
     return pointsString;
 }
 
@@ -145,7 +147,7 @@ $.on('command', function (event) {
     var args;
     var points;
 
-    var noPointsString = getPointsString(0);
+    var noPointsString = $.getPointsString(0);
     var getPointsStringResult;
     var getTimeStringResult;
     
@@ -209,7 +211,7 @@ $.on('command', function (event) {
                     if ($.inidb.get("visited", username.toLowerCase()) == "visited") {
                         $.inidb.incr('points', username.toLowerCase(), points);
 
-                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.give-success", getPointsString(points), $.username.resolve(username), getPointsString($.inidb.get('points', username.toLowerCase()))));
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.give-success", $.getPointsString(points), $.username.resolve(username), $.getPointsString($.inidb.get('points', username.toLowerCase()))));
                         return;
                     } else {
                         $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.common.user-404", $.username.resolve(username)));
@@ -244,7 +246,7 @@ $.on('command', function (event) {
                     if ($.inidb.get("visited", username.toLowerCase()) == "visited")  {
                         $.inidb.decr('points', username.toLowerCase(), points);
 
-                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.take-success", getPointsString(points), $.username.resolve(username), getPointsString($.inidb.get('points', username.toLowerCase()))))
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.take-success", $.getPointsString(points), $.username.resolve(username), $.getPointsString($.inidb.get('points', username.toLowerCase()))))
                         return;
                     } else {
                         $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.common.user-404", $.username.resolve(username)));
@@ -279,7 +281,7 @@ $.on('command', function (event) {
                     if ($.inidb.get("visited", username.toLowerCase()) == "visited")  {
                         $.inidb.set('points', username.toLowerCase(), points);
 
-                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.set-success", $.pointNameSingle, $.username.resolve(username), getPointsString($.inidb.get('points', username.toLowerCase()))));
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.set-success", $.pointNameSingle, $.username.resolve(username), $.getPointsString($.inidb.get('points', username.toLowerCase()))));
                         return;
                     } else {
                         $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.common.user-404", $.username.resolve(username)));
@@ -304,7 +306,7 @@ $.on('command', function (event) {
                     $.inidb.set('settings', 'pointGain', args[1]);
                     $.pointGain = parseInt($.inidb.get('settings', 'pointGain'));
 
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.gain-success", $.pointNameSingle, getPointsString($.pointGain), $.pointInterval));
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.gain-success", $.pointNameSingle, $.getPointsString($.pointGain), $.pointInterval));
                     return;
                 }
             } else if (action.equalsIgnoreCase("offlinegain")) {
@@ -325,7 +327,7 @@ $.on('command', function (event) {
                     $.inidb.set('settings', 'pointGainOffline', args[1]);
                     $.pointGainOffline = parseInt($.inidb.get('settings', 'pointGainOffline'));
 
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.gain-offline-success", $.pointNameSingle, getPointsString($.pointGainOffline), $.pointIntervalOffline));
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.gain-offline-success", $.pointNameSingle, $.getPointsString($.pointGainOffline), $.pointIntervalOffline));
                     return;
                 }
             } else if (action.equalsIgnoreCase("all")) {
@@ -358,7 +360,7 @@ $.on('command', function (event) {
                         $.inidb.incr('points', name.toLowerCase(), args[1]);
                     }
 
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.give-all-success", getPointsString(args[1])));
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.give-all-success", $.getPointsString(args[1])));
                     return;
                 }
             } else if (action.equalsIgnoreCase("bonus")) {
@@ -379,7 +381,7 @@ $.on('command', function (event) {
                     $.inidb.set('settings', 'pointBonus', args[1]);
                     $.pointBonus = parseInt($.inidb.get('settings', 'pointBonus'));
 
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.bonus-success", $.pointNameSingle, getPointsString($.pointBonus)));
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.bonus-success", $.pointNameSingle, $.getPointsString($.pointBonus)));
                     return;
                 }
             } else if (action.equalsIgnoreCase("interval")) {
@@ -442,7 +444,7 @@ $.on('command', function (event) {
                     $.inidb.set('settings', 'pointGiftMin', args[1]);
                     $.pointGiftMin = parseInt($.inidb.get('settings', 'pointGiftMin'));
 
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.mingift-success", $.pointNameMultiple, getPointsString($.pointGiftMin)));
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.mingift-success", $.pointNameMultiple, $.getPointsString($.pointGiftMin)));
                     return;
                 }
             } else if (action.equalsIgnoreCase("name")) {
@@ -458,38 +460,44 @@ $.on('command', function (event) {
 
                 // Only check for null here, do not just return usage, usage is handled in code below.
                 // Every path has a return, so we should not need any additional usage handling.
-                if (args[1] != null) var firstArgString = args[1].toString();
-                if (args[2] != null) var secondArgString = args[2].toString();
+                if (args[1] != null) {
+                    var firstArgString = args[1].toString();
+                }
+                if (args[2] != null) {
+                    //var secondArgString = args[2].toString();
+                        var argsString = event.getArguments().trim();
+                        var secondArgString = argsString.substring(argsString.indexOf(args[2].toString()), argsString.length());
+                }
 
                 if (args[1] == null) {
                     $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.name-usage"));
                     return;
                 } else if (firstArgString.toLowerCase() == "single") {
                     if (args[2] != null) {
-                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.name-success-single", $.pointNameSingle, $.pointNameSingle, secondArgString, $.pointNameMultiple));
-
                         $.inidb.set('settings', 'pointNameSingle', secondArgString);
                         $.pointNameSingle = $.inidb.get('settings', 'pointNameSingle');
+
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.name-success-single", $.pointNameSingle, $.pointNameSingle, secondArgString, $.pointNameMultiple));
                         return;
                     } else {
-                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.name-success-multiple", $.pointNameMultiple, $.pointNameMultiple, firstArgString, $.pointNameSingle));
-
                         $.inidb.set('settings', 'pointNameMultiple', firstArgString);
                         $.pointNameMultiple = $.inidb.get('settings', 'pointNameMultiple');
+
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.name-success-multiple", $.pointNameMultiple, $.pointNameMultiple, firstArgString, $.pointNameSingle));
                         return;
                     }
                 } else if (firstArgString.toLowerCase() == "multiple" || firstArgString.toLowerCase() == "multi") {
                     if (args[2] != null) {
-                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.name-success-multiple", $.pointNameMultiple, $.pointNameMultiple, secondArgString, $.pointNameSingle));
-
                         $.inidb.set('settings', 'pointNameMultiple', secondArgString);
                         $.pointNameMultiple = $.inidb.get('settings', 'pointNameMultiple');
+
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.name-success-multiple", $.pointNameMultiple, $.pointNameMultiple, secondArgString, $.pointNameSingle));
                         return;
                     } else {
-                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.name-success-multiple", $.pointNameMultiple, $.pointNameMultiple, firstArgString, $.pointNameSingle));
-
                         $.inidb.set('settings', 'pointNameMultiple', firstArgString);
                         $.pointNameMultiple = $.inidb.get('settings', 'pointNameMultiple');
+
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.name-success-multiple", $.pointNameMultiple, $.pointNameMultiple, firstArgString, $.pointNameSingle));
                         return;
                     }
                 } else {
@@ -497,12 +505,11 @@ $.on('command', function (event) {
                     // To combat the change, update both the single and multiple.
                     // Also notify the user of a way to set a single point's name.
 
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.name-success-both", $.pointNameMultiple, $.pointNameMultiple, firstArgString, $.pointNameSingle));
-
                     $.inidb.set('settings', 'pointNameSingle', firstArgString);
                     $.inidb.set('settings', 'pointNameMultiple', firstArgString);
                     $.pointNameSingle = $.inidb.get('settings', 'pointNameSingle');
                     $.pointNameMultiple = $.inidb.get('settings', 'pointNameMultiple');
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.name-success-both", $.pointNameMultiple, $.pointNameMultiple, firstArgString, $.pointNameSingle));
                     return;
                 }
             } else if (action.equalsIgnoreCase("reset")) {
@@ -540,41 +547,42 @@ $.on('command', function (event) {
                      return;
                  }
  
-+                if (getTimeEnabled() == false) {
+                if ($.getTimeEnabled() == false) {
                     $.inidb.set('settings', 'pointTimeToggle', "false");
 
                     $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.time-disabled"));
                     return;
                 }
 
-                 if ($.pointTimeToggle == "false") {
+                if ($.pointTimeToggle == "false") {
                      $.inidb.set('settings', 'pointTimeToggle', "true");
                      $.pointTimeToggle = $.inidb.get('settings', 'pointTimeToggle');
  
                      $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.timetoggle-enabled", $.pointNameSingle));
                     return;
-                 } else if ($.pointTimeToggle == "true") {
+                } else if ($.pointTimeToggle == "true") {
                      $.inidb.set('settings', 'pointTimeToggle', "false");
                      $.pointTimeToggle = $.inidb.get('settings', 'pointTimeToggle');
  
                      $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.timetoggle-disabled", $.pointNameSingle));
                     return;
-                 } else if (action.equalsIgnoreCase("config")) {
-                if (!$.isAdmin(sender)) {
-                    $.say($.adminmsg);
-                    return;
+                } else if (action.equalsIgnoreCase("config")) {
+                    if (!$.isAdmin(sender)) {
+                        $.say($.adminmsg);
+                        return;
+                    }
                 }
-
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.config", $.pointNameSingle, $.pointNameMultiple, getPointsString($.pointGain), getPointsString($.pointGainOffline), $.pointInterval, $.pointIntervalOffline, getPointsString($.pointBonus), getPointsString($.pointGiftMin)));
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.config", $.pointNameSingle, $.pointNameMultiple, $.getPointsString($.pointGain), $.getPointsString($.pointGainOffline), $.pointInterval, $.pointIntervalOffline, $.getPointsString($.pointBonus), $.getPointsString($.pointGiftMin)));
                 return;
+                
             } else if (action.equalsIgnoreCase("help")) {
                 $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.help"));
                 return;
             } else {
                 pointsUser = args[0].toLowerCase();
 
-                getPointsStringResult = getPointsString(getPoints(pointsUser));
-                getTimeStringResult = getTimeString(getUserTime(pointsUser));
+                getPointsStringResult = $.getPointsString($.getPoints(pointsUser));
+                getTimeStringResult = $.getTimeString($.getUserTime(pointsUser));
 
                 if ($.inidb.get("visited", pointsUser.toLowerCase()) == "visited")  {
                     if (pointsUser == sender) {
@@ -582,7 +590,7 @@ $.on('command', function (event) {
                             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.get-self-nopoints", $.pointNameMultiple));
                             return;
                         } else {
-                            if (getTimeEnabled() == true && getTimeStringResult != "false" && getTimeStringResult != false) {
+                            if ($.getTimeEnabled() == true && getTimeStringResult != "false" && getTimeStringResult != false) {
                                 $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.get-self-time", getPointsStringResult, getTimeStringResult));
                                 return;
                             } else {
@@ -595,7 +603,7 @@ $.on('command', function (event) {
                             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.get-other-nopoints", $.username.resolve(pointsUser), $.pointNameMultiple));
                             return;
                         } else {
-                            if (getTimeEnabled() == true && getTimeStringResult != "false" && getTimeStringResult != false) {
+                            if ($.getTimeEnabled() == true && getTimeStringResult != "false" && getTimeStringResult != false) {
                                 $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.get-other-time", $.username.resolve(pointsUser), getPointsStringResult, getTimeStringResult));
                                 return;
                             } else {
@@ -610,15 +618,15 @@ $.on('command', function (event) {
                 }
             }
         }
-        else {
-            getPointsStringResult = getPointsString(getPoints(pointsUser));
-            getTimeStringResult = getTimeString(getUserTime(pointsUser));
+        else {            
+            getPointsStringResult = $.getPointsString($.getPoints(pointsUser));
+            getTimeStringResult = $.getTimeString($.getUserTime(pointsUser));
 
             if (noPointsString == getPointsStringResult) {
                 $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.get-self-nopoints", $.pointNameMultiple));
                 return;
             } else {
-                if (getTimeEnabled() == true && getTimeStringResult != "false" && getTimeStringResult != false) {
+                if ($.getTimeEnabled() == true && getTimeStringResult != "false" && getTimeStringResult != false) {
                     $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.get-self-time", getPointsStringResult, getTimeStringResult));
                     return;
                 } else {
@@ -636,7 +644,7 @@ $.on('command', function (event) {
         }
 
         if (args[0] > $.inidb.get('points', sender)) {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.makeitrain-error-notenough", getPointsString(args[0])));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.makeitrain-error-notenough", $.getPointsString(args[0])));
             return; 
         }
 
@@ -649,7 +657,7 @@ $.on('command', function (event) {
             // If this is not used, it is possible for users to do "!makeitrain 1" to boost another user.
             // If we wish to remove this protection, simply remove this entire else if.
 
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.makeitrain-error-invalid", getPointsString(args[0])));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.makeitrain-error-invalid", $.getPointsString(args[0])));
             return;
         } else {
             $.inidb.decr('points', sender, args[0]);
@@ -663,7 +671,7 @@ $.on('command', function (event) {
             }
 
             $.inidb.decr('points', sender, reward.toFixed(0));
-            $.say($.lang.get("net.phantombot.pointsystem.makeitrain-success", username, getPointsString(args[0]), getPointsString(reward.toFixed(0))));
+            $.say($.lang.get("net.phantombot.pointsystem.makeitrain-success", username, $.getPointsString(args[0]), $.getPointsString(reward.toFixed(0))));
             return;
         } 
     }
@@ -687,22 +695,22 @@ $.on('command', function (event) {
         }
 
         if (points > $.inidb.get('points', sender)) {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.gift-error-notenough", getPointsString(args[1]), $.username.resolve(args[0])));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.gift-error-notenough", $.getPointsString(args[1]), $.username.resolve(args[0])));
             return;
         } else {
             if (parseInt(args[1]) < $.pointGiftMin) {
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.gift-error-notminimum", getPointsString($.pointGiftMin)));
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.gift-error-notminimum", $.getPointsString($.pointGiftMin)));
                 return;
             } else if (points < parseInt(args[1])) {
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.gift-error-notenough", getPointsString(args[1]), $.username.resolve(args[0])));
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.gift-error-notenough", $.getPointsString(args[1]), $.username.resolve(args[0])));
                 return;
             } else {
                 if ($.inidb.get("visited", username.toLowerCase()) == "visited") {
                     $.inidb.decr('points', sender.toLowerCase(), parseInt(args[1]));
                     $.inidb.incr('points', username.toLowerCase(), parseInt(args[1]));
 
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.gift-success", getPointsString(args[1]), $.username.resolve(args[0]), getPointsString($.inidb.get('points', $.username.resolve(args[0]).toLowerCase())), getPointsString($.inidb.get('points', sender.toLowerCase()))));
-                    $.say($.getWhisperStringStatic(args[0]) + $.lang.get("net.phantombot.pointsystem.gift-received", getPointsString(args[1]), $.username.resolve(sender), getPointsString($.inidb.get('points', $.username.resolve(args[0]).toLowerCase())), getPointsString($.inidb.get('points', sender.toLowerCase()))));
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.gift-success", $.getPointsString(args[1]), $.username.resolve(args[0]), $.getPointsString($.inidb.get('points', $.username.resolve(args[0]).toLowerCase())), $.getPointsString($.inidb.get('points', sender.toLowerCase()))));
+                    $.say($.getWhisperStringStatic(args[0]) + $.lang.get("net.phantombot.pointsystem.gift-received", $.getPointsString(args[1]), $.username.resolve(sender), $.getPointsString($.inidb.get('points', $.username.resolve(args[0]).toLowerCase())), $.getPointsString($.inidb.get('points', sender.toLowerCase()))));
                     return;
                 } else {
                     $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.common.user-404", $.username.resolve(username)));
