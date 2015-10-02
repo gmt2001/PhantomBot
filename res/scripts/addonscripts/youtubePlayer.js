@@ -49,11 +49,11 @@ notSearchable = function(songid,songname, user, tags) {
                     this.id = songid;
                     this.name = songname;
                     this.length = 0;
-                    $.say("Song "+ songid+" not searchable, marked private, or does not exist.");
+                    $.say($.getWhisperString(user) + "Song "+ songid+" not searchable, marked private, or does not exist.");
                     if ($.inidb.exists("pricecom", "addsong") && parseInt($.inidb.get("pricecom", "addsong"))> 0 ){
                         if(!$.isModv3(user, tags)){
                             var cost = $.inidb.get("pricecom", "addsong");
-                            $.say("The command cost of " + cost + " " + $.pointname + " has been returned to " + $.username.resolve(user));
+                            $.say($.getWhisperString(user) + "The command cost of " + cost + " " + $.pointname + " has been returned to " + $.username.resolve(user));
                             $.inidb.incr("points", user.toLowerCase(), cost);
                             $.inidb.SaveAll();
                         }
@@ -410,7 +410,7 @@ $.on('command', function (event) {
         action = args[0];
         if (action.equalsIgnoreCase("toggle")) {
             if (!$.isAdmin(sender)) {
-                $.say($.adminmsg);
+                $.say($.getWhisperString(sender) + $.adminmsg);
                 return;
             }
 
@@ -418,54 +418,54 @@ $.on('command', function (event) {
 
                 $.song_toggle = 1;
                 $.inidb.set('settings', 'song_toggle', $.song_toggle.toString());
-                $.say("[\u266B] Song messages have been turned on!");
+                $.say($.getWhisperString(sender) + "[\u266B] Song messages have been turned on!");
 
             } else {
                 $.song_toggle = 2;
                 $.inidb.set('settings', 'song_toggle', $.song_toggle.toString());
-                $.say("[\u266B] Song messages have been turned off!");
+                $.say($.getWhisperString(sender) + "[\u266B] Song messages have been turned off!");
             }
         }
         
         if (action.equalsIgnoreCase("deny")) {
             if (!$.isAdmin(sender)) {
-                $.say($.adminmsg);
+                $.say($.getWhisperString(sender) + $.adminmsg);
                 return;
             }
             $.inidb.set('blacklist', args[1].toLowerCase(), "true");
-            $.say(username + " has denied " + $.username.resolve(args[1].toLowerCase()) + " access to song request features.");
+            $.say($.getWhisperString(sender) + username + ", you have denied " + $.username.resolve(args[1].toLowerCase()) + " access to song request features.");
             return;
         } 
             
         if (action.equalsIgnoreCase("allow")) {
             if (!$.isAdmin(sender)) {
-                $.say($.adminmsg);
+                $.say($.getWhisperString(sender) + $.adminmsg);
                 return;
             }
             $.inidb.del('blacklist', args[1].toLowerCase());
-            $.say(username + " released " + $.username.resolve(args[1]) + " from the blacklist for song request features.");
+            $.say($.getWhisperString(sender) + username + ", you have released " + $.username.resolve(args[1]) + " from the blacklist for song request features.");
             return;   
         } 
             
         if (action.equalsIgnoreCase("limit")) {
             if (!$.isAdmin(sender)) {
-                $.say($.adminmsg);
+                $.say($.getWhisperString(sender) + $.adminmsg);
                 return;
             }
 
             if (args[1] == null) {
-                $.say("Current song request limit is: " + $.song_limit);
+                $.say($.getWhisperString(sender) + "Current song request limit is: " + $.song_limit);
                 return;
             }
 
             $.inidb.set('settings', 'song_limit', args[1]);
             $.song_limit = parseInt(args[1]);
-            $.say("Song request limit has been changed to: " + args[1] + " songs");
+            $.say($.getWhisperString(sender) + "Song request limit has been changed to: " + args[1] + " songs");
         }
 
         if (action.equalsIgnoreCase("storing")) {
             if (!$.isAdmin(sender)) {
-                $.say($.adminmsg);
+                $.say($.getWhisperString(sender) + $.adminmsg);
                 return;
             }
 
@@ -474,18 +474,18 @@ $.on('command', function (event) {
                 $.storing = 1;
                 $.inidb.set('settings', 'song_storing', $.storing.toString());
                 $.defaultplaylist = $.readFile("./addons/youtubePlayer/playlist.txt");
-                $.say("Playlists' positions and titles will now be exported to a readable file.");
+                $.say($.getWhisperString(sender) + "Playlists' positions and titles will now be exported to a readable file.");
 
             } else {
                 $.storing = 2;
                 $.inidb.set('settings', 'song_storing', $.storing.toString());
-                $.say("Playlist storage has been disabled.");
+                $.say($.getWhisperString(sender) + "Playlist storage has been disabled.");
             }
         }
         
         if (action.equalsIgnoreCase("shuffle")) {
             if (!$.isAdmin(sender)) {
-                $.say($.adminmsg);
+                $.say($.getWhisperString(sender) + $.adminmsg);
                 return;
             }
 
@@ -493,23 +493,23 @@ $.on('command', function (event) {
 
                 $.song_shuffle = true;
                 $.inidb.set('settings', 'song_shuffle', "1");
-                $.say("Default playlist will now randomly choose songs to be played.");
+                $.say($.getWhisperString(sender) + "Default playlist will now randomly choose songs to be played.");
 
             } else {
                 $.song_shuffle = 0;
                 $.inidb.set('settings', 'song_shuffle', "0");
-                $.say("Playlist shuffling has been disabled.");
+                $.say($.getWhisperString(sender) + "Playlist shuffling has been disabled.");
             }
         }
         
         if (action.equalsIgnoreCase("storepath")) {
             if (!$.isAdmin(sender)) {
-                $.say($.adminmsg);
+                $.say($.getWhisperString(sender) + $.adminmsg);
                 return;
             }
             
             if (args[1].equalsIgnoreCase('viewstorepath')) {
-                $.say("Current song storage path: " + $.storepath);
+                $.say($.getWhisperString(sender) + "Current song storage path: " + $.storepath);
                 return;
             }
             
@@ -523,12 +523,12 @@ $.on('command', function (event) {
             
             $.inidb.set('settings','song_storepath', args[1]);
             $.storepath = args[1];
-            $.say("Playlist storage path has been set!");
+            $.say($.getWhisperString(sender) + "Playlist storage path has been set!");
         }
         
         if (action.equalsIgnoreCase("titles")) {
             if (!$.isAdmin(sender)) {
-                $.say($.adminmsg);
+                $.say($.getWhisperString(sender) + $.adminmsg);
                 return;
             }
 
@@ -536,13 +536,13 @@ $.on('command', function (event) {
 
                 $.titles = 1;
                 $.inidb.set('settings', 'song_titles', $.titles.toString());
-                $.say("Playlist storage has been set to export as html file.");
+                $.say($.getWhisperString(sender) + "Playlist storage has been set to export as html file.");
                 $.parseDefault();
                 $.parseSongQueue();
             } else {
                 $.titles = 2;
                 $.inidb.set('settings', 'song_titles', $.titles.toString());
-                $.say("Playlist storage has been set to export as text file.");
+                $.say($.getWhisperString(sender) + "Playlist storage has been set to export as text file.");
                 $.parseDefault();
                 $.parseSongQueue();
             }
@@ -550,7 +550,7 @@ $.on('command', function (event) {
         
         if (action.equalsIgnoreCase("reloadplaylist")) {
             if (!$.isAdmin(sender)) {
-                $.say($.adminmsg);
+                $.say($.getWhisperString(sender) + $.adminmsg);
                 return;
             }
 
@@ -571,11 +571,11 @@ $.on('command', function (event) {
                 $.song_status = "Disabled";
             }
             
-            $.say("[Music Settings] - [Limit: " + $.song_limit + " songs] - [Msgs: " + $.song_t + "] - [Music Player: " + $.song_status + "]");
+            $.say($.getWhisperString(sender) + "[Music Settings] - [Limit: " + $.song_limit + " songs] - [Msgs: " + $.song_t + "] - [Music Player: " + $.song_status + "]");
         }
         if (action.equalsIgnoreCase("steal")) {
             if (!$.isAdmin(sender)) {
-                $.say($.adminmsg);
+                $.say($.getWhisperString(sender) + $.adminmsg);
                 return;
             }
             if ($var.currSong != null) {
@@ -594,12 +594,12 @@ $.on('command', function (event) {
 
         if ($.inidb.get('blacklist', sender) == "true") {
             //blacklisted, deny
-            $.say("You are denied access to song request features!");
+            $.say($.getWhisperString(sender) + "You are denied access to song request features!");
             return;
         }
         //start arguments check
         if (args.length == 0) {
-            $.say("Type >> '!addsong or !songrequest <youtube link>' to add a song to the playlist.");
+            $.say($.getWhisperString(sender) + "Type >> '!addsong or !songrequest <youtube link>' to add a song to the playlist.");
             return;
         }
 
@@ -609,25 +609,25 @@ $.on('command', function (event) {
                     if(!$.isModv3(sender, event.getTags())){
 
                         var cost = $.inidb.get("pricecom", "addsong");
-                        $.say("The command cost of " + cost + " " + $.pointname + " has been returned to " + $.username.resolve(sender, event.getTags()));
+                        $.say($.getWhisperString(sender) + "The command cost of " + cost + " " + $.pointname + " has been returned to " + $.username.resolve(sender, event.getTags()));
                         $.inidb.incr("points", sender.toLowerCase(), cost);
                         $.inidb.SaveAll(true);
                     }
                 }
-                $.say("Music player disabled.");
+                $.say($.getWhisperString(sender) + "Music player disabled.");
                 return;
             }
 
             var video = new Song(argsString, sender, event.getTags());
 
             if (video.id == null) {
-                $.say("Song doesn't exist or you typed something wrong.");
+                $.say($.getWhisperString(sender) + "Song doesn't exist or you typed something wrong.");
                 return;
             }
             
             var vlength = parseInt(video.getLength());
             if ( (vlength > 480.0)) {
-                $.say("Song >> " + video.getName() + " is over " + parseInt(vlength/60) + " minutes long, maximum length is 8 minutes.");
+                $.say($.getWhisperString(sender) + "Song >> " + video.getName() + " is over " + parseInt(vlength/60) + " minutes long, maximum length is 8 minutes.");
                 return;
             }
 
@@ -635,12 +635,12 @@ $.on('command', function (event) {
             
             if(!$.isModv3(sender, event.getTags())) {
                 if (!song.canRequest()) {
-                    $.say("You've hit your song request limit, " + username + "!");
+                    $.say($.getWhisperString(sender) + "You've hit your song request limit, " + username + "!");
                     return;
                 }
 
                 if (!song.canRequest2()) {
-                    $.say("That song is already in the queue or the default playlist, " + username + "!");
+                    $.say($.getWhisperString(sender) + "That song is already in the queue or the default playlist, " + username + "!");
                     return;
                 }
             }
@@ -655,7 +655,7 @@ $.on('command', function (event) {
     }
     if (command.equalsIgnoreCase("delsong")) {
         if (!musicPlayerConnected) {
-            $.say("Songrequests is currently disabled!");
+            $.say($.getWhisperString(sender) + "Songrequests is currently disabled!");
             return;
         }
         var name = argsString;
@@ -672,26 +672,26 @@ $.on('command', function (event) {
                     $var.songqueue.splice(i, 1);
                     return;
                 } else {
-                    $.say($.modmsg);
+                    $.say($.getWhisperString(sender) + $.modmsg);
                     return;
                 }
             }
         }
 
-        $.say(sender + ", that song isn't in the list.");
+        $.say($.getWhisperString(sender) + sender + ", that song isn't in the list.");
         
     }
 
     if (command.equalsIgnoreCase("volume")) {
         if (!$.isModv3(sender, event.getTags())) {
 
-            $.say($.modmsg);
+            $.say($.getWhisperString(sender) + $.modmsg);
             return;
         }
 
         if (args.length > 0) {
             $.musicplayer.setVolume(parseInt(args[0]));
-            $.say("[\u266B] Music volume set to: " + args[0] + "%");
+            $.say($.getWhisperString(sender) + "[\u266B] Music volume set to: " + args[0] + "%");
         } else {
             $.musicplayer.currentVolume();
         }
@@ -708,7 +708,7 @@ $.on('command', function (event) {
 
         if ($var.skipSong) {
             if ($.pollVoters.contains(sender)) {
-                $.say(username + ", you have already voted!");
+                $.say($.getWhisperString(sender) + username + ", you have already voted!");
             } else if (makeVote('yes')) {
                 $.pollVoters.add(sender);
             }
@@ -720,13 +720,13 @@ $.on('command', function (event) {
             $.pollResults.get('yes').intValue();
 
             if (song != $.musicplayer.currentId()) {
-                $.say("The poll failed due to the song ending.");
+                $.say($.getWhisperString(sender) + "The poll failed due to the song ending.");
             }
             if ($.pollResults.get('yes').intValue() == 1) {
-                $.say("Skipping song!");
+                $.say($.getWhisperString(sender) + "Skipping song!");
                 next();
             } else {
-                $.say("Failed to skip the song.");
+                $.say($.getWhisperString(sender) + "Failed to skip the song.");
             }
 
         }, ['yes', 'nope'], 20 * 3000, $.botname)) {
@@ -737,7 +737,7 @@ $.on('command', function (event) {
             }
             $var.skipSong = true;
         } else {
-            $.say("A poll to skip a song is already open and running! " + username);
+            $.say($.getWhisperString(sender) + "A poll to skip a song is already open and running! " + username);
         }
     }
     
@@ -768,7 +768,7 @@ $.on('command', function (event) {
 
     if (command.equalsIgnoreCase("stealsong")) {
         if (!$.isAdmin(sender)) {
-            $.say($.adminmsg);
+            $.say($.getWhisperString(sender) + $.adminmsg);
             return;
         }
         if ($var.currSong != null) {
@@ -782,7 +782,7 @@ $.on('command', function (event) {
     }
     if (command.equalsIgnoreCase("gettitle")) {
         if (!$.isAdmin(sender)) {
-            $.say($.adminmsg);
+            $.say($.getWhisperString(sender) + $.adminmsg);
             return;
         }
         $.say("start search");
@@ -797,8 +797,8 @@ $.on('command', function (event) {
     }
 
     if (command.equalsIgnoreCase("playsong")) {
-        if (!$.isAdmin(sender)) {
-            $.say($.adminmsg);
+        if (!$.isModv3(sender)) {
+            $.say($.getWhisperString(sender) + $.modmsg);
             return;
         }
         if(parseInt(argsString) <= $var.defaultplaylist.length) {
@@ -823,7 +823,7 @@ $.on('command', function (event) {
                 return;
             }
         }
-        $.say("Song not found in current playlist.");
+        $.say($.getWhisperString(sender) + "Song not found in current playlist.");
         return;
     }
 

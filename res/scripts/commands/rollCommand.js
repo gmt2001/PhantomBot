@@ -69,8 +69,8 @@ $.on('command', function(event) {
 			}
 			
 			if (objRoll.stream && !$.isOnline($.channelName)) {
-				$.say(username + " can only !roll while " +
-					$.username.resolve($.channelName) + "'s streaming!");
+				$.say($.getWhisperString(username) + username + ", you can only !roll while " +
+					$.username.resolve($.channelName) + " is streaming!");
 				return;
 			}
 			
@@ -81,7 +81,7 @@ $.on('command', function(event) {
 					}
 					curTime = System.currentTimeMillis();
 					if (curTime < objRoll.limiter[i].time) {
-						$.say(username + " is waiting " +
+						$.say($.getWhisperString(username) + username + ", you are waiting " +
 							Math.ceil((objRoll.limiter[i].time - curTime) /
 								1000) + " out of " +
 								Mail.ceil(objRoll.timer / 1000) +
@@ -140,7 +140,7 @@ $.on('command', function(event) {
 			}
 		} else if (args[0].equalsIgnoreCase("wait")) {
 			if (!$.isMod(username)) {
-				$.say($.modmsg);
+				$.say($.getWhisperString(username) + $.modmsg);
 				return;
 			} else if (args.length == 1) {
 				objRoll.wait = !objRoll.wait;
@@ -153,23 +153,23 @@ $.on('command', function(event) {
 				args[1].equalsIgnoreCase("false")) {
 				objRoll.wait = false;
 			}
-			$.say(username + ((objRoll.wait) ? " enabled" : " disabled") +
+			$.say($.getWhisperString(username) + username + ", you" + ((objRoll.wait) ? " enabled" : " disabled") +
 				" the wait timer.");
 			$.inidb.set("roll", "roll_wait", objRoll.wait);
 		} else if (args[0].equalsIgnoreCase("bonus")) {
 			if (!$.isMod(username)) {
-				$.say($.modmsg);
+				$.say($.getWhisperString(username) + $.modmsg);
 			} else if (args.length == 1) {
-				$.say(username + ", the roll bonus is " +
+				$.say($.getWhisperString(username) + username + ", the roll bonus is " +
 					objRoll.bonus + ".");
 			} else {
 				var newbonus = parseInt(args[1]);
 				if ((newbonus == undefined) || (newbonus == null) ||
 					isNaN(newbonus) || (newbonus < 1)) {
-					$.say(username + " tried to set an invalid roll bonus, " +
+					$.say($.getWhisperString(username) + username + ", you tried to set an invalid roll bonus, " +
 						"please enter a number 1 or greater.");
 				} else {
-					$.say(username + " changed roll bonus from " +
+					$.say($.getWhisperString(username) + username + ", you changed roll bonus from " +
 						objRoll.bonus + " to " + newbonus + ".");
 					objRoll.bonus = newbonus;
 					$.inidb.set("roll", "roll_bonus", objRoll.bonus);
@@ -177,19 +177,19 @@ $.on('command', function(event) {
 			}
 		} else if (args[0].equalsIgnoreCase("time")) {
 			if (!$.isMod(username)) {
-				$.say($.modmsg);
+				$.say($.getWhisperString(username) + $.modmsg);
 			} else if (args.length == 1) {
-				$.say(username + ", the roll wait time is " +
+				$.say($.getWhisperString(username) + username + ", the roll wait time is " +
 					((objRoll.wait) ? "on" : "off") + " and set to " +
 					Math.ceil(objRoll.timer / 1000) + " seconds.");
 			} else {
 				var newtime = parseInt(args[1]);
 				if ((newtime == undefined) || (newtime == null) ||
 					isNaN(newtime) || (newtime < 1)) {
-					$.say(username + " tried to set an invalid roll timer, " +
+					$.say($.getWhisperString(username) + username + ", you tried to set an invalid roll timer, " +
 						"please enter a number 1 or greater.");
 				} else {
-					$.say(username + " changed roll timer from " +
+					$.say($.getWhisperString(username) + username + ", you changed roll timer from " +
 						Math.ceil(objRoll.timer / 1000) + " to " +
 						newtime + " seconds.");
 					objRoll.timer = newtime * 1000;
@@ -198,7 +198,7 @@ $.on('command', function(event) {
 			}
 		} else if (args[0].equalsIgnoreCase("stream")) {
 			if (!$.isMod(username)) {
-				$.say($.modmsg);
+				$.say($.getWhisperString(username) + $.modmsg);
 				return;
 			} else if (args.length == 1) {
 				objRoll.stream = !objRoll.stream;
@@ -211,12 +211,12 @@ $.on('command', function(event) {
 				args[1].equalsIgnoreCase("false")) {
 				objRoll.stream = false;
 			}
-			$.say(username + ((objRoll.stream) ? " enabled" : " disabled") +
+			$.say($.getWhisperString(username) + username + ", you" + ((objRoll.stream) ? " enabled" : " disabled") +
 				" stream only rolling.");
 			$.inidb.set("roll", "roll_stream", objRoll.stream);
 		} else if (args[0].equalsIgnoreCase("config")) {
 			if (!$.isMod(username)) {
-				$.say($.modmsg);
+				$.say($.getWhisperString(username) + $.modmsg);
 			} else {
 				$.say("/me \u208Droll\u208E \u2039stream: " +
 					((objRoll.stream) ? "enabled" : "disabled") +
@@ -229,7 +229,7 @@ $.on('command', function(event) {
 			}
 		} else if ((args.length > 0) && (args.length < 7)) {
 			if (objRoll.stream && !$.isOnline($.channelName)) {
-				$.say(username + " can only !roll while " +
+				$.say($.getWhisperString(username) + username + ", you can only !roll while " +
 					$.username.resolve($.channelName) + "'s streaming!");
 				return;
 			}
@@ -241,7 +241,7 @@ $.on('command', function(event) {
 					}
 					curTime = System.currentTimeMillis();
 					if (curTime < objRoll.limiter[i].time) {
-						$.say(username + " is waiting " +
+						$.say($.getWhisperString(username) + username + ",you are waiting " +
 							Math.ceil((objRoll.limiter[i].time - curTime) /
 								1000) + " out of " +
 								Mail.ceil(objRoll.timer / 1000) +
@@ -290,11 +290,11 @@ $.on('command', function(event) {
 				if ((diNum == undefined) || (diNum == null) ||
 					isNaN(diNum) || (diNum < 1))
 				{
-					$.say(username + "'s " + args[i].trim() + 
+					$.say($.getWhisperString(username) + username + ", your " + args[i].trim() + 
 						" contains an invalid number of dice.");
 					return;
 				} else if (diNum > 30) {
-					$.say(username + "'s " + args[i].trim() +
+					$.say($.getWhisperString(username) + username + ", your " + args[i].trim() +
 						" wants too many dice rolled.");
 					return;
 				}
@@ -363,7 +363,7 @@ $.on('command', function(event) {
 							+ diTemp + "\u25D8\u00B9\u2070\u2070";
 					}
 				} else {
-					$.say(username + "'s " + args[i].trim() + 
+					$.say($.getWhisperString(sender) + username + ", your " + args[i].trim() + 
 						" contains an invalid sided dice.");
 					return;
 				}

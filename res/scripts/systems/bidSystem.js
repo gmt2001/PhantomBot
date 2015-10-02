@@ -26,7 +26,7 @@ $.on('command', function(event) {
 
     if (command.equalsIgnoreCase("bid") || command.equalsIgnoreCase("auction")) {
         if (!$.moduleEnabled("./systems/pointSystem.js")) {
-            $.say($.lang.get("net.phantombot.bidsystem.points-disabled"));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bidsystem.points-disabled"));
             return;
         }
 
@@ -35,12 +35,12 @@ $.on('command', function(event) {
 
             if (action.equalsIgnoreCase("start")) {
                 if (!$.isModv3(sender, event.getTags())) {
-                    $.say($.modmsg);
+                    $.say($.getWhisperString(sender) + $.modmsg);
                     return;
                 }
 
                 if ($.auctionRunning == 1) {
-                    $.say($.lang.get("net.phantombot.bidsystem.start-error-running"));
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bidsystem.start-error-running"));
                     return;
                 } else {
                     $.auctionMinimum = 1;
@@ -59,17 +59,17 @@ $.on('command', function(event) {
 
                     $.auctionRunning = 1;
 
-                    $.say($.lang.get("net.phantombot.bidsystem.start-success", getPointsString($.auctionMinimum), getPointsString(auctionIncrement)));
+                    $.say($.lang.get("net.phantombot.bidsystem.start-success", getPointsString($.auctionMinimum), getPointsString($.auctionIncrement)));
                     return;
                 }
             } else if (action.equalsIgnoreCase("warn") || action.equalsIgnoreCase("warning")) {
                 if (!$.isModv3(sender, event.getTags())) {
-                    $.say($.modmsg);
+                    $.say($.getWhisperString(sender) + $.modmsg);
                     return;
                 }
 
                 if ($.auctionRunning == 0) {
-                    $.say($.lang.get("net.phantombot.bidsystem.warning-error-notrunning"));
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bidsystem.warning-error-notrunning"));
                     return;
                 } else {
                     if ($.auctionTopPoints == 0) {
@@ -82,12 +82,12 @@ $.on('command', function(event) {
                 }
             } else if (action.equalsIgnoreCase("end") || action.equalsIgnoreCase("close")) {
                 if (!$.isModv3(sender, event.getTags())) {
-                    $.say($.modmsg);
+                    $.say($.getWhisperString(sender) + $.modmsg);
                     return;
                 }
 
                 if ($.auctionRunning == 0) {
-                    $.say($.lang.get("net.phantombot.bidsystem.close-error-notrunning"));
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bidsystem.close-error-notrunning"));
                     return;
                 } else {
                     if ($.auctionTopUser == "" || $.auctionTopUser == null) {
@@ -106,11 +106,11 @@ $.on('command', function(event) {
                 }
             } else {
                 if (isNaN(action)) {
-                    $.say($.lang.get("net.phantombot.bidsystem.usage"));
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bidsystem.usage"));
                     return;
                 } else {
                     if ($.auctionRunning == 0) {
-                        $.say($.lang.get("net.phantombot.bidsystem.enter-error-notrunning"));
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bidsystem.enter-error-notrunning"));
                         return;
                     } else {
                         var userBid = parseInt(action);
@@ -118,33 +118,33 @@ $.on('command', function(event) {
 
                         if ($.auctionTopPoints == 0) {
                             if (userBid > $.inidb.get('points', sender)) {
-                                $.say($.lang.get("net.phantombot.bidsystem.enter-error-notenough", $.inidb.get('settings', 'pointNameMultiple'), getPointsString(action)));
+                                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bidsystem.enter-error-notenough", $.inidb.get('settings', 'pointNameMultiple'), getPointsString(action)));
                                 return;
                             }
                             if (userBid < $.auctionMinimum) {
-                                $.say($.lang.get("net.phantombot.bidsystem.enter-error-belowminimum", getPointsString($.auctionMinimum)));
+                                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bidsystem.enter-error-belowminimum", getPointsString($.auctionMinimum)));
                                 return;
                             }
 
                             $.auctionTopPoints = userBid;
                             $.auctionTopUser = sender;
 
-                            $.say($.lang.get("net.phantombot.bidsystem.enter-success", $.username.resolve($.auctionTopUser), getPointsString($.auctionTopPoints), getPointsString($.auctionTopPoints + $.auctionIncrement)));
+                            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bidsystem.enter-success", $.username.resolve($.auctionTopUser), getPointsString($.auctionTopPoints), getPointsString($.auctionTopPoints + $.auctionIncrement)));
                             return;
                         } else {
                             if (userBid > $.inidb.get('points', sender)) {
-                                $.say($.lang.get("net.phantombot.bidsystem.enter-error-notenough", $.inidb.get('settings', 'pointNameMultiple'), getPointsString(action)));
+                                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bidsystem.enter-error-notenough", $.inidb.get('settings', 'pointNameMultiple'), getPointsString(action)));
                                 return;
                             }
                             if (userBid < ($.auctionTopPoints + $.auctionIncrement)) {
-                                $.say($.lang.get("net.phantombot.bidsystem.enter-error-belowminimum", getPointsString($.auctionTopPoints + $.auctionIncrement)));
+                                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bidsystem.enter-error-belowminimum", getPointsString($.auctionTopPoints + $.auctionIncrement)));
                                 return;
                             }
 
                             $.auctionTopPoints = userBid;
                             $.auctionTopUser = sender;
 
-                            $.say($.lang.get("net.phantombot.bidsystem.enter-success", $.username.resolve($.auctionTopUser), getPointsString($.auctionTopPoints), getPointsString($.auctionTopPoints + $.auctionIncrement)));
+                            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bidsystem.enter-success", $.username.resolve($.auctionTopUser), getPointsString($.auctionTopPoints), getPointsString($.auctionTopPoints + $.auctionIncrement)));
                             return;
                         }
                     }
@@ -152,14 +152,14 @@ $.on('command', function(event) {
             }
         } else {
             if ($.auctionRunning == 0) {
-                $.say($.lang.get("net.phantombot.bidsystem.get-error-notrunning", "Moderator"));
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bidsystem.get-error-notrunning", "Moderator"));
                 return;
             } else {
                 if ($.auctionTopPoints == 0) {
-                    $.say($.lang.get("net.phantombot.bidsystem.get-running-noentries", getPointsString($.auctionMinimum)));
+                    $.say($.lang.get($.getWhisperString(sender) + "net.phantombot.bidsystem.get-running-noentries", getPointsString($.auctionMinimum)));
                     return;
                 } else {
-                    $.say($.lang.get("net.phantombot.bidsystem.get-running-entries", getPointsString($.auctionTopPoints), $.username.resolve($.auctionTopUser), getPointsString($.auctionTopPoints + $.auctionIncrement)));
+                    $.say($.lang.get($.getWhisperString(sender) + "net.phantombot.bidsystem.get-running-entries", getPointsString($.auctionTopPoints), $.username.resolve($.auctionTopUser), getPointsString($.auctionTopPoints + $.auctionIncrement)));
                     return;
                 }
             }

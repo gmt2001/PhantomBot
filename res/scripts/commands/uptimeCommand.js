@@ -28,7 +28,7 @@ $.on('command', function (event) {
         if ($.isOnline($.channelName)) {
             $.say("/me " + $.username.resolve($.channelName) + " has been live for " + $.getUptime($.channelName) + ".");
         } else {
-            $.say("Stream is Offline!");
+            $.say($.getWhisperString(event.getSender()) + "Stream is Offline!");
         }
         return;
     }	

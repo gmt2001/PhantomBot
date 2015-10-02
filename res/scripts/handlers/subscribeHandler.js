@@ -102,12 +102,12 @@ $.on('command', function(event) {
     
     if (command.equalsIgnoreCase("subscribemessage")) {
         if (!$.isAdmin(sender)) {
-            $.say($.adminmsg);
+            $.say($.getWhisperString(sender) + $.adminmsg);
             return;
         }
         
         if ($.strlen(argsString) == 0) {
-            $.say("The current new subscriber message is: " + $.inidb.get('settings', 'subscribemessage'));
+            $.say($.getWhisperString(sender) + "The current new subscriber message is: " + $.inidb.get('settings', 'subscribemessage'));
             
             var s = "To change it use '!subscribemessage <message>'. You can also add the string '(name)' to put the subscribers name";
             
@@ -115,30 +115,30 @@ $.on('command', function(event) {
                 s += ", '(reward)' to put the number of points received for subscribing, and '(pointname)' to put the name of your points";
             }
             
-            $.say(s);
+            $.say($.getWhisperString(sender) + s);
         } else {
             $.logEvent("subscribeHandler.js", 107, username + " changed the new subscriber message to: " + argsString);
             
             $.inidb.set('settings', 'subscribemessage', argsString);
             
-            $.say("New subscriber message set to!");
+            $.say($.getWhisperString(sender) + "New subscriber message set to!");
         }
     }
     
     if (command.equalsIgnoreCase("subsilentmode")) {
         if (!$.isAdmin(sender)) {
-            $.say($.adminmsg);
+            $.say($.getWhisperString(sender) + $.adminmsg);
             return;
         }
         
         if($.sub_silentmode==1) {
             $.inidb.set("settings", 'sub_silentmode', 0);
-            $.say('Subscribe handler now set to silent mode');
+            $.say($.getWhisperString(sender) + 'Subscribe handler now set to silent mode');
             $.sub_silentmode=0;
             return;
         } else if($.sub_silentmode==0) {
             $.inidb.set("settings", 'sub_silentmode', 1);
-            $.say('Subscribe handler now set to verbose mode');
+            $.say($.getWhisperString(sender) + 'Subscribe handler now set to verbose mode');
             $.sub_silentmode=1;
             return;
         }
@@ -146,19 +146,19 @@ $.on('command', function(event) {
     
     if (command.equalsIgnoreCase("subscribereward")) {
         if (!$.isAdmin(sender)) {
-            $.say($.adminmsg);
+            $.say($.getWhisperString(sender) + $.adminmsg);
             return;
         }
         
         if ($.strlen(argsString) == 0) {
             if ($.inidb.exists('settings', 'subscribereward')) {
-                $.say("The current new subscriber reward is " + $.inidb.get('settings', 'subscribereward') + " points! To change it use '!subscribereward <reward>'");
+                $.say($.getWhisperString(sender) + "The current new subscriber reward is " + $.inidb.get('settings', 'subscribereward') + " points! To change it use '!subscribereward <reward>'");
             } else {
-                $.say("The current new subscriber reward is 100 points! To change it use '!subscribereward <reward>'");
+                $.say($.getWhisperString(sender) + "The current new subscriber reward is 100 points! To change it use '!subscribereward <reward>'");
             }
         } else {
             if (parseInt(argsString) < 0) {
-                $.say("Please put a valid reward greater than or equal to 0!");
+                $.say($.getWhisperString(sender) + "Please put a valid reward greater than or equal to 0!");
                 return;
             }
             
@@ -166,7 +166,7 @@ $.on('command', function(event) {
             
             $.inidb.set('settings', 'subscribereward', argsString);
             
-            $.say("New subscriber reward set to " + argsString + " " + $.pointname + "!");
+            $.say($.getWhisperString(sender) + "New subscriber reward set to " + argsString + " " + $.pointname + "!");
         }
     }
     
@@ -174,7 +174,7 @@ $.on('command', function(event) {
         var keys = $.inidb.GetKeyList("subscribed", "");
         var count = 0;
         if(!$.isAdmin(sender)) {
-            $.say("You must be an Administrator to use this command");
+            $.say($.getWhisperString(sender) + $.adminmsg);
             return;
         }
         
@@ -188,12 +188,12 @@ $.on('command', function(event) {
     
     if (command.equalsIgnoreCase("subscribemode")) {
         if (!$.isAdmin(sender)) {
-            $.say($.adminmsg);
+            $.say($.getWhisperString(sender) + $.adminmsg);
             return;
         }
         
         if ($.strlen(argsString) == 0) {
-            $.say("Currently using " + $.subscribemode + " subscription detection. twitchnotify mode does not save to the database. To change it use '!subscribemode <auto or twitchnotify>'");
+            $.say($.getWhisperString(sender) + "Currently using " + $.subscribemode + " subscription detection. twitchnotify mode does not save to the database. To change it use '!subscribemode <auto or twitchnotify>'");
             
             return;
         }
@@ -205,13 +205,13 @@ $.on('command', function(event) {
             
             $.inidb.set('settings', 'subscribemode', 'twitchnotify');
             
-            $.say("Switched to twitchnotify subscription detection!");
+            $.say($.getWhisperString(sender) + "Switched to twitchnotify subscription detection!");
         } else {
             $.logEvent("subscribeHandler.js", 175, username + " changed the new subscriber detection method to auto");
             
             $.inidb.set('settings', 'subscribemode', 'auto');
             
-            $.say("Switched to auto subscription detection!");
+            $.say($.getWhisperString(sender) + "Switched to auto subscription detection!");
         }
         
         $.subscribemode = $.inidb.get('settings', 'subscribemode');

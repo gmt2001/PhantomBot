@@ -21,14 +21,14 @@ $.on('command', function (event) {
 		
     if (command.equalsIgnoreCase("highlight")) {
         if (!$.isModv3(sender, event.getTags())) {
-            $.say($.modmsg);
+            $.say($.getWhisperString(sender) + $.modmsg);
         } else if (argsString.isEmpty()) { 
-            $.say("Usage: !highlight (note)");
+            $.say($.getWhisperString(sender) + "Usage: !highlight (note)");
         } else if (!$.isOnline($.channelName)) {
-            $.say("Stream is Offline!");
+            $.say($.getWhisperString(sender) + "Stream is Offline!");
         } else {
             $.inidb.set("highlights", timestamp, argsString);
-            $.say("Highlight saved! \"" + 
+            $.say($.getWhisperString(sender) + "Highlight saved! \"" + 
                 argsString + "\" @ " + timestamp + ".");
         }
         return;
@@ -37,14 +37,14 @@ $.on('command', function (event) {
     if (command.equalsIgnoreCase("clearhighlights")) {
 		
         if (!$.isModv3(sender, event.getTags())) {
-            $.say($.modmsg);
+            $.say($.getWhisperString(sender) + $.modmsg);
             return;
         }
 		
         // TODO: Delete Highlights
         $.inidb.RemoveFile("highlights");
         $.inidb.ReloadFile("highlights");
-        $.say("All Highlights have been erased!");
+        $.say($.getWhisperString(sender) + "All Highlights have been erased!");
     }
 	
     return;

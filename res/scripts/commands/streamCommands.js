@@ -86,10 +86,10 @@ $.on('command', function(event) {
 
     if (command.equalsIgnoreCase("online")) {
         if (!$.isOnline($.channelName)) {
-            $.say("Stream is offline.");
+            $.say($.getWhisperString(sender) + "Stream is offline.");
         }
         else {
-            $.say("Stream is online!");
+            $.say($.getWhisperString(sender) + "Stream is online!");
         }
     }
     
@@ -109,7 +109,7 @@ $.on('command', function(event) {
             return;
         }
         else if (!$.isAdmin(sender)) {
-            $.say($.castermsg);
+            $.say($.getWhisperString(sender) + $.castermsg);
             return;	
         }
         
@@ -120,7 +120,7 @@ $.on('command', function(event) {
                 $.say("Changed the game to '" + res.getString("game") + "'!");
                 $.logEvent("streamCommands.js", 25, username + " changed the current game to " + res.getString("game"));
             } else {
-                $.say("Failed to change the game. TwitchAPI must be having issues");
+                $.say($.getWhisperString(sender) + "Failed to change the game. TwitchAPI must be having issues");
                 println(res.getString("message"));
                 $.logError("streamCommands.js", 29, res.getString("message"));
             }
@@ -138,7 +138,7 @@ $.on('command', function(event) {
             return;
         }
         else if (!$.isAdmin(sender)) {
-            $.say($.castermsg);
+            $.say($.getWhisperString(sender) + $.castermsg);
             return;	
         }
         
@@ -149,12 +149,12 @@ $.on('command', function(event) {
                 $.say("Changed the title to '" + res.getString("status") + "'!");
                 $.logEvent("streamCommands.js", 54, username + " changed the current status to " + res.getString("status"));
             } else {
-                $.say("Failed to change the status. TwitchAPI must be having issues");
+                $.say($.getWhisperString(sender) + "Failed to change the status. TwitchAPI must be having issues");
                 println(res.getString("message"));
                 $.logError("streamCommands.js", 58, res.getString("message"));
             }
         } else {
-            $.say("Failed to change the status. TwitchAPI must be having issues");
+            $.say($.getWhisperString(sender) + "Failed to change the status. TwitchAPI must be having issues");
             println(res.getString("_exception") + " " + res.getString("_exceptionMessage"));
             $.logError("streamCommands.js", 63, res.getString("_exception") + " " + res.getString("_exceptionMessage"));
         }
@@ -162,14 +162,14 @@ $.on('command', function(event) {
     
     if (command.equalsIgnoreCase("commercial")) {
         if (!$.isAdmin(sender)) {
-            $.say($.castermsg);
+            $.say($.getWhisperString(sender) + $.castermsg);
             return;
         }
         
         if (args.length > 0) {
             if (args[0].equalsIgnoreCase("disablecommand")) {
                 if (!isAdmin(sender)) {
-                    $.say($.adminmsg);
+                    $.say($.getWhisperString(sender) + $.adminmsg);
                     return;
                 }
                 
@@ -177,13 +177,13 @@ $.on('command', function(event) {
             
                 $.inidb.set("settings", "commercialcommandenabled", "0");
                 
-                $.say("Manual commercials disabled!");
+                $.say($.getWhisperString(sender) + "Manual commercials disabled!");
                 return;
             }
         
             if (args[0].equalsIgnoreCase("enablecommand")) {
                 if (!isAdmin(sender)) {
-                    $.say($.adminmsg);
+                    $.say($.getWhisperString(sender) + $.adminmsg);
                     return;
                 }
             
@@ -191,13 +191,13 @@ $.on('command', function(event) {
             
                 $.inidb.set("settings", "commercialcommandenabled", "1");
                 
-                $.say("Manual commercials enabled!");
+                $.say($.getWhisperString(sender) + "Manual commercials enabled!");
                 return;
             }
         
             if (args[0].equalsIgnoreCase("autotimer")) {
                 if (!isAdmin(sender)) {
-                    $.say($.adminmsg);
+                    $.say($.getWhisperString(sender) + $.adminmsg);
                     return;
                 }
                 
@@ -206,7 +206,7 @@ $.on('command', function(event) {
                     
                     $.inidb.set("settings", "commercialtimer", args[1]);
                     
-                    $.say("Automatic commercial timer disabled!");
+                    $.say($.getWhisperString(sender) + "Automatic commercial timer disabled!");
                     return;
                 }
                 
@@ -215,20 +215,20 @@ $.on('command', function(event) {
                         && !args[2].equalsIgnoreCase("120") && !args[2].equalsIgnoreCase("150") && !args[2].equalsIgnoreCase("180"))) {
                     if (args.length == 1) {
                         if (!$.inidb.exists("settings", "commercialtimer") || $.inidb.get("settings", "commercialtimer").equalsIgnoreCase("0")) {
-                            $.say("Automatic commercials are disabled! To enable them, say '!commercial autotimer <interval in minutes (at least 9)> <commercial length 30, 60, 90, 120, 150, or 180> [optional message]'");
+                            $.say($.getWhisperString(sender) + "Automatic commercials are disabled! To enable them, say '!commercial autotimer <interval in minutes (at least 9)> <commercial length 30, 60, 90, 120, 150, or 180> [optional message]'");
                         } else {
                             var a = $.inidb.get("settings", "commercialtimer");
                             var b = $.inidb.get("settings", "commercialtimerlength");
                             var c = $.inidb.get("settings", "commercialtimermessage");
                             
-                            $.say("Automatic commercials are enabled! They are running " + b + " seconds of ads every " + a + " minutes. To disable, say '!commercial autotimer 0'");
+                            $.say($.getWhisperString(sender) + "Automatic commercials are enabled! They are running " + b + " seconds of ads every " + a + " minutes. To disable, say '!commercial autotimer 0'");
                             
                             if (!c.isEmpty()) {
-                                $.say("The message sent with every automatic commercial is: " + c);
+                                $.say($.getWhisperString(sender) + "The message sent with every automatic commercial is: " + c);
                             }
                         }
                     } else {
-                        $.say("Usage: !commercial autotimer <interval in minutes (at least 9) or 0 to disable> <commercial length 30, 60, 90, 120, 150, or 180> [optional message]");
+                        $.say($.getWhisperString(sender) + "Usage: !commercial autotimer <interval in minutes (at least 9) or 0 to disable> <commercial length 30, 60, 90, 120, 150, or 180> [optional message]");
                     }
                     
                     return;
@@ -249,19 +249,19 @@ $.on('command', function(event) {
                     $.inidb.set("settings", "commercialtimermessage", "");
                 }
                 
-                $.say("Automatic commercial timer set!");
+                $.say($.getWhisperString(sender) + "Automatic commercial timer set!");
                 return;
             }
             
             if (args[0].equalsIgnoreCase("help")) {
-                $.say("Usage: !commercial <commercial length 30, 60, 90, 120, 150, or 180>, !commercial enablecommand, !commercial disablecommand, !commercial autotimer");
+                $.say($.getWhisperString(sender) + "Usage: !commercial <commercial length 30, 60, 90, 120, 150, or 180>, !commercial enablecommand, !commercial disablecommand, !commercial autotimer");
                 return;
             }
         }
         
         if ($.inidb.exists("settings", "commercialcommandenabled")
             && $.inidb.get("settings", "commercialcommandenabled").equalsIgnoreCase("0") && !isAdmin(sender)) {
-            $.say("Manual triggering of commercials is disabled!");
+            $.say($.getWhisperString(sender) + "Manual triggering of commercials is disabled!");
             return;
         }
         
@@ -276,18 +276,18 @@ $.on('command', function(event) {
                 $.say("Running a " + argsString + " second commercial!");
                 $.logEvent("streamCommands.js", 181, username + " ran a " + argsString + " second commercial");
             } else if (res.getInt("_http") == 422) {
-                $.say("You must enter a valid commercial length, wait 8 minutes between commercials, and can only run commercials when the stream is online! Valid lengths are 30, 60, 90, 120, 150, and 180 seconds");
+                $.say($.getWhisperString(sender) + "You must enter a valid commercial length, wait 8 minutes between commercials, and can only run commercials when the stream is online! Valid lengths are 30, 60, 90, 120, 150, and 180 seconds");
                 
                 if (!res.getString("message").equalsIgnoreCase("Commercials breaks are allowed every 8 min and only when you are online.")) {
                     $.logError("streamCommands.js", 186, res.getString("message"));
                 }
             } else {
-                $.say("Failed to run a commercial. TwitchAPI must be having issues");
+                $.say($.getWhisperString(sender) + "Failed to run a commercial. TwitchAPI must be having issues");
                 println(res.getString("_content"));
                 $.logError("streamCommands.js", 191, res.getString("_content"));
             }
         } else {
-            $.say("Failed to run a commercial. TwitchAPI must be having issues");
+            $.say($.getWhisperString(sender) + "Failed to run a commercial. TwitchAPI must be having issues");
             println(res.getString("_exception") + " " + res.getString("_exceptionMessage"));
             $.logError("streamCommands.js", 196, res.getString("_exception") + " " + res.getString("_exceptionMessage"));
         }
@@ -338,16 +338,16 @@ $.timer.addTimer("./commands/streamCommands.js", "autocommercial", true, functio
                 println(res.getString("_content"));
                 
                 if (!res.getString("message").equalsIgnoreCase("Commercials breaks are allowed every 8 min and only when you are online.")) {
-                    $.say("Failed to run a commercial. " + res.getString("message"));
+                    $.say($.getWhisperString(sender) + "Failed to run a commercial. " + res.getString("message"));
                     $.logError("streamCommands.js", 234, res.getString("message"));
                 }
             } else {
                 println(res.getString("_content"));
-                $.say("Failed to run a commercial. TwitchAPI must be having issues");
+                $.say($.getWhisperString(sender) + "Failed to run a commercial. TwitchAPI must be having issues");
                 $.logError("streamCommands.js", 239, res.getString("message"));
             }
         } else {
-            $.say("Failed to run a commercial. TwitchAPI must be having issues");
+            $.say($.getWhisperString(sender) + "Failed to run a commercial. TwitchAPI must be having issues");
             println(res.getString("_exception") + " " + res.getString("_exceptionMessage"));
             $.logError("streamCommands.js", 244, res.getString("_exception") + " " + res.getString("_exceptionMessage"));
         }

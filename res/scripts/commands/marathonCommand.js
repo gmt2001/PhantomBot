@@ -133,13 +133,13 @@ $.on('command', function(event) {
     if (command.equalsIgnoreCase("marathon")) {
         if (args.length == 0) {
             if (!$.inidb.FileExists("marathon") || $.inidb.GetKeyList("marathon", "").length == 0) {
-                $.say("There is currently no marathon schedule");
+                $.say($.getWhisperString(sender) + "There is currently no marathon schedule");
                 return;
             } 
             announceSchedule();
         } else {
             if (!isMod(sender)) {
-                $.say($.modmsg);
+                $.say($.getWhisperString(sender) + $.modmsg);
                 return;
             }
             
@@ -152,30 +152,30 @@ $.on('command', function(event) {
             
             if (args[0].equalsIgnoreCase("clear")) {
                 $.inidb.RemoveFile("marathon");
-                $.say("The marathon schedule has been cleared!");
+                $.say($.getWhisperString(sender) + "The marathon schedule has been cleared!");
             } else if (args[0].equalsIgnoreCase("name")) {
                 if (data.length == 0) {
                     if ($.inidb.exists("marathon", "name")) {
-                        $.say("The current marathon name is '" + $.inidb.get("marathon", "name") + "'! To change it use '!marathon name <name>'");
+                        $.say($.getWhisperString(sender) + "The current marathon name is '" + $.inidb.get("marathon", "name") + "'! To change it use '!marathon name <name>'");
                     } else {
-                        $.say("There currently is no marathon name set");
+                        $.say($.getWhisperString(sender) + "There currently is no marathon name set");
                     }
                     
                     return;
                 }
                 
                 $.inidb.set("marathon", "name", data); 
-                $.say("Marathon name set!");
+                $.say($.getWhisperString(sender) + "Marathon name set!");
             } else if (args[0].equalsIgnoreCase("nameclear")) {
                 $.inidb.del("marathon", "name");
                 
-                $.say("Marathon name cleared!");
+                $.say($.getWhisperString(sender) + "Marathon name cleared!");
             } else if (args[0].equalsIgnoreCase("link")) {
                 if (data.length == 0) {
                     if ($.inidb.exists("marathon", "link")) {
-                        $.say("The current marathon link is '" + $.inidb.get("marathon", "link") + "'! To change it use '!marathon link <link>'");
+                        $.say($.getWhisperString(sender) + "The current marathon link is '" + $.inidb.get("marathon", "link") + "'! To change it use '!marathon link <link>'");
                     } else {
-                        $.say("There currently is no marathon link set");
+                        $.say($.getWhisperString(sender) + "There currently is no marathon link set");
                     }
                     
                     return;
@@ -183,11 +183,11 @@ $.on('command', function(event) {
                 
                 $.inidb.set("marathon", "link", data);
                 
-                $.say("Marathon link set!");
+                $.say($.getWhisperString(sender) + "Marathon link set!");
             } else if (args[0].equalsIgnoreCase("linkclear")) {
                 $.inidb.del("marathon", "link");
                 
-                $.say("Marathon link cleared!");
+                $.say($.getWhisperString(sender) + "Marathon link cleared!");
             } else if (args[0].equalsIgnoreCase("schedule")) {
                 if (data.indexOf(" ") == -1 || $.strlen(data) < data.indexOf(" ") + 1) {
                     $.say("Usage: '!marathon schedule add <customname> <MM/DD> <HH:MM>', '!marathon schedule delete <MM/DD> <HH:MM>'");
@@ -232,7 +232,7 @@ $.on('command', function(event) {
                         }
                     
                         if (month == -1 || day == -1 || hour == -1 || minute == -1) {
-                            $.say("Invalid date or time, type '!marathon schedule' for the format");
+                            $.say($.getWhisperString(sender) + "Invalid date or time, type '!marathon schedule' for the format");
                             return;
                         }
                         
@@ -254,13 +254,13 @@ $.on('command', function(event) {
                                 if (date2.equals(date)) {
                                     $.inidb.del("marathon", keys[i]);
                                     
-                                    $.say("Deleted specified timeslot from marathon schedule");
+                                    $.say($.getWhisperString(sender) + "Deleted specified timeslot from marathon schedule");
                                     return;
                                 }
                             }
                         }
                         
-                        $.say("Specified timeslot does not exist");
+                        $.say($.getWhisperString(sender) + "Specified timeslot does not exist");
                     } else if (subcommand.equalsIgnoreCase("add")) {
                         var first = true;
                         var count = 0;
@@ -308,7 +308,7 @@ $.on('command', function(event) {
                             if (month == -1 || day == -1 || hour == -1 || minute == -1) {
                                 if (first) {
                                     first = false;
-                                    $.say("Invalid date or time, type '!marathon schedule' for the format");
+                                    $.say($.getWhisperString(sender) + "Invalid date or time, type '!marathon schedule' for the format");
                                 }
                             } else {
                                 cal.set(cal.get(java.util.Calendar.YEAR), month, day, hour, minute, 0);
@@ -320,13 +320,13 @@ $.on('command', function(event) {
                             }
                         } while($.strlen(data) > 0);
                         
-                        $.say("Added " + count + " valid schedule items");
+                        $.say($.getWhisperString(sender) + "Added " + count + " valid schedule items");
                     } else {
-                        $.say("Invalid subcommand '" + subcommand + "'");
+                        $.say($.getWhisperString(sender) + "Invalid subcommand '" + subcommand + "'");
                     }
                 }
             } else {
-                $.say("Usage: !marathon clear, !marathon name <name>, !marathon nameclear, !marathon link <link>, !marathon linkclear, !marathon schedule");
+                $.say($.getWhisperString(sender) + "Usage: !marathon clear, !marathon name <name>, !marathon nameclear, !marathon link <link>, !marathon linkclear, !marathon schedule");
             }
         }
     }

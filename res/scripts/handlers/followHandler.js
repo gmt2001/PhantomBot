@@ -97,25 +97,25 @@ $.on('command', function(event) {
     if (command.equalsIgnoreCase("follow")) {
         if (args[0] != null) {
             if($.inidb.get("followed",args[0].toLowerCase())==1){
-                $.say($.username.resolve(args[0]) + " is following the channel.");
+                $.say($.getWhisperString(sender) + $.username.resolve(args[0]) + " is following the channel.");
                 return;                    
             } else {
-                $.say($.username.resolve(args[0]) + " is not following the channel.");
+                $.say($.getWhisperString(sender) + $.username.resolve(args[0]) + " is not following the channel.");
                 return;    
             }
         }
-        $.say("!followmessage <message>, !followreward <amount>");
+        $.say($.getWhisperString(sender) + "!followmessage <message>, !followreward <amount>");
         
     }
 	
     if (command.equalsIgnoreCase("followmessage")) {
         if (!$.isAdmin(sender)) {
-            $.say($.adminmsg);
+            $.say($.getWhisperString(sender) + $.adminmsg);
             return;
         }
         
         if ($.strlen(argsString) == 0) {
-            $.say("The current new follower message is: " + $.inidb.get('settings', 'followmessage'));
+            $.say($.getWhisperString(sender) + "The current new follower message is: " + $.inidb.get('settings', 'followmessage'));
             
             var s = "To change it use '!followmessage <message>'. You can also add the string '(name)' to put the followers name";
             
@@ -123,31 +123,31 @@ $.on('command', function(event) {
                 s += ", '(reward)' to put the number of points received for following, and '(pointname)' to put the name of your points";
             }
             
-            $.say(s);
+            $.say($.getWhisperString(sender) + s);
         } else {
             $.logEvent("followHandler.js", 108, username + " changed the new follower message to: " + argsString);
             
             $.inidb.set('settings', 'followmessage', argsString);
             
-            $.say("New follower message set!");
+            $.say($.getWhisperString(sender) + "New follower message set!");
         }
     }
     
     if (command.equalsIgnoreCase("followreward")) {
         if (!$.isAdmin(sender)) {
-            $.say($.adminmsg);
+            $.say($.getWhisperString(sender) + $.adminmsg);
             return;
         }
         
         if ($.strlen(argsString) == 0) {
             if ($.inidb.exists('settings', 'followreward')) {
-                $.say("The current new follower reward is " + $.inidb.get('settings', 'followreward') + " points! To change it use '!followreward <reward>'");
+                $.say($.getWhisperString(sender) + "The current new follower reward is " + $.inidb.get('settings', 'followreward') + " points! To change it use '!followreward <reward>'");
             } else {
-                $.say("The current new follower reward is 100 points! To change it use '!followreward <reward>'");
+                $.say($.getWhisperString(sender) + "The current new follower reward is 100 points! To change it use '!followreward <reward>'");
             }
         } else {
             if (!parseInt(argsString) < 0) {
-                $.say("Please put a valid reward greater than or equal to 0!");
+                $.say($.getWhisperString(sender) + "Please put a valid reward greater than or equal to 0!");
                 return;
             }
             
@@ -155,7 +155,7 @@ $.on('command', function(event) {
             
             $.inidb.set('settings', 'followreward', argsString);
             
-            $.say("New follower reward set!");
+            $.say($.getWhisperString(sender) + "New follower reward set!");
         }
     }
     

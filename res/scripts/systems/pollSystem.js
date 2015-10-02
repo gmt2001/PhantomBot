@@ -114,15 +114,15 @@ $.on('command', function (event) {
             return;
         }
         if ($.pollVoters.contains(sender)) {
-            $.say(username + ", you have already voted.");
+            $.say($.getWhisperString(sender) + username + ", you have already voted.");
             return;
         }
         if (!makeVote(args[0])) {
-            $.say("'" + args[0] + "' is not a valid option!");
+            $.say($.getWhisperString(sender) + "'" + args[0] + "' is not a valid option!");
         } else {
             $.pollVoters.add(sender);
             if ($var.vote_toggle == true) {
-                $.say("Your vote has been recorded, " + username + ".");
+                $.say($.getWhisperString(sender) + "Your vote has been recorded, " + username + ".");
             } else if ($var.vote_toggle == false) {
                 println("Your vote has been recorded, " + username + ".");
             }
@@ -148,7 +148,7 @@ $.on('command', function (event) {
 
             if (action.equalsIgnoreCase("toggle")) {
                 if (!$.isAdmin(sender)) {
-                    $.say($.adminmsg);
+                    $.say($.getWhisperString(sender) + $.adminmsg);
                     return;
                 }
 
@@ -156,13 +156,13 @@ $.on('command', function (event) {
 
                     $var.vote_toggle = true;
                     $.inidb.set('settings', 'vote_toggle', 1);
-                    $.say("Vote messages have been turned on!");
+                    $.say($.getWhisperString(sender) + "Vote messages have been turned on!");
 
                 } else if ($var.vote_toggle == true) {
 
                     $var.vote_toggle = false;
                     $.inidb.set('settings', 'vote_toggle', 2);
-                    $.say("Vote messages have been turned off!");
+                    $.say($.getWhisperString(sender) + "Vote messages have been turned off!");
                 }
 
 
@@ -207,14 +207,14 @@ $.on('command', function (event) {
         if (args.length >= 2) {
             if (action.equalsIgnoreCase("open")) {
                 if (!$.isModv3(sender, event.getTags())) {
-                    $.say($.modmsg);
+                    $.say($.getWhisperString(sender) + $.modmsg);
                     return;
                 }
                 length = 0;
                 options = []
 
                 if (args.length < 2) {
-                    $.say("Usage: '!poll open -t (seconds) (option 1) (option 2)' -- '!poll results' -- '!poll close'");
+                    $.say($.getWhisperString(sender) + "Usage: '!poll open -t (seconds) (option 1) (option 2)' -- '!poll results' -- '!poll close'");
                     return;
                 }
 
@@ -227,16 +227,16 @@ $.on('command', function (event) {
                 options = args.slice(argStart);
 
                 if (options.length < 2) {
-                    $.say("Not enough options, polls must have at least two options!");
+                    $.say($.getWhisperString(sender) + "Not enough options, polls must have at least two options!");
                     return;
                 }
                 if (options.length > 10) {
-                    $.say("Max number of options in a poll is 10!");
+                    $.say($.getWhisperString(sender) + "Max number of options in a poll is 10!");
                     return;
                 }
 
                 if ($var.vote_running) {
-                    $.say("A vote is already running");
+                    $.say($.getWhisperString(sender) + "A vote is already running");
                     return;
                 }
             }
@@ -284,7 +284,7 @@ $.on('command', function (event) {
 
             if (!$.isModv3(sender, event.getTags())) {
                 if ($var.pollMaster != sender) {
-                    $.say($.modmsg);
+                    $.say($.getWhisperString(sender) + $.modmsg);
                     return;
                 }
             }
@@ -296,7 +296,7 @@ $.on('command', function (event) {
 
         } else {
             if (argsString.isEmpty()) {
-                $.say("Usage: '!poll open [-t (seconds)] (option 1) (option 2)' -- '!poll results' -- '!poll close'");
+                $.say($.getWhisperString(sender) + "Usage: '!poll open [-t (seconds)] (option 1) (option 2)' -- '!poll results' -- '!poll close'");
             }
 
         }

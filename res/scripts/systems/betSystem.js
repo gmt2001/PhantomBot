@@ -6,7 +6,6 @@ var totalwin = 0;
 var entries = 0;
 var last_entries = 0;
 var bet = 0;
-var whispermode = $.inidb.get('settings', 'whisper_bet');
 var betstarter;
 var winners = "";
 var optionString = "";
@@ -38,42 +37,16 @@ $.on('command', function (event) {
 
 	if (command.equalsIgnoreCase("bet")) {
 		if (!$.moduleEnabled("./systems/pointSystem.js")) {
-			
-			if (whispermode = "true") {
-			$.say("/w " + username + " You can not use !bet because points are disabled!");
-			} else {
-			$.say(username + ", you can not use !bet because points are disabled!");
-			}
-
-			
+			$.say($.getWhisperString(sender) + username + ", you can not use !bet because points are disabled!");
 			return;
 		}
 
 		if (args.length >= 1) {
 			
-			if (action.equalsIgnoreCase("whisper") && $.isModv3(sender, event.getTags())) {
-				
-				if (whispermode != "true") {
-				$.inidb.set("settings", "whisper_bet", "true");
-				whispermode = "true";
-				$.say("[Whisper Mode] has been activated for the Bet System!");			
-				return;	
-				} else if (whispermode == "true"){
-				$.inidb.set("settings", "whisper_bet", "false");
-				whispermode = "false";
-				$.say("[Whisper Mode] has been deactivated for the Bet System!");		
-				}
-
-				}
-			
 			if (action.equalsIgnoreCase("min") && $.isModv3(sender, event.getTags())) {
 
 				if (args[1] === 0) {
-					if (whispermode = "true") {
-					$.say("/w " + username + " You have disabled the minimum bet amount!");
-					} else {
-					$.say(username + ", you have disabled the minimum bet amount!");
-					}
+					$.say($.getWhisperString(sender) + username + ", you have disabled the minimum bet amount!");
 					$.inidb.set('settings', 'bet_minimum', args[1]);
 					$.bet_minimum = args[1];
 					return;
@@ -81,43 +54,27 @@ $.on('command', function (event) {
 
 				if (args[1] == null) {
 					if ($.bet_minimum === 0 && $.bet_maximum > 0) {
-						if (whispermode = "true") {
-						$.say("/w " + username + " You may bet up to " + $.bet_maximum + " " + $.pointname + " or lower!");
-						} else {
-						$.say(username + ", you may bet up to " + $.bet_maximum + " " + $.pointname + " or lower!");
-						}
+						$.say($.getWhisperString(sender) + username + ", you may bet up to " + $.bet_maximum + " " + $.pointname + " or lower!");
 						return;
 					}
 
 					if ($.bet_maximum === 0 && $.bet_minimum > 0) {
-						if (whispermode = "true") {
-						$.say("/w " + username + " You may bet no lower than " + $.bet_minimum + " " + $.pointname + ".");
-						} else {
-						$.say(username + ", you may bet no lower than " + $.bet_minimum + " " + $.pointname + ".");
-						}
+						$.say($.getWhisperString(sender) + username + ", you may bet no lower than " + $.bet_minimum + " " + $.pointname + ".");
 						return;
 					}
 
-					$.say("[BET] Current Bet Maximum: " + $.bet_maximum + " " + $.pointname + ", Current Bet Minimum: " + $.bet_minimum + " " + $.pointname + ".");
+					$.say($.getWhisperString(sender) + "[BET] Current Bet Maximum: " + $.bet_maximum + " " + $.pointname + ", Current Bet Minimum: " + $.bet_minimum + " " + $.pointname + ".");
 					return;
 				}
 
 				if (parseInt(args[1]) < 0 || parseInt(args[1]) > $.bet_maximum && $.bet_maximum !== 0) {
-					if (whispermode = "true") {
-					$.say("/w " + username + "You can't set the minimum bet amount below 0 or higher than the bet maximum!");
-					} else {
-					$.say(username + ", you can't set the minimum bet amount below 0 or higher than the bet maximum!");	
-					}
+					$.say($.getWhisperString(sender) + username + ", you can't set the minimum bet amount below 0 or higher than the bet maximum!");	
 					return;
 
 				} else {
 					$.inidb.set('settings', 'bet_minimum', args[1]);
 					$.bet_minimum = args[1];
-					if (whispermode = "true") {
-					$.say("/w " + username + " You have set the minimum amount someone could bet to: " + args[1] + " " + $.pointname + ".");
-					} else {
-					$.say(username + ", you have set the minimum amount someone could bet to: " + args[1] + " " + $.pointname + ".");
-					}
+					$.say($.getWhisperString(sender) + username + ", you have set the minimum amount someone could bet to: " + args[1] + " " + $.pointname + ".");
 				}
 
 			}
@@ -125,11 +82,7 @@ $.on('command', function (event) {
 			if (action.equalsIgnoreCase("max") && $.isModv3(sender, event.getTags())) {
 
 				if (args[1] === 0) {
-					if (whispermode = "true") {
-					$.say("/w " + username + " You have disabled the maximum bet amount!");
-					} else {
-					$.say(username + ", you have disabled the maximum bet amount!");
-					}
+					$.say($.getWhisperString(sender) + username + ", you have disabled the maximum bet amount!");
 					$.inidb.set('settings', 'bet_maximum', args[1]);
 					$.bet_maximum = args[1];
 					return;
@@ -137,46 +90,25 @@ $.on('command', function (event) {
 
 				if (args[1] == null) {
 					if ($.bet_minimum === 0 && $.bet_maximum > 0) {
-						if (whispermode = "true") {
-						$.say("/w " + username + " You may bet up to " + $.bet_maximum + " " + $.pointname + " or lower!");
-						} else {
-						$.say(username + ", you may bet up to " + $.bet_maximum + " " + $.pointname + " or lower!");
-						}
+						$.say($.getWhisperString(sender) + username + ", you may bet up to " + $.bet_maximum + " " + $.pointname + " or lower!");
 						return;
 					}
 
 					if ($.bet_maximum === 0 && $.bet_minimum > 0) {
-						if (whispermode = "true") {
-						$.say("/w " + username + " You may bet no lower than " + $.bet_minimum + " " + $.pointname + ".");
-						} else {
-						$.say(username + ", you may bet no lower than " + $.bet_minimum + " " + $.pointname + ".");	
-						}
+						$.say($.getWhisperString(sender) + username + ", you may bet no lower than " + $.bet_minimum + " " + $.pointname + ".");	
 						return;
 					}
-					if (whispermode = "true") {
-					$.say("/w " + username + " The Current Bet Maximum: " + $.bet_maximum + " " + $.pointname + ", Current Bet Minimum: " + $.bet_minimum + " " + $.pointname + ".");
-					} else {
-					$.say("/w " + username + ", The Current Bet Maximum: " + $.bet_maximum + " " + $.pointname + ", Current Bet Minimum: " + $.bet_minimum + " " + $.pointname + ".");	
-					}
+					$.say($.getWhisperString(sender) + ", The Current Bet Maximum: " + $.bet_maximum + " " + $.pointname + ", Current Bet Minimum: " + $.bet_minimum + " " + $.pointname + ".");	
 					return;
 				}
 
 				if (parseInt(args[1]) < $.bet_minimum) {
-					if (whispermode = "true") {
-					$.say("/w " + username + " You can't set the maximum bet amount below the minimum amount!");
-					} else {
-					$.say(username + ", you can't set the maximum bet amount below the minimum amount!");
-					}
+					$.say($.getWhisperString(sender) + username + ", you can't set the maximum bet amount below the minimum amount!");
 					return;
 				} else {
 					$.bet_maximum = args[1];
 					$.inidb.set('settings', 'bet_maximum', args[1]);
-					
-					if (whispermode = "true") {
-					$.say("/w " + username + " You have set the maximum amount someone could bet to: " + args[1] + " " + $.pointname + ".");
-					} else {
-					$.say(username + ", you have set the maximum amount someone could bet to: " + args[1] + " " + $.pointname + ".");
-					}
+					$.say($.getWhisperString(sender) + username + ", you have set the maximum amount someone could bet to: " + args[1] + " " + $.pointname + ".");
 				}
 
 			}
@@ -195,28 +127,16 @@ $.on('command', function (event) {
 
 				if ($var.bet_running) {
 					if (pot === 0 && entries === 0) {
-						if (whispermode = "true") {
-						$.say("/w " + username + " Nothing at the moment. '!bet < amount > < option >' to wager your " + $.pointname + " on one of the following options: " + $var.bet_optionsString);
-						} else {
-						$.say(username + ", There's nothing at the moment. '!bet < amount > < option >' to wager your " + $.pointname + " on one of the following options: " + $var.bet_optionsString);	
-						}
+						$.say($.getWhisperString(sender) + username + ", There's nothing at the moment. '!bet < amount > < option >' to wager your " + $.pointname + " on one of the following options: " + $var.bet_optionsString);	
 						return;
 					} else {
-						if (whispermode = "true") {
-						$.say("/w " + username + " [Current Results] Pot: " + crPot + " " + $.pointname + ", Bets: " + crEntries + ", Options: " + crOptions + ".");
-						} else {
-						$.say(username + ", The [Current Results] Pot: " + crPot + " " + $.pointname + ", Bets: " + crEntries + ", Options: " + crOptions + ".");	
-						}
+						$.say($.getWhisperString(sender) + username + ", The [Current Results] Pot: " + crPot + " " + $.pointname + ", Bets: " + crEntries + ", Options: " + crOptions + ".");	
 					}
 
 				} else {
 
 					if (rOptions == null) {
-						if (whispermode = "true") {
-						$.say("/w " + username + " There are no past bets.");
-						} else {
-						$.say("/w " + username + ", there are no past bets.");
-						}
+						$.say($.getWhisperString(sender) + ", there are no past bets.");
 					} else {
 
 						if (rWinner == null) {
@@ -231,11 +151,7 @@ $.on('command', function (event) {
 						if (rWinOp == null) {
 							rWinOp = "None";
 						}
-						if (whispermode = "true") {
-						$.say("/w " + username + " [" + bDate + "] - [Pot: " + rPot + " " + $.pointname + "] - [Options: " + rOptions + "] - [Entries: " + rEntries + "] - [Winning Option: " + rWinOp + "] - [Winners: " + rWinner + "]");
-						} else {
-						$.say("[" + bDate + "] - [Pot: " + rPot + " " + $.pointname + "] - [Options: " + rOptions + "] - [Entries: " + rEntries + "] - [Winning Option: " + rWinOp + "] - [Winners: " + rWinner + "]");
-						}
+						$.say($.getWhisperString(sender) + "[" + bDate + "] - [Pot: " + rPot + " " + $.pointname + "] - [Options: " + rOptions + "] - [Entries: " + rEntries + "] - [Winning Option: " + rWinOp + "] - [Winners: " + rWinner + "]");
 					}
 
 				}
@@ -243,14 +159,10 @@ $.on('command', function (event) {
 			}
 
 			if (action.equalsIgnoreCase("open") && !$var.bet_running || action.equalsIgnoreCase("start") && !$var.bet_running) {
-                if (!$.isAdmin(sender)) {
-					if (whispermode = "true") {
-                    $.say("/w " + username + " " + $.adminmsg);
-					} else {
-					$.say(username + " " + $.adminmsg);	
-					}
-                    return;
-                }
+                            if (!$.isAdmin(sender)) {
+                                $.say($.getWhisperString(sender) + $.adminmsg);	
+                                return;
+                            }
 				entries = 0;
 				optionString = "";
 				$.inidb.set('bets', 'pot', 0); //
@@ -261,11 +173,7 @@ $.on('command', function (event) {
 
 				var boptions = args.slice(1);
 				if (boptions.length <= 1) {
-					if (whispermode = "true") {
-					$.say("/w " + username + " You must enter at least two options to start a bet!");
-					} else {
-					$.say(username + ", you must enter at least two options to start a bet!");
-					}
+					$.say($.getWhisperString(sender) + username + ", you must enter at least two options to start a bet!");
 					return;
 
 				}
@@ -303,11 +211,7 @@ $.on('command', function (event) {
 
 			} else if (action.equalsIgnoreCase("time") && !$var.bet_running) {
 				if (!$.isModv3(sender, event.getTags())) {
-					if (whispermode = "true") {
-					$.say("/w " + username + " " + $.modmsg);
-					} else {
-					$.say(username + " " + $.modmsg);
-					}
+					$.say($.getWhisperString(sender) + $.modmsg);
 					return;
 				}
 
@@ -324,11 +228,7 @@ $.on('command', function (event) {
 			} else if (action.equalsIgnoreCase("win") || action.equalsIgnoreCase("close") || action.equalsIgnoreCase("end")) {
 				if (sender == betstarter || $.isModv3(sender, event.getTags())) {}
 				else {
-					if (whispermode = "true") {
-					$.say("/w " + username + " @" + $.username.resolve(betstarter) + " opened this bet and is the only that can close it with '!bet win (option)'");
-					} else {
-					$.say("@" + $.username.resolve(betstarter) + " opened this bet and is the only that can close it with '!bet win (option)'");
-					}
+					$.say($.getWhisperString(sender) + "@" + $.username.resolve(betstarter) + " opened this bet and is the only that can close it with '!bet win (option)'");
 					return;
 				}
 				if (!$var.bet_running)
@@ -337,11 +237,7 @@ $.on('command', function (event) {
 				var winning = args.slice(1).join(" ").trim().toLowerCase();
 
 				if (!$.array.contains($var.bet_options, winning)) {
-					if (whispermode = "true") {
-					$.say("/w " + username + " " + winning + " doesn't match any of the options.");
-					} else {
-					$.say(username + ", " + winning + " doesn't match any of the options.");
-					}
+					$.say($.getWhisperString(sender) + username + ", " + winning + " doesn't match any of the options.");
 					return;
 				}
 
@@ -431,40 +327,24 @@ $.on('command', function (event) {
 				var option = args.slice(1).join(" ").trim().toLowerCase();
 
 				if (betstart + betlength < System.currentTimeMillis()) {
-					if (whispermode = "true") {
-					$.say("/w " + username + " Sorry, betting is closed, " + username + "!");
-					} else {
-					$.say("Sorry, betting is closed, " + username + "!");	
-					}
+					$.say($.getWhisperString(sender) + "Sorry, betting is closed, " + username + "!");	
 					return;
 				}
 
 				if (!$.array.contains($var.bet_options, option)) {
-					if (whispermode = "true") {
-					$.say("/w " + username + " " + option + " is not a valid option!");
-					} else {
-					$.say(username + ", " + option + " is not a valid option!");	
-					}
+					$.say($.getWhisperString(sender) + username + ", " + option + " is not a valid option!");	
 					return;
 				}
 
 				if ($.bet_minimum === 0) {}
 				else if (amount < $.bet_minimum) {
-					if (whispermode = "true") {
-					$.say("/w " + username + " The minimum amount of " + $.pointname + " that you can wager is: " + $.bet_minimum + " " + $.pointname + ".");
-					} else {
-					$.say(username + ", the minimum amount of " + $.pointname + " that you can wager is: " + $.bet_minimum + " " + $.pointname + ".");	
-					}
+					$.say($.getWhisperString(sender) + username + ", the minimum amount of " + $.pointname + " that you can wager is: " + $.bet_minimum + " " + $.pointname + ".");	
 					return;
 				}
 
 				if ($.bet_maximum === 0) {}
 				else if (amount > $.bet_maximum) {
-					if (whispermode = "true") {
-					$.say("/w " + username + " The maximum amount of " + $.pointname + " that you can wager is: " + $.bet_maximum + " " + $.pointname + ".");
-					} else {
-					$.say(username + ", the maximum amount of " + $.pointname + " that you can wager is: " + $.bet_maximum + " " + $.pointname + ".");	
-					}
+					$.say($.getWhisperString(sender) + username + ", the maximum amount of " + $.pointname + " that you can wager is: " + $.bet_maximum + " " + $.pointname + ".");	
 					return;
 				}
 
@@ -475,29 +355,17 @@ $.on('command', function (event) {
 					points = parseInt(points);
 
 				if (amount > points) {
-					if (whispermode = "true") {
-					$.say("/w " + username + " You don't have that amount of " + $.pointname + " to wager!");
-					} else {
-					$.say(username + ", you don't have that amount of " + $.pointname + " to wager!");	
-					}
+					$.say($.getWhisperString(sender) + username + ", you don't have that amount of " + $.pointname + " to wager!");	
 					return;
 				}
 
 				if (amount < 1) {
-					if (whispermode = "true") {
-					$.say("/w " + username + " Your wager must be greater than 0!");
-					} else {
-					$.say(username + ", your wager must be greater than 0!");	
-					}
+					$.say($.getWhisperString(sender) + username + ", your wager must be greater than 0!");	
 					return;
 				}
 
 				if (sender in $var.bet_table) {
-					if (whispermode = "true") {
-					$.say("/w " + username + " You have already placed your bet!");
-					} else {
-					$.say(username + ", you have already placed your bet!");	
-					}
+					$.say($.getWhisperString(sender) + username + ", you have already placed your bet!");	
 					return;
 				} else {
 					$.inidb.decr('points', sender, amount);
@@ -523,29 +391,20 @@ $.on('command', function (event) {
 		} else {
 			if ($var.bet_running) {
 				if (betstart + betlength < System.currentTimeMillis()) {
-					if (whispermode = "true") {
-					$.say("/w " + username + " Betting is now closed! Please wait for the results! [Current Pot: " + pot + " " + $.pointname + "] for options " + $var.bet_optionsString);
-					} else {
-					$.say(username + ", betting is now closed! Please wait for the results! [Current Pot: " + pot + " " + $.pointname + "] for options " + $var.bet_optionsString);
-					}
+					$.say($.getWhisperString(sender) + username + ", betting is now closed! Please wait for the results! [Current Pot: " + pot + " " + $.pointname + "] for options " + $var.bet_optionsString);
 				} else {
 
 					var betmessage = "";
 					betmessage = ", the options are: " + optionsString + "! Type '!bet (amount) (option)' to enter!";
 
 					if (argsString.isEmpty()) {
-						if (whispermode = "true") {
-						$.say("/w " + username + " [Current Pot] >> " + pot + " " + $.pointname + " << " + username + " " + betmessage);
-						} else {
-						$.say("[Current Pot] >> " + pot + " " + $.pointname + " << " + username + " " + betmessage);
-						}
-
+						$.say($.getWhisperString(sender) + "[Current Pot] >> " + pot + " " + $.pointname + " << " + username + " " + betmessage);
 					}
 
 				}
 			} else {
 				if (argsString.isEmpty()) {
-					$.say("Usage: '!bet open' - '!bet open (options)' - '!bet time (seconds)' - '!bet results' - '!bet win (option)' - '!bet (amount) (option)'");
+					$.say($.getWhisperString(sender) + "Usage: '!bet open' - '!bet open (options)' - '!bet time (seconds)' - '!bet results' - '!bet win (option)' - '!bet (amount) (option)'");
 
 				}
 

@@ -18,6 +18,8 @@ $.lang.data["net.phantombot.cmd.adminonly"] = "Only an Administrator has access 
 $.lang.data["net.phantombot.cmd.modonly"] = "Only a Moderator has access to that command!";
 
 //init.js
+$.lang.data["net.phantombot.common.whisper-disabled"] = "[Whisper Mode] has been disabled.";
+$.lang.data["net.phantombot.common.whisper-enabled"] = "[Whisper Mode] has been enabled.";
 $.lang.data["net.phantombot.init.cmsgset"] = "Connected message set!";
 $.lang.data["net.phantombot.init.reconn"] = "Reconnect scheduled!";
 $.lang.data["net.phantombot.init.module-not-exists"] = "That module does not exist or is not loaded!";
@@ -90,8 +92,6 @@ $.lang.data["net.phantombot.chatmoderator.chatmod-warn-reset-time-set"] = "Chang
 
 //pointSystem.js
 $.lang.data["net.phantombot.common.user-404"] = "The user \"$1\" has not visited this channel yet.";
-$.lang.data["net.phantombot.common.whisper-disabled"] = "[Whisper Mode] for $1 has been disabled.";
-$.lang.data["net.phantombot.common.whisper-enabled"] = "[Whisper Mode] for $1 has been enabled.";
 $.lang.data["net.phantombot.pointsystem.bonus-error-negative"] = "You can not set the bonus per group level to negative $1.";
 $.lang.data["net.phantombot.pointsystem.bonus-success"] = "Set the $1 bonus to $2 per group level.";
 $.lang.data["net.phantombot.pointsystem.bonus-usage"] = "Usage: \"!points bonus <amount>\"";
@@ -156,7 +156,7 @@ $.lang.data["net.phantombot.timesystem.autolevel-disabled"] = "Users will no lon
 $.lang.data["net.phantombot.timesystem.autolevel-enabled"] = "Users will now be promoted to $1 when they have been in the chat for $2 hour(s).";
 $.lang.data["net.phantombot.timesystem.autolevel-promote"] = "$1 has been promoted to $2 by being in the chat for $3 hour(s). Congratulations!";
 $.lang.data["net.phantombot.timesystem.get-other"] = "$1 currently spent $2 in the chat.";
-$.lang.data["net.phantombot.timesystem.get-self"] = "You currently spent $1 in the chat.";
+$.lang.data["net.phantombot.timesystem.get-self"] = "You have spent $1 in the chat.";
 $.lang.data["net.phantombot.timesystem.give-error-negative"] = "You can not give negative time.";
 $.lang.data["net.phantombot.timesystem.give-success"] = "Sent $1 to $2. New balance is $3.";
 $.lang.data["net.phantombot.timesystem.give-usage"] = "Usage: \"!time give <name> <amount>\"";

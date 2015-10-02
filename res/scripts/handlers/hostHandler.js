@@ -33,8 +33,8 @@ $.on('twitchHosted', function(event) {
         if (s == null || s == undefined || $.strlen(s) == 0) {
             if ($.hostreward < 1) {
                 s = "Thanks for the host (name)!";
-            } else if ($.hostreward > 0) {
-                s = "Thanks for the host (name)! you're rewarded " + $.hostreward + " " + $.pointname + ".";
+            } else if ($.hostreward > 0 && $.moduleEnabled('./systems/pointSystem.js')) {
+                s = "Thanks for the host (name)! you're rewarded " + $.getPointsString($.hostreward) + ".";
                 $.inidb.incr('points', username.toLowerCase(), $.hostreward);
             }
         }
@@ -81,39 +81,39 @@ $.on('command', function(event) {
     
     if (command.equalsIgnoreCase("hostmessage")) {
         if (!$.isAdmin(sender)) {
-            $.say($.adminmsg);
+            $.say($.getWhisperString(sender) + $.adminmsg);
             return;
         }
         
         if ($.strlen(argsString) == 0) {
-            $.say("The current new hoster message is: " + $.inidb.get('settings', 'hostmessage'));
+            $.say($.getWhisperString(sender) + "The current new hoster message is: " + $.inidb.get('settings', 'hostmessage'));
             
             var s = "To change it use '!hostmessage <message>'. You can also add the string '(name)' to put the hosters name";
             
-            $.say(s);
+            $.say($.getWhisperString(sender) + s);
         } else {
             $.logEvent("hostHandler.js", 73, username + " changed the new hoster message to: " + argsString);
             
             $.inidb.set('settings', 'hostmessage', argsString);
             
-            $.say("New host message set!");
+            $.say($.getWhisperString(sender) + "New host message set!");
         }
     }
     if (command.equalsIgnoreCase("hostreward")) {
         if (!$.isAdmin(sender)) {
-            $.say($.adminmsg);
+            $.say($.getWhisperString(sender) + $.adminmsg);
             return;
         }
         
         if ($.strlen(argsString) == 0) {
             if ($.inidb.exists('settings', 'hostreward')) {
-                $.say("The current host reward is " + $.inidb.get('settings', 'hostreward') + " " + $.pointname + "! To change it use '!hostreward <amount>'");
+                $.say($.getWhisperString(sender) + "The current host reward is " + $.inidb.get('settings', 'hostreward') + " " + $.pointname + "! To change it use '!hostreward <amount>'");
             } else {
-                $.say("The current host reward is " + $.hostreward + " " + $.pointname + "! To change it use '!hostreward (amount)'");
+                $.say($.getWhisperString(sender) + "The current host reward is " + $.hostreward + " " + $.pointname + "! To change it use '!hostreward (amount)'");
             }
         } else {
             if (!parseInt(argsString) < 0) {
-                $.say("Please put a valid reward greater than or equal to 0!");
+                $.say($.getWhisperString(sender) + "Please put a valid reward greater than or equal to 0!");
                 return;
             }
             
@@ -121,29 +121,29 @@ $.on('command', function(event) {
             
             $.inidb.set('settings', 'hostreward', argsString);
             $.hostreward = parseInt(argsString);
-            $.say("New hoster reward set to: " + argsString);
+            $.say($.getWhisperString(sender) + "New hoster reward set to: " + argsString);
         }
     }
 	
     if (command.equalsIgnoreCase("hostcount")) {
-        $.say("This channel is currently being hosted by " + $.hostlist.length + " channels!");
+        $.say($.getWhisperString(sender) + "This channel is currently being hosted by " + $.hostlist.length + " channels!");
     }
     
     if (command.equalsIgnoreCase("hosttime")) {
         if (args.length < 1) {
-            $.say("Host timeout duration is currently set to: " + parseInt($.inidb.get('settings', 'hosttimeout')) + " minutes!");
+            $.say($.getWhisperString(sender) + "Host timeout duration is currently set to: " + parseInt($.inidb.get('settings', 'hosttimeout')) + " minutes!");
         } else if (args.length >= 1){
             if (!$.isAdmin(sender)) {
-                $.say($.adminmsg);
+                $.say($.getWhisperString(sender) + $.adminmsg);
                 return;
             }
             if (parseInt(args[0]) < 30) {
-                $.say("Host timeout duration can't be less than 30 minutes!");
+                $.say($.getWhisperString(sender) + "Host timeout duration can't be less than 30 minutes!");
                 return;
             } else {
                 $.inidb.set('settings', 'hosttimeout', parseInt(args[0]));
                 $.hosttimeout = parseInt(args[0]);
-                $.say("Host timeout duration is now set to: " + parseInt(args[0]) + " minutes!");
+                $.say($.getWhisperString(sender) + "Host timeout duration is now set to: " + parseInt(args[0]) + " minutes!");
             }
         }
     }
@@ -169,7 +169,7 @@ $.on('command', function(event) {
         }
         
         if ($.hostlist.length == 0) {
-        	$.say("This channel is currently being hosted by nobody.");
+        	$.say($.getWhisperString(sender) + "Noone is currently hosting this channel.");
         }
     }
 	

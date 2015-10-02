@@ -72,20 +72,20 @@ $.on('command', function(event) {
 
     if (command.equalsIgnoreCase("penalty")) {
         if (!$.moduleEnabled("./systems/pointSystem.js")) {
-            $.say($.lang.get("net.phantombot.penaltysystem.points-disabled"));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.penaltysystem.points-disabled"));
             return;
         }
 
         if (args.length == 0) {
             if ($.inidb.get('penalty', sender.toLowerCase()) == null || $.inidb.get('penalty', sender.toLowerCase()) == "false") {
-                $.say($.lang.get("net.phantombot.penaltysystem.get-nopenalty"));
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.penaltysystem.get-nopenalty"));
                 return;
             } else {
                 if (parseInt($.inidb.get('penalty', sender.toLowerCase() + "_threshold")) == -1) {
-                    $.say($.lang.get("net.phantombot.penaltysystem.get-penalty-indefinitely", $.inidb.get('settings', 'pointNameMultiple'), "Moderator"));
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.penaltysystem.get-penalty-indefinitely", $.inidb.get('settings', 'pointNameMultiple'), "Moderator"));
                     return;
                 } else {
-                    $.say($.lang.get("net.phantombot.penaltysystem.get-penalty", $.inidb.get('settings', 'pointNameMultiple'), getPointsString(parseInt($.inidb.get('penalty', sender + "_threshold")))));
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.penaltysystem.get-penalty", $.inidb.get('settings', 'pointNameMultiple'), getPointsString(parseInt($.inidb.get('penalty', sender + "_threshold")))));
                     return;
                 }
             }
@@ -93,14 +93,14 @@ $.on('command', function(event) {
             if ($.inidb.get("visited", args[0].toLowerCase()) == "visited") {
                 if (!$.isModv3(sender, event.getTags())) {
                     if ($.inidb.get('penalty', args[0].toLowerCase()) == null || $.inidb.get('penalty', args[0].toLowerCase()) == "false") {
-                        $.say($.lang.get("net.phantombot.penaltysystem.get-other-nopenalty", $.username.resolve(args[0].toLowerCase())));
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.penaltysystem.get-other-nopenalty", $.username.resolve(args[0].toLowerCase())));
                         return;
                     } else {
                         if (parseInt($.inidb.get('penalty', args[0].toLowerCase() + "_threshold")) == -1) {
-                            $.say($.lang.get("net.phantombot.penaltysystem.get-other-penalty-indefinitely", $.username.resolve(args[0].toLowerCase()), $.inidb.get('settings', 'pointNameMultiple'), "Moderator"));
+                            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.penaltysystem.get-other-penalty-indefinitely", $.username.resolve(args[0].toLowerCase()), $.inidb.get('settings', 'pointNameMultiple'), "Moderator"));
                             return;
                         } else {
-                            $.say($.lang.get("net.phantombot.penaltysystem.get-other-penalty", $.username.resolve(args[0].toLowerCase()), $.inidb.get('settings', 'pointNameMultiple'), getPointsString(parseInt($.inidb.get('penalty', args[0].toLowerCase() + "_threshold")))));
+                            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.penaltysystem.get-other-penalty", $.username.resolve(args[0].toLowerCase()), $.inidb.get('settings', 'pointNameMultiple'), getPointsString(parseInt($.inidb.get('penalty', args[0].toLowerCase() + "_threshold")))));
                             return;
                         }
                     }
@@ -117,7 +117,7 @@ $.on('command', function(event) {
                         $.inidb.set('penalty', args[0].toLowerCase() + "_pointscount", userPointsCount);
                         $.inidb.set('penalty', args[0].toLowerCase() + "_threshold", -1);
 
-                        $.say($.lang.get("net.phantombot.penaltysystem.set-enabled-indefinitely", $.username.resolve(args[0]), $.inidb.get('settings', 'pointNameMultiple'), "Moderator"));
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.penaltysystem.set-enabled-indefinitely", $.username.resolve(args[0]), $.inidb.get('settings', 'pointNameMultiple'), "Moderator"));
                         return;
                     } else {
                         $.returnPoints(args[0].toLowerCase());
@@ -127,17 +127,17 @@ $.on('command', function(event) {
                         $.inidb.set('penalty', args[0].toLowerCase() + "_pointscount", 0);
                         $.inidb.set('penalty', args[0].toLowerCase() + "_threshold", 0);
 
-                        $.say($.lang.get("net.phantombot.penaltysystem.set-disabled", $.username.resolve(args[0].toLowerCase())));
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.penaltysystem.set-disabled", $.username.resolve(args[0].toLowerCase())));
                         return;
                     }
                 }
             } else {
-                $.say($.lang.get("net.phantombot.common.user-404", $.username.resolve(args[0].toLowerCase())));
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.common.user-404", $.username.resolve(args[0].toLowerCase())));
                 return;
             }
         } else if (args.length == 2 && !isNaN(parseInt(args[1]))) {
             if (!$.isModv3(sender, event.getTags())) {
-                $.say($.modmsg);
+                $.say($.getWhisperString(sender) + $.modmsg);
                 return;
             }
 
@@ -155,14 +155,14 @@ $.on('command', function(event) {
                 $.inidb.set('penalty', args[0].toLowerCase() + "_pointscount", userPointsCount);
                 $.inidb.set('penalty', args[0].toLowerCase() + "_threshold", args[1]);
 
-                $.say($.lang.get("net.phantombot.penaltysystem.set-enabled-threshold", $.username.resolve(args[0].toLowerCase()), $.inidb.get('settings', 'pointNameMultiple'), getPointsString(parseInt($.inidb.get('penalty', args[0].toLowerCase() + "_threshold")))));
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.penaltysystem.set-enabled-threshold", $.username.resolve(args[0].toLowerCase()), $.inidb.get('settings', 'pointNameMultiple'), getPointsString(parseInt($.inidb.get('penalty', args[0].toLowerCase() + "_threshold")))));
                 return;
             } else {
-                $.say($.lang.get("net.phantombot.common.user-404", $.username.resolve(args[0].toLowerCase())));
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.common.user-404", $.username.resolve(args[0].toLowerCase())));
                 return;
             }
         } else {
-            $.say($.lang.get("net.phantombot.penaltysystem.usage"));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.penaltysystem.usage"));
             return;
         }
     }
@@ -214,7 +214,7 @@ $.timer.addTimer("./systems/penaltySystem.js", "penaltySystem", true, function()
                 $.inidb.set('penalty', nick + "_pointscount", 0);
                 $.inidb.set('penalty', nick + "_threshold", 0);
 
-                $.say($.lang.get("net.phantombot.penaltysystem.lifted", $.username.resolve(nick), getPointsString(penaltypoints)));
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.penaltysystem.lifted", $.username.resolve(nick), getPointsString(penaltypoints)));
             }
         }
     }

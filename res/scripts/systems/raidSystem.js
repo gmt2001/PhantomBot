@@ -20,16 +20,16 @@ $.on('command', function(event) {
     if (command.equalsIgnoreCase("raid") || command.equalsIgnoreCase("raider")) {
         if (args.length >= 1) {
             if (!$.isModv3(sender, event.getTags())) {
-                $.say($.modmsg);
+                $.say($.getWhisperString(sender) + $.modmsg);
                 return;
             }
 
             $.inidb.incr('raiders', args[0].toLowerCase() + "_count", 1);
 
-            $.say($.lang.get("net.phantombot.raidsystem.success", $.username.resolve(args[0]), getOrdinal($.inidb.get('raiders', args[0].toLowerCase()  + "_count")), args[0].toLowerCase()));  
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.raidsystem.success", $.username.resolve(args[0]), getOrdinal($.inidb.get('raiders', args[0].toLowerCase()  + "_count")), args[0].toLowerCase()));  
             return;
         } else {
-            $.say($.lang.get("net.phantombot.raidsystem.usage"));       
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.raidsystem.usage"));       
             return;
         }
     }

@@ -24,12 +24,12 @@ $.on('command', function(event) {
 
 
         if (isNaN(num_randoms) || num_randoms == 0) {
-            $.say("There are no random messages at this time");
+            $.say($.getWhisperString(sender) + "There are no random messages at this time");
             return;
         }
 
         if ($.inidb.get("randoms", "random_" + num) == null) {
-            $.say("There are only " + num_randoms + " randoms right now! Remember that random messages are numbered from 0 to " + (num_randoms - 1) + "!");
+            $.say($.getWhisperString(sender) + "There are only " + num_randoms + " randoms right now! Remember that random messages are numbered from 0 to " + (num_randoms - 1) + "!");
 
         } 
         
@@ -37,7 +37,7 @@ $.on('command', function(event) {
     
     if (command.equalsIgnoreCase("addrandom")) {
         if (!$.isMod(sender)) {
-            $.say($.modmsg);
+            $.say($.getWhisperString(sender) + $.modmsg);
             return;
         }
         
@@ -46,7 +46,7 @@ $.on('command', function(event) {
         } 
 
         if (argsString.isEmpty()) {
-            $.say("Usage: !addrandom <message>");
+            $.say($.getWhisperString(sender) + "Usage: !addrandom <message>");
             return;
         }
         
@@ -55,24 +55,24 @@ $.on('command', function(event) {
         $.inidb.set("randoms", "random_" + num_randoms, argsString);
 
         
-        $.say("Random message added! There are now " + (num_randoms + 1) + " random messages!");
+        $.say($.getWhisperString(sender) + "Random message added! There are now " + (num_randoms + 1) + " random messages!");
     }
 
      if (command.equalsIgnoreCase("editrandom")) {
         if (!$.isMod(sender)) {
-            $.say($.modmsg);
+            $.say($.getWhisperString(sender) + $.modmsg);
             return;
         }
         
         num = parseInt(args[0]);
 
         if (num > num_randoms) {
-            $.say("There is no random message under that ID, " + sender + "!");
+            $.say($.getWhisperString(sender) + "There is no random message under that ID, " + sender + "!");
             return;
         }
 
         if (argsString2.isEmpty() || argsString.isEmpty() || args[1] == null) {
-            $.say("Usage: !editrandom <ID> <message>");
+            $.say($.getWhisperString(sender) + "Usage: !editrandom <ID> <message>");
             return;
         }
 
@@ -80,23 +80,23 @@ $.on('command', function(event) {
         
         $.inidb.set("randoms", "random_" + num, argsString2);
         
-        $.say("Random message #" + num + " changed to: " + $.inidb.get("randoms", "random_" + num));
+        $.say($.getWhisperString(sender) + "Random message #" + num + " changed to: " + $.inidb.get("randoms", "random_" + num));
         return;
     }
 
     if (command.equalsIgnoreCase("delrandom")) {
         if (!$.isMod(sender)) {
-            $.say($.modmsg);
+            $.say($.getWhisperString(sender) + $.modmsg);
             return;
         }
         
         if (num_randoms == null || isNaN(num_randoms) || num_randoms == 0) {
-            $.say("There are no randoms at this time");
+            $.say($.getWhisperString(sender) + "There are no randoms at this time");
             return;
         }
         
         if (argsString.isEmpty()) {
-            $.say("Usage: !delrandom <id>");
+            $.say($.getWhisperString(sender) + "Usage: !delrandom <id>");
             return;
         }
         
@@ -112,7 +112,7 @@ $.on('command', function(event) {
         
         $.inidb.decr("random_num", "num_randoms", 1);
         
-        $.say("random removed! There are now " + (num_randoms - 1) + " randoms!");
+        $.say($.getWhisperString(sender) + "random removed! There are now " + (num_randoms - 1) + " randoms!");
     }
     var commandCount = $.inidb.get('counter', 'random');
     var messageCommand = $.inidb.get('randoms', 'random_' + num);

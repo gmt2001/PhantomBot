@@ -157,27 +157,11 @@ $.getCommandGroup = function(command) {
     return "";
 }
 
-$.getWhisperString = function(sender) {
-    var whispermode = $.inidb.get("settings", "whisper_commands");
-    // Just put this logic in here. The odds that an entire string is different are slim.
-    if (whispermode == "true") {
-        return "/w " + sender + " ";
-    } else {
-        return "";
-    }
-}
-
-$.getWhisperStringStatic = function(sender) {
-    var whispermode = $.inidb.get("settings", "whisper_commands");
-        return "/w " + sender + " ";
-}
-
 $.on('command', function(event) {
     var sender = event.getSender().toLowerCase();
     var username = $.username.resolve(sender, event.getTags());
     var command = event.getCommand();
     var args = event.getArgs();
-    var whispermode = $.inidb.get("settings", "whisper_commands");
     
     if (command.equalsIgnoreCase("botcommands")) { // !botcommands for bot commands and !commands for custom commands.
         var cmdList = "";
@@ -188,13 +172,7 @@ $.on('command', function(event) {
         var numPages = 1;
         var more = ""
         var commandsPerPage = $.commandsPerPage;
-        var i;
-        var whispermode = $.inidb.get("settings", "whisper_commands");
-
-    if (whispermode == undefined || whispermode == null) {
-        whispermode = "false";
-    }
-        
+        var i;        
         for (i = 0; i < $.commandList.length + $.customCommandList.length; i++) {
             if (i < $.commandList.length) {
                 if ($.moduleEnabled($.commandList[i][0]) && (($.commandList[i][2].equalsIgnoreCase("admin") && $.isAdmin(sender))
