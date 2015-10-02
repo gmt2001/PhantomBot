@@ -131,7 +131,7 @@ $.getTimeString = function (time) {
 
         timeString = timeString.trim();
     } else {
-        return false;
+        return "0s";
     }
 
     return timeString;

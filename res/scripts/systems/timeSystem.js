@@ -70,7 +70,7 @@ $.getTimeString = function (time) {
             timeString += "m "
         }
         if (weeks == 0 && days == 0 && hours == 0 && minutes == 0) {
-            return false;
+            return "0s";
         }
 
         timeString = timeString.trim();
