@@ -153,7 +153,7 @@ $.on('command', function (event) {
                             i++;
                         } else if(args[i].startsWith('!')) {
                             if ($.moduleEnabled("./systems/pointSystem.js")) {
-                                $.say$.getWhisperString(sender) + ($.lang.get("net.phantombot.rafflesystem.start-error-invalid-points"));
+                                $.say($.getWhisperString(sender) + ($.lang.get("net.phantombot.rafflesystem.start-error-invalid-points"));
                                 return;
                             } else {
                                 $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.start-error-invalid-default"));
