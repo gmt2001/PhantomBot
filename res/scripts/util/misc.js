@@ -88,6 +88,9 @@ $.logChat = function(sender, message) {
     if (!$.moduleEnabled("./util/fileSystem.js") || !$.logEnable || (sender.equalsIgnoreCase($.botname) && message.equalsIgnoreCase(".mods"))) {
         return;
     }
+    if (!$.logChatEnable) {
+        return;
+    }
     
     var datefmt = new java.text.SimpleDateFormat("yyyy-MM-dd");
     datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.timezone));
@@ -299,6 +302,33 @@ $.on('command', function(event) {
         }
     }
     
+    if (command.equalsIgnoreCase("logchat")) {
+        if (!$.isAdmin(sender)) {
+            $.say($.getWhisperString(sender) + $.adminmsg);
+            
+            return;
+        }
+        if (args[0].equalsIgnoreCase("enable")) {
+            $.logChatEnable = true;
+            
+            $.logEvent("misc.js", 259, username + " enabled chat logging");
+            
+            $.inidb.set('settings', 'logchat', '1');
+            
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.misc.logchat-enable"));
+        }
+        
+        if (args[0].equalsIgnoreCase("disable")) {
+            $.logEvent("misc.js", 267, username + " disabled chat logging");
+            
+            $.logChatEnable = false;
+            
+            $.inidb.set('settings', 'logchat', '0');
+            
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.misc.logchat-disable"));
+        }
+    }
+    
     if (command.equalsIgnoreCase("response")) {
         if (!$.isAdmin(sender)) {
             $.say($.getWhisperString(sender) + $.adminmsg);
@@ -389,15 +419,23 @@ $.on('ircChannelMessage', function(event) {
 
 $.timer.addTimer("./util/misc.js", "registercommand", false, function() {
     $.registerChatCommand("./util/misc.js", "log", "admin");
+    $.registerChatCommand("./util/misc.js", "logchat", "admin");    
     $.registerChatCommand("./util/misc.js", "response", "admin");
 }, 5000);
 
 var logEnable = $.inidb.get('settings', 'logenable');
+var logChatEnable = $.inidb.get('settings', 'logchat');
 
 if (logEnable == null || logEnable == undefined) {
     $.logEnable = false;
 } else {
     $.logEnable = logEnable.equalsIgnoreCase("1");
+}
+
+if (logChatEnable == null || logChat == undefined) {
+    $.logChatEnable = false;
+} else {
+    $.logChatEnable = logChatEnable.equalsIgnoreCase("1");
 }
 
 var logRotateDays = $.inidb.get('settings', 'logrotatedays');
