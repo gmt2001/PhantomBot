@@ -493,7 +493,7 @@ $.on('command', function (event) {
             }
         }
 
-        $.say($.getWhisperString(sender) + s);
+        $.say(s);
     }
 
     if (command.equalsIgnoreCase("admins")) {

@@ -24,7 +24,7 @@ $.on('command', function(event) {
             $.say($.getWhisperString(sender) + "There are only " + (num_quotes) + " quotes right now! Remember that quotes are numbered from 0 to " + (num_quotes - 1 )+ "!");
 
         } else {
-            $.say($.getWhisperString(sender) + "#" + num + ": " + $.inidb.get("quotes", "quote_" + num));
+            $.say("#" + num + ": " + $.inidb.get("quotes", "quote_" + num));
         }
     }
     
