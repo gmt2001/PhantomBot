@@ -55,6 +55,7 @@ $.on('command', function(event) {
     var sender = event.getSender().toLowerCase();
     var username = $.username.resolve(sender, event.getTags());
     var command = event.getCommand();
+    var args = event.getArgs();
     var argsString = event.getArguments().trim();
     
     if (command.equalsIgnoreCase("lang")) {
