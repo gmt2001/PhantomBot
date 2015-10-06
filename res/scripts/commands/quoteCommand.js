@@ -16,12 +16,12 @@ $.on('command', function(event) {
         }
 
         if (isNaN(num_quotes) || num_quotes == 0) {
-            $.say("There are no quotes at this time");
+            $.say($.getWhisperString(sender) + "There are no quotes at this time");
             return;
         }
 
         if ($.inidb.get("quotes", "quote_" + num) == null) {
-            $.say("There are only " + (num_quotes) + " quotes right now! Remember that quotes are numbered from 0 to " + (num_quotes - 1 )+ "!");
+            $.say($.getWhisperString(sender) + "There are only " + (num_quotes) + " quotes right now! Remember that quotes are numbered from 0 to " + (num_quotes - 1 )+ "!");
 
         } else {
             $.say("#" + num + ": " + $.inidb.get("quotes", "quote_" + num));
@@ -30,7 +30,7 @@ $.on('command', function(event) {
     
     if (command.equalsIgnoreCase("addquote")) {
         if (!$.isModv3(sender, event.getTags())) {
-            $.say($.modmsg);
+            $.say($.getWhisperString(sender) + $.modmsg);
             return;
         }
         
@@ -39,53 +39,53 @@ $.on('command', function(event) {
         }
         
         if (argsString.isEmpty()) {
-            $.say("Usage: !addquote \"This is a quote!\"");
+            $.say($.getWhisperString(sender) + "Usage: !addquote \"This is a quote!\"");
             return;
         }
 
         $.inidb.incr("quotes", "num_quotes", 1);
         $.inidb.set("quotes", "quote_" + num_quotes, argsString);
         
-        $.say("Quote added! There are now " + (num_quotes + 1) + " quotes!");
+        $.say($.getWhisperString(sender) + "Quote added! There are now " + (num_quotes + 1) + " quotes!");
     }
 
     if (command.equalsIgnoreCase("editquote")) {
         if (!$.isModv3(sender, event.getTags())) {
-            $.say($.modmsg);
+            $.say($.getWhisperString(sender) + $.modmsg);
             return;
         }
         
         num = parseInt(args[0]);
 
         if (num > num_quotes) {
-            $.say("There is no quote under that ID, " + sender + "!");
+            $.say($.getWhisperString(sender) + "There is no quote under that ID, " + sender + "!");
             return;
         }
 
         if (argsString2.isEmpty()) {
-            $.say("Usage: !editquote <ID> \"This is a quote!\"");
+            $.say($.getWhisperString(sender) + "Usage: !editquote <ID> \"This is a quote!\"");
             return;
         }
 
         
         $.inidb.set("quotes", "quote_" + num, argsString2);
         
-        $.say("Quote #" + num + " changed to: " + $.inidb.get("quotes", "quote_" + num));
+        $.say($.getWhisperString(sender) + "Quote #" + num + " changed to: " + $.inidb.get("quotes", "quote_" + num));
     }
     
     if (command.equalsIgnoreCase("delquote")) {
         if (!$.isModv3(sender, event.getTags())) {
-            $.say($.modmsg);
+            $.say($.getWhisperString(sender) + $.modmsg);
             return;
         }
 
         if (num_quotes == null || isNaN(num_quotes) || num_quotes == 0) {
-            $.say("There are no quotes at this time");
+            $.say($.getWhisperString(sender) + "There are no quotes at this time");
             return;
         }
         
         if (argsString.isEmpty()) {
-            $.say("Usage: !delquote <id>");
+            $.say($.getWhisperString(sender) + "Usage: !delquote <id>");
             return;
         }
         
@@ -101,7 +101,7 @@ $.on('command', function(event) {
         
         $.inidb.decr("quotes", "num_quotes", 1);
         
-        $.say("Quote removed! There are now " + (num_quotes - 1) + " quotes!");
+        $.say($.getWhisperString(sender) + "Quote removed! There are now " + (num_quotes - 1) + " quotes!");
     }
 });
 

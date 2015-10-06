@@ -26,12 +26,12 @@ $.on('command', function (event) {
         
         if (action.equalsIgnoreCase("filepath")) {
             if (!$.isAdmin(sender)) {
-                $.say($.adminmsg);
+                $.say($.getWhisperString(sender) + $.adminmsg);
                 return;
             }
             
             if (args[1].equalsIgnoreCase('viewfilepath')) {
-                $.say("Current donation alert file path: " + $.checkerstorepath);
+                $.say($.getWhisperString(sender) + "Current donation alert file path: " + $.checkerstorepath);
                 return;
             }
             
@@ -41,17 +41,17 @@ $.on('command', function (event) {
             
             $.inidb.set('settings','checker_storepath', args[1]);
             $.checkerstorepath = args[1];
-            $.say("File path for donation alert has been set!");
+            $.say($.getWhisperString(sender) + "File path for donation alert has been set!");
         }
         if (action.equalsIgnoreCase("toggle")) {
             if($.donation_toggle==1) {
                 $.inidb.set('settings','donation_toggle', 0);
                 $.donation_toggle = 0;
-                $.say('Donation alerts have been disabled.');
+                $.say($.getWhisperString(sender) + 'Donation alerts have been disabled.');
             } else {
                 $.inidb.set('settings','donation_toggle', 1);
                 $.donation_toggle = 1;
-                $.say('Donation alerts have been enabled.');
+                $.say($.getWhisperString(sender) + 'Donation alerts have been enabled.');
             }
         }
     }

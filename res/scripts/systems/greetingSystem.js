@@ -15,7 +15,7 @@ $.on('ircChannelJoin', function(event) {
             }
         }
         
-        $.say(s.replace("(name)", username));
+        $.say($.getWhisperString(sender) + s.replace("(name)", username));
         
     } else if ($.inidb.get("greeting", "autogreet") == "true") {
         if (s == null || s == undefined || s.isEmpty()) {
@@ -26,7 +26,7 @@ $.on('ircChannelJoin', function(event) {
             }
         }
         
-        $.say(s.replace("(name)", username));
+        $.say($.getWhisperString(sender) + s.replace("(name)", username));
            
     } else {
     //println("[Join] " + username + " has joined the channel.");
@@ -63,48 +63,48 @@ $.on('command', function(event) {
         
         if (subCommand.equalsIgnoreCase("toggle")) {
             if (!$.isModv3(sender, event.getTags())) {
-                $.say($.modmsg);
+                $.say($.getWhisperString(sender) + $.modmsg);
                 return;
             }
             if ($.inidb.get("greeting", "autogreet")== null || $.inidb.get("greeting", "autogreet")== "false") {
                 $.inidb.set("greeting", "autogreet", "true");
-                $.say ("Auto Greeting enabled! " + $.username.resolve($.botname) + " will greet everyone from now on.");
+                $.say($.getWhisperString(sender) + "Auto Greeting enabled! " + $.username.resolve($.botname) + " will greet everyone from now on.");
             } else if ($.inidb.get("greeting", "autogreet")== "true") {
                 $.inidb.set("greeting", "autogreet", "false");
-                $.say ("Auto Greeting disabled! " + $.username.resolve($.botname) + " will no longer greet viewers.");
+                $.say($.getWhisperString(sender) + "Auto Greeting disabled! " + $.username.resolve($.botname) + " will no longer greet viewers.");
             }
         }
 
         if (subCommand.equalsIgnoreCase("enable")) {
             $.inidb.set("greeting", sender + "_enabled", "1");
          
-            $.say ("Greeting enabled! " + $.username.resolve($.botname) + " will greet you from now on " + username + ".");
+            $.say ($.getWhisperString(sender) + "Greeting enabled! " + $.username.resolve($.botname) + " will greet you from now on " + username + ".");
         } else if (subCommand.equalsIgnoreCase("disable")) {
             $.inidb.set("greeting", sender + "_enabled", "0");
             
-            $.say ("Greeting disabled for " + username);
+            $.say ($.getWhisperString(sender) + "Greeting disabled for " + username);
         } else if (subCommand.equalsIgnoreCase("set")) {
             if ($.strlen(message) == 0) {
                 $.inidb.set("greeting", sender, "");
-                $.say("Greeting deleted");
+                $.say($.getWhisperString(sender) + "Greeting deleted");
             }
             
             if (message.indexOf("(name)") == -1) {
-                $.say("You must include '(name)' in your new greeting so I know where to insert your name, " + username + ". Example: !greeting set (name) sneaks into the channel!");
+                $.say($.getWhisperString(sender) + "You must include '(name)' in your new greeting so I know where to insert your name, " + username + ". Example: !greeting set (name) sneaks into the channel!");
                 return;
             }
             
             $.inidb.set("greeting", sender, message);
             
-            $.say("Greeting changed");
+            $.say($.getWhisperString(sender) + "Greeting changed");
         } else if (subCommand.equalsIgnoreCase("setdefault")) {
             if (!$.isModv3(sender, event.getTags())) {
-                $.say($modmsg);
+                $.say($.getWhisperString(sender) + $.modmsg);
                 return;
             }
             
             if (message.indexOf("(name)") == -1) {
-                $.say("You must include '(name)' in the new greeting so I know where to insert the viewers name, " + username + ". Example: !greeting setdefault (name) sneaks into the channel!");
+                $.say($.getWhisperString(sender) + "You must include '(name)' in the new greeting so I know where to insert the viewers name, " + username + ". Example: !greeting setdefault (name) sneaks into the channel!");
                 return;
             }
             
@@ -112,9 +112,9 @@ $.on('command', function(event) {
             
             $.inidb.set("greeting", "_default", message);
             
-            $.say("Default greeting changed");
+            $.say($.getWhisperString(sender) + "Default greeting changed");
         } else if (args[0].isEmpty()){
-            $.say('Usage: !greeting enable, !greeting disable, !greeting set (message), !greeting setdefault (message)');
+            $.say($.getWhisperString(sender) + 'Usage: !greeting enable, !greeting disable, !greeting set (message), !greeting setdefault (message)');
         }
     }
     
@@ -129,7 +129,7 @@ $.on('command', function(event) {
             }
         }
         
-        $.say(s.replace("(name)", username));
+        $.say($.getWhisperString(sender) + s.replace("(name)", username));
     } 
 });
 setTimeout(function(){ 

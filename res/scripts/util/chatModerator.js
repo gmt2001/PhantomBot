@@ -228,15 +228,15 @@ $.on('command', function(event) {
 	
     if (command.equalsIgnoreCase("whitelist")) {
         if (!$.isModv3(sender, event.getTags())) {
-            $.say ($.modmsg);
+            $.say ($.getWhisperString(sender) + $.modmsg);
             return;
         }
 			
         if (args.length > 0) {
             $.inidb.set('whitelist', 'link', args[0]);
-            $.say($.lang.get("net.phantombot.chatmoderator.whitelist-add", args[0]));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.chatmoderator.whitelist-add", args[0]));
         } else {
-            $.say($.lang.get("net.phantombot.chatmoderator.whitelist-usage"));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.chatmoderator.whitelist-usage"));
             return;
         }
 			
@@ -254,7 +254,7 @@ $.on('command', function(event) {
                 $.say ($.lang.get("net.phantombot.common.err-user"));
             }
         } else {
-            $.say ($.modmsg);
+            $.say ($.getWhisperString(sender) + $.modmsg);
         }		
     } else if (command.equalsIgnoreCase("forgive")) {
         if ($.isAdmin(sender)) {
@@ -266,7 +266,7 @@ $.on('command', function(event) {
                         
                         $.logEvent("chatModerator.js", 242, username + " forgave " + args[0] + ". Now at " + sinbin[i][1] + " strike(s)");
                         
-                        $.say($.lang.get("net.phantombot.chatmoderator.forgive", $.username.resolve(args[0]), sinbin[i][1]));
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.chatmoderator.forgive", $.username.resolve(args[0]), sinbin[i][1]));
                     }
                 }
      
@@ -287,10 +287,10 @@ $.on('command', function(event) {
     
                 $.saveArray(lines, "sinbin", false);
             } else {
-                $.say ($.lang.get("net.phantombot.common.err-user"));
+                $.say ($.getWhisperString(sender) + $.lang.get("net.phantombot.common.err-user"));
             }
         } else {
-            $.say ($.adminmsg);
+            $.say ($.getWhisperString(sender) + $.adminmsg);
         }
     } else if (command.equalsIgnoreCase("increase")) {
         if ($.isAdmin(sender)) {
@@ -304,7 +304,7 @@ $.on('command', function(event) {
                         
                         $.logEvent("chatModerator.js", 280, username + " gave a strike to " + args[0] + ". Now at " + sinbin[i][1] + " strike(s)");
                         
-                        $.say($.lang.get("net.phantombot.chatmoderator.increase", $.username.resolve(args[0]), sinbin[i][1]));
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.chatmoderator.increase", $.username.resolve(args[0]), sinbin[i][1]));
                         
                         found = true;
                     }
@@ -315,7 +315,7 @@ $.on('command', function(event) {
                     
                     $.logEvent("chatModerator.js", 291, username + " gave a strike to " + args[0] + ". Now at 1 strike(s)");
                     
-                    $.say($.lang.get("net.phantombot.chatmoderator.increase", $.username.resolve(args[0]), 1));
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.chatmoderator.increase", $.username.resolve(args[0]), 1));
                 }
      
                 lines = new Array();
@@ -328,10 +328,10 @@ $.on('command', function(event) {
     
                 $.saveArray(lines, "sinbin", false);
             } else {
-                $.say ($.lang.get("net.phantombot.common.err-user"));
+                $.say ($.getWhisperString(sender) + $.lang.get("net.phantombot.common.err-user"));
             }
         } else {
-            $.say ($.adminmsg);
+            $.say ($.getWhisperString(sender) + $.adminmsg);
         }
     } else if (command.equalsIgnoreCase("timeout")) {
         if ($.isModv3(sender, event.getTags())) {
@@ -344,10 +344,10 @@ $.on('command', function(event) {
                 
                 timeoutUserFor (args[0], args[1]);
             } else {
-                $.say ($.lang.get("net.phantombot.common.err-user"));
+                $.say ($.getWhisperString(sender) + $.lang.get("net.phantombot.common.err-user"));
             }
         } else {
-            $.say ($.adminmsg);
+            $.say ($.getWhisperString(sender) + $.adminmsg);
         }
     } else if (command.equalsIgnoreCase("permit")) {
         if ($.isModv3(sender, event.getTags())) {
@@ -359,7 +359,7 @@ $.on('command', function(event) {
                 $.say ($.lang.get("net.phantombot.chatmoderator.permit", $.username.resolve(argsString), permittime));
             }
         } else {
-            $.say ($.modmsg);
+            $.say ($.getWhisperString(sender) + $.modmsg);
         }	
     } else if (command.equalsIgnoreCase("ban")) {
         if ($.isModv3(sender, event.getTags())) {
@@ -367,7 +367,7 @@ $.on('command', function(event) {
                 var time = parseInt(args[1]);
                 
                 if (time <= 0) {
-                    $.say ($.lang.get("net.phantombot.chatmoderator.ban-err-time", time));
+                    $.say ($.getWhisperString(sender) + $.lang.get("net.phantombot.chatmoderator.ban-err-time", time));
                 }
                 
                 $.logEvent("chatModerator.js", 360, username + " banned " + args[0] + " for " + time + " hour(s)");
@@ -383,7 +383,7 @@ $.on('command', function(event) {
                 $.say ($.lang.get("net.phantombot.chatmoderator.ban-indef", $.username.resolve(args[0])));
             }
         } else {
-            $.say ($.modmsg);
+            $.say ($.getWhisperString(sender) + $.modmsg);
         }
     } else if (command.equalsIgnoreCase("unban")) {
         if ($.isModv3(sender, event.getTags())) {
@@ -393,7 +393,7 @@ $.on('command', function(event) {
             
             $.say ($.lang.get("net.phantombot.chatmoderator.unban", $.username.resolve(args[0])));
         } else {
-            $.say ($.modmsg);
+            $.say ($.getWhisperString(sender) + $.modmsg);
         }
     } else if (command.equalsIgnoreCase("clear")) {
         if ($.isModv3(sender, event.getTags())) {
@@ -405,7 +405,7 @@ $.on('command', function(event) {
                 $.say($.lang.get("net.phantombot.chatmoderator.clearchat", username));
             }, 1000);
         } else {
-            $.say ($.modmsg);
+            $.say ($.getWhisperString(sender) + $.modmsg);
         }	
     } else if (command.equalsIgnoreCase("autoban")) {
         if ($.isModv3(sender, event.getTags())) {
@@ -426,7 +426,7 @@ $.on('command', function(event) {
                 $.say($.lang.get("net.phantombot.chatmoderator.autoban"));
             }
         } else {
-            $.say ($.modmsg);
+            $.say ($.getWhisperString(sender) + $.modmsg);
         }	
     } else if (command.equalsIgnoreCase("autopurge")) {
         if ($.isModv3(sender, event.getTags())) {
@@ -447,15 +447,15 @@ $.on('command', function(event) {
                 $.say($.lang.get("net.phantombot.chatmoderator.autopurge"));
             }
         } else {
-            $.say ($.modmsg);
+            $.say ($.getWhisperString(sender) + $.modmsg);
         }	
     } else if (command.equalsIgnoreCase("chatmod")) {
         if ($.isModv3(sender, event.getTags())) {
             if (args.length < 1 || args[0].equalsIgnoreCase("help")) {
-                $.say($.lang.get("net.phantombot.chatmoderator.chatmod-help-1"));
-                $.say($.lang.get("net.phantombot.chatmoderator.chatmod-help-2") + "warningcountresettime, autopurgemessage, capsallowed, capstriggerratio, capstriggerlength, "
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.chatmoderator.chatmod-help-1"));
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.chatmoderator.chatmod-help-2") + "warningcountresettime, autopurgemessage, capsallowed, capstriggerratio, capstriggerlength, "
                     + "capsmessage, linksallowed, permittime, youtubeallowed, subsallowed, regsallowed, linksmessage, spamallowed, spamlimit, spammessage");
-                $.say(">>symbolsallowed, symbolslimit, symbolsrepeatlimit, symbolsmessage, repeatallowed, repeatlimit, repeatmessage, graphemeallowed, "
+                $.say($.getWhisperString(sender) + ">>symbolsallowed, symbolslimit, symbolsrepeatlimit, symbolsmessage, repeatallowed, repeatlimit, repeatmessage, graphemeallowed, "
                     + "graphemelimit, graphememessage, warning1type, warning2type, warning3type, warning1message, warning2message, warning3message");
             } else {
                 var val;
@@ -470,7 +470,7 @@ $.on('command', function(event) {
                     val = parseInt(argsString);
                     
                     if (args.length == 1 || isNaN(val)) {
-                        $.say($.lang.get("net.phantombot.chatmoderator.chatmod-warn-reset-time", warningcountresettime));
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.chatmoderator.chatmod-warn-reset-time", warningcountresettime));
                     } else {
                         if (val < 0) {
                             val = -1;
@@ -490,14 +490,14 @@ $.on('command', function(event) {
                     val = argsString;
                     
                     if (args.length == 1) {
-                        $.say("The current manual autopurge message is '" + autopurgemessage + "'. To change it use: !chatmod autopurgemessage <any text>");
+                        $.say($.getWhisperString(sender) + "The current manual autopurge message is '" + autopurgemessage + "'. To change it use: !chatmod autopurgemessage <any text>");
                     } else {
                         
                         $.inidb.set("settings", "autopurgemessage", val);
                         
                         autopurgemessage = val;
                         
-                        $.say("Changed manual autopurge message to '" + val + "'!");
+                        $.say($.getWhisperString(sender) + "Changed manual autopurge message to '" + val + "'!");
                     }
                 } else if (args[0].equalsIgnoreCase("capsallowed")) {
                     val = argsString;
@@ -509,7 +509,7 @@ $.on('command', function(event) {
                             val = "moderated";
                         }
                         
-                        $.say("Caps are currently " + val + ". To change it use: !chatmod capsallowed <'true' or 'false'>");
+                        $.say($.getWhisperString(sender) + "Caps are currently " + val + ". To change it use: !chatmod capsallowed <'true' or 'false'>");
                     } else {
                         if (val.equalsIgnoreCase("true")) {
                             val = "1";
@@ -522,16 +522,16 @@ $.on('command', function(event) {
                         capsallowed = val.equalsIgnoreCase("1");
                         
                         if (capsallowed) {
-                            $.say("Caps are now allowed!");
+                            $.say($.getWhisperString(sender) + "Caps are now allowed!");
                         } else {
-                            $.say("Caps are now moderated!");
+                            $.say($.getWhisperString(sender) + "Caps are now moderated!");
                         }
                     }
                 } else if (args[0].equalsIgnoreCase("capstriggerratio")) {
                     val = parseFloat(argsString);
                     
                     if (args.length == 1 || isNaN(val)) {
-                        $.say("The current percentage of caps required to trigger a caps warning is " + capstriggerratio + ". To change it use: !chatmod capstriggerratio <number between 0.2 and 1.0>");
+                        $.say($.getWhisperString(sender) + "The current percentage of caps required to trigger a caps warning is " + capstriggerratio + ". To change it use: !chatmod capstriggerratio <number between 0.2 and 1.0>");
                     } else {
                         if (val > 1.0) {
                             val = val / 100;
@@ -549,13 +549,13 @@ $.on('command', function(event) {
                         
                         capstriggerratio = val;
                         
-                        $.say("Changed caps warning trigger percentage to " + val + "!");
+                        $.say($.getWhisperString(sender) + "Changed caps warning trigger percentage to " + val + "!");
                     }
                 } else if (args[0].equalsIgnoreCase("capstriggerlength")) {
                     val = parseInt(argsString);
                     
                     if (args.length == 1 || isNaN(val)) {
-                        $.say("The current message length required to check for caps is " + capstriggerlength + ". To change it use: !chatmod capstriggerlength <number greater than 0>");
+                        $.say($.getWhisperString(sender) + "The current message length required to check for caps is " + capstriggerlength + ". To change it use: !chatmod capstriggerlength <number greater than 0>");
                     } else {
                         if (val < 1) {
                             val = 1;
@@ -565,20 +565,20 @@ $.on('command', function(event) {
                         
                         capstriggerlength = val;
                         
-                        $.say("Changed caps warning minimum message length to " + val + "!");
+                        $.say($.getWhisperString(sender) + "Changed caps warning minimum message length to " + val + "!");
                     }
                 } else if (args[0].equalsIgnoreCase("capsmessage")) {
                     val = argsString;
                     
                     if (args.length == 1) {
-                        $.say("The current caps warning message is '" + capsmessage + "'. To change it use: !chatmod capsmessage <any text>");
+                        $.say($.getWhisperString(sender) + "The current caps warning message is '" + capsmessage + "'. To change it use: !chatmod capsmessage <any text>");
                     } else {
                         
                         $.inidb.set("settings", "capsmessage", val);
                         
                         capsmessage = val;
                         
-                        $.say("Changed caps warning message to '" + val + "'!");
+                        $.say($.getWhisperString(sender) + "Changed caps warning message to '" + val + "'!");
                     }
                 } else if (args[0].equalsIgnoreCase("linksallowed")) {
                     val = argsString;
@@ -590,7 +590,7 @@ $.on('command', function(event) {
                             val = "moderated";
                         }
                         
-                        $.say("Links are currently " + val + ". To change it use: !chatmod linksallowed <'true' or 'false'>");
+                        $.say($.getWhisperString(sender) + "Links are currently " + val + ". To change it use: !chatmod linksallowed <'true' or 'false'>");
                     } else {
                         if (val.equalsIgnoreCase("true")) {
                             val = "1";
@@ -604,16 +604,16 @@ $.on('command', function(event) {
                         linksallowed = val.equalsIgnoreCase("1");
                         
                         if (linksallowed) {
-                            $.say("Links are now allowed!");
+                            $.say($.getWhisperString(sender) + "Links are now allowed!");
                         } else {
-                            $.say("Links are now moderated!");
+                            $.say($.getWhisperString(sender) + "Links are now moderated!");
                         }
                     }
                 } else if (args[0].equalsIgnoreCase("permittime")) {
                     val = parseInt(argsString);
                     
                     if (args.length == 1 || isNaN(val)) {
-                        $.say("The current permit time is " + permittime + " seconds. To change it use: !chatmod permittime <number that is at least 60>");
+                        $.say($.getWhisperString(sender) + "The current permit time is " + permittime + " seconds. To change it use: !chatmod permittime <number that is at least 60>");
                     } else {
                         if (val < 60) {
                             val = 60;
@@ -623,7 +623,7 @@ $.on('command', function(event) {
                         
                         permittime = val;
                         
-                        $.say("Changed permit time to " + val + " seconds!");
+                        $.say($.getWhisperString(sender) + "Changed permit time to " + val + " seconds!");
                     }
                 } else if (args[0].equalsIgnoreCase("youtubeallowed")) {
                     val = argsString;
@@ -648,10 +648,10 @@ $.on('command', function(event) {
                         youtubeallowed = val.equalsIgnoreCase("1");
                         
                         if (youtubeallowed) {
-                            $.say("Youtube links are now allowed!");
+                            $.say($.getWhisperString(sender) + "Youtube links are now allowed!");
                         }
                         else {
-                            $.say("Youtube links are now moderated!");
+                            $.say($.getWhisperString(sender) + "Youtube links are now moderated!");
                         }
                     }
                 } else if (args[0].equalsIgnoreCase("subsallowed")) {
@@ -664,7 +664,7 @@ $.on('command', function(event) {
                             val = "NOT allowed";
                         }
                         
-                        $.say("Subscribers are currently " + val + " to post links. To change it use: !chatmod subsallowed <'true' or 'false'>");
+                        $.say($.getWhisperString(sender) + "Subscribers are currently " + val + " to post links. To change it use: !chatmod subsallowed <'true' or 'false'>");
                     } else {
                         if (val.equalsIgnoreCase("true")) {
                             val = "1";
@@ -677,9 +677,9 @@ $.on('command', function(event) {
                         subsallowed = val.equalsIgnoreCase("1");
                         
                         if (subsallowed) {
-                            $.say("Subscribers are now allowed to post links!");
+                            $.say($.getWhisperString(sender) + "Subscribers are now allowed to post links!");
                         } else {
-                            $.say("Subscribers are no longer allowed to post links!");
+                            $.say($.getWhisperString(sender) + "Subscribers are no longer allowed to post links!");
                         }
                     }
                     
@@ -693,7 +693,7 @@ $.on('command', function(event) {
                             val = "NOT allowed";
                         }
                         
-                        $.say("Regulars are currently " + val + " to post links. To change it use: !chatmod regsallowed <'true' or 'false'>");
+                        $.say($.getWhisperString(sender) + "Regulars are currently " + val + " to post links. To change it use: !chatmod regsallowed <'true' or 'false'>");
                     } else {
                         if (val.equalsIgnoreCase("true")) {
                             val = "1";
@@ -706,9 +706,9 @@ $.on('command', function(event) {
                         regsallowed = val.equalsIgnoreCase("1");
                         
                         if (regsallowed) {
-                            $.say("Regulars are now allowed to post links!");
+                            $.say($.getWhisperString(sender) + "Regulars are now allowed to post links!");
                         } else {
-                            $.say("Regulars are no longer allowed to post links!");
+                            $.say($.getWhisperString(sender) + "Regulars are no longer allowed to post links!");
                         }
                     }
                     
@@ -716,14 +716,14 @@ $.on('command', function(event) {
                     val = argsString;
                     
                     if (args.length == 1) {
-                        $.say("The current link warning message is '" + linksmessage + "'. To change it use: !chatmod linksmessage <any text>");
+                        $.say($.getWhisperString(sender) + "The current link warning message is '" + linksmessage + "'. To change it use: !chatmod linksmessage <any text>");
                     } else {
                         
                         $.inidb.set("settings", "linksmessage", val);
                         
                         linksmessage = val;
                         
-                        $.say("Changed link warning message to '" + val + "'!");
+                        $.say($.getWhisperString(sender) + "Changed link warning message to '" + val + "'!");
                     }
                 } else if (args[0].equalsIgnoreCase("spamallowed")) {
                     val = argsString;
@@ -735,7 +735,7 @@ $.on('command', function(event) {
                             val = "moderated";
                         }
                         
-                        $.say("Chat spam is currently " + val + ". To change it use: !chatmod spamallowed <'true' or 'false'>");
+                        $.say($.getWhisperString(sender) + "Chat spam is currently " + val + ". To change it use: !chatmod spamallowed <'true' or 'false'>");
                     } else {
                         if (val.equalsIgnoreCase("true")) {
                             val = "1";
@@ -749,16 +749,16 @@ $.on('command', function(event) {
                         spamallowed = val.equalsIgnoreCase("1");
                         
                         if (spamallowed) {
-                            $.say("Chat spam is now allowed!");
+                            $.say($.getWhisperString(sender) + "Chat spam is now allowed!");
                         } else {
-                            $.say("Chat spam is now moderated!");
+                            $.say($.getWhisperString(sender) + "Chat spam is now moderated!");
                         }
                     }
                 } else if (args[0].equalsIgnoreCase("spamlimit")) {
                     val = parseInt(argsString);
                     
                     if (args.length == 1 || isNaN(val)) {
-                        $.say("The current number of messages allowed per 30 seconds is " + spamlimit + ". To change it use: !chatmod spamlimit <number, at least 1>");
+                        $.say($.getWhisperString(sender) + "The current number of messages allowed per 30 seconds is " + spamlimit + ". To change it use: !chatmod spamlimit <number, at least 1>");
                     } else {
                         if (val < 1) {
                             val = 1;
@@ -768,20 +768,20 @@ $.on('command', function(event) {
                         
                         spamlimit = val;
                         
-                        $.say("Changed number of messages allowed per 30 seconds to " + val + "!");
+                        $.say($.getWhisperString(sender) + "Changed number of messages allowed per 30 seconds to " + val + "!");
                     }
                 } else if (args[0].equalsIgnoreCase("spammessage")) {
                     val = argsString;
                     
                     if (args.length == 1) {
-                        $.say("The current spam warning message is '" + spammessage + "'. To change it use: !chatmod spammessage <any text>");
+                        $.say($.getWhisperString(sender) + "The current spam warning message is '" + spammessage + "'. To change it use: !chatmod spammessage <any text>");
                     } else {
                         
                         $.inidb.set("settings", "spammessage", val);
                         
                         spammessage = val;
                         
-                        $.say("Changed spam warning message to '" + val + "'!");
+                        $.say($.getWhisperString(sender) + "Changed spam warning message to '" + val + "'!");
                     }
                 } else if (args[0].equalsIgnoreCase("symbolsallowed")) {
                     val = argsString;
@@ -793,7 +793,7 @@ $.on('command', function(event) {
                             val = "moderated";
                         }
                         
-                        $.say("Symbol spam is currently " + val + ". To change it use: !chatmod symbolsallowed <'true' or 'false'>");
+                        $.say($.getWhisperString(sender) + "Symbol spam is currently " + val + ". To change it use: !chatmod symbolsallowed <'true' or 'false'>");
                     } else {
                         if (val.equalsIgnoreCase("true")) {
                             val = "1";
@@ -807,16 +807,16 @@ $.on('command', function(event) {
                         symbolsallowed = val.equalsIgnoreCase("1");
                         
                         if (symbolsallowed) {
-                            $.say("Symbol spam is now allowed!");
+                            $.say($.getWhisperString(sender) + "Symbol spam is now allowed!");
                         } else {
-                            $.say("Symbol spam is now moderated!");
+                            $.say($.getWhisperString(sender) + "Symbol spam is now moderated!");
                         }
                     }
                 } else if (args[0].equalsIgnoreCase("symbolslimit")) {
                     val = parseInt(argsString);
                     
                     if (args.length == 1 || isNaN(val)) {
-                        $.say("The current maximum number of symbols allowed in a message is " + symbolslimit + ". To change it use: !chatmod symbolslimit <number, at least 1>");
+                        $.say($.getWhisperString(sender) + "The current maximum number of symbols allowed in a message is " + symbolslimit + ". To change it use: !chatmod symbolslimit <number, at least 1>");
                     } else {
                         if (val < 1) {
                             val = 1;
@@ -826,13 +826,13 @@ $.on('command', function(event) {
                         
                         symbolslimit = val;
                         
-                        $.say("Changed number of symbols allowed per message to " + val + "!");
+                        $.say($.getWhisperString(sender) + "Changed number of symbols allowed per message to " + val + "!");
                     }
                 } else if (args[0].equalsIgnoreCase("symbolsrepeatlimit")) {
                     val = parseInt(argsString);
                     
                     if (args.length == 1 || isNaN(val)) {
-                        $.say("The current maximum repeating symbols sequence allowed in a message is " + symbolsrepeatlimit + ". To change it use: !chatmod symbolsrepeatlimit <number, at least 1>");
+                        $.say($.getWhisperString(sender) + "The current maximum repeating symbols sequence allowed in a message is " + symbolsrepeatlimit + ". To change it use: !chatmod symbolsrepeatlimit <number, at least 1>");
                     } else {
                         if (val < 1) {
                             val = 1;
@@ -842,20 +842,20 @@ $.on('command', function(event) {
                         
                         symbolsrepeatlimit = val;
                         
-                        $.say("Changed maximum repeating symbols sequence allowed in a message to " + val + "!");
+                        $.say($.getWhisperString(sender) + "Changed maximum repeating symbols sequence allowed in a message to " + val + "!");
                     }
                 } else if (args[0].equalsIgnoreCase("symbolsmessage")) {
                     val = argsString;
                     
                     if (args.length == 1) {
-                        $.say("The current symbols warning message is '" + symbolsmessage + "'. To change it use: !chatmod symbolsmessage <any text>");
+                        $.say($.getWhisperString(sender) + "The current symbols warning message is '" + symbolsmessage + "'. To change it use: !chatmod symbolsmessage <any text>");
                     } else {
                         
                         $.inidb.set("settings", "symbolsmessage", val);
                         
                         symbolsmessage = val;
                         
-                        $.say("Changed symbols warning message to '" + val + "'!");
+                        $.say($.getWhisperString(sender) + "Changed symbols warning message to '" + val + "'!");
                     }
                 } else if (args[0].equalsIgnoreCase("repeatallowed")) {
                     val = argsString;
@@ -867,7 +867,7 @@ $.on('command', function(event) {
                             val = "moderated";
                         }
                         
-                        $.say("Repeating character spam is currently " + val + ". To change it use: !chatmod repeatallowed <'true' or 'false'>");
+                        $.say($.getWhisperString(sender) + "Repeating character spam is currently " + val + ". To change it use: !chatmod repeatallowed <'true' or 'false'>");
                     } else {
                         if (val.equalsIgnoreCase("true")) {
                             val = "1";
@@ -881,16 +881,16 @@ $.on('command', function(event) {
                         repeatallowed = val.equalsIgnoreCase("1");
                         
                         if (repeatallowed) {
-                            $.say("Repeating character spam is now allowed!");
+                            $.say($.getWhisperString(sender) + "Repeating character spam is now allowed!");
                         } else {
-                            $.say("Repeating character spam is now moderated!");
+                            $.say($.getWhisperString(sender) + "Repeating character spam is now moderated!");
                         }
                     }
                 } else if (args[0].equalsIgnoreCase("repeatlimit")) {
                     val = parseInt(argsString);
                     
                     if (args.length == 1 || isNaN(val)) {
-                        $.say("The maximum number of repeating sequences/repeating sequence length is " + repeatlimit + ". To change it use: !chatmod repeatlimit <number, at least 1>");
+                        $.say($.getWhisperString(sender) + "The maximum number of repeating sequences/repeating sequence length is " + repeatlimit + ". To change it use: !chatmod repeatlimit <number, at least 1>");
                     } else {
                         if (val < 1) {
                             val = 1;
@@ -900,20 +900,20 @@ $.on('command', function(event) {
                         
                         repeatlimit = val;
                         
-                        $.say("Changed maximum number of repeating sequences/repeating sequence length to " + val + "!");
+                        $.say($.getWhisperString(sender) + "Changed maximum number of repeating sequences/repeating sequence length to " + val + "!");
                     }
                 } else if (args[0].equalsIgnoreCase("repeatmessage")) {
                     val = argsString;
                     
                     if (args.length == 1) {
-                        $.say("The current repeating character warning message is '" + repeatmessage + "'. To change it use: !chatmod repeatmessage <any text>");
+                        $.say($.getWhisperString(sender) + "The current repeating character warning message is '" + repeatmessage + "'. To change it use: !chatmod repeatmessage <any text>");
                     } else {
                         
                         $.inidb.set("settings", "repeatmessage", val);
                         
                         repeatmessage = val;
                         
-                        $.say("Changed repeating character warning message to '" + val + "'!");
+                        $.say($.getWhisperString(sender) + "Changed repeating character warning message to '" + val + "'!");
                     }
                 } else if (args[0].equalsIgnoreCase("graphemeallowed")) {
                     val = argsString;
@@ -925,7 +925,7 @@ $.on('command', function(event) {
                             val = "moderated";
                         }
                         
-                        $.say("Long grapheme clusters are currently " + val + ". To change it use: !chatmod graphemeallowed <'true' or 'false'>");
+                        $.say($.getWhisperString(sender) + "Long grapheme clusters are currently " + val + ". To change it use: !chatmod graphemeallowed <'true' or 'false'>");
                     } else {
                         if (val.equalsIgnoreCase("true")) {
                             val = "1";
@@ -939,16 +939,16 @@ $.on('command', function(event) {
                         graphemeallowed = val.equalsIgnoreCase("1");
                         
                         if (graphemeallowed) {
-                            $.say("Long grapheme clusters are now allowed!");
+                            $.say($.getWhisperString(sender) + "Long grapheme clusters are now allowed!");
                         } else {
-                            $.say("Long grapheme clusters are now moderated!");
+                            $.say($.getWhisperString(sender) + "Long grapheme clusters are now moderated!");
                         }
                     }
                 } else if (args[0].equalsIgnoreCase("graphemelimit")) {
                     val = parseInt(argsString);
                     
                     if (args.length == 1 || isNaN(val)) {
-                        $.say("The maximum allowed grapheme cluster length is " + graphemelimit + ". To change it use: !chatmod graphemelimit <number, at least 1>");
+                        $.say($.getWhisperString(sender) + "The maximum allowed grapheme cluster length is " + graphemelimit + ". To change it use: !chatmod graphemelimit <number, at least 1>");
                     } else {
                         if (val < 1) {
                             val = 1;
@@ -958,20 +958,20 @@ $.on('command', function(event) {
                         
                         graphemelimit = val;
                         
-                        $.say("Changed maximum allowed grapheme cluster length to " + val + "!");
+                        $.say($.getWhisperString(sender) + "Changed maximum allowed grapheme cluster length to " + val + "!");
                     }
                 } else if (args[0].equalsIgnoreCase("graphememessage")) {
                     val = argsString;
                     
                     if (args.length == 1) {
-                        $.say("The current long grapheme cluster are warning message is '" + graphememessage + "'. To change it use: !chatmod graphememessage <any text>");
+                        $.say($.getWhisperString(sender) + "The current long grapheme cluster are warning message is '" + graphememessage + "'. To change it use: !chatmod graphememessage <any text>");
                     } else {
                         
                         $.inidb.set("settings", "graphememessage", val);
                         
                         graphememessage = val;
                         
-                        $.say("Changed long grapheme cluster warning message to '" + val + "'!");
+                        $.say($.getWhisperString(sender) + "Changed long grapheme cluster warning message to '" + val + "'!");
                     }
                 } else if (args[0].equalsIgnoreCase("warning1type")) {
                     val = argsString;
@@ -985,7 +985,7 @@ $.on('command', function(event) {
                             val = "timeout for " + warningtypes[0] + " seconds";
                         }
                         
-                        $.say("The current action taken upon first warning is " + val + ". To change it use: !chatmod warning1type <'purge', 'ban', or the number of seconds to timeout for>");
+                        $.say($.getWhisperString(sender) + "The current action taken upon first warning is " + val + ". To change it use: !chatmod warning1type <'purge', 'ban', or the number of seconds to timeout for>");
                     } else {
                         
                         $.inidb.set("settings", "warning1type", val);
@@ -1000,7 +1000,7 @@ $.on('command', function(event) {
                             val = "timeout for " + warningtypes[0] + " seconds";
                         }
                         
-                        $.say("Changed first warning action to " + val + "!");
+                        $.say($.getWhisperString(sender) + "Changed first warning action to " + val + "!");
                     }
                 } else if (args[0].equalsIgnoreCase("warning2type")) {
                     val = argsString;
@@ -1014,7 +1014,7 @@ $.on('command', function(event) {
                             val = "timeout for " + warningtypes[1] + " seconds";
                         }
                         
-                        $.say("The current action taken upon second warning is " + val + ". To change it use: !chatmod warning2type <'purge', 'ban', or the number of seconds to timeout for>");
+                        $.say($.getWhisperString(sender) + "The current action taken upon second warning is " + val + ". To change it use: !chatmod warning2type <'purge', 'ban', or the number of seconds to timeout for>");
                     } else {
                         
                         $.inidb.set("settings", "warning2type", val);
@@ -1029,7 +1029,7 @@ $.on('command', function(event) {
                             val = "timeout for " + warningtypes[1] + " seconds";
                         }
                         
-                        $.say("Changed second warning action to " + val + "!");
+                        $.say($.getWhisperString(sender) + "Changed second warning action to " + val + "!");
                     }
                 } else if (args[0].equalsIgnoreCase("warning3type")) {
                     val = argsString;
@@ -1043,7 +1043,7 @@ $.on('command', function(event) {
                             val = "timeout for " + warningtypes[2] + " seconds";
                         }
                         
-                        $.say("The current action taken upon third/final warning is " + val + ". To change it use: !chatmod warning3type <'purge', 'ban', or the number of seconds to timeout for>");
+                        $.say($.getWhisperString(sender) + "The current action taken upon third/final warning is " + val + ". To change it use: !chatmod warning3type <'purge', 'ban', or the number of seconds to timeout for>");
                     } else {
                         
                         $.inidb.set("settings", "warning3type", val);
@@ -1058,51 +1058,51 @@ $.on('command', function(event) {
                             val = "timeout for " + warningtypes[2] + " seconds";
                         }
                         
-                        $.say("Changed third/final warning action to " + val + "!");
+                        $.say($.getWhisperString(sender) + "Changed third/final warning action to " + val + "!");
                     }
                 } else if (args[0].equalsIgnoreCase("warning1message")) {
                     val = argsString;
                     
                     if (args.length == 1) {
-                        $.say("The current first warning message is '" + warningmessages[0] + "'. To change it use: !chatmod warning1message <any text>");
+                        $.say($.getWhisperString(sender) + "The current first warning message is '" + warningmessages[0] + "'. To change it use: !chatmod warning1message <any text>");
                     } else {
                         
                         $.inidb.set("settings", "warning1message", val);
                         
                         warningmessages[0] = val;
                         
-                        $.say("Changed first warning message to '" + val + "'!");
+                        $.say($.getWhisperString(sender) + "Changed first warning message to '" + val + "'!");
                     }
                 } else if (args[0].equalsIgnoreCase("warning2message")) {
                     val = argsString;
                     
                     if (args.length == 1) {
-                        $.say("The current second warning message is '" + warningmessages[1] + "'. To change it use: !chatmod warning2message <any text>");
+                        $.say($.getWhisperString(sender) + "The current second warning message is '" + warningmessages[1] + "'. To change it use: !chatmod warning2message <any text>");
                     } else {
                         
                         $.inidb.set("settings", "warning2message", val);
                         
                         warningmessages[1] = val;
                         
-                        $.say("Changed second warning message to '" + val + "'!");
+                        $.say($.getWhisperString(sender) + "Changed second warning message to '" + val + "'!");
                     }
                 } else if (args[0].equalsIgnoreCase("warning3message")) {
                     val = argsString;
                     
                     if (args.length == 1) {
-                        $.say("The current third/final warning message is '" + warningmessages[2] + "'. To change it use: !chatmod warning3message <any text>");
+                        $.say($.getWhisperString(sender) + "The current third/final warning message is '" + warningmessages[2] + "'. To change it use: !chatmod warning3message <any text>");
                     } else {
                         
                         $.inidb.set("settings", "warning3message", val);
                         
                         warningmessages[2] = val;
                         
-                        $.say("Changed third/final warning message to '" + val + "'!");
+                        $.say($.getWhisperString(sender) + "Changed third/final warning message to '" + val + "'!");
                     }
                 }
             }
         } else {
-            $.say ($.modmsg);
+            $.say ($.getWhisperString(sender) + $.modmsg);
         }	
     }
 });

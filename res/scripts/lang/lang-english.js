@@ -18,6 +18,8 @@ $.lang.data["net.phantombot.cmd.adminonly"] = "Only an Administrator has access 
 $.lang.data["net.phantombot.cmd.modonly"] = "Only a Moderator has access to that command!";
 
 //init.js
+$.lang.data["net.phantombot.common.whisper-disabled"] = "[Whisper Mode] has been disabled.";
+$.lang.data["net.phantombot.common.whisper-enabled"] = "[Whisper Mode] has been enabled.";
 $.lang.data["net.phantombot.init.cmsgset"] = "Connected message set!";
 $.lang.data["net.phantombot.init.coolcom"] = "The command cooldown is $1 second(s)";
 $.lang.data["net.phantombot.init.coolcom-set"] = "The command cooldown is now $1 second(s)!";
@@ -35,6 +37,8 @@ $.lang.data["net.phantombot.init.module-list"] = "Modules: ";
 $.lang.data["net.phantombot.misc.log-status"] = "Logging is currently $1! Logs are kept for $2 days! To change this use '!log <enable or disable>' or '!log days <number of days>'";
 $.lang.data["net.phantombot.misc.log-enable"] = "Logging enabled!";
 $.lang.data["net.phantombot.misc.log-disable"] = "Logging disabled!";
+$.lang.data["net.phantombot.misc.logchat-enable"] = "Chat logging enabled!";
+$.lang.data["net.phantombot.misc.logchat-disable"] = "Chat logging disabled!";
 $.lang.data["net.phantombot.misc.log-err-bad-days"] = "Please enter a valid number of days greater than 0. Usage: '!log days <number of days>'";
 $.lang.data["net.phantombot.misc.log-days"] = "Logs are now kept for $1 days!";
 $.lang.data["net.phantombot.misc.response-enabled"] = "Bot responses are enabled for everyone. To turn them off, say: !response disable";
@@ -93,8 +97,6 @@ $.lang.data["net.phantombot.chatmoderator.chatmod-warn-reset-time-set"] = "Chang
 
 //pointSystem.js
 $.lang.data["net.phantombot.common.user-404"] = "The user \"$1\" has not visited this channel yet.";
-$.lang.data["net.phantombot.common.whisper-disabled"] = "[Whisper Mode] for $1 has been disabled.";
-$.lang.data["net.phantombot.common.whisper-enabled"] = "[Whisper Mode] for $1 has been enabled.";
 $.lang.data["net.phantombot.pointsystem.bonus-error-negative"] = "You can not set the bonus per group level to negative $1.";
 $.lang.data["net.phantombot.pointsystem.bonus-success"] = "Set the $1 bonus to $2 per group level.";
 $.lang.data["net.phantombot.pointsystem.bonus-usage"] = "Usage: \"!points bonus <amount>\"";
@@ -159,7 +161,7 @@ $.lang.data["net.phantombot.timesystem.autolevel-disabled"] = "Users will no lon
 $.lang.data["net.phantombot.timesystem.autolevel-enabled"] = "Users will now be promoted to $1 when they have been in the chat for $2 hour(s).";
 $.lang.data["net.phantombot.timesystem.autolevel-promote"] = "$1 has been promoted to $2 by being in the chat for $3 hour(s). Congratulations!";
 $.lang.data["net.phantombot.timesystem.get-other"] = "$1 currently spent $2 in the chat.";
-$.lang.data["net.phantombot.timesystem.get-self"] = "You currently spent $1 in the chat.";
+$.lang.data["net.phantombot.timesystem.get-self"] = "You have spent $1 in the chat.";
 $.lang.data["net.phantombot.timesystem.give-error-negative"] = "You can not give negative time.";
 $.lang.data["net.phantombot.timesystem.give-success"] = "Sent $1 to $2. New balance is $3.";
 $.lang.data["net.phantombot.timesystem.give-usage"] = "Usage: \"!time give <name> <amount>\"";

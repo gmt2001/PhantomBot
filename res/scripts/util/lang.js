@@ -55,26 +55,27 @@ $.on('command', function(event) {
     var sender = event.getSender().toLowerCase();
     var username = $.username.resolve(sender, event.getTags());
     var command = event.getCommand();
+    var args = event.getArgs();
     var argsString = event.getArguments().trim();
     
     if (command.equalsIgnoreCase("lang")) {
         if (!$.isAdmin(sender)) {
-            $.say($.adminmsg);
+            $.say($.getWhisperString(sender) + $.adminmsg);
             return;                
         }
         
         if (args.length == 0) {
-            $.say($.lang.get("net.phantombot.lang.curlang", $.lang.curlang));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.lang.curlang", $.lang.curlang));
         } else {
             if (!$.fileExists("./scripts/lang/lang-" + args[0].toLowerCase() + ".js")) {
-                $.say($.lang.get("net.phantombot.lang.lang-not-exists"));
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.lang.lang-not-exists"));
                 return; 
             } else {
                 $.inidb.set("settings", "lang", args[0].toLowerCase());
                 $.lang.curlang = args[0].toLowerCase();
                 $.lang.load();
                 
-                $.say($.lang.get("net.phantombot.lang.lang-changed", args[0].toLowerCase()));
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.lang.lang-changed", args[0].toLowerCase()));
             }
         }
     }

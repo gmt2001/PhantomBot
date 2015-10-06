@@ -1,17 +1,3 @@
-$.getWhisperString = function(sender) {
-    var whispermode = $.inidb.get("settings", "whisper_commands");
-    // Just put this logic in here. The odds that an entire string is different are slim.
-    if (whispermode == "true") {
-        return "/w " + sender + " ";
-    } else {
-        return "";
-    }
-}
-
-$.getWhisperStringStatic = function(sender) {
-    var whispermode = $.inidb.get("settings", "whisper_commands");
-        return "/w " + sender + " ";
-}
 
 $.on('command', function(event) {
     var sender = event.getSender();
@@ -25,16 +11,11 @@ $.on('command', function(event) {
     var randomNum = $.randRange(1, 100);
     var commandString;
     var message;
-    var whispermode = $.inidb.get("settings", "whisper_commands");
-
-    if (whispermode == undefined || whispermode == null) {
-        whispermode = "false";
-    }
 
     if(args.length >= 2 && !command.equalsIgnoreCase("pricecom")) {
         if(command.equalsIgnoreCase("addcom") ) {
             if (!$.isModv3(sender, event.getTags())) {
-                $.say($.modmsg);
+                $.say($.getWhisperString(sender) + $.modmsg);
                 return;
             }
 
@@ -67,7 +48,7 @@ $.on('command', function(event) {
     
     if (command.equalsIgnoreCase("delalias")) {
         if (!$.isModv3(sender, event.getTags())) {
-            $.say($.modmsg);
+            $.say($.getWhisperString(sender) + $.modmsg);
             return;
         }
         
@@ -79,7 +60,7 @@ $.on('command', function(event) {
             }
             
             if (!$.inidb.exists('aliases', args[0].toLowerCase())) {
-                $.say($.lang.get("net.phantombot.addcommand.delalias-error-no-command", username));
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.delalias-error-no-command", username));
                 return;
             }
             
@@ -112,28 +93,10 @@ $.on('command', function(event) {
         $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.custom-commands", customcommands));
         return;
     }
-
-    if (command.equalsIgnoreCase("whispercommands")) { // enable / disable whisper wen using command !botcommands and !commands
-        if (!$.isAdmin(sender)) {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
-            return;
-        }
-        if (whispermode == "false") {
-            $.inidb.set("settings", "whisper_commands", "true");
-            whispermode = "true";
-
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.common.whisper-enabled", "Command List"));
-        } else if (whispermode == "true") {
-            $.inidb.set("settings", "whisper_commands", "false");
-            whispermode = "false";
-
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.common.whisper-disabled", "Command List"));
-        }
-    }
     
     if (command.equalsIgnoreCase("aliascom")) {
         if (!$.isModv3(sender, event.getTags())) {
-            $.say($.modmsg);
+            $.say($.getWhisperString(sender) + $.modmsg);
             return;
         }
         
@@ -175,7 +138,7 @@ $.on('command', function(event) {
     if(command.equalsIgnoreCase("delcom")) {
         if(args.length >= 1) {
             if (!$.isModv3(sender, event.getTags())) {
-                $.say($.modmsg);
+                $.say($.getWhisperString(sender) + $.modmsg);
                 return;
             }
             
@@ -215,7 +178,7 @@ $.on('command', function(event) {
     if (command.equalsIgnoreCase("editcom")) {
         if(args.length >= 1) {
             if (!$.isModv3(sender, event.getTags())) {
-                $.say($.modmsg);
+                $.say($.getWhisperString(sender) + $.modmsg);
                 return;
             }
 			
@@ -252,7 +215,7 @@ $.on('command', function(event) {
     
     if (command.equalsIgnoreCase("permcom")) {
         if (!isAdmin(sender)) {
-            $.say($.adminmsg);
+            $.say($.getWhisperString(sender) + $.adminmsg);
             return;
         }
         
@@ -398,7 +361,7 @@ $.on('command', function(event) {
 	
     if (command.equalsIgnoreCase("pricecom")) {
         if (!$.isAdmin(sender) && args.length != 1) {
-            $.say($.adminmsg);
+            $.say($.getWhisperString(sender) + $.adminmsg);
             return;
         }
         
@@ -460,7 +423,6 @@ setTimeout(function(){
         $.registerChatCommand("./commands/addCommand.js", "permcom", "admin");
         $.registerChatCommand("./commands/addCommand.js", "helpcom", "mod");
         $.registerChatCommand("./commands/addCommand.js", "commands");
-        $.registerChatCommand("./commands/addCommand.js", "whispercommands", "admin");
     }
 }, 10* 1000);
 

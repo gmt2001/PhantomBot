@@ -88,6 +88,9 @@ $.logChat = function(sender, message) {
     if (!$.moduleEnabled("./util/fileSystem.js") || !$.logEnable || (sender.equalsIgnoreCase($.botname) && message.equalsIgnoreCase(".mods"))) {
         return;
     }
+    if (!$.logChatEnable) {
+        return;
+    }
     
     var datefmt = new java.text.SimpleDateFormat("yyyy-MM-dd");
     datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.timezone));
@@ -231,16 +234,17 @@ $.logRotate = function() {
     }
 }
 
+
 $.on('command', function(event) {
     var sender = event.getSender();
     var username = $.username.resolve(sender, event.getTags());
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
     var args = event.getArgs();
-    
+        
     if (command.equalsIgnoreCase("log")) {
         if (!$.isAdmin(sender)) {
-            $.say($.adminmsg);
+            $.say($.getWhisperString(sender) + $.adminmsg);
             
             return;
         }
@@ -256,7 +260,7 @@ $.on('command', function(event) {
             
             msg = $.lang.get("net.phantombot.misc.log-status", msg, $.logRotateDays);
             
-            $.say(msg);
+            $.say($.getWhisperString(sender) + msg);
             
             return;
         }
@@ -268,7 +272,7 @@ $.on('command', function(event) {
             
             $.inidb.set('settings', 'logenable', '1');
             
-            $.say($.lang.get("net.phantombot.misc.log-enable"));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.misc.log-enable"));
         }
         
         if (args[0].equalsIgnoreCase("disable")) {
@@ -278,12 +282,12 @@ $.on('command', function(event) {
             
             $.inidb.set('settings', 'logenable', '0');
             
-            $.say($.lang.get("net.phantombot.misc.log-disable"));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.misc.log-disable"));
         }
         
         if (args[0].equalsIgnoreCase("days")) {
             if (args.length == 1 || isNaN(args[1]) || parseInt(args[1]) < 1) {
-                $.say($.lang.get("net.phantombot.misc.log-err-bad-days"));
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.misc.log-err-bad-days"));
                 
                 return;
             }
@@ -294,13 +298,40 @@ $.on('command', function(event) {
             
             $.inidb.set('settings', 'logrotatedays', args[1]);
             
-            $.say($.lang.get("net.phantombot.misc.log-days", args[1]));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.misc.log-days", args[1]));
+        }
+    }
+    
+    if (command.equalsIgnoreCase("logchat")) {
+        if (!$.isAdmin(sender)) {
+            $.say($.getWhisperString(sender) + $.adminmsg);
+            
+            return;
+        }
+        if (args[0].equalsIgnoreCase("enable")) {
+            $.logChatEnable = true;
+            
+            $.logEvent("misc.js", 259, username + " enabled chat logging");
+            
+            $.inidb.set('settings', 'logchat', '1');
+            
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.misc.logchat-enable"));
+        }
+        
+        if (args[0].equalsIgnoreCase("disable")) {
+            $.logEvent("misc.js", 267, username + " disabled chat logging");
+            
+            $.logChatEnable = false;
+            
+            $.inidb.set('settings', 'logchat', '0');
+            
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.misc.logchat-disable"));
         }
     }
     
     if (command.equalsIgnoreCase("response")) {
         if (!$.isAdmin(sender)) {
-            $.say($.adminmsg);
+            $.say($.getWhisperString(sender) + $.adminmsg);
             
             return;
         }
@@ -308,9 +339,9 @@ $.on('command', function(event) {
         if (args.length == 0) {
             if ($.inidb.exists("settings", "response_@all")
                 && $.inidb.get("settings", "response_@all").equalsIgnoreCase("0")) {
-                $.say($.lang.get("net.phantombot.misc.response-disabled"));
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.misc.response-disabled"));
             } else {
-                $.say($.lang.get("net.phantombot.misc.response-enabled"));
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.misc.response-enabled"));
             }
         } else {
             if (args[0].equalsIgnoreCase("enable")) {
@@ -320,13 +351,13 @@ $.on('command', function(event) {
                 
                 $.logEvent("misc.js", 313, username + " enabled bot responses");
                 
-                $.say($.lang.get("net.phantombot.misc.response-enable"));
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.misc.response-enable"));
             } else if (args[0].equalsIgnoreCase("disable")) {
                 $.inidb.set("settings", "response_@all", "0");
                 
                 $.logEvent("misc.js", 319, username + " disabled bot responses");
                 
-                $.say($.lang.get("net.phantombot.misc.response-disable"));
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.misc.response-disable"));
             }
         }
     }
@@ -388,15 +419,23 @@ $.on('ircChannelMessage', function(event) {
 
 $.timer.addTimer("./util/misc.js", "registercommand", false, function() {
     $.registerChatCommand("./util/misc.js", "log", "admin");
+    $.registerChatCommand("./util/misc.js", "logchat", "admin");    
     $.registerChatCommand("./util/misc.js", "response", "admin");
 }, 5000);
 
 var logEnable = $.inidb.get('settings', 'logenable');
+var logChatEnable = $.inidb.get('settings', 'logchat');
 
 if (logEnable == null || logEnable == undefined) {
     $.logEnable = false;
 } else {
     $.logEnable = logEnable.equalsIgnoreCase("1");
+}
+
+if (logChatEnable == null || logChat == undefined) {
+    $.logChatEnable = false;
+} else {
+    $.logChatEnable = logChatEnable.equalsIgnoreCase("1");
 }
 
 var logRotateDays = $.inidb.get('settings', 'logrotatedays');

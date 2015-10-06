@@ -1,34 +1,7 @@
 $.raffleToggle = $.inidb.get("settings", "raffleToggle");
-$.whisperRaffle = $.inidb.get("settings", "whisperRaffle");
 
 if ($.raffleToggle == undefined || $.raffleToggle == null) {
     $.raffleToggle = "true";
-}
-
-if ($.whisperRaffle == undefined || $.whisperRaffle == null) {
-    $.whisperRaffle = "false";
-}
-
-$.getWhisperString = function(sender) {
-    // TODO: Incorporate $.whisper once it is available.
-    if ($.whisperRaffle == "true") {
-        return "/w " + sender + " ";
-    } else {
-        return "";
-    }
-}
-
-$.getPointsString = function (points) {
-    points = parseInt(points);
-    var pointsString;
-
-    if (points == 1) {
-        pointsString = points + " " + $.inidb.get('settings', 'pointNameSingle');
-    } else {
-        pointsString = points + " " + $.inidb.get('settings', 'pointNameMultiple');
-    }
-
-    return pointsString;
 }
 
 $.getRewardString = function(reward) {
@@ -116,19 +89,8 @@ $.on('command', function (event) {
 
     if (command.equalsIgnoreCase("whisperraffle")) {
         if (!$.isModv3(sender, event.getTags())) {
-            $.say($.modmsg);
+            $.say($.getWhisperString(sender) + $.modmsg);
             return;
-        }
-        if ($.whisperRaffle == "false") {
-            $.inidb.set("settings", "whisperRaffle", "true");
-            $.whisperRaffle = $.inidb.get('settings', 'whisperRaffle');
-
-            $.say($.lang.get("net.phantombot.common.whisper-enabled", "Raffle System"));
-        } else if ($.whisperRaffle == "true") {
-            $.inidb.set("settings", "whisperRaffle", "false");
-            $.whisperRaffle = $.inidb.get('settings', 'whisperRaffle');
-
-            $.say($.lang.get("net.phantombot.common.whisper-disabled", "Raffle System"));
         }
     }
 
@@ -139,14 +101,14 @@ $.on('command', function (event) {
             if (action.equalsIgnoreCase("start") || action.equalsIgnoreCase("new") || action.equalsIgnoreCase("run")) {
                 if ($.moduleEnabled("./systems/pointSystem.js") && $.inidb.get("settings", "permTogglePoints") == "true") {
                     if (!$.isModv3(sender, event.getTags())) {
-                        $.say($.modmsg);
+                        $.say($.getWhisperString(sender) + $.modmsg);
                         return;
                     }
                 } else {
                     // This is the default. If points permtoggle allows mods, allow mods here as well.
                     // If the points module is inactive, use isAdmin for safety reasons.
                     if (!$.isAdmin(sender)) {
-                        $.say($.adminmsg);
+                        $.say($.getWhisperString(sender) + $.adminmsg);
                         return;
                     }
                 }
@@ -191,7 +153,7 @@ $.on('command', function (event) {
                             i++;
                         } else if(args[i].startsWith('!')) {
                             if ($.moduleEnabled("./systems/pointSystem.js")) {
-                                $.say$.getWhisperString(sender) + ($.lang.get("net.phantombot.rafflesystem.start-error-invalid-points"));
+                                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.start-error-invalid-points"));
                                 return;
                             } else {
                                 $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.start-error-invalid-default"));
@@ -243,7 +205,7 @@ $.on('command', function (event) {
                 }
             } else if (action.equalsIgnoreCase("close") || action.equalsIgnoreCase("stop") || action.equalsIgnoreCase("end") || action.equalsIgnoreCase("draw")) {
                 if (!$.isModv3(sender, event.getTags())) {
-                    $.say($.modmsg);
+                    $.say($.getWhisperString(sender) + $.modmsg);
                     return;
                 }
 
@@ -311,7 +273,7 @@ $.on('command', function (event) {
                 }
             } else if (action.equalsIgnoreCase("repick") || action.equalsIgnoreCase("redraw")) {
                 if (!$.isModv3(sender, event.getTags())) {
-                    $.say($.modmsg);
+                    $.say($.getWhisperString(sender) + $.modmsg);
                     return;
                 }
 
@@ -375,7 +337,7 @@ $.on('command', function (event) {
                 $.inidb.set('raffles', 'date', $.raffleDateString);
             } else if (action.equalsIgnoreCase("results")) {
                 if (!$.isModv3(sender, event.getTags())) {
-                    $.say($.modmsg);
+                    $.say($.getWhisperString(sender) + $.modmsg);
                     return;
                 }
 
@@ -452,7 +414,7 @@ $.on('command', function (event) {
                 }
             } else if (action.equalsIgnoreCase("toggle")) {
                 if (!$.isModv3(sender, event.getTags())) {
-                    $.say($.modmsg);
+                    $.say($.getWhisperString(sender) + $.modmsg);
                     return;
                 }
                 if ($.raffleToggle == "false") {

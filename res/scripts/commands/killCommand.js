@@ -17,12 +17,12 @@ $.on('command', function(event) {
 
 
         if (isNaN(num_kills) || num_kills == 0) {
-            $.say("There are no kill messages at this time");
+            $.say($.getWhisperString(sender) + "There are no kill messages at this time");
             return;
         }
 
         if ($.inidb.get("kills", "kill_" + num) == " ") {
-            $.say("There are only " + num_kills + " kills right now! Remember that kill messages are numbered from 0 to " + (num_kills - 1) + "!");
+            $.say($.getWhisperString(sender) + "There are only " + num_kills + " kills right now! Remember that kill messages are numbered from 0 to " + (num_kills - 1) + "!");
 
         } 
         
@@ -75,7 +75,7 @@ $.on('command', function(event) {
     
     if (command.equalsIgnoreCase("addkill")) {
         if (!$.isModv3(sender, event.getTags())) {
-            $.say($.modmsg);
+            $.say($.getWhisperString(sender) + $.modmsg);
             return;
         }
         
@@ -85,7 +85,7 @@ $.on('command', function(event) {
         } 
 
         if (argsString.isEmpty()) {
-            $.say("Usage: !addkill <message>");
+            $.say($.getWhisperString(sender) + "Usage: !addkill <message>");
             return;
         }
         
@@ -94,13 +94,13 @@ $.on('command', function(event) {
         $.inidb.set("kills", "kill_" + num_kills, argsString);
 
         
-        $.say("kill message added! There are now " + (num_kills + 1) + " kill messages!");
+        $.say($.getWhisperString(sender) + "kill message added! There are now " + (num_kills + 1) + " kill messages!");
     }
     if (command.equalsIgnoreCase("getkill")) {
         if (!$.inidb.get("kills", "kill_" + parseInt(args[0])) == " ") {
             $.say($.inidb.get("kills", "kill_" + parseInt(args[0])));
         } else {
-            $.say("There are " + num_kills + " kill messages. Message IDs go from 0 to " + (num_kills) + " and " + args[0] + " isn't one of them");
+            $.say($.getWhisperString(sender) + "There are " + num_kills + " kill messages. Message IDs go from 0 to " + (num_kills) + " and " + args[0] + " isn't one of them");
             return;
         }
                     
@@ -108,19 +108,19 @@ $.on('command', function(event) {
     }
     if (command.equalsIgnoreCase("editkill")) {
         if (!$.isModv3(sender, event.getTags())) {
-            $.say($.modmsg);
+            $.say($.getWhisperString(sender) + $.modmsg);
             return;
         }
         
         num = parseInt(args[0]);
 
         if (num > num_kills) {
-            $.say("There is no kill message under that ID, " + sender + "!");
+            $.say($.getWhisperString(sender) + "There is no kill message under that ID, " + sender + "!");
             return;
         }
 
         if (argsString2.isEmpty() || argsString.isEmpty() || args[1] == null) {
-            $.say("Usage: !editkill <ID> <message>");
+            $.say($.getWhisperString(sender) + "Usage: !editkill <ID> <message>");
             return;
         }
 
@@ -128,23 +128,23 @@ $.on('command', function(event) {
         
         $.inidb.set("kills", "kill_" + num, argsString2);
         
-        $.say("kill message #" + num + " changed to: " + $.inidb.get("kills", "kill_" + num));
+        $.say($.getWhisperString(sender) + "kill message #" + num + " changed to: " + $.inidb.get("kills", "kill_" + num));
         return;
     }
 
     if (command.equalsIgnoreCase("delkill")) {
         if (!$.isModv3(sender, event.getTags())) {
-            $.say($.modmsg);
+            $.say($.getWhisperString(sender) + $.modmsg);
             return;
         }
         
         if (num_kills == null || isNaN(num_kills) || num_kills == 0) {
-            $.say("There are no kills at this time");
+            $.say($.getWhisperString(sender) + "There are no kills at this time");
             return;
         }
         
         if (argsString.isEmpty()) {
-            $.say("Usage: !delkill <id>");
+            $.say($.getWhisperString(sender) + "Usage: !delkill <id>");
             return;
         }
         
@@ -160,7 +160,7 @@ $.on('command', function(event) {
         
         $.inidb.decr("kills", "num_kills", 1);
         
-        $.say("kill removed! There are now " + (num_kills - 1) + " kills!");
+        $.say($.getWhisperString(sender) + "kill removed! There are now " + (num_kills - 1) + " kills!");
     }
     var commandCount = $.inidb.get('counter', 'kill');
     var messageCommand = $.inidb.get('kills', 'kill_' + num);

@@ -1,5 +1,3 @@
-var whispermode = $.inidb.get("settings", "whisper_phrases");
-
 $.on('ircChannelMessage', function(event) { 
     var message = new String(event.getMessage().toLowerCase().trim());
     var sender = event.getSender();
@@ -18,11 +16,7 @@ $.on('ircChannelMessage', function(event) {
                 messageKEY = messageKEY.replace("(sender)", username);
             }
 			
-	if (whispermode == "true") {
-		$.say("/w " + sender + " " + messageKEY);
-	} else {
-		$.say(messageKEY);
-	}
+            $.say(messageKEY);
             return;
         }
     }    
@@ -37,24 +31,10 @@ $.on('command', function (event) {
     var triggerphrase = "";
     var response = "";
 	
-	if (command.equalsIgnoreCase("whisperphrases") && $.isModv3(sender, event.getTags())) {
-				
-	if (whispermode != "true") {
-		$.inidb.set("settings", "whisper_phrases", "true");
-			whispermode = "true";
-		$.say("[Whisper Mode] has been activated for the Phrase Trigger!");			
-			return;	
-		} else if (whispermode == "true"){
-			$.inidb.set("settings", "whisper_phrases", "false");
-			whispermode = "false";
-		$.say("[Whisper Mode] has been deactivated for the Phrase Trigger!");		
-		}
-
-		}
 	
     if (command.equalsIgnoreCase("addphrase")) {
         if (!$.isModv3(sender, event.getTags())) {
-            $.say($.modmsg);
+            $.say($.getWhisperString(sender) + $.modmsg);
             return;
         }
 
@@ -65,26 +45,18 @@ $.on('command', function (event) {
         response = argsString2;
          
         $.inidb.set('phrases', triggerphrase, response);
-	if (whispermode == "true") {
-		 $.say("/w " + sender + " Phrase trigger: " + triggerphrase + ", Message: \"" + response + "\" was added!");
-	} else {
-        $.say("Phrase trigger: " + triggerphrase + ", Message: \"" + response + "\" was added!");
-	}
+		 $.say($.getWhisperString(sender) + " Phrase trigger: " + triggerphrase + ", Message: \"" + response + "\" was added!");
     }
+    
     if (command.equalsIgnoreCase("delphrase")) {
         if (!$.isModv3(sender, event.getTags())) {
-            $.say($.modmsg);
+            $.say($.getWhisperString(sender) + $.modmsg);
             return;
         }
         triggerphrase = args[0];
 
         $.inidb.del('phrases', triggerphrase);
-		
-	if (whispermode == "true") {
-		 $.say("/w " + sender + " Phrase trigger: " + triggerphrase + " was removed!");
-	} else {
-        $.say("Phrase trigger: " + triggerphrase + " was removed!");
-	}
+        $.say($.getWhisperString(sender) + " Phrase trigger: " + triggerphrase + " was removed!");
     }
 
 });
@@ -92,6 +64,5 @@ setTimeout(function(){
     if ($.moduleEnabled('./handlers/phraseHandler.js')) {
         $.registerChatCommand("./handlers/phraseHandler.js", "addphrase", "mod");
         $.registerChatCommand("./handlers/phraseHandler.js", "delphrase", "mod");
-        $.registerChatCommand("./handlers/phraseHandler.js", "whisperphrase", "mod");
     }
 },10*1000);

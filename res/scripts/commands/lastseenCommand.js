@@ -1,5 +1,6 @@
 $.on('command', function (event) {
     var command = event.getCommand();
+    var sender = event.getSender();
     var args = event.getArgs();
     var lastTarget = $.inidb.get('lastseen', args[0]);
     
@@ -11,9 +12,9 @@ $.on('command', function (event) {
         }
         
         if (args.length >= 1) {
-            $.say ( $.username.resolve(args[0]) + " was last seen at: " + lastTarget);
+            $.say ($.getWhisperString($.username.resolve(args[0])) + " was last seen at: " + lastTarget);
         } else {
-            $.say("Usage: !lastseen <name>");
+            $.say($.getWhisperString(sender) + "Usage: !lastseen <name>");
         }
         
     }

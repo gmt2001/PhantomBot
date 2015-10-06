@@ -326,7 +326,6 @@ $.hook.call = function (hook, arg, alwaysrun) {
     }
 }
 
-
 $.permCom = function (user, command) {
     command = command.toLowerCase();
     var keys = $.inidb.GetKeyList("permcom", "");
@@ -407,7 +406,7 @@ $api.on($script, 'command', function (event) {
 
     if ($.moduleEnabled("./systems/pointSystem.js") && !$.isModv3(sender, event.getTags()) && $.inidb.exists("pricecom", command.toLowerCase())) {
         if (parseInt($.inidb.get("points", sender)) < parseInt($.inidb.get("pricecom", command.toLowerCase()))) {
-            $.say($.lang.get("net.phantombot.cmd.needpoints", $.inidb.get("pricecom", command.toLowerCase()), $.pointname));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.needpoints", $.inidb.get("pricecom", command.toLowerCase()), $.pointname));
             return;
         } else {
             if (parseInt($.inidb.get("pricecom", command.toLowerCase())) > 0)
@@ -595,7 +594,7 @@ $api.on(initscript, 'command', function (event) {
 
     if (command.equalsIgnoreCase("setconnectedmessage")) {
         if (!$.isAdmin(sender)) {
-            $.say($.adminmsg);
+            $.say($.getWhisperString(sender) + $.adminmsg);
             return;
         }
 
@@ -607,7 +606,7 @@ $api.on(initscript, 'command', function (event) {
 
     if (command.equalsIgnoreCase("coolcom")) {
         if (args.length == 0) {
-            $.say($.lang.get("net.phantombot.init.coolcom-set", $.inidb.get("settings", "coolcom")));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.coolcom-set", $.inidb.get("settings", "coolcom")));
         } else if (!isNaN(args[0]) && parseInt(args[0]) >= 0) {
             if (!$.isModv3(sender, event.getTags())) {
                 $.say($.modmsg);
@@ -617,13 +616,13 @@ $api.on(initscript, 'command', function (event) {
             $.logEvent("init.js", 460, username + " changed the command cooldown to " + args[0] + " seconds");
 
             $.inidb.set("settings", "coolcom", args[0]);
-            $.say($.lang.get("net.phantombot.init.coolcom-set", args[0]));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.coolcom-set", args[0]));
         }
     }
 
     if (command.equalsIgnoreCase("reconnect")) {
         if (!$.isModv3(sender, event.getTags())) {
-            $.say($.modmsg);
+            $.say($.getWhisperString(sender) + $.modmsg);
             return;
         }
 
@@ -635,12 +634,12 @@ $api.on(initscript, 'command', function (event) {
 
     if (command.equalsIgnoreCase("module")) {
         if (!$.isAdmin(sender)) {
-            $.say($.adminmsg);
+            $.say($.getWhisperString(sender) + $.adminmsg);
             return;
         }
 
         if (args.length == 0) {
-            $.say($.lang.get("net.phantombot.init.module-usage"));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.module-usage"));
         } else {
             if (args[0].equalsIgnoreCase("list")) {
                 var lstr = $.lang.get("net.phantombot.init.module-list");
@@ -686,7 +685,7 @@ $api.on(initscript, 'command', function (event) {
                         first = false;
                     }
 
-                    $.say(lstr);
+                    $.say($.getWhisperString(sender) + lstr);
 
                     lstr = "> ";
                     first = true;
@@ -701,7 +700,7 @@ $api.on(initscript, 'command', function (event) {
                 index = $.getModuleIndex(args[1]);
 
                 if (index == -1) {
-                    $.say($.lang.get("net.phantombot.init.module-not-exists"));
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.module-not-exists"));
                 } else {
                     $.logEvent("init.js", 545, username + " enabled module " + args[1]);
 
@@ -709,7 +708,7 @@ $api.on(initscript, 'command', function (event) {
 
                     $.inidb.set('modules', modules[index][0] + '_enabled', "1");
 
-                    $.say($.lang.get("net.phantombot.init.module-enable"));
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.module-enable"));
                 }
             }
 
@@ -721,7 +720,7 @@ $api.on(initscript, 'command', function (event) {
                 index = $.getModuleIndex(args[1]);
 
                 if (index == -1) {
-                    $.say($.lang.get("net.phantombot.init.module-not-exists"));
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.module-not-exists"));
                 } else {
                     $.logEvent("init.js", 565, username + " disabled module " + args[1]);
 
@@ -729,7 +728,7 @@ $api.on(initscript, 'command', function (event) {
 
                     $.inidb.set('modules', modules[index][0] + '_enabled', "0");
 
-                    $.say($.lang.get("net.phantombot.init.module-disable"));
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.module-disable"));
                 }
             }
 
@@ -741,12 +740,12 @@ $api.on(initscript, 'command', function (event) {
                 index = $.getModuleIndex(args[1]);
 
                 if (index == -1) {
-                    $.say($.lang.get("net.phantombot.init.module-not-exists"));
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.module-not-exists"));
                 } else {
                     if (modules[index][1]) {
-                        $.say($.lang.get("net.phantombot.init.module-enabled", modules[index][0]));
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.module-enabled", modules[index][0]));
                     } else {
-                        $.say($.lang.get("net.phantombot.init.module-disabled", modules[index][0]));
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.module-disabled", modules[index][0]));
                     }
                 }
             }

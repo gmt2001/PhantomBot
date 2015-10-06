@@ -4,7 +4,6 @@ $.timeLevel = $.inidb.get('settings', 'timeLevel');
 $.timePromoteHours = $.inidb.get('settings', 'timePromoteHours');
 $.timeZone = $.inidb.get("timezone", "timeZone");
 $.timeOffline = $.inidb.get("timezone", "timeOffline");
-$.whisperTime = $.inidb.get("settings", "whisperTime");
 $.permToggleTime = $.inidb.get("settings", "permToggleTime");
 
 if ($.timeLevel == undefined || $.timeLevel == null || $.timeLevel.isEmpty()) {
@@ -23,10 +22,6 @@ if ($.timeOffline == undefined || $.timeOffline == null || $.timeOffline.isEmpty
     $.timeOffline = "true";
 }
 
-if ($.whisperTime == undefined || $.whisperTime == null) {
-    $.whisperTime = "false";
-}
-
 if ($.permToggleTime == undefined || $.permToggleTime == null) {
     $.permToggleTime = "false";
 }
@@ -40,14 +35,6 @@ if($.firstrun) {
     $.say("");
 }
 
-$.getWhisperString = function(sender) {
-    // TODO: Incorporate $.whisper once it is available.
-    if ($.whisperTime == "true") {
-        return "/w " + sender + " ";
-    } else {
-        return "";
-    }
-}
 
 $.getUserTime = function (user) {
     // "getUserTime" instead of "getTime" to prevent issues with the "real" function.
@@ -83,13 +70,12 @@ $.getTimeString = function (time) {
             timeString += "m "
         }
         if (weeks == 0 && days == 0 && hours == 0 && minutes == 0) {
-            timeString += time.toString();
-            timeString += "s "
+            return "0s";
         }
 
         timeString = timeString.trim();
     } else {
-        return "0s";
+        return false;
     }
 
     return timeString;
@@ -135,24 +121,6 @@ $.on('command', function(event) {
         args = argsString.split(" ");
     }
 
-    if (command.equalsIgnoreCase("whispertime")) {
-        if (!$.isModv3(sender, event.getTags())) {
-            $.say($.modmsg);
-            return;
-        }
-        if ($.whisperTime == "false") {
-            $.inidb.set("settings", "whisperTime", "true");
-            $.whisperTime = $.inidb.get('settings', 'whisperTime');
-
-            $.say($.lang.get("net.phantombot.common.whisper-enabled", "Time System"));
-        } else if ($.whisperTime == "true") {
-            $.inidb.set("settings", "whisperTime", "false");
-            $.whisperTime = $.inidb.get('settings', 'whisperTime');
-
-            $.say($.lang.get("net.phantombot.common.whisper-disabled", "Time System"));
-        }
-    }
-
     if(command.equalsIgnoreCase("time")) {
         if (args.length >= 1) {
             var action = args[0];
@@ -160,12 +128,12 @@ $.on('command', function(event) {
             if (action.equalsIgnoreCase("give") || action.equalsIgnoreCase("send") || action.equalsIgnoreCase("add")) {
                 if ($.permToggleTime == "true") {
                     if (!$.isModv3(sender, event.getTags())) {
-                        $.say($.modmsg);
+                        $.say($.getWhisperString(sender) + $.modmsg);
                         return;
                     }
                 } else {
                     if (!$.isAdmin(sender)) {
-                        $.say($.adminmsg);
+                        $.say($.getWhisperString(sender) + $.adminmsg);
                         return;
                     }
                 }
@@ -185,7 +153,7 @@ $.on('command', function(event) {
                     if ($.inidb.get("visited", username.toLowerCase()) == "visited") {
                         $.inidb.incr('time', username.toLowerCase(), time);
 
-                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.give-success", getTimeString(time), $.username.resolve(username), getTimeString($.inidb.get('time', username.toLowerCase()))));
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.give-success", $.getTimeString(time), $.username.resolve(username), $.getTimeString($.inidb.get('time', username.toLowerCase()))));
                         return;
                     } else {
                         $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.common.user-404", $.username.resolve(username)));
@@ -195,12 +163,12 @@ $.on('command', function(event) {
             } else if (action.equalsIgnoreCase("take") || action.equalsIgnoreCase("withdraw")) {
                 if ($.permToggleTime == "true") {
                     if (!$.isModv3(sender, event.getTags())) {
-                        $.say($.modmsg);
+                        $.say($.getWhisperString(sender) + $.modmsg);
                         return;
                     }
                 } else {
                     if (!$.isAdmin(sender)) {
-                        $.say($.adminmsg);
+                        $.say($.getWhisperString(sender) + $.adminmsg);
                         return;
                     }
                 }
@@ -220,7 +188,7 @@ $.on('command', function(event) {
                     if ($.inidb.get("visited", username.toLowerCase()) == "visited")  {
                         $.inidb.decr('time', username.toLowerCase(), time);
 
-                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.take-success", getTimeString(time), $.username.resolve(username), getTimeString($.inidb.get('time', username.toLowerCase()))))
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.take-success", $.getTimeString(time), $.username.resolve(username), $.getTimeString($.inidb.get('time', username.toLowerCase()))))
                         return;
                     } else {
                         $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.common.user-404", $.username.resolve(username)));
@@ -230,12 +198,12 @@ $.on('command', function(event) {
             } else if (action.equalsIgnoreCase("set")) {
                 if ($.permToggleTime == "true") {
                     if (!$.isModv3(sender, event.getTags())) {
-                        $.say($.modmsg);
+                        $.say($.getWhisperString(sender) + $.modmsg);
                         return;
                     }
                 } else {
                     if (!$.isAdmin(sender)) {
-                        $.say($.adminmsg);
+                        $.say($.getWhisperString(sender) + $.adminmsg);
                         return;
                     }
                 }
@@ -255,7 +223,7 @@ $.on('command', function(event) {
                     if ($.inidb.get("visited", username.toLowerCase()) == "visited")  {
                         $.inidb.set('time', username.toLowerCase(), time);
 
-                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.set-success", $.username.resolve(username), getTimeString($.inidb.get('time', username.toLowerCase()))));
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.set-success", $.username.resolve(username), $.getTimeString($.inidb.get('time', username.toLowerCase()))));
                         return;
                     } else {
                         $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.common.user-404", $.username.resolve(username)));
@@ -264,17 +232,17 @@ $.on('command', function(event) {
                 }
             } else if (action.equalsIgnoreCase("reset")) {
                 if (!$.isAdmin(sender)) {
-                    $.say($.adminmsg);
+                    $.say($.getWhisperString(sender) + $.adminmsg);
                     return;
                 }
 
                 $.inidb.RemoveFile("time");
                 $.inidb.ReloadFile("time");
 
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.reset-success", getTimeString(0)));
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.reset-success", $.getTimeString(0)));
             } else if (action.equalsIgnoreCase("promotehours")) {
                 if (!$.isAdmin(sender)) {
-                    $.say($.adminmsg);
+                    $.say($.getWhisperString(sender) + $.adminmsg);
                     return;
                 }
 
@@ -284,18 +252,18 @@ $.on('command', function(event) {
                 }
 
                 if (args[1] < 0) {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.promotehours-error-negative", getGroupNameById(regularsGroupID).toLowerCase()));
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.promotehours-error-negative", $.getGroupNameById(regularsGroupID).toLowerCase()));
                     return;
                 } else {
                     $.inidb.set('settings', 'timePromoteHours', args[1]);
                     $.timePromoteHours = parseInt($.inidb.get('settings', 'timePromoteHours'));
 
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.promotehours-success", getGroupNameById(regularsGroupID).toLowerCase(), $.timePromoteHours));
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.promotehours-success", $.getGroupNameById(regularsGroupID).toLowerCase(), $.timePromoteHours));
                     return;
                 }
             } else if (action.equalsIgnoreCase("autolevel")) {
                 if (!$.isAdmin(sender)) {
-                    $.say($.adminmsg);
+                    $.say($.getWhisperString(sender) + $.adminmsg);
                     return;
                 }
 
@@ -303,18 +271,18 @@ $.on('command', function(event) {
                     $.inidb.set('settings', 'timeLevel', "true");
                     $.timeLevel = $.inidb.get('settings', 'timeLevel');
 
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.autolevel-enabled", getGroupNameById(regularsGroupID).toLowerCase(), $.timePromoteHours));
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.autolevel-enabled", $.getGroupNameById(regularsGroupID).toLowerCase(), $.timePromoteHours));
                     return;
                 } else {
                     $.inidb.set('settings', 'timeLevel', "false");
                     $.timeLevel = $.inidb.get('settings', 'timeLevel');
 
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.autolevel-disabled", getGroupNameById(regularsGroupID).toLowerCase(), $.timePromoteHours));
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.autolevel-disabled", $.getGroupNameById(regularsGroupID).toLowerCase(), $.timePromoteHours));
                     return;
                 }
             } else if (action.equalsIgnoreCase("offline") || action.equalsIgnoreCase("offlinetime")) {
                 if (!$.isAdmin(sender)) {
-                    $.say($.adminmsg);
+                    $.say($.getWhisperString(sender) + $.adminmsg);
                     return;
                 }
 
@@ -333,7 +301,7 @@ $.on('command', function(event) {
                 }
             } else if (action.equalsIgnoreCase("toggle")) {
                 if (!$.isAdmin(sender)) {
-                    $.say($.adminmsg);
+                    $.say($.getWhisperString(sender) + $.adminmsg);
                     return;
                 }
 
@@ -352,27 +320,21 @@ $.on('command', function(event) {
                 $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.help"));
                 return;
             } else {
-                username = args[0].toLowerCase();
-
-                getTimeStringResult = getTimeString(getUserTime(username));
-
-                if ($.inidb.get("visited", username.toLowerCase()) == "visited")  {
-                    if (username == sender) {
-                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.get-self", getTimeStringResult));
-                        return;
-                    } else {
-                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.get-other", $.username.resolve(username), getTimeStringResult));
-                        return;
-                    }
+                var othername = "";
+                if(args[0]!=null) {
+                    othername = args[0].toLowerCase();
+                }
+                
+                if ($.inidb.get("visited", othername.toLowerCase()) == "visited")  {
+                            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.get-other", $.username.resolve(othername), $.getTimeString($.getUserTime(othername))));
+                            return;
                 } else {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.common.user-404", $.username.resolve(username)));
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.common.user-404", $.username.resolve(othername)));
                     return;
                 }
             }
         } else {
-            getTimeStringResult = getTimeString(getUserTime(sender));
-
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.get-self", getTimeStringResult));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.get-self", $.getTimeString($.getUserTime(sender))));
             return;
         }
     }
@@ -386,7 +348,7 @@ $.on('command', function(event) {
                 return;
             } else {
                 if (!$.isAdmin(sender)) {
-                    $.say($.adminmsg);
+                    $.say($.getWhisperString(sender) + $.adminmsg);
                     return;
                 }
 
@@ -439,7 +401,7 @@ $.timer.addTimer("./systems/timeSystem.js", "timesystem", true, function() {
                         var levelup = parseInt($.getUserGroupId(nick)) - 1;
 
                         $.setUserGroupById(nick, levelup);
-                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.autolevel-promote", $.username.resolve(nick), $.getGroupNameById(levelup).toLowerCase(), $.timePromoteHours));
+                        $.say($.getWhisperString(nick) + $.lang.get("net.phantombot.timesystem.autolevel-promote", $.username.resolve(nick), $.getGroupNameById(levelup).toLowerCase(), $.timePromoteHours));
                     }
                 }
             }

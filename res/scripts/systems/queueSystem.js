@@ -26,7 +26,7 @@ function PlayRequest(user, gametag) {
 
     this.request = function () {
         if (!this.canRequest()) {
-            $.say("You can only queue up to " + $.play_limit + " times " + user + "!");
+            $.say($.getWhisperString(sender) + "You can only queue up to " + $.play_limit + " times " + user + "!");
             return;
         }
         if ($.playrequestusers[user] != null) {
@@ -75,18 +75,18 @@ $.on('command', function (event) {
         {
             if($.play_cost!=null ) {
                 if(points < parseInt($.play_cost)) {
-                    $.say("You don't have enough " + $.pointname + " to do that! Current cost to play: " + $.play_cost);
+                    $.say($.getWhisperString(sender) + "You don't have enough " + $.pointname + " to do that! Current cost to play: " + $.play_cost);
                     return;
                 }                  
             }
             var gametag = args[0];
             $.playrequest = new PlayRequest(username, gametag);
             $.playrequest.request();
-            $.say("You have been added to the waiting list " + username + "!");
+            $.say($.getWhisperString(sender) + "You have been added to the waiting list " + username + "!");
             return;
             
         } else {
-            $.say("You must include your in-game name with your request such as: !letmeplay somegaminghandle");
+            $.say($.getWhisperString(sender) + "You must include your in-game name with your request such as: !letmeplay somegaminghandle");
             return;
         }
         
@@ -104,7 +104,7 @@ $.on('command', function (event) {
         if(args[0]!=null)
         {
             if(!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())){
-                $.say("You must be a moderator to use this command.");
+                $.say($.getWhisperString(sender) + $.modmsg);
                 return;
             }
             
@@ -112,10 +112,10 @@ $.on('command', function (event) {
                 if(args[1]!=null) {
                     $.play_limit = args[1];
                     $.inidb.set("settings","play_limit",$.play_limit);
-                    $.say("The player queue request limit has been set to: " + $.play_limit);
+                    $.say($.getWhisperString(sender) + "The player queue request limit has been set to: " + $.play_limit);
                     return;
                 } else {
-                    $.say("You must specify a limit number greater than 0");
+                    $.say($.getWhisperString(sender) + "You must specify a limit number greater than 0");
                     return;
                 }
             }
@@ -127,7 +127,7 @@ $.on('command', function (event) {
         
         if(list==null )
         {
-            $.say("There are currently no players in queue.");
+            $.say($.getWhisperString(sender) + "There are currently no players in queue.");
             return;
         }
         
@@ -150,7 +150,7 @@ $.on('command', function (event) {
         
         if($.queuelist=="" || $.queuelist==null )
         {
-            $.say("There are currently no players in queue.");
+            $.say($.getWhisperString(sender) + "There are currently no players in queue.");
             return;
         }
         
@@ -163,7 +163,7 @@ $.on('command', function (event) {
     
     if(command.equalsIgnoreCase("nextround")) {
         if(!$.isModv3(sender, event.getTags())){
-            $.say("You must be a moderator to use this command.");
+            $.say($.getWhisperString(sender) + $.modmsg);
             return;
         }
         if($.playrequest!=null) {
@@ -171,7 +171,7 @@ $.on('command', function (event) {
         }
         $.playerqueue.shift();
         if($.playerqueue[0]!=null){
-            $.say($.playerqueue[0].user + " it's your turn! [Gamertag: " + $.playerqueue[0].gametag + "]");
+            $.say($.getWhisperString(sender) + $.playerqueue[0].user + " it's your turn! [Gamertag: " + $.playerqueue[0].gametag + "]");
         } else {
             $.say("There are no more viewers waiting to play.");
         }

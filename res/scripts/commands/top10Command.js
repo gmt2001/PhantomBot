@@ -44,13 +44,11 @@ $.on('command', function(event) {
             
             s += (i + 1) + ". " + top10[i][0] + " (" + top10[i][1] + ")";
         }
-        if (inidb.get("settings", "whisper_points") == "true") {
-		    $.say("/w " + $.username.resolve(sender, event.getTags()) + " " + s);
-		} else {
-			$.say(s);
-		}
+        
+        $.say($.getWhisperString($.username.resolve(sender, event.getTags())) + " " + s);
         
     }
+    
     if (command.equalsIgnoreCase("top10time")) {
         if (!$.moduleEnabled("./systems/timeSystem.js")) {
             return;

@@ -37,7 +37,7 @@ $.on('command', function (event) {
     if (command.equalsIgnoreCase("notice")) {
         if (args.length >= 1) {
             if (!$.isAdmin(sender)) {
-                $.say($.adminmsg);
+                $.say($.getWhisperString(sender) + $.adminmsg);
                 return;
             }
 
@@ -51,19 +51,19 @@ $.on('command', function (event) {
 
             if (action.equalsIgnoreCase("get")) {
                 if (args.length < 2) {
-                    $.say("There are " + num_messages + " notices. Say '!notice get <id>' to get a messages content. Message IDs go from 0 to " + (num_messages));
+                    $.say($.getWhisperString(sender) + "There are " + num_messages + " notices. Say '!notice get <id>' to get a messages content. Message IDs go from 0 to " + (num_messages));
                 } else {
                     if ($.inidb.get('notices', 'message_' + message) == null) {
-                        $.say("There are " + num_messages + " notices. Message IDs go from 0 to " + (num_messages) + " and " + args[1] + " isn't one of them");
+                        $.say($.getWhisperString(sender) + "There are " + num_messages + " notices. Message IDs go from 0 to " + (num_messages) + " and " + args[1] + " isn't one of them");
                     } else {
-                        $.say($.inidb.get('notices', 'message_' + message));
+                        $.say($.getWhisperString(sender) + $.inidb.get('notices', 'message_' + message));
                     }
                 }
             }
 
             if (action.equalsIgnoreCase("insert")) {
                 if (args.length < 3) {
-                    $.say("Insert an event into a specific slot, pushing the event currently in that slot and all others after it forward by one slot. !notice insert <id> <message>")
+                    $.say($.getWhisperString(sender) + "Insert an event into a specific slot, pushing the event currently in that slot and all others after it forward by one slot. !notice insert <id> <message>")
                 } else {
                     var id = args[1]
                     message = argsString.substring(argsString.indexOf(id) + id.length() + action.length() + 2)
@@ -83,19 +83,19 @@ $.on('command', function (event) {
 
                     num_messages = $.inidb.get('notices', 'num_messages')
 
-                    $.say("Notice added! '" + message + "' There are now " + num_messages + " notices!")
+                    $.say($.getWhisperString(sender) + "Notice added! '" + message + "' There are now " + num_messages + " notices!")
                 }
             }
 
             if (action.equalsIgnoreCase("timer") || action.equalsIgnoreCase("interval")) {
                 if (args.length < 2) {
-                    $.say("The current interval is " + $.noticeinterval + " minutes. Set it with !notice timer <minutes> (Minimum is 2 minutes)");
+                    $.say($.getWhisperString(sender) + "The current interval is " + $.noticeinterval + " minutes. Set it with !notice timer <minutes> (Minimum is 2 minutes)");
                 } else {
                     if (!isNaN(message) && parseInt(message) >= 2) {
                         $.inidb.set('notice', 'interval', message);
                         $.noticeinterval = parseInt(message);
 
-                        $.say("The interval between notices has been set to " + $.noticeinterval + " minutes!")
+                        $.say($.getWhisperString(sender) + "The interval between notices has been set to " + $.noticeinterval + " minutes!")
                     }
                 }
             }
@@ -114,12 +114,12 @@ $.on('command', function (event) {
                     notices = "Disabled"
                 }
 
-                $.say("[Notice Settings] - [Notices: " + notices + "] - [Interval: " + $.noticeinterval + " minutes] - [Msg Trigger: " + $.noticemessages + " messages] - [Amount: " + num_messages + " notices]")
+                $.say($.getWhisperString(sender) + "[Notice Settings] - [Notices: " + notices + "] - [Interval: " + $.noticeinterval + " minutes] - [Msg Trigger: " + $.noticemessages + " messages] - [Amount: " + num_messages + " notices]")
             }
 
             if (action.equalsIgnoreCase("toggle")) {
                 if (!$.isAdmin(sender)) {
-                    $.say($.adminmsg);
+                    $.say($.getWhisperString(sender) + $.adminmsg);
                     return;
                 }
 
@@ -127,13 +127,13 @@ $.on('command', function (event) {
 
                     $.notices_toggle = true;
                     $.inidb.set('notice', 'notices_toggle', "true");
-                    $.say("Notices have been turned on!");
+                    $.say($.getWhisperString(sender) + "Notices have been turned on!");
 
                 } else if ($.notices_toggle == true) {
 
                     $.notices_toggle = false;
                     $.inidb.set('notice', 'notices_toggle', "false");
-                    $.say("Notices have been turned off!");
+                    $.say($.getWhisperString(sender) + "Notices have been turned off!");
                 }
 
             }
@@ -141,13 +141,13 @@ $.on('command', function (event) {
 
             if (action.equalsIgnoreCase("req")) {
                 if (args.length < 2) {
-                    $.say("The current amount is " + $.noticemessages + " messages. Set it with !notice req <amount> (Minimum is 5 messages)")
+                    $.say($.getWhisperString(sender) + "The current amount is " + $.noticemessages + " messages. Set it with !notice req <amount> (Minimum is 5 messages)")
                 } else {
                     if (!isNaN(message) && parseInt(message) >= 0) {
                         $.inidb.set('notice', 'reqmessages', message);
                         $.noticemessages = parseInt(message);
 
-                        $.say("The minimum number messages to trigger a notice has been set to " + $.noticemessages + " messages!");
+                        $.say($.getWhisperString(sender) + "The minimum number messages to trigger a notice has been set to " + $.noticemessages + " messages!");
                     }
                 }
             } 
@@ -155,28 +155,28 @@ $.on('command', function (event) {
         } else {
                 
             if (!args[0] == ("timer") ||!args[0] == ("interval") || !args[0] == ("insert") || !args[0] == ("get") || !args[0] == ("toggle") || argsString.isEmpty()) {
-                $.say("Usage: !addnotice <message>, !delnotice <id>, !notice insert <id> <message>, !notice get [id], !notice timer <minutes>, !notice req <amount>, !notice config")
+                $.say($.getWhisperString(sender) + "Usage: !addnotice <message>, !delnotice <id>, !notice insert <id> <message>, !notice get [id], !notice timer <minutes>, !notice req <amount>, !notice config")
             }
 
         }
     }
     if (command.equalsIgnoreCase("addnotice")) {
         if (!$.isAdmin(sender)) {
-            $.say($.adminmsg);
+            $.say($.getWhisperString(sender) + $.adminmsg);
             return;
         }
 
         message = argsString;
 
         if (message == null) {
-            $.say("Insert an notice at the end of the rotation. !notice add <message>");
+            $.say($.getWhisperString(sender) + "Insert an notice at the end of the rotation. !notice add <message>");
         } else {
             $.inidb.incr('notice', 'num_messages', 1);
 
             num_messages = $.inidb.get('notice', 'num_messages');
 
             $.inidb.set('notices', 'message_' + (num_messages - 1), message);
-            $.say("Notice added! '" + message + "' There are now " + num_messages + " notices!");
+            $.say($.getWhisperString(sender) + "Notice added! '" + message + "' There are now " + num_messages + " notices!");
         }
     }
 
@@ -184,14 +184,14 @@ $.on('command', function (event) {
 
     if (command.equalsIgnoreCase("delnotice")) {
         if (!$.isAdmin(sender)) {
-            $.say($.adminmsg);
+            $.say($.getWhisperString(sender) + $.adminmsg);
             return;
         }
         if (num_messages == null) {
-            $.say("Delete the notice at the specified slot. !notice del <id>");
+            $.say($.getWhisperString(sender) + "Delete the notice at the specified slot. !notice del <id>");
         } else {
             if (isNaN(num_messages) || num_messages == 0) {
-                $.say("There are no notices at this time");
+                $.say($.getWhisperString(sender) + "There are no notices at this time");
                 return;
             }
 
@@ -208,7 +208,7 @@ $.on('command', function (event) {
 
             num_messages = $.inidb.get('notice', 'num_messages');
 
-            $.say("Notice removed! There are now " + num_messages + " notices!");
+            $.say($.getWhisperString(sender) + "Notice removed! There are now " + num_messages + " notices!");
         }
     }
 
