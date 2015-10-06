@@ -609,7 +609,7 @@ $api.on(initscript, 'command', function (event) {
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.coolcom-set", $.inidb.get("settings", "coolcom")));
         } else if (!isNaN(args[0]) && parseInt(args[0]) >= 0) {
             if (!$.isModv3(sender, event.getTags())) {
-                $.say($.modmsg);
+                $.say($.getWhisperString(sender) + $.modmsg);
                 return;
             }
 
