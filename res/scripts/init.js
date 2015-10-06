@@ -376,8 +376,12 @@ $.permCom = function (user, command) {
 
 };
 
+var coolcom = new Array();
+
 $api.on($script, 'command', function (event) {
     var sender = event.getSender().toLowerCase();
+    var origcommand = event.getCommand();
+    
     if ($.inidb.exists('aliases', event.getCommand().toLowerCase())) {
         event.setCommand($.inidb.get('aliases', event.getCommand().toLowerCase()));
     }
@@ -385,6 +389,20 @@ $api.on($script, 'command', function (event) {
     var command = event.getCommand();
     if ($.permCom(sender, command) == false) {
         return;
+    }
+    
+    var idx = -1;
+    if (!isNaN($.inidb.get("settings", "coolcom")) && parseInt($.inidb.get("settings", "coolcom")) > 0) {
+        for(var i = 0; i < coolcom.length; i++) {
+            if (coolcom[i][0].equalsIgnoreCase(command)) {
+                idx = i;
+                if (coolcom[i][1] >= System.currentTimeMillis() && !$.isModv3(sender, event.getTags())) {
+                    $.println($.lang.get("net.phantombot.init.coolcom-cooldown", origcommand, sender));
+                    return;
+                }
+                break;
+            }
+        }
     }
 
     if ($.moduleEnabled("./systems/pointSystem.js") && !$.isModv3(sender, event.getTags()) && $.inidb.exists("pricecom", command.toLowerCase())) {
@@ -397,6 +415,14 @@ $api.on($script, 'command', function (event) {
                 $.inidb.decr("points", sender, parseInt($.inidb.get("pricecom", command.toLowerCase())));
                 $.println($.lang.get("net.phantombot.cmd.paid", sender, $.inidb.get('points', sender), $.pointname));
             }
+        }
+    }
+    
+    if (!isNaN($.inidb.get("settings", "coolcom")) && parseInt($.inidb.get("settings", "coolcom")) > 0) {
+        if (idx >= 0) {
+            coolcom[idx][1] = System.currentTimeMillis() + (parseInt($.inidb.get("settings", "coolcom")) * 1000);
+        } else {
+            coolcom.push(new Array(command, System.currentTimeMillis() + (parseInt($.inidb.get("settings", "coolcom")) * 1000)));
         }
     }
 
@@ -579,6 +605,22 @@ $api.on(initscript, 'command', function (event) {
         $.say($.lang.get("net.phantombot.init.cmsgset"));
     }
 
+    if (command.equalsIgnoreCase("coolcom")) {
+        if (args.length == 0) {
+            $.say($.lang.get("net.phantombot.init.coolcom-set", $.inidb.get("settings", "coolcom")));
+        } else if (!isNaN(args[0]) && parseInt(args[0]) >= 0) {
+            if (!$.isModv3(sender, event.getTags())) {
+                $.say($.modmsg);
+                return;
+            }
+
+            $.logEvent("init.js", 460, username + " changed the command cooldown to " + args[0] + " seconds");
+
+            $.inidb.set("settings", "coolcom", args[0]);
+            $.say($.lang.get("net.phantombot.init.coolcom-set", args[0]));
+        }
+    }
+
     if (command.equalsIgnoreCase("reconnect")) {
         if (!$.isModv3(sender, event.getTags())) {
             $.say($.modmsg);
@@ -717,3 +759,4 @@ $.logEvent("init.js", 596, "Bot Online");
 $.registerChatCommand('./init.js', 'setconnectedmessage', 'admin');
 $.registerChatCommand('./init.js', 'reconnect', 'mod');
 $.registerChatCommand('./init.js', 'module', 'admin');
+$.registerChatCommand('./init.js', 'coolcom', 'mod');
