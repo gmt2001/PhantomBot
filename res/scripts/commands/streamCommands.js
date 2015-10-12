@@ -60,6 +60,46 @@ $.getUptime = function(channel) {
     return diffHrs + " hrs and " + diffMinutes + " minutes since " + timestamp.toString();
 }
 
+$.getHighlight = function(channel) {
+    var stream = $.twitch.GetStream(channel);
+    
+    //first get created_at from twitch
+    var createdAt = stream.getJSONObject("stream").getString("created_at");
+    
+    //initiate date formatter
+    var df = new java.text.SimpleDateFormat( "yyyy-MM-dd'T'hh:mm:ssz" );
+    //parse created_at from twitch, which is received in GMT
+    if ( createdAt.endsWith( "Z" ) ) {
+            createdAt = createdAt.substring( 0, createdAt.length() - 1) + "GMT-00:00";
+            //$.say(createdAt);
+        } else {
+            var inset = 6;
+            var s0 = createdAt.substring( 0, createdAt.length() - inset );
+            //$.say(s0);
+            var s1 = createdAt.substring( createdAt.length() - inset, createdAt.length() );
+            //$.say(s1);
+            createdAt = s0 + "GMT" + s1;     
+    }
+
+    var gtf = new java.text.SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+    var date = new java.text.SimpleDateFormat("MM/dd/yyyy");
+    var cal = java.util.Calendar.getInstance(java.util.TimeZone.getTimeZone($.timezone));
+    var now = cal.getTime();
+
+    var starttime = new java.util.Date(gtf.format(df.parse( createdAt )));
+    var startdate = date.format(df.parse( createdAt ));
+    var currenttime = new java.util.Date(gtf.format(now));
+    
+    var diff = (currenttime.getTime() - starttime.getTime())
+    var diffHrs = diff / (60 * 60 * 1000) % 24;
+    var diffMinutes = diff / (60 * 1000) % 60;
+    
+    diffHrs = diffHrs.toString().substring(0, diffHrs.toString().indexOf("."));
+    diffMinutes = diffMinutes.toString().substring(0, diffMinutes.toString().indexOf("."));
+    
+    return diffHrs + "H-" + diffMinutes + "M-ON:" + startdate;
+}
+
 $.getViewers = function(channel) {
     var stream = $.twitch.GetStream(channel);
 
