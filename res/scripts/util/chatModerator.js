@@ -1220,10 +1220,8 @@ $.on('ircChannelMessage', function(event) {
         $.spamtracker[idx][2].push(System.currentTimeMillis() + (30 * 1000));
         
         if ($.spamtracker[idx][1] >= spamlimit) {
-            timeoutUserFor(sender, 30);
-            $.say(username + " -> " + spammessage + " [Timed Out (30)]");
-            
-            $.logEvent("chatModerator.js", 1186, "Automatic spam punishment triggered by " + username + ". Messages in the last 30 seconds: " + $.spamtracker[idx][1]);
+	    autoPurgeUser(username, spammessage +  " Spam limit: " + $.inidb.get("settings", "spamlimit"));
+        $.logEvent("chatModerator.js", 1223, "Automatic spam punishment triggered by " + username + ". Messages in the last 30 seconds: " + $.spamtracker[idx][1]);
         }
     }
 });
