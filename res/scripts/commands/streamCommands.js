@@ -1,7 +1,6 @@
 $.isOnline = function(channel) {
     var stream = $.twitch.GetStream(channel);
-    
-    if (!stream.isNull("stream")) {
+    if (!stream.toString().contains('"stream":"null"')) {
         return true;
     }
 

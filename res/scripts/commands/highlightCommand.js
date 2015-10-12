@@ -15,9 +15,7 @@ $.on('command', function (event) {
     var sender = event.getSender();
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
-    var timestamp = $.getUptime($.channelName);
-	
-   
+
 		
     if (command.equalsIgnoreCase("highlight")) {
         if (!$.isModv3(sender, event.getTags())) {
@@ -27,6 +25,7 @@ $.on('command', function (event) {
         } else if (!$.isOnline($.channelName)) {
             $.say($.getWhisperString(sender) + "Stream is Offline!");
         } else {
+            var timestamp = $.getUptime($.channelName);
             $.inidb.set("highlights", timestamp, argsString);
             $.say($.getWhisperString(sender) + "Highlight saved! \"" + 
                 argsString + "\" @ " + timestamp + ".");
