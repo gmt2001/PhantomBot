@@ -240,12 +240,12 @@ function processBankheist() {
                 
                 winnersListEmpty = false;
             } else {
-                $.flawless = 0;
                 if( ($.heistUserPoints - bet) < 0 ) {
                     $.inidb.set("points",name, "0");
                 } else {
                     $.inidb.decr("points",name, bet);
                 }
+                $.flawless -=1;
             }
             i++;
         }
@@ -264,7 +264,8 @@ function processBankheist() {
             if(winnersList.substr(winnersList.length - 2)==", ") {
                 winnersList = winnersList.substring(0, winnersList.length - 2);
             }
-            if($.flawless = 1) {
+
+            if($.flawless > 0) {
                 string = $.stringFlawless;
             } else {
                 string = $.stringCasualties;
@@ -313,7 +314,7 @@ $.on('command', function(event) {
     
 
     if (command.equalsIgnoreCase("bankheist")) {
-        if(args[0]==null || !$.isOnline($.botowner)) {
+        if(args[0]==null) {
             $.say($.getWhisperString(event.getSender()) + $.banksClosed);
             return;
         }
@@ -323,6 +324,7 @@ $.on('command', function(event) {
                 $.say($.getWhisperString(event.getSender()) + "You must be a moderator to use this command.");
                 return;
             }
+            
             if($.bankheistToggle==false){
                 $.bankheistToggle = true;
                 $.inidb.set("settings","bankheistToggle","true");
