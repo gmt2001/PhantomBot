@@ -50,7 +50,7 @@ if ($.permTogglePoints == undefined || $.permTogglePoints == null) {
     $.permTogglePoints = "false";
 }
 
-$.getWhisperString = function(sender) {
+$.getWhisperString = function (sender) {
     // TODO: Incorporate $.whisper once it is available.
     if ($.whisperPoints == "true") {
         return "/w " + sender + " ";
@@ -61,7 +61,8 @@ $.getWhisperString = function(sender) {
 
 $.getPoints = function (user) {
     var points = $.inidb.get('points', user.toLowerCase());
-    if (points == null) points = 0;
+    if (points == null)
+        points = 0;
 
     return points;
 }
@@ -69,20 +70,21 @@ $.getPoints = function (user) {
 $.getPointsString = function (points) {
     points = parseInt(points);
     var pointsString = "";
-    
+
     if (points == 1) {
         pointsString += points.toString() + " " + $.pointNameSingle;
     } else {
         pointsString += points.toString() + " " + $.pointNameMultiple;
     }
-    
+
     return pointsString;
 }
 
 $.getUserTime = function (user) {
     // "getUserTime" instead of "getTime" to prevent issues with the "real" function.
     var time = $.inidb.get('time', user.toLowerCase());
-    if (time == null) time = 0;
+    if (time == null)
+        time = 0;
 
     return time;
 }
@@ -149,17 +151,17 @@ $.on('command', function (event) {
     var noPointsString = $.getPointsString(0);
     var getPointsStringResult;
     var getTimeStringResult;
-    
+
     points = $.inidb.get('points', pointsUser);
-    
+
     if (argsString.isEmpty()) {
         args = [];
     } else {
         args = argsString.split(" ");
     }
-        
+
     if (command.equalsIgnoreCase("points") || command.equalsIgnoreCase($.pointNameSingle) || command.equalsIgnoreCase($.pointNameMultiple)) {
-        if (args.length >=1) {
+        if (args.length >= 1) {
             var action = args[0];
 
             if (action.equalsIgnoreCase("give") || action.equalsIgnoreCase("send") || action.equalsIgnoreCase("add")) {
@@ -179,10 +181,10 @@ $.on('command', function (event) {
                     $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.give-usage"));
                     return;
                 }
-            
+
                 username = args[1].toLowerCase();
                 points = parseInt(args[2]);
-            
+
                 if (points < 0) {
                     $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.give-error-negative", $.pointNameMultiple));
                     return;
@@ -219,10 +221,10 @@ $.on('command', function (event) {
                 points = parseInt(args[2]);
 
                 if (points > $.inidb.get('points', username.toLowerCase())) {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.take-error-toomuch", $.username.resolve(username), $.pointNameMultiple));       
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.take-error-toomuch", $.username.resolve(username), $.pointNameMultiple));
                     return;
                 } else {
-                    if ($.inidb.get("visited", username.toLowerCase()) == "visited")  {
+                    if ($.inidb.get("visited", username.toLowerCase()) == "visited") {
                         $.inidb.decr('points', username.toLowerCase(), points);
 
                         $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.take-success", $.getPointsString(points), $.username.resolve(username), $.getPointsString($.inidb.get('points', username.toLowerCase()))))
@@ -249,15 +251,15 @@ $.on('command', function (event) {
                     $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.set-usage"));
                     return;
                 }
-            
+
                 username = args[1].toLowerCase();
                 points = parseInt(args[2]);
-            
+
                 if (points < 0) {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.set-error-negative", $.pointNameMultiple));  
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.set-error-negative", $.pointNameMultiple));
                     return;
                 } else {
-                    if ($.inidb.get("visited", username.toLowerCase()) == "visited")  {
+                    if ($.inidb.get("visited", username.toLowerCase()) == "visited") {
                         $.inidb.set('points', username.toLowerCase(), points);
 
                         $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.set-success", $.pointNameSingle, $.username.resolve(username), $.getPointsString($.inidb.get('points', username.toLowerCase()))));
@@ -444,8 +446,8 @@ $.on('command', function (event) {
                 }
                 if (args[2] != null) {
                     //var secondArgString = args[2].toString();
-                        var argsString = event.getArguments().trim();
-                        var secondArgString = argsString.substring(argsString.indexOf(args[2].toString()), argsString.length());
+                    var argsString = event.getArguments().trim();
+                    var secondArgString = argsString.substring(argsString.indexOf(args[2].toString()), argsString.length());
                 }
 
                 if (args[1] == null) {
@@ -522,10 +524,10 @@ $.on('command', function (event) {
                     return;
                 }
             } else if (action.equalsIgnoreCase("timetoggle") || action.equalsIgnoreCase("toggletime")) {
-                 if (!$.isAdmin(sender)) {
-                     return;
-                 }
- 
+                if (!$.isAdmin(sender)) {
+                    return;
+                }
+
                 if ($.getTimeEnabled() == false) {
                     $.inidb.set('settings', 'pointTimeToggle', "false");
 
@@ -534,26 +536,26 @@ $.on('command', function (event) {
                 }
 
                 if ($.pointTimeToggle == "false") {
-                     $.inidb.set('settings', 'pointTimeToggle', "true");
-                     $.pointTimeToggle = $.inidb.get('settings', 'pointTimeToggle');
- 
-                     $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.timetoggle-enabled", $.pointNameSingle));
+                    $.inidb.set('settings', 'pointTimeToggle', "true");
+                    $.pointTimeToggle = $.inidb.get('settings', 'pointTimeToggle');
+
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.timetoggle-enabled", $.pointNameSingle));
                     return;
                 } else if ($.pointTimeToggle == "true") {
-                     $.inidb.set('settings', 'pointTimeToggle', "false");
-                     $.pointTimeToggle = $.inidb.get('settings', 'pointTimeToggle');
- 
-                     $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.timetoggle-disabled", $.pointNameSingle));
+                    $.inidb.set('settings', 'pointTimeToggle', "false");
+                    $.pointTimeToggle = $.inidb.get('settings', 'pointTimeToggle');
+
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.timetoggle-disabled", $.pointNameSingle));
                     return;
-                } else if (action.equalsIgnoreCase("config")) {
-                    if (!$.isAdmin(sender)) {
-                        $.say($.getWhisperString(sender) + $.adminmsg);
-                        return;
-                    }
                 }
+            } else if (action.equalsIgnoreCase("config")) {
+                if (!$.isAdmin(sender)) {
+                    $.say($.getWhisperString(sender) + $.adminmsg);
+                    return;
+                }
+
                 $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.config", $.pointNameSingle, $.pointNameMultiple, $.getPointsString($.pointGain), $.getPointsString($.pointGainOffline), $.pointInterval, $.pointIntervalOffline, $.getPointsString($.pointBonus), $.getPointsString($.pointGiftMin)));
                 return;
-                
             } else if (action.equalsIgnoreCase("help")) {
                 $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.help"));
                 return;
@@ -563,7 +565,7 @@ $.on('command', function (event) {
                 getPointsStringResult = $.getPointsString($.getPoints(pointsUser));
                 getTimeStringResult = $.getTimeString($.getUserTime(pointsUser));
 
-                if ($.inidb.get("visited", pointsUser.toLowerCase()) == "visited")  {
+                if ($.inidb.get("visited", pointsUser.toLowerCase()) == "visited") {
                     if (pointsUser == sender) {
                         if (noPointsString == getPointsStringResult) {
                             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.get-self-nopoints", $.pointNameMultiple));
@@ -597,7 +599,7 @@ $.on('command', function (event) {
                 }
             }
         }
-        else {            
+        else {
             getPointsStringResult = $.getPointsString($.getPoints(pointsUser));
             getTimeStringResult = $.getTimeString($.getUserTime(pointsUser));
 
@@ -624,7 +626,7 @@ $.on('command', function (event) {
 
         if (args[0] > $.inidb.get('points', sender)) {
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.makeitrain-error-notenough", $.getPointsString(args[0])));
-            return; 
+            return;
         }
 
         if (args[0] < 0) {
@@ -652,7 +654,7 @@ $.on('command', function (event) {
             $.inidb.decr('points', sender, reward.toFixed(0));
             $.say($.lang.get("net.phantombot.pointsystem.makeitrain-success", username, $.getPointsString(args[0]), $.getPointsString(reward.toFixed(0))));
             return;
-        } 
+        }
     }
 
     if (command.equalsIgnoreCase("gift") || command.equalsIgnoreCase("transfer")) {
@@ -700,7 +702,7 @@ $.on('command', function (event) {
     }
 });
 
-$.timer.addTimer("./systems/pointSystem.js", "pointsystem", true, function() {
+$.timer.addTimer("./systems/pointSystem.js", "pointsystem", true, function () {
     var amount;
     if (!$.moduleEnabled("./systems/pointSystem.js")) {
         return;
@@ -734,7 +736,7 @@ $.timer.addTimer("./systems/pointSystem.js", "pointsystem", true, function() {
     $.lastpointInterval = System.currentTimeMillis();
 }, 60 * 1000);
 
-setTimeout(function() { 
+setTimeout(function () {
     if ($.moduleEnabled('./systems/pointSystem.js')) {
         $.registerChatCommand("./systems/pointSystem.js", "points");
         $.registerChatCommand("./systems/pointSystem.js", "makeitrain");
