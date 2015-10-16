@@ -6,8 +6,8 @@ $.pointBonus = parseInt($.inidb.get('settings', 'pointBonus'));
 $.pointInterval = parseInt($.inidb.get('settings', 'pointInterval'));
 $.pointIntervalOffline = parseInt($.inidb.get('settings', 'pointIntervalOffline'));
 $.pointGiftMin = parseInt($.inidb.get('settings', 'pointGiftMin'));
-$.whisperPoints = $.inidb.get("settings", "whisperPoints");
 $.permTogglePoints = $.inidb.get("settings", "permTogglePoints");
+$.pointname = $.pointNameMultiple;
 
 if ($.pointNameSingle == undefined || $.pointNameSingle == null || $.pointNameSingle.isEmpty()) {
     $.pointNameSingle = "point";
@@ -42,27 +42,13 @@ if ($.pointGiftMin == undefined || $.pointGiftMin == null || isNaN($.pointGiftMi
     $.pointGiftMin = 10;
 }
 
-if ($.whisperPoints == undefined || $.whisperPoints == null) {
-    $.whisperPoints = "false";
-}
-
 if ($.permTogglePoints == undefined || $.permTogglePoints == null) {
     $.permTogglePoints = "false";
 }
 
-$.getWhisperString = function (sender) {
-    // TODO: Incorporate $.whisper once it is available.
-    if ($.whisperPoints == "true") {
-        return "/w " + sender + " ";
-    } else {
-        return "";
-    }
-}
-
 $.getPoints = function (user) {
     var points = $.inidb.get('points', user.toLowerCase());
-    if (points == null)
-        points = 0;
+    if (points == null) points = 0;
 
     return points;
 }
@@ -740,6 +726,5 @@ setTimeout(function () {
     if ($.moduleEnabled('./systems/pointSystem.js')) {
         $.registerChatCommand("./systems/pointSystem.js", "points");
         $.registerChatCommand("./systems/pointSystem.js", "makeitrain");
-        $.registerChatCommand("./systems/pointSystem.js", "whisperpoints", "mod");
     }
 }, 10 * 1000);
