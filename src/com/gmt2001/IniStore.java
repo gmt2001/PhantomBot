@@ -36,7 +36,7 @@ import org.apache.commons.io.FileUtils;
  *
  * @author gmt2001
  */
-public class IniStore implements ActionListener
+public class IniStore extends DataStore implements ActionListener
 {
 
     private final HashMap<String, IniFile> files = new HashMap<>();
@@ -46,6 +46,7 @@ public class IniStore implements ActionListener
     private final Timer t2;
     private static final long saveInterval = 5 * 60 * 1000;
     private static final IniStore instance = new IniStore();
+    private String inifolder = "";
 
     public static IniStore instance()
     {
@@ -54,6 +55,8 @@ public class IniStore implements ActionListener
 
     private IniStore()
     {
+        LoadConfig("");
+
         t = new Timer((int) saveInterval, this);
         t2 = new Timer(1, this);
 
@@ -68,7 +71,7 @@ public class IniStore implements ActionListener
         {
             try
             {
-                String data = FileUtils.readFileToString(new File("./inistore/" + fName + ".ini"));
+                String data = FileUtils.readFileToString(new File("./" + inifolder + "/" + fName + ".ini"));
                 String[] lines = data.replaceAll("\\r", "").split("\\n");
 
                 IniFile f = new IniFile();
@@ -136,12 +139,12 @@ public class IniStore implements ActionListener
                     wdata += ((String) akdata[b]) + "=" + ((String) avdata[b]) + "\r\n";
                 }
             }
-            if (!Files.isDirectory(Paths.get("./inistore/")))
+            if (!Files.isDirectory(Paths.get("./" + inifolder + "/")))
             {
-                Files.createDirectory(Paths.get("./inistore/"));
+                Files.createDirectory(Paths.get("./" + inifolder + "/"));
             }
 
-            Files.write(Paths.get("./inistore/" + fName + ".ini"), wdata.getBytes(StandardCharsets.UTF_8),
+            Files.write(Paths.get("./" + inifolder + "/" + fName + ".ini"), wdata.getBytes(StandardCharsets.UTF_8),
                     StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
 
             changed.remove(fName);
@@ -163,6 +166,7 @@ public class IniStore implements ActionListener
         protected HashMap<String, HashMap<String, String>> data = new HashMap<>();
     }
 
+    @Override
     public void SaveChangedNow()
     {
         nextSave.setTime(new Date().getTime() - 1);
@@ -170,6 +174,7 @@ public class IniStore implements ActionListener
         SaveAll(false);
     }
 
+    @Override
     public void SaveAll(boolean force)
     {
         if (!nextSave.after(new Date()) || force)
@@ -214,14 +219,28 @@ public class IniStore implements ActionListener
         }
     }
 
+    @Override
     public void ReloadFile(String fName)
     {
         LoadFile(fName, true);
     }
 
+    @Override
+    public void LoadConfig(String configStr)
+    {
+        if (configStr.isEmpty())
+        {
+            inifolder = "inistore";
+        } else
+        {
+            inifolder = configStr;
+        }
+    }
+
+    @Override
     public String[] GetFileList()
     {
-        Collection<File> f = FileUtils.listFiles(new File("./inistore/"), null, false);
+        Collection<File> f = FileUtils.listFiles(new File("./" + inifolder + "/"), null, false);
 
         String[] s = new String[f.size()];
 
@@ -236,6 +255,7 @@ public class IniStore implements ActionListener
         return s;
     }
 
+    @Override
     public String[] GetCategoryList(String fName)
     {
         if (!LoadFile(fName, false))
@@ -260,6 +280,7 @@ public class IniStore implements ActionListener
         return s;
     }
 
+    @Override
     public String[] GetKeyList(String fName, String section)
     {
         if (!LoadFile(fName, false))
@@ -284,6 +305,7 @@ public class IniStore implements ActionListener
         return s;
     }
 
+    @Override
     public String GetString(String fName, String section, String key)
     {
         if (!LoadFile(fName, false))
@@ -307,6 +329,7 @@ public class IniStore implements ActionListener
         return (String) files.get(fName).data.get(section).get(key);
     }
 
+    @Override
     public void SetString(String fName, String section, String key, String value)
     {
         LoadFile(fName, false);
@@ -330,6 +353,7 @@ public class IniStore implements ActionListener
         t2.start();
     }
 
+    @Override
     public int GetInteger(String fName, String section, String key)
     {
         String sval = GetString(fName, section, key);
@@ -343,6 +367,7 @@ public class IniStore implements ActionListener
         }
     }
 
+    @Override
     public void SetInteger(String fName, String section, String key, int value)
     {
         String sval = Integer.toString(value);
@@ -350,6 +375,7 @@ public class IniStore implements ActionListener
         SetString(fName, section, key, sval);
     }
 
+    @Override
     public float GetFloat(String fName, String section, String key)
     {
         String sval = GetString(fName, section, key);
@@ -363,6 +389,7 @@ public class IniStore implements ActionListener
         }
     }
 
+    @Override
     public void SetFloat(String fName, String section, String key, float value)
     {
         String sval = Float.toString(value);
@@ -370,6 +397,7 @@ public class IniStore implements ActionListener
         SetString(fName, section, key, sval);
     }
 
+    @Override
     public double GetDouble(String fName, String section, String key)
     {
         String sval = GetString(fName, section, key);
@@ -383,6 +411,7 @@ public class IniStore implements ActionListener
         }
     }
 
+    @Override
     public void SetDouble(String fName, String section, String key, double value)
     {
         String sval = Double.toString(value);
@@ -390,6 +419,7 @@ public class IniStore implements ActionListener
         SetString(fName, section, key, sval);
     }
 
+    @Override
     public Boolean GetBoolean(String fName, String section, String key)
     {
         int ival = GetInteger(fName, section, key);
@@ -397,6 +427,7 @@ public class IniStore implements ActionListener
         return ival == 1;
     }
 
+    @Override
     public void SetBoolean(String fName, String section, String key, Boolean value)
     {
         int ival = 0;
@@ -409,6 +440,7 @@ public class IniStore implements ActionListener
         SetInteger(fName, section, key, ival);
     }
 
+    @Override
     public void RemoveKey(String fName, String section, String key)
     {
         LoadFile(fName, false);
@@ -423,6 +455,7 @@ public class IniStore implements ActionListener
         SaveFile(fName, files.get(fName));
     }
 
+    @Override
     public void RemoveSection(String fName, String section)
     {
         LoadFile(fName, false);
@@ -432,46 +465,54 @@ public class IniStore implements ActionListener
         SaveFile(fName, files.get(fName));
     }
 
+    @Override
     public void RemoveFile(String fName)
     {
-        File f = new File("./inistore/" + fName + ".ini");
+        File f = new File("./" + inifolder + "/" + fName + ".ini");
 
         f.delete();
     }
 
+    @Override
     public boolean FileExists(String fName)
     {
-        File f = new File("./inistore/" + fName + ".ini");
+        File f = new File("./" + inifolder + "/" + fName + ".ini");
 
         return f.exists();
     }
 
+    @Override
     public boolean HasKey(String fName, String section, String key)
     {
         return GetString(fName, section, key) != null;
     }
 
+    @Override
     public boolean exists(String type, String key)
     {
         return HasKey(type, "", key);
     }
 
+    @Override
     public String get(String type, String key)
     {
         return GetString(type, "", key);
     }
 
+    @Override
     public void set(String type, String key, String value)
     {
         SetString(type, "", key, value);
         SaveFile(type, files.get(type));
     }
 
+    @Override
     public void del(String type, String key)
     {
         RemoveKey(type, "", key);
     }
 
+    @Override
     public void incr(String type, String key, int amount)
     {
         int ival = GetInteger(type, "", key);
@@ -481,6 +522,7 @@ public class IniStore implements ActionListener
         SetInteger(type, "", key, ival);
     }
 
+    @Override
     public void decr(String type, String key, int amount)
     {
         int ival = GetInteger(type, "", key);

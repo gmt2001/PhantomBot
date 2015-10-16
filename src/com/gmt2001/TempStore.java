@@ -24,7 +24,7 @@ import java.util.Set;
  *
  * @author gmt2001
  */
-public class TempStore
+public class TempStore extends DataStore
 {
 
     private final HashMap<String, TempFile> files = new HashMap<>();
@@ -46,6 +46,7 @@ public class TempStore
         protected HashMap<String, HashMap<String, Object>> data = new HashMap<>();
     }
 
+    @Override
     public void AddFile(String fName)
     {
         if (!files.containsKey(fName))
@@ -55,6 +56,7 @@ public class TempStore
         }
     }
 
+    @Override
     public String[] GetFileList()
     {
         Set<String> o = files.keySet();
@@ -72,6 +74,7 @@ public class TempStore
         return s;
     }
 
+    @Override
     public String[] GetCategoryList(String fName)
     {
         AddFile(fName);
@@ -91,6 +94,7 @@ public class TempStore
         return s;
     }
 
+    @Override
     public String[] GetKeyList(String fName, String section)
     {
         AddFile(fName);
@@ -110,6 +114,7 @@ public class TempStore
         return s;
     }
     
+    @Override
     public Object GetObject(String fName, String section, String key)
     {
         AddFile(fName);
@@ -130,6 +135,7 @@ public class TempStore
         return files.get(fName).data.get(section).get(key);
     }
     
+    @Override
     public void SetObject(String fName, String section, String key, Object value)
     {
         AddFile(fName);
@@ -149,56 +155,67 @@ public class TempStore
         files.get(fName).data.get(section).put(key, value);
     }
 
+    @Override
     public String GetString(String fName, String section, String key)
     {
         return (String) GetObject(fName, section, key);
     }
 
+    @Override
     public void SetString(String fName, String section, String key, String value)
     {
         SetObject(fName, section, key, value);
     }
 
+    @Override
     public int GetInteger(String fName, String section, String key)
     {
         return (Integer) GetObject(fName, section, key);
     }
 
+    @Override
     public void SetInteger(String fName, String section, String key, int value)
     {
         SetObject(fName, section, key, value);
     }
 
+    @Override
     public float GetFloat(String fName, String section, String key)
     {
         return (Float) GetObject(fName, section, key);
     }
 
+    @Override
     public void SetFloat(String fName, String section, String key, float value)
     {
         SetObject(fName, section, key, value);
     }
 
+    @Override
     public double GetDouble(String fName, String section, String key)
     {
         return (Double) GetObject(fName, section, key);
     }
 
+    @Override
     public void SetDouble(String fName, String section, String key, double value)
     {
         SetObject(fName, section, key, value);
     }
 
+    @Override
     public Boolean GetBoolean(String fName, String section, String key)
     {
         return (Boolean) GetObject(fName, section, key);
     }
 
+    @Override
     public void SetBoolean(String fName, String section, String key, Boolean value)
     {
         SetObject(fName, section, key, value);
     }
 
+    @Override
     public void RemoveKey(String fName, String section, String key)
     {
         AddFile(fName);
@@ -211,6 +228,7 @@ public class TempStore
         files.get(fName).data.get(section).remove(key);
     }
 
+    @Override
     public void RemoveSection(String fName, String section)
     {
         AddFile(fName);
@@ -218,41 +236,49 @@ public class TempStore
         files.get(fName).data.remove(section);
     }
 
+    @Override
     public void RemoveFile(String fName)
     {
         files.remove(fName);
     }
 
+    @Override
     public boolean FileExists(String fName)
     {
         return files.containsKey(fName);
     }
 
+    @Override
     public boolean HasKey(String fName, String section, String key)
     {
         return GetString(fName, section, key) != null;
     }
 
+    @Override
     public boolean exists(String type, String key)
     {
         return HasKey(type, "", key);
     }
 
+    @Override
     public String get(String type, String key)
     {
         return GetString(type, "", key);
     }
 
+    @Override
     public void set(String type, String key, String value)
     {
         SetString(type, "", key, value);
     }
 
+    @Override
     public void del(String type, String key)
     {
         RemoveKey(type, "", key);
     }
 
+    @Override
     public void incr(String type, String key, int amount)
     {
         int ival = GetInteger(type, "", key);
@@ -262,6 +288,7 @@ public class TempStore
         SetInteger(type, "", key, ival);
     }
 
+    @Override
     public void decr(String type, String key, int amount)
     {
         int ival = GetInteger(type, "", key);

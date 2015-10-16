@@ -16,7 +16,9 @@
  */
 package me.mast3rplan.phantombot;
 
+import com.gmt2001.DataStore;
 import com.gmt2001.IniStore;
+import com.gmt2001.SqliteStore;
 import com.gmt2001.TempStore;
 import com.gmt2001.TwitchAPIv3;
 import com.gmt2001.YouTubeAPIv3;
@@ -75,10 +77,13 @@ public class PhantomBot implements Listener
     private int port;
     private int baseport;
     private double msglimit30;
+    private String datastore;
+    private String datastoreconfig;
     private String youtubekey;
     private String webenable;
     private String musicenable;
     private String channelStatus;
+    private DataStore dataStoreObj;
     private SecureRandom rng;
     private BannedCache bancache;
     private TreeMap<String, Integer> pollResults;
@@ -88,7 +93,7 @@ public class PhantomBot implements Listener
     private final Session session;
     public static Session tgcSession;
     private Channel channel;
-    private HashMap<String, Channel> channels;
+    private final HashMap<String, Channel> channels;
     private FollowersCache followersCache;
     private ChannelHostCache hostCache;
     private SubscribersCache subscribersCache;
@@ -109,8 +114,9 @@ public class PhantomBot implements Listener
         return instance;
     }
 
-    public PhantomBot(String username, String oauth, String apioauth, String clientid, String channel, String owner,
-            int baseport, String hostname, int port, double msglimit30, String youtubekey, String webenable, String musicenable)
+    public PhantomBot(String username, String oauth, String apioauth, String clientid, String channel, String owner, int baseport,
+            String hostname, int port, double msglimit30, String datastore, String datastoreconfig, String youtubekey, String webenable,
+            String musicenable)
     {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
@@ -129,6 +135,8 @@ public class PhantomBot implements Listener
         this.channelName = channel;
         this.ownerName = owner;
         this.baseport = baseport;
+        this.datastore = datastore;
+        this.datastoreconfig = datastoreconfig;
         this.youtubekey = youtubekey;
         if (!youtubekey.isEmpty())
         {
@@ -169,11 +177,21 @@ public class PhantomBot implements Listener
             this.msglimit30 = 18.75;
         }
 
+        if (datastore.equalsIgnoreCase("TempStore"))
+        {
+            dataStoreObj = TempStore.instance();
+        } else if (datastore.equalsIgnoreCase("SqliteStore"))
+        {
+            dataStoreObj = SqliteStore.instance();
+        } else
+        {
+            dataStoreObj = IniStore.instance();
+        }
+        
         this.init();
 
         /*
-         * try { Thread.sleep(3000); } catch (InterruptedException ex) {
-         }
+         * try { Thread.sleep(3000); } catch (InterruptedException ex) { }
          */
         String osname = System.getProperty("os.name");
 
@@ -207,7 +225,7 @@ public class PhantomBot implements Listener
                 Logger.getLogger(PhantomBot.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
         channels = new HashMap<>();
 
         this.session = connectionManager.requestConnection(this.hostname, this.port, oauth);
@@ -284,7 +302,9 @@ public class PhantomBot implements Listener
         EventBus.instance().register(this);
         EventBus.instance().register(ScriptEventManager.instance());
 
-        Script.global.defineProperty("inidb", IniStore.instance(), 0);
+        dataStoreObj.LoadConfig(datastoreconfig);
+        
+        Script.global.defineProperty("inidb", dataStoreObj, 0);
         Script.global.defineProperty("tempdb", TempStore.instance(), 0);
         Script.global.defineProperty("bancache", bancache, 0);
         Script.global.defineProperty("username", UsernameCache.instance(), 0);
@@ -335,7 +355,7 @@ public class PhantomBot implements Listener
         {
             mws.dispose();
         }
-        IniStore.instance().SaveAll(true);
+        dataStoreObj.SaveAll(true);
     }
 
     @Subscribe
@@ -346,16 +366,17 @@ public class PhantomBot implements Listener
             this.session.sayRaw("CAP REQ :twitch.tv/tags");
             this.session.sayRaw("CAP REQ :twitch.tv/commands");
             this.session.sayRaw("CAP REQ :twitch.tv/membership");
-            
+
             if (channelName.toLowerCase().contains(","))
             {
                 String[] c = channelName.toLowerCase().split(",");
-                
+
                 for (String ch : c)
                 {
                     this.session.join("#" + ch);
                 }
-            } else {
+            } else
+            {
                 this.session.join("#" + channelName.toLowerCase());
             }
         } else
@@ -373,7 +394,7 @@ public class PhantomBot implements Listener
     {
         this.channel = event.getChannel();
         this.channel.setMsgInterval((long) ((30.0 / this.msglimit30) * 1000));
-        
+
         this.channels.put(this.channel.getName(), this.channel);
 
         //com.gmt2001.Console.out.println("Joined channel: " + event.getChannel().getName());
@@ -472,15 +493,15 @@ public class PhantomBot implements Listener
         {
             String spl[] = message.split(" ", 4);
 
-            com.gmt2001.Console.out.println(IniStore.instance().GetString(spl[1], spl[2], spl[3]));
+            com.gmt2001.Console.out.println(dataStoreObj.GetString(spl[1], spl[2], spl[3]));
         }
 
         if (message.startsWith("inidb.set"))
         {
             String spl[] = message.split(" ", 5);
 
-            IniStore.instance().SetString(spl[1], spl[2], spl[3], spl[4]);
-            com.gmt2001.Console.out.println(IniStore.instance().GetString(spl[1], spl[2], spl[3]));
+            dataStoreObj.SetString(spl[1], spl[2], spl[3], spl[4]);
+            com.gmt2001.Console.out.println(dataStoreObj.GetString(spl[1], spl[2], spl[3]));
         }
 
         if (message.equals("apioauth"))
@@ -532,6 +553,14 @@ public class PhantomBot implements Listener
             String newwebenable = System.console().readLine().trim();
             webenable = newwebenable;
             changed = true;
+
+            if (webenable.equalsIgnoreCase("1") || webenable.equalsIgnoreCase("true"))
+            {
+                webenable = "true";
+            } else
+            {
+                webenable = "false";
+            }
         }
 
         if (message.equals("musicenable"))
@@ -547,10 +576,14 @@ public class PhantomBot implements Listener
                 musicenable = newmusicenable;
                 changed = true;
             }
-            //else {
-            //com.gmt2001.Console.out.println("Web server must be enabled first. ");
-            //return;
-            //}
+
+            if (musicenable.equalsIgnoreCase("1") || musicenable.equalsIgnoreCase("true"))
+            {
+                musicenable = "true";
+            } else
+            {
+                musicenable = "false";
+            }
         }
 
         if (changed)
@@ -568,6 +601,7 @@ public class PhantomBot implements Listener
                 data += "hostname=" + hostname + "\r\n";
                 data += "port=" + port + "\r\n";
                 data += "msglimit30=" + msglimit30 + "\r\n";
+                data += "datastore=" + datastore + "\r\n";
                 data += "youtubekey=" + youtubekey + "\r\n";
                 data += "webenable=" + webenable + "\r\n";
                 data += "musicenable=" + musicenable;
@@ -580,8 +614,7 @@ public class PhantomBot implements Listener
                  * if(webenabled) { mhs.dispose(); mhs = new
                  * HTTPServer(baseport); mhs.start(); } if(musicenabled) {
                  * if(webenabled) { mws.dispose(); mws = new
-                 * MusicWebSocketServer(baseport + 1); }
-                 }
+                 * MusicWebSocketServer(baseport + 1); } }
                  */
                 com.gmt2001.Console.out.println("Changes have been saved. For web and music server settings to take effect you must restart the bot.");
             } catch (IOException ex)
@@ -591,12 +624,12 @@ public class PhantomBot implements Listener
 
         if (message.equals("save"))
         {
-            IniStore.instance().SaveAll(true);
+            dataStoreObj.SaveAll(true);
         }
 
         if (message.equals("quicksave"))
         {
-            IniStore.instance().SaveChangedNow();
+            dataStoreObj.SaveChangedNow();
         }
 
         if (message.equals("exit"))
@@ -624,7 +657,7 @@ public class PhantomBot implements Listener
 
         if (command.equalsIgnoreCase("save"))
         {
-            IniStore.instance().SaveAll(true);
+            dataStoreObj.SaveAll(true);
         }
 
         if (command.equalsIgnoreCase("d"))
@@ -665,7 +698,7 @@ public class PhantomBot implements Listener
 
                 if (command.equalsIgnoreCase("exit"))
                 {
-                    IniStore.instance().SaveAll(true);
+                    dataStoreObj.SaveAll(true);
                     System.exit(0);
                 }
             }
@@ -687,6 +720,8 @@ public class PhantomBot implements Listener
         int baseport = 25000;
         int port = 0;
         double msglimit30 = 0;
+        String datastore = "";
+        String datastoreconfig = "";
         String youtubekey = "";
         String webenable = "";
         String musicenable = "";
@@ -741,6 +776,10 @@ public class PhantomBot implements Listener
                 if (line.startsWith("msglimit30=") && line.length() > 12)
                 {
                     msglimit30 = Double.parseDouble(line.substring(11));
+                }
+                if (line.startsWith("datastore=") && line.length() > 11)
+                {
+                    datastore = line.substring(10);
                 }
                 if (line.startsWith("youtubekey=") && line.length() > 12)
                 {
@@ -800,6 +839,7 @@ public class PhantomBot implements Listener
                     com.gmt2001.Console.out.println("hostname='" + hostname + "'");
                     com.gmt2001.Console.out.println("port='" + port + "'");
                     com.gmt2001.Console.out.println("msglimit30='" + msglimit30 + "'");
+                    com.gmt2001.Console.out.println("datastore='" + datastore + "'");
                     com.gmt2001.Console.out.println("youtubekey='" + youtubekey + "'");
                     com.gmt2001.Console.out.println("webenable='" + webenable + "'");
                     com.gmt2001.Console.out.println("musicenable='" + musicenable + "'");
@@ -888,6 +928,18 @@ public class PhantomBot implements Listener
                         changed = true;
                     }
                 }
+                if (arg.toLowerCase().startsWith("datastore=") && arg.length() > 11)
+                {
+                    if (!datastore.equals(arg.substring(10)))
+                    {
+                        datastore = arg.substring(10);
+                        changed = true;
+                    }
+                }
+                if (arg.toLowerCase().startsWith("datastoreconfig=") && arg.length() > 17)
+                {
+                    datastoreconfig = arg.substring(16);
+                }
                 if (arg.toLowerCase().startsWith("youtubekey=") && arg.length() > 12)
                 {
                     if (!youtubekey.equals(arg.substring(11)))
@@ -902,6 +954,14 @@ public class PhantomBot implements Listener
                     {
                         webenable = arg.substring(10);
                         changed = true;
+
+                        if (webenable.equalsIgnoreCase("1") || webenable.equalsIgnoreCase("true"))
+                        {
+                            webenable = "true";
+                        } else
+                        {
+                            webenable = "false";
+                        }
                     }
                 }
                 if (arg.toLowerCase().startsWith("musicenable=") && arg.length() > 13)
@@ -910,14 +970,32 @@ public class PhantomBot implements Listener
                     {
                         musicenable = arg.substring(12);
                         changed = true;
+
+                        if (musicenable.equalsIgnoreCase("1") || musicenable.equalsIgnoreCase("true"))
+                        {
+                            musicenable = "true";
+                        } else
+                        {
+                            musicenable = "false";
+                        }
                     }
                 }
-                if (arg.equalsIgnoreCase("help") || arg.equalsIgnoreCase("--help") || arg.equalsIgnoreCase("-h"))
+                if (arg.equalsIgnoreCase("help") || arg.equalsIgnoreCase("--help") || arg.equalsIgnoreCase("-h") || arg.equalsIgnoreCase("-?"))
                 {
                     com.gmt2001.Console.out.println("Usage: java -Dfile.encoding=UTF-8 -jar PhantomBot.jar [printlogin] [user=<bot username>] "
                             + "[oauth=<bot irc oauth>] [apioauth=<editor oauth>] [clientid=<oauth clientid>] [channel=<channel to join>] "
                             + "[owner=<bot owner username>] [baseport=<bot webserver port, music server will be +1>] [hostname=<custom irc server>] "
-                            + "[port=<custom irc port>] [msglimit30=<message limit per 30 seconds>] [youtubekey=<youtube api key>]");
+                            + "[port=<custom irc port>] [msglimit30=<message limit per 30 seconds>] "
+                            + "[datastore=<DataStore type, for a list, run java -jar PhantomBot.jar storetypes>] "
+                            + "[datastoreconfig=<Optional DataStore config option, different for each DataStore type>] "
+                            + "[youtubekey=<youtube api key>] [webenable=<true | false>] [musicenable=<true | false>]");
+                    return;
+                }
+                if (arg.equalsIgnoreCase("storetypes"))
+                {
+                    com.gmt2001.Console.out.println("DataStore types: IniStore (Default, datastoreconfig parameter is folder name, stores in .ini files), "
+                            + "TempStore (Stores in memory, lost on shutdown), "
+                            + "SqliteStore (Stores in a SQLite3 database, datastoreconfig parameter is a config file");
                     return;
                 }
             }
@@ -936,6 +1014,7 @@ public class PhantomBot implements Listener
             data += "hostname=" + hostname + "\r\n";
             data += "port=" + port + "\r\n";
             data += "msglimit30=" + msglimit30 + "\r\n";
+            data += "datastore=" + datastore + "\r\n";
             data += "youtubekey=" + youtubekey + "\r\n";
             data += "webenable=" + webenable + "\r\n";
             data += "musicenable=" + musicenable;
@@ -944,7 +1023,7 @@ public class PhantomBot implements Listener
                     StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
         }
 
-        PhantomBot.instance = new PhantomBot(user, oauth, apioauth, clientid, channel, owner, baseport, hostname, port, msglimit30, youtubekey, webenable, musicenable);
+        PhantomBot.instance = new PhantomBot(user, oauth, apioauth, clientid, channel, owner, baseport, hostname, port, msglimit30, datastore, datastoreconfig, youtubekey, webenable, musicenable);
     }
 
     @Override
