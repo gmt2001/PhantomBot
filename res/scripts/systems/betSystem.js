@@ -1,427 +1,442 @@
-var betstart = 0;
-var betlength = 1 * 180 * 1000;
-var minbets = 2;
-var pot = 0;
-var totalwin = 0;
-var entries = 0;
-var last_entries = 0;
-var bet = 0;
-var betstarter;
-var winners = "";
-var optionString = "";
+$.betMinimum = parseInt($.inidb.get('settings', 'bet_minimum'));
+$.betMaximum = parseInt($.inidb.get('settings', 'bet_maximum'));
+$.betLength = parseInt($.inidb.get('settings', 'bet_length'));
 
-
-$.bet_minimum = parseInt($.inidb.get('settings', 'bet_minimum'));
-$.bet_maximum = parseInt($.inidb.get('settings', 'bet_maximum'));
-
-if ($.bet_minimum === undefined || $.bet_minimum == null || isNaN($.bet_minimum) || $.bet_minimum < 0) {
-	$.bet_minimum = 0;
+if ($.betMinimum == undefined || $.betMinimum == null || isNaN($.betMinimum) || $.betMinimum < 0) {
+    $.betMinimum = 0;
 }
-if ($.bet_maximum === undefined || $.bet_maximum == null || isNaN($.bet_maximum) || $.bet_maximum < 0) {
-	$.bet_maximum = 0;
+
+if ($.betMaximum == undefined || $.betMaximum == null || isNaN($.betMaximum) || $.betMaximum < 0) {
+    $.betMaximum = 50;
+}
+
+if ($.betLength == undefined || $.betLength == null || isNaN($.betLength) || $.betLength < 0) {
+    $.betLength = 180;
+}
+
+$.getPointsString = function (points) {
+    points = parseInt(points);
+    var pointsString;
+
+    if (points == 1) {
+        pointsString = points + " " + $.inidb.get('settings', 'pointNameSingle');
+    } else {
+        pointsString = points + " " + $.inidb.get('settings', 'pointNameMultiple');
+    }
+    return pointsString;
 }
 
 $.on('command', function (event) {
-	var sender = event.getSender();
-	var username = $.username.resolve(sender, event.getTags());
-	var command = event.getCommand();
-	var argsString = event.getArguments().trim();
-	var args = event.getArgs();
-	var currentTime = new Date();
-	var action = args[0];
-	var month = currentTime.getMonth() + 1;
-	var day = currentTime.getDate();
-	var year = currentTime.getFullYear();
-	var date = month + "/" + day + "/" + year;
+    var sender = event.getSender().toLowerCase();
+    var username = $.username.resolve(sender, event.getTags());
+    var command = event.getCommand();
+    var argsString = event.getArguments().trim();
+    var args;
 
+    var bet = 0;
+    var betTotal = 0;
+    
+    if (argsString.isEmpty()) {
+        args = [];
+    } else {
+        args = argsString.split(" ");
+    }
+        
+    if (command.equalsIgnoreCase("bet")) {
+        if (!$.moduleEnabled("./systems/pointSystem.js")) {
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.points-disabled"));
+            return;
+        }
 
-	if (command.equalsIgnoreCase("bet")) {
-		if (!$.moduleEnabled("./systems/pointSystem.js")) {
-			$.say($.getWhisperString(sender) + username + ", you can not use !bet because points are disabled!");
-			return;
-		}
+        if (args.length >=1) {
+            var action = args[0];
 
-		if (args.length >= 1) {
-			
-			if (action.equalsIgnoreCase("min") && $.isModv3(sender, event.getTags())) {
+            if (action.equalsIgnoreCase("open") || action.equalsIgnoreCase("start")) {
+                if (!$.isModv3(sender, event.getTags())) {
+                    $.say($.getWhisperString(sender) + $.modmsg);
+                    return;
+                }
 
-				if (args[1] === 0) {
-					$.say($.getWhisperString(sender) + username + ", you have disabled the minimum bet amount!");
-					$.inidb.set('settings', 'bet_minimum', args[1]);
-					$.bet_minimum = args[1];
-					return;
-				}
+                if ($.betRunning == true) {
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.start-error-running"));
+                    return;
+                } else {
+                    $.betEntries = 0;
+                    $.betOptions = [];
+                    $.betTable = [];
+                    $.betPot = 0;
+                    $.betStarter = sender;
+                    $.betOptionsString = "";
 
-				if (args[1] == null) {
-					if ($.bet_minimum === 0 && $.bet_maximum > 0) {
-						$.say($.getWhisperString(sender) + username + ", you may bet up to " + $.bet_maximum + " " + $.getPointString($.bet_maximum) + " or lower!");
-						return;
-					}
+                    var betOptionsSlice = args.slice(1);
+                    var betIdentifier = System.currentTimeMillis();
 
-					if ($.bet_maximum === 0 && $.bet_minimum > 0) {
-						$.say($.getWhisperString(sender) + username + ", you may bet no lower than " + $.bet_minimum + " " + $.getPointString($.bet_minimum) + ".");
-						return;
-					}
+                    var betDate = new Date();
+                    var betMonth = betDate.getMonth() + 1;
+                    var betDay = betDate.getDate();
+                    var betYear = betDate.getFullYear();
+                    var betDateString = betMonth + "/" + betDay + "/" + betYear;
 
-					$.say($.getWhisperString(sender) + "[BET] Current Bet Maximum: " + $.bet_maximum + " " + $.getPointString($.bet_maximum) + ", Current Bet Minimum: " + $.bet_minimum + " " + $.getPointString($.bet_minimum) + ".");
-					return;
-				}
+                    if (betOptionsSlice.length < 2) {
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.start-error-notenough"));
+                        return;
+                    }
 
-				if (parseInt(args[1]) < 0 || parseInt(args[1]) > $.bet_maximum && $.bet_maximum !== 0) {
-					$.say($.getWhisperString(sender) + username + ", you can't set the minimum bet amount below 0 or higher than the bet maximum!");	
-					return;
+                    for (var i = 0; i < betOptionsSlice.length; i++) {
+                        $.betOptions.push(betOptionsSlice[i].trim().toLowerCase());
 
-				} else {
-					$.inidb.set('settings', 'bet_minimum', args[1]);
-					$.bet_minimum = args[1];
-					$.say($.getWhisperString(sender) + username + ", you have set the minimum amount someone could bet to: " + args[1] + " " + $.getPointString(args[1]) + ".");
-				}
+                        if ($.betOptionsString != "") {
+                            $.betOptionsString += " vs ";
+                        }
 
-			}
+                        $.betOptionsString = $.betOptionsString + "\"" + betOptionsSlice[i].trim().toUpperCase() + "\"";
+                    }
 
-			if (action.equalsIgnoreCase("max") && $.isModv3(sender, event.getTags())) {
+                    $.inidb.set('bets', 'pot', 0);
+                    $.inidb.set('bets', 'winners', "");
+                    $.inidb.set('bets', 'entries', 0);
+                    $.inidb.set('bets', 'date', betDateString);
+                    $.inidb.set('bets', 'options', $.betOptionsString);
 
-				if (args[1] === 0) {
-					$.say($.getWhisperString(sender) + username + ", you have disabled the maximum bet amount!");
-					$.inidb.set('settings', 'bet_maximum', args[1]);
-					$.bet_maximum = args[1];
-					return;
-				}
+                    $.betRunning = true;
+                    $.betStart = System.currentTimeMillis();
 
-				if (args[1] == null) {
-					if ($.bet_minimum === 0 && $.bet_maximum > 0) {
-						$.say($.getWhisperString(sender) + username + ", you may bet up to " + $.bet_maximum + " " + $.getPointString($.bet_maximum) + " or lower!");
-						return;
-					}
+                    $.say($.lang.get("net.phantombot.betsystem.start-success", $.betOptionsString, $.betLength, $.inidb.get('settings', 'pointNameMultiple')));
 
-					if ($.bet_maximum === 0 && $.bet_minimum > 0) {
-						$.say($.getWhisperString(sender) + username + ", you may bet no lower than " + $.bet_minimum + " " + $.getPointString($.bet_minimum) + ".");	
-						return;
-					}
-					$.say($.getWhisperString(sender) + ", The Current Bet Maximum: " + $.bet_maximum + " " + $.getPointString($.bet_maximum) + ", Current Bet Minimum: " + $.bet_minimum + " " + $.getPointString($.bet_minimum) + ".");	
-					return;
-				}
+                    setTimeout(function () {
+                        if (!$.betRunning) return;
+                        $.say($.lang.get("net.phantombot.betsystem.autoclose-success", $.getPointsString($.betPot)));
+                    }, $.betLength * 1000);
+                }
+            } else if (action.equalsIgnoreCase("close") || action.equalsIgnoreCase("end") || action.equalsIgnoreCase("stop")) {
+                if (!$.isModv3(sender, event.getTags())) {
+                    $.say($.getWhisperString(sender) + $.modmsg);
+                    return;
+                }
 
-				if (parseInt(args[1]) < $.bet_minimum) {
-					$.say($.getWhisperString(sender) + username + ", you can't set the maximum bet amount below the minimum amount!");
-					return;
-				} else {
-					$.bet_maximum = args[1];
-					$.inidb.set('settings', 'bet_maximum', args[1]);
-					$.say($.getWhisperString(sender) + username + ", you have set the maximum amount someone could bet to: " + args[1] + " " + $.getPointString(args[1]) + ".");
-				}
+                if ($.betRunning != true) {
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.close-error-notrunning"));
+                    return;
+                }
 
-			}
+                if ($.betStarter != sender) {
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.close-error-notowner"));
+                    return;
+                }
 
-			if (action.equalsIgnoreCase("results")) {
+                if (args[1] == null) {
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.close-error-nooption"));
+                    return;
+                }
 
-				var rWinner = $.inidb.get('bets', 'last_winners');
-				var rWinOp = $.inidb.get('bets', 'last_winning_option');
-				var crOptions = $.inidb.get('bets', 'options');
-				var rOptions = $.inidb.get('bets', 'last_options');
-				var crEntries = $.inidb.get('bets', 'entries');
-				var rEntries = $.inidb.get('bets', 'last_entries');
-				var crPot = $.inidb.get('bets', 'pot');
-				var rPot = $.inidb.get('bets', 'last_pot');
-				var bDate = $.inidb.get('bets', 'date');
+                var winningString = args.slice(1).join(" ").trim().toLowerCase();
 
-				if ($var.bet_running) {
-					if (pot === 0 && entries === 0) {
-						$.say($.getWhisperString(sender) + username + ", There's nothing at the moment. '!bet < amount > < option >' to wager your " + $.pointNameMultiple + " on one of the following options: " + $var.bet_optionsString);	
-						return;
-					} else {
-						$.say($.getWhisperString(sender) + username + ", The [Current Results] Pot: " + crPot + " " + $.getPointString(crPot) + ", Bets: " + crEntries + ", Options: " + crOptions + ".");	
-					}
+                if (!$.array.contains($.betOptions, winningString)) {
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.close-error-notfound"));
+                    return;
+                }
 
-				} else {
+                $.betRunning = false;
 
-					if (rOptions == null) {
-						$.say($.getWhisperString(sender) + ", there are no past bets.");
-					} else {
+                for (var user in $.betTable) {
+                    bet = $.betTable[user];
+                    if (bet.option.equalsIgnoreCase(winningString)) {
+                        betTotal += parseInt(bet.amount);
+                    }
+                }
 
-						if (rWinner == null) {
-							rWinner = "None";
-						}
-						if (rPot == null) {
-							rPot = 0;
-						}
-						if (rEntries == null) {
-							rEntries = 0;
-						}
-						if (rWinOp == null) {
-							rWinOp = "None";
-						}
-						$.say($.getWhisperString(sender) + "[" + bDate + "] - [Pot: " + rPot + " " + $.getPointString(rPot) + "] - [Options: " + rOptions + "] - [Entries: " + rEntries + "] - [Winning Option: " + rWinOp + "] - [Winners: " + rWinner + "]");
-					}
+                var betPointsWon = 0;
+                var betWinPercent = 0;
+                var betWinners = "";
+                var a = 0;
 
-				}
+                for (var user in $.betTable) {
+                    a++;
+                    bet = $.betTable[user];
+                    if (bet.option.equalsIgnoreCase(winningString)) {
+                        betPointsWon = parseInt($.betPot / betTotal)
 
-			}
-
-			if (action.equalsIgnoreCase("open") && !$var.bet_running || action.equalsIgnoreCase("start") && !$var.bet_running) {
-                            if (!$.isAdmin(sender)) {
-                                $.say($.getWhisperString(sender) + $.adminmsg);	
-                                return;
+                        if (betPointsWon > 0) {
+                            if (betWinners.length > 0) {
+                                betWinners += ", ";
                             }
-				entries = 0;
-				optionString = "";
-				$.inidb.set('bets', 'pot', 0); //
-				$.inidb.set('bets', 'winners', "");
-				$.inidb.set('bets', 'entries', 0); //
-				betstarter = sender;
-				$var.bet_options = [];
+                            betWinners += $.username.resolve(user);
+                        }
+                    }
+                };
 
-				var boptions = args.slice(1);
-				if (boptions.length <= 1) {
-					$.say($.getWhisperString(sender) + username + ", you must enter at least two options to start a bet!");
-					return;
+                if (a < $.betMinimum) {
+                    for (var user in $.betTable) {
+                        bet = $.betTable[user];
+                        $.inidb.incr('points', user, bet.amount);
+                    }
 
-				}
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.close-success-notenough", $.inidb.get('settings', 'pointNameMultiple')));
+                    return;
+                } else {
+                    if (betTotal <= 0) {
+                        $.say($.lang.get("net.phantombot.betsystem.close-success-nowinners"));
+                        return;
+                    }
 
-				for (var i = 0; i < boptions.length; i++) {
-					$var.bet_options.push(boptions[i].trim().toLowerCase());
+                    if (betPot <= 0) {
+                        for (var user in $.betTable) {
+                            bet = $.betTable[user];
+                            $.inidb.incr('points', user, bet.amount);
+                        }
 
-					if (!optionString.equals("")) {
-						optionString = optionString + " vs ";
-					}
+                        $.say($.lang.get("net.phantombot.betsystem.close-success-sameoption", $.inidb.get('settings', 'pointNameMultiple')));
+                        return;
+                    } else {
+                        for (var user in $.betTable) {
+                            bet = $.betTable[user];
+                            if (bet.option.equalsIgnoreCase(winningString)) {
+                                betWinPercent = (bet.amount / betTotal);
+                                $.inidb.incr('points', user, $.betPot * betWinPercent);
+                            }
+                        }
+                        $.say($.lang.get("net.phantombot.betsystem.close-success", winningString.toUpperCase(), $.getPointsString($.betPot * betWinPercent)));
+                    }
+                }
 
-					optionString = optionString + "'" + boptions[i].trim().toUpperCase() + "'";
-				}
-				$var.bet_table = {};
-				$var.bet_running = true;
-				$.say("/me [BET] is now open for: " + optionString + " >> You have " + (betlength / 1000) + " seconds to wager your " + $.pointNameMultiple + " with '!bet < amount > < option >'");
-				$var.bet_optionsString = optionString;
-				$.inidb.set('bets', 'date', date);
-				$.inidb.set('bets', 'options', optionString); //
+                $.inidb.set('bets', 'winners', betWinners);
+                $.inidb.set('bets', 'last_winners', betWinners);
+                $.inidb.set('bets', 'last_winning_option', winningString);
+                $.inidb.set('bets', 'last_options', $.betOptionsString);
+                $.inidb.set('bets', 'last_entries', $.betEntries);
+                $.inidb.set('bets', 'last_pot', parseInt($.betPot));
 
-				$var.bet_id = System.currentTimeMillis();
+                $.betPot = 0;
+                betTotal = 0;
+                betWinners = "";
+            } else if (action.equalsIgnoreCase("min") || action.equalsIgnoreCase("minimum")) {
+                if (!$.isAdmin(sender)) {
+                    $.say($.getWhisperString(sender) + $.adminmsg);
+                    return;
+                }
 
-				betstart = System.currentTimeMillis();
+                if (args[1] == null || isNaN(parseInt(args[1]))) {
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.betmin-usage"));
+                    return;
+                }
 
-				var betid = $var.bet_id;
+                if (args[1] < 0) {
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.betmin-error-negative", $.inidb.get('settings', 'pointNameMultiple')));
+                    return;
+                } else {
+                    $.inidb.set('settings', 'bet_minimum', args[1]);
+                    $.betMinimum = parseInt($.inidb.get('settings', 'bet_minimum'));
 
-				setTimeout(function () {
-					if (!$var.bet_running)
-						return;
-					if ($var.bet_id != betid)
-						return;
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.betmin-success", $.inidb.get('settings', 'pointNameMultiple'), $.getPointsString($.betMinimum)));
+                    return;
+                }
+            } else if (action.equalsIgnoreCase("max") || action.equalsIgnoreCase("maximum")) {
+                if (!$.isAdmin(sender)) {
+                    $.say($.getWhisperString(sender) + $.adminmsg);
+                    return;
+                }
 
-					$.say("/me [BET] is now closed! [Pot: " + pot + " " + $.getPointString(pot) + "] please wait for the results!");
-				}, betlength);
+                if (args[1] == null || isNaN(parseInt(args[1]))) {
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.betmax-usage"));
+                    return;
+                }
 
-			} else if (action.equalsIgnoreCase("time") && !$var.bet_running) {
-				if (!$.isModv3(sender, event.getTags())) {
-					$.say($.getWhisperString(sender) + $.modmsg);
-					return;
-				}
+                if (args[1] < 0) {
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.betmax-error-negative", $.inidb.get('settings', 'pointNameMultiple')));
+                    return;
+                } else {
+                    $.inidb.set('settings', 'bet_maximum', args[1]);
+                    $.betMaximum = parseInt($.inidb.get('settings', 'bet_maximum'));
 
-				if (parseInt(args[1]) >= 60) {
-					betlength = parseInt(args[1]) * 1000;
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.betmax-success", $.inidb.get('settings', 'pointNameMultiple'), $.getPointsString($.betMaximum)));
+                    return;
+                }
+            } else if (action.equalsIgnoreCase("time") || action.equalsIgnoreCase("length")) {
+                if (!$.isAdmin(sender)) {
+                    $.say($.getWhisperString(sender) + $.adminmsg);
+                    return;
+                }
 
-					$.say("/me [BET] time limit is now set to " + args[1] + " seconds!");
-				} else if (args[1] == "0") {
-					$.say("/me [BET] time limit is currently set to " + betlength + " seconds!");
-				} else {
-					$.say("/me [BET] time limit is 60 seconds!");
-				}
+                if (args[1] == null || isNaN(parseInt(args[1]))) {
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.time-usage"));
+                    return;
+                }
 
-			} else if (action.equalsIgnoreCase("win") || action.equalsIgnoreCase("close") || action.equalsIgnoreCase("end")) {
-				if (sender == betstarter || $.isModv3(sender, event.getTags())) {}
-				else {
-					$.say($.getWhisperString(sender) + "@" + $.username.resolve(betstarter) + " opened this bet and is the only that can close it with '!bet win (option)'");
-					return;
-				}
-				if (!$var.bet_running)
-					return;
+                if (args[1] < 0) {
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.time-error-negative"));
+                    return;
+                } else {
+                    $.inidb.set('settings', 'bet_length', args[1]);
+                    $.betLength = parseInt($.inidb.get('settings', 'bet_length'));
 
-				var winning = args.slice(1).join(" ").trim().toLowerCase();
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.time-success", $.betLength));
+                    return;
+                }
+            } else if (action.equalsIgnoreCase("results")) {
+                if (!$.isModv3(sender, event.getTags())) {
+                    $.say($.getWhisperString(sender) + $.modmsg);
+                    return;
+                }
 
-				if (!$.array.contains($var.bet_options, winning)) {
-					$.say($.getWhisperString(sender) + username + ", " + winning + " doesn't match any of the options.");
-					return;
-				}
+                var curBetEntries = $.inidb.get('bets', 'entries');
+                var curBetOptions = $.inidb.get('bets', 'options');
+                var curBetPot = $.inidb.get('bets', 'pot');
 
-				for (var user in $var.bet_table) {
-					bet = $var.bet_table[user];
-					if (bet.option.equalsIgnoreCase(winning)) {
-						totalwin += parseInt(bet.amount);
-					} else {}
+                if (isNaN(parseInt(curBetEntries))) curBetEntries = 0;
+                if (isNaN(parseInt(curBetPot))) curBetPot = 0;
 
-				}
+                var prevBetEntries = $.inidb.get('bets', 'last_entries');
+                var prevBetOptions = $.inidb.get('bets', 'last_options');
+                var prevBetPot = $.inidb.get('bets', 'last_pot');
+                var prevBetWinningOption = $.inidb.get('bets', 'last_winning_option');
+                var prevBetDate = $.inidb.get('bets', 'date');
 
-				var a = 0;
-				var moneyWon = 0;
-				var win_percent = 0;
+                if (isNaN(parseInt(prevBetEntries))) prevBetEntries = 0;
+                if (isNaN(parseInt(prevBetPot))) prevBetPot = 0;
+                if (prevBetWinningOption == null) prevBetWinningOption = "None";
 
-				for (user in $var.bet_table) {
-					a++;
-					bet = $var.bet_table[user];
-					if (bet.option.equalsIgnoreCase(winning)) {
-						moneyWon = parseInt((pot / totalwin));
-						
-						if (moneyWon > 0) {
+                if ($.betRunning == 1) {
+                    if (curBetEntries == 0 && curBetPot == 0) {
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.result-running-error-notfound", $.inidb.get('settings', 'pointNameMultiple'), curBetOptions));
+                        return;
+                    }
 
-							if (winners.length > 0) {
-								winners = winners + ", ";
-							}
-	
-							winners += $.username.resolve(user);
-							println("Winners = " + winners);
-						}
+                    $.say($.lang.get("net.phantombot.betsystem.result-running-success", $.getPointsString(curBetPot), curBetEntries, curBetOptions));
+                    return;
+                } else {
+                    if (prevBetOptions == null || prevBetOptions == undefined || prevBetOptions == "undefined") {
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.result-norunning-error-notfound"));
+                        return;
+                    }
 
-					}
-				}
-				
-				$.inidb.set('bets', 'winners', winners);
-				println("Setting winners to = " + winners + ".");
-				
-				if (a < minbets) {
-					$.say("/me [BET CLOSED] There weren't enough bets to determine a proper win. Sending " + $.pointNameMultiple + " back!");
+                    $.say($.lang.get("net.phantombot.betsystem.result-norunning-success", $.getPointsString(prevBetPot), prevBetEntries, prevBetOptions, prevBetWinningOption.toUpperCase(), prevBetDate));
+                    return;
+                }
+            } else if (action.equalsIgnoreCase("entries") || action.equalsIgnoreCase("entrants")) {
+                if (!$.isModv3(sender, event.getTags())) {
+                    $.say($.getWhisperString(sender) + $.modmsg);
+                    return;
+                }
 
-					for (user in $var.bet_table) {
-						bet = $var.bet_table[user];
-						$.inidb.incr('points', user, bet.amount);
-					}
-				} else {
-					if (pot === 0) {
-						$.say("/me [BET CLOSED] Everyone wagered on the same winning option. Deducted " + $.pointNameMultiple + " have been returned!");
+                if ($.betRunning == 1) {
+                    var arrayBetEntrants = $.betTable;
+                } else {
+                    var arrayBetEntrants = $.inidb.get('bets', 'last_winners').split(',');
+                }
 
-						for (user in $var.bet_table) {
-							bet = $var.bet_table[user];
-							$.inidb.incr('points', user, (bet.amount));
-						}
-					} else if (totalwin === 0) {
-						$.say("/me [BET CLOSED] Everyone lost the bet! Womp womp :(");
-					} else {
-						for (user in $var.bet_table) {
-							bet = $var.bet_table[user];
-							if (bet.option.equalsIgnoreCase(winning)) {
-								win_percent = (bet.amount / totalwin);
+                var maxBetEntrants = arrayBetEntrants.length;
+                var maxResults = 15;
+                var returnString = "";
 
-								$.inidb.incr('points', user, pot * win_percent);
-								println("Calculations for " + user + " were: " + bet.amount + "/" + totalwin + " = win%. " + pot + "*" + win_percent + " = points won.");
+                if (args[1] != null && isNaN(parseInt(args[1]))) {
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.entries-usage"));
+                    return;
+                } else if (args[1] == null || parseInt(args[1]) <= 1 || maxBetEntrants <= maxResults) {
+                    for (i = 0; i < maxResults; i++) { 
+                        if (arrayBetEntrants[i] != null) {
+                            returnString += $.username.resolve(arrayBetEntrants[i]).trim() + ", ";
+                        }
+                    }
+                    if (returnString == "") {
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.entries-error-noresults"));
+                    } else {
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.entries-success", 1, Math.ceil(maxBetEntrants / maxResults), returnString.slice(0,-2)));
+                    }
+                    return;
+                } else if (parseInt(args[1])) {
+                    var offset = (Math.round(args[1]) - 1) * maxResults;
 
-							}
-						}
+                    for (i = 0; i < maxResults; i++) { 
+                        if (arrayBetEntrants[i + offset] != null) {
+                            returnString += $.username.resolve(arrayBetEntrants[i + offset]).trim() + ", ";
+                        }
+                    }
+                    if (returnString == "") {
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.entries-error-noresults"));
+                    } else {
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.entries-success", Math.round(args[1]), Math.ceil(maxBetEntrants / maxResults), returnString.slice(0,-2)));
+                    }
+                    return;
+                }
+            } else if (!isNaN(parseInt(action))) {
+                if ($.betRunning == 1) {
+                    var betWager = parseInt(args[0]);
+                    var betOption = args.slice(1).join(" ").trim().toLowerCase();
+                    var userPoints = $.inidb.get('points', sender);
+                    if (isNaN(parseInt(userPoints))) userPoints = 0;
 
-						$.say("/me [BET CLOSED] The results are in! " + winning + " has won! [Winning Pot: " + pot + " " + $.getPointString(pot) + "] Pot will be sent to the following viewers: " + winners);
+                    if (($.betStart + ($.betLength * 1000)) < System.currentTimeMillis()) {
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.status-notrunning", "Moderator"));
+                        return;
+                    }
 
-					}
-				}
-				$.inidb.set('bets', 'last_winners', winners);
-				$.inidb.set('bets', 'last_winning_option', winning);
-				$.inidb.set('bets', 'last_options', optionString); //
-				$.inidb.set('bets', 'last_entries', entries); //
-				$.inidb.set('bets', 'last_pot', parseInt(pot)); //
-				println("Setting ini...winners: " + winners + ". winning option: " + winning + ". Reseting pot.");
-				pot = 0;
-				totalwin = 0;
-				winners = "";
-				$var.bet_running = false;
-			} else {
+                    if (!$.array.contains($.betOptions, betOption)) {
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.enter-error-notvalid"));
+                        return;
+                    }
 
-				if (!$var.bet_running)
-					return;
+                    if (betWager < 1) {
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.enter-error-negative", $.inidb.get('settings', 'pointNameMultiple')));
+                        return;
+                    } else if (betWager < $.betMinimum) {
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.enter-error-belowmin", $.getPointsString($.betMinimum)));
+                        return;
+                    } else if (betWager > $.betMaximum) {
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.enter-error-abovemax", $.getPointsString($.betMaximum)));
+                        return;
+                    }
 
-				var amount = parseInt(args[0]);
-				var option = args.slice(1).join(" ").trim().toLowerCase();
+                    if (betWager > userPoints) {
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.enter-error-notenough", $.inidb.get('settings', 'pointNameMultiple'), $.getPointsString(betWager)));
+                        return;
+                    }
 
-				if (betstart + betlength < System.currentTimeMillis()) {
-					$.say($.getWhisperString(sender) + "Sorry, betting is closed, " + username + "!");	
-					return;
-				}
+                    if (sender in $.betTable) {
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.enter-error-entered"));
+                        return;
+                    }
 
-				if (!$.array.contains($var.bet_options, option)) {
-					$.say($.getWhisperString(sender) + username + ", " + option + " is not a valid option!");	
-					return;
-				}
+                    $.inidb.decr('points', sender, betWager);
+                    $.betPot += betWager;
+                    $.inidb.set('bets', 'pot', parseInt($.betPot));
+                    $.betEntries++;
+                    $.inidb.set('bets', 'entries', $.betEntries);
 
-				if ($.bet_minimum === 0) {}
-				else if (amount < $.bet_minimum) {
-					$.say($.getWhisperString(sender) + username + ", the minimum amount of " + $.pointNameMultiple + " that you can wager is: " + $.bet_minimum + " " + $.$.getPointString($.bet_minimum) + ".");	
-					return;
-				}
+                    $.betTable[sender] = {
+                        amount : betWager,
+                        option : betOption
+                    };
 
-				if ($.bet_maximum === 0) {}
-				else if (amount > $.bet_maximum) {
-					$.say($.getWhisperString(sender) + username + ", the maximum amount of " + $.pointNameMultiple + " that you can wager is: " + $.bet_maximum + " " + $.$.getPointString($.bet_maximum) + ".");	
-					return;
-				}
+                    if ($.betPot < 1) {
+                        var tempPot = args[0];
+                    } else {
+                        var tempPot = $.betPot;
+                    }
 
-				var points = $.inidb.get('points', sender);
-				if (points == null)
-					points = 0;
-				else
-					points = parseInt(points);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.enter-success", username, $.getPointsString(betWager), betOption.toUpperCase(), $.getPointsString(tempPot)));
+                    return;
+                } else {
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.status-notrunning", "Moderator"));
+                    return;
+                }
+            }
+        }
+        else {
+            if ($.betRunning == 1) {
+                var curBetOptions = $.inidb.get('bets', 'options');
 
-				if (amount > points) {
-					$.say($.getWhisperString(sender) + username + ", you don't have that amount of " + $.pointNameMultiple + " to wager!");	
-					return;
-				}
-
-				if (amount < 1) {
-					$.say($.getWhisperString(sender) + username + ", your wager must be greater than 0!");	
-					return;
-				}
-
-				if (sender in $var.bet_table) {
-					$.say($.getWhisperString(sender) + username + ", you have already placed your bet!");	
-					return;
-				} else {
-					$.inidb.decr('points', sender, amount);
-					pot += parseInt(amount);
-					entries++;
-					$.inidb.set('bets', 'entries', entries); //
-				}
-
-				if (pot < 1) {
-					potmessage = args[0];
-				} else {
-					potmessage = pot;
-				}
-				$.say("/me " + username + " wagers " + args[0] + " " + $.getPointString(args[0]) + " on " + option + "! [Pot: " + potmessage + " " + $.getPointString(pot) + "]");
-				$.inidb.set('bets', 'pot', parseInt(pot)); //
-
-
-				$var.bet_table[sender] = {
-					amount : parseInt(amount),
-					option : option
-				};
-			}
-		} else {
-			if ($var.bet_running) {
-				if (betstart + betlength < System.currentTimeMillis()) {
-					$.say($.getWhisperString(sender) + username + ", betting is now closed! Please wait for the results! [Current Pot: " + pot + " " + $.getPointString(pot) + "] for options " + $var.bet_optionsString);
-				} else {
-
-					var betmessage = "";
-					betmessage = ", the options are: " + optionsString + "! Type '!bet (amount) (option)' to enter!";
-
-					if (argsString.isEmpty()) {
-						$.say($.getWhisperString(sender) + "[Current Pot] >> " + pot + " " + $.getPointString(pot) + " << " + username + " " + betmessage);
-					}
-
-				}
-			} else {
-				if (argsString.isEmpty()) {
-					$.say($.getWhisperString(sender) + "Usage: '!bet open' - '!bet open (options)' - '!bet time (seconds)' - '!bet results' - '!bet win (option)' - '!bet (amount) (option)'");
-
-				}
-
-			}
-
-		}
-
-	}
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.status-running", $.inidb.get('settings', 'pointNameMultiple'), curBetOptions));
+                return;
+            } else {
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.status-notrunning", "Moderator"));
+                return;
+            }
+        }
+    }
 });
 
 setTimeout(function () {
-	if ($.moduleEnabled('./systems/betSystem.js')) {
-		$.registerChatCommand("./systems/betSystem.js", "bet");
-		$.registerChatCommand("./systems/betSystem.js", "bet win");
-		$.registerChatCommand("./systems/betSystem.js", "bet open");
-		$.registerChatCommand("./systems/betSystem.js", "bet time", "mod");
-		$.registerChatCommand("./systems/betSystem.js", "bet results");
-		$.registerChatCommand("./systems/betSystem.js", "bet whisper");
-	}
+    if ($.moduleEnabled('./systems/betSystem.js')) {
+        $.registerChatCommand("./systems/betSystem.js", "bet");
+    }
 }, 10 * 1000);
