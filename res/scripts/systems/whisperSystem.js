@@ -8,12 +8,12 @@ $.getWhisperString = function(sender) {
     if ($.whispermode == "true") {
         return "/w " + sender + " ";
     } else {
-        return "";
+        return $.username.resolve(sender) + ": ";
     }
 }
 
 $.getWhisperStringStatic = function(sender) {
-        return "/w " + sender + " ";
+    return "/w " + sender + " ";
 }
 
 
