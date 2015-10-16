@@ -18,7 +18,7 @@ $.on('command', function(event) {
         var b;
         var k;
         var points;
-        var s = "Top 10 " + $.pointname + " -> ";
+        var s = "Top 10 " + $.pointNameMultiple + " -> ";
         
         for (i = 0; i < keys.length; i++) {
             if (!keys[i].equalsIgnoreCase($.botname) && !keys[i].equalsIgnoreCase($.botowner)) {

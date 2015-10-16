@@ -128,7 +128,7 @@ $.on('command', function(event) {
 					newpoints = (die1 + die2) * objRoll.bonus;	
 					$.say(username + " rolled double \u0002" +
 						d1 + "\u0002s! You won " + newpoints + " " + 
-						$.pointname + "!");
+						$.getPointsString(newpoints) + "!");
 					$.inidb.set("points", sender, points + newpoints);
 				} else {
 					$.say(username + " rolled double \u0002" +

@@ -17,7 +17,39 @@ $.on('command', function(event) {
         args = argsString.split(" ");
     }
 
-    if (command.equalsIgnoreCase("raid") || command.equalsIgnoreCase("raider")) {
+    if (command.equalsIgnoreCase("raid")) {
+        var s = "";
+        if (args.length >= 1) {
+            if (!$.isModv3(sender, event.getTags())) {
+                $.say($.getWhisperString(sender) + $.modmsg);
+                return;
+            }
+            if (args.length >=2 ) {
+                
+            }
+            if($.username.resolve(args[0])) {
+                s = 'http://www.twitch.tv/' + args[0].toLowerCase();  
+            }
+            if (args.length >=2 && parseInt(args[1]) ) {
+                if(parseInt(args[1]) > 10 ) {
+                    $.say($.getWhisperString(sender) + "The max raid spam is set to 10 lines to prevent global chat bans.");
+                    return;
+                }
+                for(var i=0; i<parseInt(args[1]); i++) {
+                    $.say(s);
+                }
+                return;
+            } else {
+                $.say(s);
+            }
+            return;
+        } else {
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.raidsystem.usage"));       
+            return;
+        }
+    }
+    
+    if (command.equalsIgnoreCase("raider")) {
         if (args.length >= 1) {
             if (!$.isModv3(sender, event.getTags())) {
                 $.say($.getWhisperString(sender) + $.modmsg);
@@ -26,7 +58,7 @@ $.on('command', function(event) {
 
             $.inidb.incr('raiders', args[0].toLowerCase() + "_count", 1);
 
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.raidsystem.success", $.username.resolve(args[0]), getOrdinal($.inidb.get('raiders', args[0].toLowerCase()  + "_count")), args[0].toLowerCase()));  
+            $.say($.lang.get("net.phantombot.raidsystem.success", $.username.resolve(args[0]), getOrdinal($.inidb.get('raiders', args[0].toLowerCase()  + "_count")), args[0].toLowerCase()));  
             return;
         } else {
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.raidsystem.usage"));       

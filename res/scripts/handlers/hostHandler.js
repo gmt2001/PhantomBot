@@ -107,9 +107,9 @@ $.on('command', function(event) {
         
         if ($.strlen(argsString) == 0) {
             if ($.inidb.exists('settings', 'hostreward')) {
-                $.say($.getWhisperString(sender) + "The current host reward is " + $.inidb.get('settings', 'hostreward') + " " + $.pointname + "! To change it use '!hostreward <amount>'");
+                $.say($.getWhisperString(sender) + "The current host reward is " + $.inidb.get('settings', 'hostreward') + " " + $.getPointsString($.hostreward) + "! To change it use '!hostreward <amount>'");
             } else {
-                $.say($.getWhisperString(sender) + "The current host reward is " + $.hostreward + " " + $.pointname + "! To change it use '!hostreward (amount)'");
+                $.say($.getWhisperString(sender) + "The current host reward is " + $.hostreward + " " + $.getPointsString($.hostreward) + "! To change it use '!hostreward (amount)'");
             }
         } else {
             if (!parseInt(argsString) < 0) {

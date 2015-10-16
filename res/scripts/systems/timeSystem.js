@@ -2,7 +2,7 @@ var regularsGroupID = 6;
 
 $.timeLevel = $.inidb.get('settings', 'timeLevel');
 $.timePromoteHours = $.inidb.get('settings', 'timePromoteHours');
-$.timeZone = $.inidb.get("timezone", "timeZone");
+$.timeZone = $.inidb.get("timezone", "timezone");
 $.timeOffline = $.inidb.get("timezone", "timeOffline");
 $.permToggleTime = $.inidb.get("settings", "permToggleTime");
 
@@ -96,8 +96,8 @@ $.validateTimezone = function (timezone) {
 
 $.setTimezone = function (timezone) { 
     if (validateTimezone(timezone)) {
-        $.inidb.set("timezone", "timeZone", timezone);
-        $.timeZone = $.inidb.get('timezone', 'timeZone');
+        $.inidb.set("timezone", "timezone", timezone);
+        $.timeZone = $.inidb.get('timezone', 'timezone');
 
         return true;
     } else {

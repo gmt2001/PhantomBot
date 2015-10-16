@@ -51,7 +51,7 @@ $.on('twitchSubscribe', function(event) {
             
         if ($.moduleEnabled("./systems/pointSystem.js")) {
             while (s.indexOf('(pointname)') != -1) {
-                s = s.replace('(pointname)', $.pointname);
+                s = s.replace('(pointname)', $.getPointsString(p));
             }
                 
             while (s.indexOf('(reward)') != -1) {
@@ -166,7 +166,7 @@ $.on('command', function(event) {
             
             $.inidb.set('settings', 'subscribereward', argsString);
             
-            $.say($.getWhisperString(sender) + "New subscriber reward set to " + argsString + " " + $.pointname + "!");
+            $.say($.getWhisperString(sender) + "New subscriber reward set to " + argsString + " " + $.getPointsString($.argsString) + "!");
         }
     }
     

@@ -75,7 +75,7 @@ $.on('command', function (event) {
         {
             if($.play_cost!=null ) {
                 if(points < parseInt($.play_cost)) {
-                    $.say($.getWhisperString(sender) + "You don't have enough " + $.pointname + " to do that! Current cost to play: " + $.play_cost);
+                    $.say($.getWhisperString(sender) + "You don't have enough " + $.pointNameMultiple + " to do that! Current cost to play: " + $.play_cost);
                     return;
                 }                  
             }

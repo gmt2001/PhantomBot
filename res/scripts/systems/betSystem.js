@@ -54,16 +54,16 @@ $.on('command', function (event) {
 
 				if (args[1] == null) {
 					if ($.bet_minimum === 0 && $.bet_maximum > 0) {
-						$.say($.getWhisperString(sender) + username + ", you may bet up to " + $.bet_maximum + " " + $.pointname + " or lower!");
+						$.say($.getWhisperString(sender) + username + ", you may bet up to " + $.bet_maximum + " " + $.getPointString($.bet_maximum) + " or lower!");
 						return;
 					}
 
 					if ($.bet_maximum === 0 && $.bet_minimum > 0) {
-						$.say($.getWhisperString(sender) + username + ", you may bet no lower than " + $.bet_minimum + " " + $.pointname + ".");
+						$.say($.getWhisperString(sender) + username + ", you may bet no lower than " + $.bet_minimum + " " + $.getPointString($.bet_minimum) + ".");
 						return;
 					}
 
-					$.say($.getWhisperString(sender) + "[BET] Current Bet Maximum: " + $.bet_maximum + " " + $.pointname + ", Current Bet Minimum: " + $.bet_minimum + " " + $.pointname + ".");
+					$.say($.getWhisperString(sender) + "[BET] Current Bet Maximum: " + $.bet_maximum + " " + $.getPointString($.bet_maximum) + ", Current Bet Minimum: " + $.bet_minimum + " " + $.getPointString($.bet_minimum) + ".");
 					return;
 				}
 
@@ -74,7 +74,7 @@ $.on('command', function (event) {
 				} else {
 					$.inidb.set('settings', 'bet_minimum', args[1]);
 					$.bet_minimum = args[1];
-					$.say($.getWhisperString(sender) + username + ", you have set the minimum amount someone could bet to: " + args[1] + " " + $.pointname + ".");
+					$.say($.getWhisperString(sender) + username + ", you have set the minimum amount someone could bet to: " + args[1] + " " + $.getPointString(args[1]) + ".");
 				}
 
 			}
@@ -90,15 +90,15 @@ $.on('command', function (event) {
 
 				if (args[1] == null) {
 					if ($.bet_minimum === 0 && $.bet_maximum > 0) {
-						$.say($.getWhisperString(sender) + username + ", you may bet up to " + $.bet_maximum + " " + $.pointname + " or lower!");
+						$.say($.getWhisperString(sender) + username + ", you may bet up to " + $.bet_maximum + " " + $.getPointString($.bet_maximum) + " or lower!");
 						return;
 					}
 
 					if ($.bet_maximum === 0 && $.bet_minimum > 0) {
-						$.say($.getWhisperString(sender) + username + ", you may bet no lower than " + $.bet_minimum + " " + $.pointname + ".");	
+						$.say($.getWhisperString(sender) + username + ", you may bet no lower than " + $.bet_minimum + " " + $.getPointString($.bet_minimum) + ".");	
 						return;
 					}
-					$.say($.getWhisperString(sender) + ", The Current Bet Maximum: " + $.bet_maximum + " " + $.pointname + ", Current Bet Minimum: " + $.bet_minimum + " " + $.pointname + ".");	
+					$.say($.getWhisperString(sender) + ", The Current Bet Maximum: " + $.bet_maximum + " " + $.getPointString($.bet_maximum) + ", Current Bet Minimum: " + $.bet_minimum + " " + $.getPointString($.bet_minimum) + ".");	
 					return;
 				}
 
@@ -108,7 +108,7 @@ $.on('command', function (event) {
 				} else {
 					$.bet_maximum = args[1];
 					$.inidb.set('settings', 'bet_maximum', args[1]);
-					$.say($.getWhisperString(sender) + username + ", you have set the maximum amount someone could bet to: " + args[1] + " " + $.pointname + ".");
+					$.say($.getWhisperString(sender) + username + ", you have set the maximum amount someone could bet to: " + args[1] + " " + $.getPointString(args[1]) + ".");
 				}
 
 			}
@@ -127,10 +127,10 @@ $.on('command', function (event) {
 
 				if ($var.bet_running) {
 					if (pot === 0 && entries === 0) {
-						$.say($.getWhisperString(sender) + username + ", There's nothing at the moment. '!bet < amount > < option >' to wager your " + $.pointname + " on one of the following options: " + $var.bet_optionsString);	
+						$.say($.getWhisperString(sender) + username + ", There's nothing at the moment. '!bet < amount > < option >' to wager your " + $.pointNameMultiple + " on one of the following options: " + $var.bet_optionsString);	
 						return;
 					} else {
-						$.say($.getWhisperString(sender) + username + ", The [Current Results] Pot: " + crPot + " " + $.pointname + ", Bets: " + crEntries + ", Options: " + crOptions + ".");	
+						$.say($.getWhisperString(sender) + username + ", The [Current Results] Pot: " + crPot + " " + $.getPointString(crPot) + ", Bets: " + crEntries + ", Options: " + crOptions + ".");	
 					}
 
 				} else {
@@ -151,7 +151,7 @@ $.on('command', function (event) {
 						if (rWinOp == null) {
 							rWinOp = "None";
 						}
-						$.say($.getWhisperString(sender) + "[" + bDate + "] - [Pot: " + rPot + " " + $.pointname + "] - [Options: " + rOptions + "] - [Entries: " + rEntries + "] - [Winning Option: " + rWinOp + "] - [Winners: " + rWinner + "]");
+						$.say($.getWhisperString(sender) + "[" + bDate + "] - [Pot: " + rPot + " " + $.getPointString(rPot) + "] - [Options: " + rOptions + "] - [Entries: " + rEntries + "] - [Winning Option: " + rWinOp + "] - [Winners: " + rWinner + "]");
 					}
 
 				}
@@ -189,7 +189,7 @@ $.on('command', function (event) {
 				}
 				$var.bet_table = {};
 				$var.bet_running = true;
-				$.say("/me [BET] is now open for: " + optionString + " >> You have " + (betlength / 1000) + " seconds to wager your " + $.pointname + " with '!bet < amount > < option >'");
+				$.say("/me [BET] is now open for: " + optionString + " >> You have " + (betlength / 1000) + " seconds to wager your " + $.pointNameMultiple + " with '!bet < amount > < option >'");
 				$var.bet_optionsString = optionString;
 				$.inidb.set('bets', 'date', date);
 				$.inidb.set('bets', 'options', optionString); //
@@ -206,7 +206,7 @@ $.on('command', function (event) {
 					if ($var.bet_id != betid)
 						return;
 
-					$.say("/me [BET] is now closed! [Pot: " + pot + " " + $.pointname + "] please wait for the results!");
+					$.say("/me [BET] is now closed! [Pot: " + pot + " " + $.getPointString(pot) + "] please wait for the results!");
 				}, betlength);
 
 			} else if (action.equalsIgnoreCase("time") && !$var.bet_running) {
@@ -276,7 +276,7 @@ $.on('command', function (event) {
 				println("Setting winners to = " + winners + ".");
 				
 				if (a < minbets) {
-					$.say("/me [BET CLOSED] There weren't enough bets to determine a proper win. Sending " + $.pointname + " back!");
+					$.say("/me [BET CLOSED] There weren't enough bets to determine a proper win. Sending " + $.pointNameMultiple + " back!");
 
 					for (user in $var.bet_table) {
 						bet = $var.bet_table[user];
@@ -284,7 +284,7 @@ $.on('command', function (event) {
 					}
 				} else {
 					if (pot === 0) {
-						$.say("/me [BET CLOSED] Everyone wagered on the same winning option. Deducted " + $.pointname + " have been returned!");
+						$.say("/me [BET CLOSED] Everyone wagered on the same winning option. Deducted " + $.pointNameMultiple + " have been returned!");
 
 						for (user in $var.bet_table) {
 							bet = $var.bet_table[user];
@@ -304,7 +304,7 @@ $.on('command', function (event) {
 							}
 						}
 
-						$.say("/me [BET CLOSED] The results are in! " + winning + " has won! [Winning Pot: " + pot + " " + $.pointname + "] Pot will be sent to the following viewers: " + winners);
+						$.say("/me [BET CLOSED] The results are in! " + winning + " has won! [Winning Pot: " + pot + " " + $.getPointString(pot) + "] Pot will be sent to the following viewers: " + winners);
 
 					}
 				}
@@ -338,13 +338,13 @@ $.on('command', function (event) {
 
 				if ($.bet_minimum === 0) {}
 				else if (amount < $.bet_minimum) {
-					$.say($.getWhisperString(sender) + username + ", the minimum amount of " + $.pointname + " that you can wager is: " + $.bet_minimum + " " + $.pointname + ".");	
+					$.say($.getWhisperString(sender) + username + ", the minimum amount of " + $.pointNameMultiple + " that you can wager is: " + $.bet_minimum + " " + $.$.getPointString($.bet_minimum) + ".");	
 					return;
 				}
 
 				if ($.bet_maximum === 0) {}
 				else if (amount > $.bet_maximum) {
-					$.say($.getWhisperString(sender) + username + ", the maximum amount of " + $.pointname + " that you can wager is: " + $.bet_maximum + " " + $.pointname + ".");	
+					$.say($.getWhisperString(sender) + username + ", the maximum amount of " + $.pointNameMultiple + " that you can wager is: " + $.bet_maximum + " " + $.$.getPointString($.bet_maximum) + ".");	
 					return;
 				}
 
@@ -355,7 +355,7 @@ $.on('command', function (event) {
 					points = parseInt(points);
 
 				if (amount > points) {
-					$.say($.getWhisperString(sender) + username + ", you don't have that amount of " + $.pointname + " to wager!");	
+					$.say($.getWhisperString(sender) + username + ", you don't have that amount of " + $.pointNameMultiple + " to wager!");	
 					return;
 				}
 
@@ -379,7 +379,7 @@ $.on('command', function (event) {
 				} else {
 					potmessage = pot;
 				}
-				$.say("/me " + username + " wagers " + args[0] + " " + $.pointname + " on " + option + "! [Pot: " + potmessage + " " + $.pointname + "]");
+				$.say("/me " + username + " wagers " + args[0] + " " + $.getPointString(args[0]) + " on " + option + "! [Pot: " + potmessage + " " + $.getPointString(pot) + "]");
 				$.inidb.set('bets', 'pot', parseInt(pot)); //
 
 
@@ -391,14 +391,14 @@ $.on('command', function (event) {
 		} else {
 			if ($var.bet_running) {
 				if (betstart + betlength < System.currentTimeMillis()) {
-					$.say($.getWhisperString(sender) + username + ", betting is now closed! Please wait for the results! [Current Pot: " + pot + " " + $.pointname + "] for options " + $var.bet_optionsString);
+					$.say($.getWhisperString(sender) + username + ", betting is now closed! Please wait for the results! [Current Pot: " + pot + " " + $.getPointString(pot) + "] for options " + $var.bet_optionsString);
 				} else {
 
 					var betmessage = "";
 					betmessage = ", the options are: " + optionsString + "! Type '!bet (amount) (option)' to enter!";
 
 					if (argsString.isEmpty()) {
-						$.say($.getWhisperString(sender) + "[Current Pot] >> " + pot + " " + $.pointname + " << " + username + " " + betmessage);
+						$.say($.getWhisperString(sender) + "[Current Pot] >> " + pot + " " + $.getPointString(pot) + " << " + username + " " + betmessage);
 					}
 
 				}

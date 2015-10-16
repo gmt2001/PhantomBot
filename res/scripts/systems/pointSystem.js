@@ -8,14 +8,13 @@ $.pointIntervalOffline = parseInt($.inidb.get('settings', 'pointIntervalOffline'
 $.pointGiftMin = parseInt($.inidb.get('settings', 'pointGiftMin'));
 $.whisperPoints = $.inidb.get("settings", "whisperPoints");
 $.permTogglePoints = $.inidb.get("settings", "permTogglePoints");
-$.pointname = $.pointNameSingle;
 
 if ($.pointNameSingle == undefined || $.pointNameSingle == null || $.pointNameSingle.isEmpty()) {
-    $.pointNameSingle = "Point";
+    $.pointNameSingle = "point";
 }
 
 if ($.pointNameMultiple == undefined || $.pointNameMultiple == null || $.pointNameMultiple.isEmpty()) {
-    $.pointNameMultiple = "Points";
+    $.pointNameMultiple = "points";
 }
 
 

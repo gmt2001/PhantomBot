@@ -35,7 +35,7 @@ $.on('twitchFollow', function(event) {
             
             if ($.moduleEnabled("./systems/pointSystem.js")) {
                 while (s.indexOf('(pointname)') != -1) {
-                    s = s.replace('(pointname)', $.pointname);
+                    s = s.replace('(pointname)', $.getPointsString(p));
                 }
                 
                 while (s.indexOf('(reward)') != -1) {

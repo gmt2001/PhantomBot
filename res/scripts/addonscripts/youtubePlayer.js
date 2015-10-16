@@ -53,7 +53,7 @@ notSearchable = function(songid,songname, user, tags) {
                     if ($.inidb.exists("pricecom", "addsong") && parseInt($.inidb.get("pricecom", "addsong"))> 0 ){
                         if(!$.isModv3(user, tags)){
                             var cost = $.inidb.get("pricecom", "addsong");
-                            $.say($.getWhisperString(user) + "The command cost of " + cost + " " + $.pointname + " has been returned to " + $.username.resolve(user));
+                            $.say($.getWhisperString(user) + "The command cost of " + cost + " " + $.getPointsString(cost) + " has been returned to " + $.username.resolve(user));
                             $.inidb.incr("points", user.toLowerCase(), cost);
                             $.inidb.SaveAll();
                         }
@@ -609,7 +609,7 @@ $.on('command', function (event) {
                     if(!$.isModv3(sender, event.getTags())){
 
                         var cost = $.inidb.get("pricecom", "addsong");
-                        $.say($.getWhisperString(sender) + "The command cost of " + cost + " " + $.pointname + " has been returned to " + $.username.resolve(sender, event.getTags()));
+                        $.say($.getWhisperString(sender) + "The command cost of " + cost + " " + $.getPointsString(cost) + " has been returned to " + $.username.resolve(sender, event.getTags()));
                         $.inidb.incr("points", sender.toLowerCase(), cost);
                         $.inidb.SaveAll(true);
                     }
