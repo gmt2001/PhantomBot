@@ -381,6 +381,10 @@ $api.on($script, 'command', function (event) {
     var sender = event.getSender().toLowerCase();
     var origcommand = event.getCommand();
     
+    if ($.strlen(origcommand) == 0) {
+        return;
+    }
+    
     if ($.inidb.exists('aliases', event.getCommand().toLowerCase())) {
         event.setCommand($.inidb.get('aliases', event.getCommand().toLowerCase()));
     }

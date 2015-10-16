@@ -8,6 +8,9 @@ $.lang.data["net.phantombot.lang.curlang"] = "The current language is $1!";
 $.lang.data["net.phantombot.common.enabled"] = "enabled";
 $.lang.data["net.phantombot.common.disabled"] = "disabled";
 $.lang.data["net.phantombot.common.err-user"] = "You must specify a user to target with this command";
+$.lang.data["net.phantombot.common.user-404"] = "The user \"$1\" has not visited this channel yet.";
+$.lang.data["net.phantombot.common.whisper-disabled"] = "[Whisper Mode] has been disabled.";
+$.lang.data["net.phantombot.common.whisper-enabled"] = "[Whisper Mode] has been enabled.";
 
 //command perm/price
 $.lang.data["net.phantombot.cmd.noperm"] = "Your user group, $1, does not have permission to use the command $2.";
@@ -18,8 +21,6 @@ $.lang.data["net.phantombot.cmd.adminonly"] = "Only an Administrator has access 
 $.lang.data["net.phantombot.cmd.modonly"] = "Only a Moderator has access to that command!";
 
 //init.js
-$.lang.data["net.phantombot.common.whisper-disabled"] = "[Whisper Mode] has been disabled.";
-$.lang.data["net.phantombot.common.whisper-enabled"] = "[Whisper Mode] has been enabled.";
 $.lang.data["net.phantombot.init.cmsgset"] = "Connected message set!";
 $.lang.data["net.phantombot.init.coolcom"] = "The command cooldown is $1 second(s)";
 $.lang.data["net.phantombot.init.coolcom-set"] = "The command cooldown is now $1 second(s)!";
@@ -96,7 +97,6 @@ $.lang.data["net.phantombot.chatmoderator.chatmod-warn-reset-time-never"] = "Cha
 $.lang.data["net.phantombot.chatmoderator.chatmod-warn-reset-time-set"] = "Changed warning count reset time to $1 seconds!";
 
 //pointSystem.js
-$.lang.data["net.phantombot.common.user-404"] = "The user \"$1\" has not visited this channel yet.";
 $.lang.data["net.phantombot.pointsystem.bonus-error-negative"] = "You can not set the bonus per group level to negative $1.";
 $.lang.data["net.phantombot.pointsystem.bonus-success"] = "Set the $1 bonus to $2 per group level.";
 $.lang.data["net.phantombot.pointsystem.bonus-usage"] = "Usage: \"!points bonus <amount>\"";
