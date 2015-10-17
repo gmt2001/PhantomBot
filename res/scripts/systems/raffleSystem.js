@@ -87,7 +87,6 @@ $.on('command', function (event) {
         args = argsString.match(/"[^"]*"|[^\s"]+/g);
         for (var number in args){
             args[number] = args[number].replace(/"/g, "");
-            println(args[number]);
         }
     }
 
