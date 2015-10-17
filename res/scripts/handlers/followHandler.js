@@ -23,7 +23,7 @@ $.on('twitchFollow', function(event) {
             
             if (s == null || s == undefined || $.strlen(s) == 0) {
                 if ($.moduleEnabled("./systems/pointSystem.js")) {
-                    s = "Thanks for the follow (name)! +(reward) (pointname)!";
+                    s = "Thanks for the follow (name)! +(pointname)!";
                 } else {
                     s = "Thanks for the follow (name)!";
                 }
