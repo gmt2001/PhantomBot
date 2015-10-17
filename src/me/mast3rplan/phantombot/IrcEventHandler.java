@@ -37,8 +37,10 @@ public class IrcEventHandler implements IRCEventListener
 {
 
     private final ArrayList<String> mods = new ArrayList<>();
+    private boolean nomodwarn = true;
 
     @Override
+    @SuppressWarnings("UnusedAssignment")
     public void receiveEvent(IRCEvent event)
     {
         EventBus eventBus = EventBus.instance();
@@ -238,6 +240,14 @@ public class IrcEventHandler implements IRCEventListener
                             }
                         } else
                         {
+                            if (nomodwarn) {
+                                nomodwarn = false;
+                                com.gmt2001.Console.out.println("!!!!!WARNING!!!!!");
+                                com.gmt2001.Console.out.println("The bot is not a moderator in this channel.");
+                                com.gmt2001.Console.out.println("The broadcaster must mod the bot for it to be able to speak in channel.");
+                                com.gmt2001.Console.out.println("To do this, type this command in Twitch chat: /mod " + PhantomBot.instance().getSession().getNick().toLowerCase());
+                            }
+                            
                             if (mods.contains(PhantomBot.instance().getSession().getNick().toLowerCase()))
                             {
                                 mods.remove(PhantomBot.instance().getSession().getNick().toLowerCase());
