@@ -102,7 +102,7 @@ $.lang.data["net.phantombot.pointsystem.bonus-success"] = "Set the $1 bonus to $
 $.lang.data["net.phantombot.pointsystem.bonus-usage"] = "Usage: \"!points bonus <amount>\"";
 $.lang.data["net.phantombot.pointsystem.config"] = "[Point Settings] - [Name (single): $1] - [Name (multiple): $2] - [Gain: $3] - [Gain (offline): $4] - [Interval: $5 minute(s)] - [Interval (offline): $6 minute(s)] - [Bonus: $7 per group level] - [Gifting Minimum: $8]";
 $.lang.data["net.phantombot.pointsystem.gain-offline-error-negative"] = "You can not set the amount of $1 gained to a negative number.";
-$.lang.data["net.phantombot.pointsystem.interval-offline-success"] = "Set the $1 payout interval to $2 minute(s) when the stream is offline.";
+$.lang.data["net.phantombot.pointsystem.gain-offline-success"] = "Set the $1 earnings to $2 every $3 minute(s) while the stream is offline.";
 $.lang.data["net.phantombot.pointsystem.gain-offline-usage"] = "Usage: \"!points offlinegain <amount>\"";
 $.lang.data["net.phantombot.pointsystem.gain-error-negative"] = "You can not set the amount of $1 gained to a negative number.";
 $.lang.data["net.phantombot.pointsystem.gain-success"] = "Set the $1 earnings to $2 every $3 minute(s) while the stream is online.";
@@ -332,3 +332,13 @@ $.lang.data["net.phantombot.betsystem.time-usage"] = "Usage: \"!bet time <amount
 $.lang.data["net.phantombot.betsystem.entries-error-noresults"] = "Could not find any bet entries to display.";
 $.lang.data["net.phantombot.betsystem.entries-success"] = "[Bet Entries] Page $1 of $2: $3.";
 $.lang.data["net.phantombot.betsystem.entries-usage"] = "Usage: \"!bet entries <page>\"";
+
+// top10Command.js
+$.lang.data["net.phantombot.top10.points-disabled"] = "You can not use this command while the points module is disabled.";
+$.lang.data["net.phantombot.top10.points-error-noresults"] = "Could not find any users with $1.";
+$.lang.data["net.phantombot.top10.points-success"] = "/me [Top 10 $1] $2";
+$.lang.data["net.phantombot.top10.points-success-whisper"] = "[Top 10 $1] $2";
+$.lang.data["net.phantombot.top10.time-disabled"] = "You can not use this command while the time module is disabled.";
+$.lang.data["net.phantombot.top10.time-error-noresults"] = "Could not find any users with time spent in the chat.";
+$.lang.data["net.phantombot.top10.time-success"] = "/me [Top 10 Time] $1";
+$.lang.data["net.phantombot.top10.time-success-whisper"] = "[Top 10 Time] $1";
