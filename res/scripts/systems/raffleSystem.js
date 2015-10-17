@@ -84,13 +84,9 @@ $.on('command', function (event) {
     if (argsString.isEmpty()) {
         args = [];
     } else {
-        args = argsString.split(" ");
-    }
-
-    if (command.equalsIgnoreCase("whisperraffle")) {
-        if (!$.isModv3(sender, event.getTags())) {
-            $.say($.getWhisperString(sender) + $.modmsg);
-            return;
+        args = argsString.match(/"[^"]*"|[^\s"]+/g);
+        for (var number in args){
+            args[number] = args[number].replace(/"/g, "");
         }
     }
 
@@ -139,7 +135,7 @@ $.on('command', function (event) {
                         $.raffleFollowers = 1;
                         i++;
                     }
-                    if (args[i] != null && args[i] != undefined && !args[i].isEmpty()) {
+                    if (args[i] != null && args[i] != undefined && args[i].trim() != "") {
                         $.raffleReward = args[i];
                         i++;
                     }
@@ -147,7 +143,7 @@ $.on('command', function (event) {
                         $.rafflePrice = parseInt(args[i]);
                         i++;
                     }
-                    if (args[i] != null && args[i] != undefined && !args[i].isEmpty()) {
+                    if (args[i] != null && args[i] != undefined && args[i].trim() != "") {
                         if (args[i] == "!raffle") {
                             $.raffleKeyword = args[i];
                             i++;
@@ -371,10 +367,10 @@ $.on('command', function (event) {
                     return;
                 }
             } else if (action.equalsIgnoreCase("entries") || action.equalsIgnoreCase("entrants")) {
-                var arrayRaffleEntrants = raffleEntrants.split(',');
-                var maxRaffleEntrants = arrayRaffleEntrants.length;
-                var maxResults = 15;
-                var returnString = "";
+                if (!$.isModv3(sender, event.getTags())) {
+                    $.say($.getWhisperString(sender) + $.modmsg);
+                    return;
+                }
 
                 if ($.raffleEntrants != null && $.raffleEntrants != undefined) {
                     var raffleEntrants = $.raffleEntrants;
@@ -382,13 +378,23 @@ $.on('command', function (event) {
                     var raffleEntrants = $.inidb.get('raffles', 'players');
                 }
 
-                if (args[1] != null && isNaN(parseInt(args[1]))) {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.usage"));
+                if (raffleEntrants == null || raffleEntrants == undefined || raffleEntrants == "undefined" || raffleEntrants[0] == "" || raffleEntrants[0] == undefined || raffleEntrants[0] == "undefined") {
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.entries-error-noresults"));
                     return;
-                } else if (args[1] == null || parseInt(args[1]) <= 1) {
+                }
+
+                var arrayRaffleEntrants = raffleEntrants.split(',');
+                var maxRaffleEntrants = arrayRaffleEntrants.length;
+                var maxResults = 15;
+                var returnString = "";
+
+                if (args[1] != null && isNaN(parseInt(args[1]))) {
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.entries-usage"));
+                    return;
+                } else if (args[1] == null || parseInt(args[1]) <= 1 || maxRaffleEntrants <= maxResults) {
                     for (i = 0; i < maxResults; i++) { 
                         if (arrayRaffleEntrants[i] != null) {
-                            returnString += arrayRaffleEntrants[i] + ", ";
+                            returnString += $.username.resolve(arrayRaffleEntrants[i]) + ", ";
                         }
                     }
                     if (returnString == "") {
@@ -402,7 +408,7 @@ $.on('command', function (event) {
 
                     for (i = 0; i < maxResults; i++) { 
                         if (arrayRaffleEntrants[i + offset] != null) {
-                            returnString += arrayRaffleEntrants[i + offset] + ", ";
+                            returnString += $.username.resolve(arrayRaffleEntrants[i + offset]) + ", ";
                         }
                     }
                     if (returnString == "") {
