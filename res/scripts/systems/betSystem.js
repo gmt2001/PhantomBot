@@ -401,7 +401,7 @@ $.on('command', function (event) {
                         var tempPot = $.betPot;
                     }
 
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.enter-success", username, $.getPointsString(betWager), betOption.toUpperCase(), $.getPointsString(tempPot)));
+                    $.say($.lang.get("net.phantombot.betsystem.enter-success", username, $.getPointsString(betWager), betOption.toUpperCase(), $.getPointsString(tempPot)));
                     return;
                 } else {
                     $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.status-notrunning", "Moderator"));
