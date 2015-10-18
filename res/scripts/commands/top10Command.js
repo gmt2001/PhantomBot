@@ -89,7 +89,7 @@ $.on('command', function(event) {
         	    return;
         	}
 
-        	$.say($.lang.get("net.phantombot.top10.points-success", $.inidb.get('settings', 'pointNameMultiple'), topTenString.trim()));
+        	$.say($.getWhisperString(sender) + $.lang.get("net.phantombot.top10.points-success", $.inidb.get('settings', 'pointNameMultiple'), topTenString.trim()));
         	return;
         }
     }
@@ -136,7 +136,7 @@ $.on('command', function(event) {
         	    return;
         	}
 
-        	$.say($.lang.get("net.phantombot.top10.time-success", topTenString.trim()));
+        	$.say($.getWhisperString(sender) + $.lang.get("net.phantombot.top10.time-success", topTenString.trim()));
         	return;
         }
     }
