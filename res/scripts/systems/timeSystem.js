@@ -461,7 +461,7 @@ $.timer.addTimer("./systems/timeSystem.js", "autosave", true, function() {
 var streamSeconds = 0; // stream uptime in seconds
 var botSeconds = 0;
 
-$.timer.addTimer("./commands/timeSystem.js", "uptimecommand", true, function() {
+$.timer.addTimer("./systems/timeSystem.js", "uptimecommand", true, function() {
     if (!$.isOnline($.channelName)) {
         streamSeconds=0;
         botSeconds++;
@@ -502,7 +502,7 @@ setTimeout(function(){
         $.registerChatCommand("./systems/timeSystem.js", "time help");
         $.registerChatCommand("./systems/timeSystem.js", "timezone");
         $.registerChatCommand("./systems/timeSystem.js", "streamertime");
-        $.registerChatCommand("./commands/timeSystem.js", "uptime");
-        $.registerChatCommand("./commands/timeSystem.js", "botuptime");
+        $.registerChatCommand("./systems/timeSystem.js", "uptime");
+        $.registerChatCommand("./systems/timeSystem.js", "botuptime");
     }
 },10*1000);
