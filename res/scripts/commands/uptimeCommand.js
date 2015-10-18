@@ -14,6 +14,50 @@ $.timer.addTimer("./commands/uptimeCommand.js", "uptimecommand", true, function(
 
 }, 1000);
 
+$.displayTime = function(time) {
+    // Date object takes starting time in ms - multiply by 1000
+    var DateFormatter = new Date(time * 1000);
+
+    // Create a string to stuff the output into.
+    var output = "";
+
+    // If you've triggered, you want to trigger on every subsequent. 
+    // Not quite a switch case, which won't work here, but close.
+    var bFallThrough = false;
+
+    // Date object is defined using the Unix Epoch (1/1/1970 00:00:00.000) - Trim off the 1970
+    if (DateFormatter.getUTCFullYear() > 1970) {
+        output += (DateFormatter.getUTCFullYear() - 1970) + " years, ";
+        bFallThrough = true;
+    }
+    if (DateFormatter.getUTCMonth() > 0 || bFallThrough) {
+        output += DateFormatter.getUTCMonth() + " months, ";
+        bFallThrough = true;
+    }
+    if (DateFormatter.getUTCDate() > 1 || bFallThrough) {
+        output += DateFormatter.getUTCDate() + " days, ";
+        bFallThrough = true;
+    }
+    if (DateFormatter.getUTCHours() > 0 || bFallThrough) {
+        output += DateFormatter.getUTCHours() + " hours, ";
+        bFallThrough = true;
+    }
+    if (DateFormatter.getUTCMinutes() > 0 || bFallThrough) {
+        output += DateFormatter.getUTCMinutes() + " minutes, ";
+        bFallThrough = true;
+    }
+    if (DateFormatter.getUTCSeconds() > 0 || bFallThrough) {
+        if (bFallThrough) {
+            output += "and ";
+        }
+        output += DateFormatter.getUTCSeconds() + " seconds";
+    }
+
+    // Done with concatenation and the like, return the output.
+    return output;
+}
+
+
 $.on('command', function (event) {
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
