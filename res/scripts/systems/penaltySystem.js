@@ -44,19 +44,6 @@ $.returnPoints = function(user) {
     $.inidb.set('points', user, penaltyUserPointsCount + penaltyPointsCount);
 }
 
-$.getPointsString = function (points) {
-    points = parseInt(points);
-    var pointsString;
-
-    if (points == 1) {
-        pointsString = points + " " + $.inidb.get('settings', 'pointNameSingle');
-    } else {
-        pointsString = points + " " + $.inidb.get('settings', 'pointNameMultiple');
-    }
-
-    return pointsString;
-}
-
 $.on('command', function(event) {
     var sender = event.getSender();
     var username = $.username.resolve(sender, event.getTags());
@@ -85,7 +72,7 @@ $.on('command', function(event) {
                     $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.penaltysystem.get-penalty-indefinitely", $.inidb.get('settings', 'pointNameMultiple'), "Moderator"));
                     return;
                 } else {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.penaltysystem.get-penalty", $.inidb.get('settings', 'pointNameMultiple'), getPointsString(parseInt($.inidb.get('penalty', sender + "_threshold")))));
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.penaltysystem.get-penalty", $.inidb.get('settings', 'pointNameMultiple'), $.getPointsString(parseInt($.inidb.get('penalty', sender + "_threshold")))));
                     return;
                 }
             }
@@ -100,7 +87,7 @@ $.on('command', function(event) {
                             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.penaltysystem.get-other-penalty-indefinitely", $.username.resolve(args[0].toLowerCase()), $.inidb.get('settings', 'pointNameMultiple'), "Moderator"));
                             return;
                         } else {
-                            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.penaltysystem.get-other-penalty", $.username.resolve(args[0].toLowerCase()), $.inidb.get('settings', 'pointNameMultiple'), getPointsString(parseInt($.inidb.get('penalty', args[0].toLowerCase() + "_threshold")))));
+                            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.penaltysystem.get-other-penalty", $.username.resolve(args[0].toLowerCase()), $.inidb.get('settings', 'pointNameMultiple'), $.getPointsString(parseInt($.inidb.get('penalty', args[0].toLowerCase() + "_threshold")))));
                             return;
                         }
                     }
@@ -155,7 +142,7 @@ $.on('command', function(event) {
                 $.inidb.set('penalty', args[0].toLowerCase() + "_pointscount", userPointsCount);
                 $.inidb.set('penalty', args[0].toLowerCase() + "_threshold", args[1]);
 
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.penaltysystem.set-enabled-threshold", $.username.resolve(args[0].toLowerCase()), $.inidb.get('settings', 'pointNameMultiple'), getPointsString(parseInt($.inidb.get('penalty', args[0].toLowerCase() + "_threshold")))));
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.penaltysystem.set-enabled-threshold", $.username.resolve(args[0].toLowerCase()), $.inidb.get('settings', 'pointNameMultiple'), $.getPointsString(parseInt($.inidb.get('penalty', args[0].toLowerCase() + "_threshold")))));
                 return;
             } else {
                 $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.common.user-404", $.username.resolve(args[0].toLowerCase())));
@@ -214,7 +201,7 @@ $.timer.addTimer("./systems/penaltySystem.js", "penaltySystem", true, function()
                 $.inidb.set('penalty', nick + "_pointscount", 0);
                 $.inidb.set('penalty', nick + "_threshold", 0);
 
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.penaltysystem.lifted", $.username.resolve(nick), getPointsString(penaltypoints)));
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.penaltysystem.lifted", $.username.resolve(nick), $.getPointsString(penaltypoints)));
             }
         }
     }

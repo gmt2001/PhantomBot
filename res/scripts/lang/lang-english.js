@@ -14,8 +14,8 @@ $.lang.data["net.phantombot.common.whisper-enabled"] = "[Whisper Mode] has been 
 
 //command perm/price
 $.lang.data["net.phantombot.cmd.noperm"] = "Your user group, $1, does not have permission to use the command $2.";
-$.lang.data["net.phantombot.cmd.needpoints"] = "That command costs $1 $2, which you don't have.";
-$.lang.data["net.phantombot.cmd.paid"] = "[Paid] $1's balance is now: $2 $3";
+$.lang.data["net.phantombot.cmd.needpoints"] = "That command costs $1, which you don't have.";
+$.lang.data["net.phantombot.cmd.paid"] = "[Paid] $1's balance is now: $2";
 $.lang.data["net.phantombot.cmd.casteronly"] = "Only a Caster has access to that command!";
 $.lang.data["net.phantombot.cmd.adminonly"] = "Only an Administrator has access to that command!";
 $.lang.data["net.phantombot.cmd.modonly"] = "Only a Moderator has access to that command!";
@@ -198,7 +198,7 @@ $.lang.data["net.phantombot.addcommand.delcom-error-usage"] = "Usage: \"!delcom 
 $.lang.data["net.phantombot.addcommand.editcom-success"] = "$1, has modified the command: !$2";
 $.lang.data["net.phantombot.addcommand.editcom-error"] = "There is no such command, $1";
 $.lang.data["net.phantombot.addcommand.editcom-error-usage"] = "Usage: \"!editcom (command) (message)\"";
-$.lang.data["net.phantombot.addcommand.pricecom-current-set-price"] = "The command !$1 costs $2 $3!";
+$.lang.data["net.phantombot.addcommand.pricecom-current-set-price"] = "The command !$1 costs $2!";
 $.lang.data["net.phantombot.addcommand.pricecom-current-set-price2"] = "The command !$1 currently costs 0 $2!";
 $.lang.data["net.phantombot.addcommand.pricecom-success"] = "The price for !$1 has been set to $2 $3.";
 $.lang.data["net.phantombot.addcommand.pricecom-error1"] = "Please select a command that exists and is available to non-mods.";

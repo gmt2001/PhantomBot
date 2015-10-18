@@ -14,18 +14,6 @@ if ($.betLength == undefined || $.betLength == null || isNaN($.betLength) || $.b
     $.betLength = 180;
 }
 
-$.getPointsString = function (points) {
-    points = parseInt(points);
-    var pointsString;
-
-    if (points == 1) {
-        pointsString = points + " " + $.inidb.get('settings', 'pointNameSingle');
-    } else {
-        pointsString = points + " " + $.inidb.get('settings', 'pointNameMultiple');
-    }
-    return pointsString;
-}
-
 $.on('command', function (event) {
     var sender = event.getSender().toLowerCase();
     var username = $.username.resolve(sender, event.getTags());
@@ -387,7 +375,7 @@ $.on('command', function (event) {
                     }
 
                     if (betWager > userPoints) {
-                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.enter-error-notenough", $.inidb.get('settings', 'pointNameMultiple'), $.getPointsString(betWager)));
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.enter-error-notenough", $.getPointsString(betWager)));
                         return;
                     }
 
