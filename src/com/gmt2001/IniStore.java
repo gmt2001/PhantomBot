@@ -53,6 +53,7 @@ public class IniStore extends DataStore implements ActionListener
         return instance;
     }
 
+    @SuppressWarnings("OverridableMethodCallInConstructor")
     private IniStore()
     {
         LoadConfig("");
