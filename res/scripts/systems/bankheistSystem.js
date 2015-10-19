@@ -18,169 +18,169 @@ if ($.bankheistToggle == null) {
 $.bankheistMaxBet = $.inidb.get("settings", "bankheistmaxbet");
 if ($.bankheistMaxBet == null) {
     $.bankheistMaxBet = 100; //in minute
-    $.inidb.set("settings", "bankheistmaxbet", "");
+    $.inidb.set("settings", "bankheistmaxbet", $.bankheistMaxBet);
 }
 
 $.signupMinutes = $.inidb.get("bankheist_timers", "signupMinutes");
 if ($.signupMinutes == null) {
     $.signupMinutes = 1; //in minute
-    $.inidb.set("bankheist_timers", "signupMinutes", "");
+    $.inidb.set("bankheist_timers", "signupMinutes", $.signupMinutes);
 }
 
 $.heistMinutes = $.inidb.get("bankheist_timers", "heistMinutes");
 if ($.heistMinutes == null) {
     $.heistMinutes = 30; //in minutes
-    $.inidb.set("bankheist_timers", "heistMinutes", "");
+    $.inidb.set("bankheist_timers", "heistMinutes", $.heistMinutes);
 }
 
 $.stringNoJoin = $.inidb.get("bankheist_strings", "stringNoJoin");
 if ($.stringNoJoin == null) {
     $.stringNoJoin = "No one joined the bankheist! The banks are safe for now.";
-    $.inidb.set("bankheist_strings", "stringNoJoin", "");
+    $.inidb.set("bankheist_strings", "stringNoJoin", $.stringNoJoin);
 }
 
 $.stringStarting = $.inidb.get("bankheist_strings", "stringStarting");
 if ($.stringStarting == null) {
     $.stringStarting = "Alright guys, check your guns. We are storming into the Bank through all entrances. Let's get the cash and get out before the cops get here.";
-    $.inidb.set("bankheist_strings", "stringStarting", "");
+    $.inidb.set("bankheist_strings", "stringStarting", $.stringStarting);
 }
 
 $.stringFlawless = $.inidb.get("bankheist_strings", "stringFlawless");
 if ($.stringFlawless == null) {
-    $.stringFlawless = "The crew executed the heist flawlessly and scored (points) (pointname) from the vault without leaving a trace!";
-    $.inidb.set("bankheist_strings", "stringFlawless", "");
+    $.stringFlawless = "The crew executed the heist flawlessly and scored (pointname) from the vault without leaving a trace!";
+    $.inidb.set("bankheist_strings", "stringFlawless", $.stringFlawless);
 }
 
 $.stringCasualties = $.inidb.get("bankheist_strings", "stringCasualties");
 if ($.stringCasualties == null) {
-    $.stringCasualties = "The crew suffered a few losses engaging the local security team. The remaining crew got away scoring (points) (pointname) from the vault before backup arrived.";
-    $.inidb.set("bankheist_strings", "stringCasualties", "");
+    $.stringCasualties = "The crew suffered a few losses engaging the local security team. The remaining crew got away scoring (pointname) from the vault before backup arrived.";
+    $.inidb.set("bankheist_strings", "stringCasualties", $.stringCasualties);
 }
 
 $.stringPayouts = $.inidb.get("bankheist_strings", "stringPayouts");
 if ($.stringPayouts == null) {
     $.stringPayouts = "The heist payouts are: ";
-    $.inidb.set("bankheist_strings", "stringPayouts", "");
+    $.inidb.set("bankheist_strings", "stringPayouts", $.stringPayouts);
 }
 
 $.stringAllDead = $.inidb.get("bankheist_strings", "stringAllDead");
 if ($.stringAllDead == null) {
     $.stringAllDead = "The security team killed everyone in the heist!";
-    $.inidb.set("bankheist_strings", "stringAllDead", "");
+    $.inidb.set("bankheist_strings", "stringAllDead", $.stringAllDead);
 }
 
 $.banksClosed = $.inidb.get("bankheist_strings", "banksClosed");
 if ($.banksClosed == null) {
     $.banksClosed = "The banks are currently closed!";
-    $.inidb.set("bankheist_strings", "banksClosed", "");
+    $.inidb.set("bankheist_strings", "banksClosed", $.banksClosed);
 }
 
 $.enterABet = $.inidb.get("bankheist_strings", "enterABet");
 if ($.enterABet == null) {
     $.enterABet = "You must enter a bet! For example !bankheist (amount)";
-    $.inidb.set("bankheist_strings", "enterABet", "");
+    $.inidb.set("bankheist_strings", "enterABet", $.enterABet);
 }
 
 $.affordBet = $.inidb.get("bankheist_strings", "affordBet");
 if ($.affordBet == null) {
     $.affordBet = "You must enter a bet you can afford and is not 0 ";
-    $.inidb.set("bankheist_strings", "affordBet", "");
+    $.inidb.set("bankheist_strings", "affordBet", $.affordBet);
 }
 
 $.alreadyBet = $.inidb.get("bankheist_strings", "alreadyBet");
 if ($.alreadyBet == null) {
     $.alreadyBet = " you have already placed a bet of ";
-    $.inidb.set("bankheist_strings", "alreadyBet", "");
+    $.inidb.set("bankheist_strings", "alreadyBet", $.alreadyBet);
 }
 
 $.startedHeist = $.inidb.get("bankheist_strings", "startedHeist");
 if ($.startedHeist == null) {
     $.startedHeist = "has started a bankheist! To join in type !bankheist (amount)";
-    $.inidb.set("bankheist_strings", "startedHeist", "");
+    $.inidb.set("bankheist_strings", "startedHeist", $.startedHeist);
 }
 
 $.joinedHeist = $.inidb.get("bankheist_strings", "joinedHeist");
 if ($.joinedHeist == null) {
     $.joinedHeist = ", you have joined in on the bank heist!";
-    $.inidb.set("bankheist_strings", "joinedHeist", "");
+    $.inidb.set("bankheist_strings", "joinedHeist", $.joinedHeist);
 }
 
 $.banksOpen = $.inidb.get("bankheist_strings", "banksOpen");
 if ($.banksOpen == null) {
     $.banksOpen = "The banks are now open for the taking! Use !bankheist (amount) to bet. ";
-    $.inidb.set("bankheist_strings", "banksOpen", "");
+    $.inidb.set("bankheist_strings", "banksOpen", $.banksOpen);
 }
 
 $.heistCancelled = $.inidb.get("bankheist_strings", "heistCancelled");
 if ($.heistCancelled == null) {
     $.heistCancelled = "has cleared all previous bankheists. A new bankheist will start in ";
-    $.inidb.set("bankheist_strings", "heistCancelled", "");
+    $.inidb.set("bankheist_strings", "heistCancelled", $.heistCancelled);
 }
 
 $.betTooLarge = $.inidb.get("bankheist_strings", "betTooLarge");
 if ($.betTooLarge == null) {
     $.betTooLarge = "The maximum amount allowed is ";
-    $.inidb.set("bankheist_strings", "stringNoJoin", "");
+    $.inidb.set("bankheist_strings", "stringNoJoin", $.betTooLarge);
 }
 
 $.chances50 = $.inidb.get("bankheist_chances", "chances50");
 if ($.chances50 == null) {
     $.chances50 = $.randInterval(33, 36);
-    $.inidb.set("bankheist_chances", "chances50", "");
+    $.inidb.set("bankheist_chances", "chances50", $.chances50);
 }
 
 $.chances40 = $.inidb.get("bankheist_chances", "chances40");
 if ($.chances40 == null) {
     $.chances40 = $.randInterval(39, 44);
-    $.inidb.set("bankheist_chances", "chances40", "");
+    $.inidb.set("bankheist_chances", "chances40", $.chances40);
 }
 
 $.chances30 = $.inidb.get("bankheist_chances", "chances30");
 if ($.chances30 == null) {
     $.chances30 = $.randInterval(43, 50);
-    $.inidb.set("bankheist_chances", "chances30", "");
+    $.inidb.set("bankheist_chances", "chances30", $.chances30);
 }
 
 $.chances20 = $.inidb.get("bankheist_chances", "chances20");
 if ($.chances20 == null) {
     $.chances20 = $.randInterval(48, 58);
-    $.inidb.set("bankheist_chances", "chances20", "");
+    $.inidb.set("bankheist_chances", "chances20", $.chances20);
 }
 
 $.chances10 = $.inidb.get("bankheist_chances", "chances10");
 if ($.chances10 == null) {
     $.chances10 = $.randInterval(55, 65);
-    $.inidb.set("bankheist_chances", "chances10", "");
+    $.inidb.set("bankheist_chances", "chances10", $.chances10);
 }
 
 $.ratio50 = $.inidb.get("bankheist_ratios", "ratio50");
 if ($.ratio50 == null) {
     $.ratio50 = 2.75;
-    $.inidb.set("bankheist_ratios", "ratio50", "");
+    $.inidb.set("bankheist_ratios", "ratio50", $.ratio50);
 }
 
 $.ratio40 = $.inidb.get("bankheist_ratios", "ratio40");
 if ($.ratio40 == null) {
     $.ratio40 = 2.25;
-    $.inidb.set("bankheist_ratios", "ratio40", "");
+    $.inidb.set("bankheist_ratios", "ratio40", $.ratio40);
 }
 
 $.ratio30 = $.inidb.get("bankheist_ratios", "ratio30");
 if ($.ratio30 == null) {
     $.ratio30 = 2;
-    $.inidb.set("bankheist_ratios", "ratio30", "");
+    $.inidb.set("bankheist_ratios", "ratio30", $.ratio30);
 }
 
 $.ratio20 = $.inidb.get("bankheist_ratios", "ratio20");
 if ($.ratio20 == null) {
     $.ratio20 = 1.7;
-    $.inidb.set("bankheist_ratios", "ratio20", "");
+    $.inidb.set("bankheist_ratios", "ratio20", $.ratio20);
 }
 
 $.ratio10 = $.inidb.get("bankheist_ratios", "ratio10");
 if ($.ratio10 == null) {
     $.ratio10 = 1.5;
-    $.inidb.set("bankheist_ratios", "ratio10", "");
+    $.inidb.set("bankheist_ratios", "ratio10", $.ratio10);
 }
 
 function processBankheist() {
@@ -271,7 +271,6 @@ function processBankheist() {
                 string = $.stringCasualties;
             }
             string = string.replace('(pointname)', $.getPointsString($.winningPot));
-            string = string.replace('(points)', $.winningPot);
 
             $.say(string);
             $.say(winnersList);
@@ -350,10 +349,7 @@ $.on('command', function (event) {
                 $.say($.getWhisperString(event.getSender()) + "You must be a moderator to use this command.");
                 return;
             }
-            if (!$.isOnline($.botowner)) {
-                $.say($.getWhisperString(event.getSender()) + "Stream must be live!");
-                return;
-            }
+
             $.timer.clearTimer("./systems/bankheistSystem.js", "bankheist", true);
             $.timer.clearTimer("./systems/bankheistSystem.js", "enterbankheist", true);
             $.say(username + " " + $.heistCancelled + $.signupMinutes + " minute(s)");
