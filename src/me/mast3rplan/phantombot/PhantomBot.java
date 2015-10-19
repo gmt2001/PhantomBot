@@ -27,7 +27,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -187,7 +186,7 @@ public class PhantomBot implements Listener
         {
             dataStoreObj = IniStore.instance();
         }
-        
+
         this.init();
 
         /*
@@ -200,13 +199,14 @@ public class PhantomBot implements Listener
             try
             {
                 java.lang.management.RuntimeMXBean runtime = java.lang.management.ManagementFactory.getRuntimeMXBean();
-                java.lang.reflect.Field jvm = runtime.getClass().getDeclaredField("jvm");
+                /*java.lang.reflect.Field jvm = runtime.getClass().getDeclaredField("jvm");
                 jvm.setAccessible(true);
                 sun.management.VMManagement mgmt = (sun.management.VMManagement) jvm.get(runtime);
                 java.lang.reflect.Method pid_method = mgmt.getClass().getDeclaredMethod("getProcessId");
                 pid_method.setAccessible(true);
 
-                int pid = (Integer) pid_method.invoke(mgmt);
+                int pid = (Integer) pid_method.invoke(mgmt);*/
+                int pid = Integer.parseInt(runtime.getName().split("@")[0]);
 
                 //int pid = Integer.parseInt( ( new File("/proc/self")).getCanonicalFile().getName() ); 
                 File f = new File("/var/run/PhantomBot." + this.username.toLowerCase() + ".pid");
@@ -219,7 +219,7 @@ public class PhantomBot implements Listener
                 }
 
                 f.deleteOnExit();
-            } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException | NoSuchMethodException | InvocationTargetException | IOException ex)
+            } catch (/*NoSuchFieldException | IllegalAccessException | NoSuchMethodException | java.lang.reflect.InvocationTargetException | */SecurityException | IllegalArgumentException | IOException ex)
             {
                 com.gmt2001.Console.out.println("e " + ex.getMessage());
                 Logger.getLogger(PhantomBot.class.getName()).log(Level.SEVERE, null, ex);
@@ -303,7 +303,7 @@ public class PhantomBot implements Listener
         EventBus.instance().register(ScriptEventManager.instance());
 
         dataStoreObj.LoadConfig(datastoreconfig);
-        
+
         Script.global.defineProperty("inidb", dataStoreObj, 0);
         Script.global.defineProperty("tempdb", TempStore.instance(), 0);
         Script.global.defineProperty("bancache", bancache, 0);
