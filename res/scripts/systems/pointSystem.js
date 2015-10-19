@@ -99,11 +99,11 @@ $.getTimeString = function (time) {
     var s = $.lang.get("net.phantombot.common.time-suffixes");
 
     if (p.length != 4) {
-        $.logError("./systems/raidSystem.js", 47, "The time prefixes did not contain all numbers. String: net.phantombot.common.time-prefixes");
+        $.logError("./systems/pointSystem.js", 98, "The time prefixes did not contain all numbers. String: net.phantombot.common.time-prefixes");
         println("[raidSystem.js] The time prefixes did not contain all numbers. String: net.phantombot.common.time-prefixes");
         return minutes;
     } else if (s.length != 4) {
-        $.logError("./systems/raidSystem.js", 48, "The time suffixes did not contain all numbers. String: net.phantombot.common.time-suffixes");
+        $.logError("./systems/raidSystem.js", 99, "The time suffixes did not contain all numbers. String: net.phantombot.common.time-suffixes");
         println("[raidSystem.js] The time suffixes did not contain all numbers. String: net.phantombot.common.time-suffixes");
         return minutes;
     }
