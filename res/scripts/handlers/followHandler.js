@@ -84,7 +84,11 @@ $.on('twitchUnfollow', function(event) {
 $.on('twitchFollowsInitialized', function(event) {
     println(">>Enabling new follower announcements");
     
-    $.announceFollows = true;
+    $.announceFollows = $.inidb.get("settings", "announcefollows");
+    if($.announceFollows == null) {
+        $.inidb.set("settings","announcefollows","true");
+        $.announceFollows = true;
+    }
 });
 
 $.on('command', function(event) {
@@ -107,9 +111,10 @@ $.on('command', function(event) {
                 $.say($.getWhisperString(sender) + $.username.resolve(args[0]) + " is not following the channel.");
                 return;    
             }
-        }
-        $.say($.getWhisperString(sender) + "!followmessage <message>, !followreward <amount>");
-        
+        } else {
+                $.say($.getWhisperString(sender) + "Usage: !follow (username), !followed (username), !followmessage (message), !followreward (reward)");
+                return;    
+        }        
     }
     if (command.equalsIgnoreCase("follow")) {
         if (args[0] != null) {
@@ -121,11 +126,27 @@ $.on('command', function(event) {
                 $.say("Please give " + $.username.resolve(args[0]) + " a follow at: twitch.tv/" + $.username.resolve(args[0]));
             }
         } else {
-                $.say($.getWhisperString(sender) + "Usage: !follow (username).");
+                $.say($.getWhisperString(sender) + "Usage: !follow (username), !followed (username), !followmessage (message), !followreward (reward)");
                 return;    
+        }        
+    }
+    if (command.equalsIgnoreCase("followannounce")) {
+        if (!$.isModv3(sender)) {
+            $.say($.getWhisperString(sender) + $.modmsg);
+            return;
         }
-        $.say($.getWhisperString(sender) + "!followmessage <message>, !followreward <amount>");
-        
+        if($.announceFollows == true) {
+            $.inidb.set("settings", "announcefollows", "false");
+            $.announceFollows = false;
+            $.say($.getWhisperString(sender) + "Follow announcements are now turned off.");
+            return;    
+
+        } else {
+            $.inidb.set("settings", "announcefollows", "true");
+            $.announceFollows = true;
+            $.say($.getWhisperString(sender) + "Follow announcements are now turned on.");
+            return;    
+        }        
     }
 	
     if (command.equalsIgnoreCase("followmessage")) {
@@ -228,5 +249,7 @@ setTimeout(function () {
     if ($.moduleEnabled('./handlers/followHandler.js')) {
         $.registerChatCommand("./handlers/followHandler.js", "followed", "mod");
         $.registerChatCommand("./handlers/followHandler.js", "follow", "mod");
+        $.registerChatCommand("./handlers/followHandler.js", "followannounce", "mod");
+
     }
 }, 10 * 1000);
