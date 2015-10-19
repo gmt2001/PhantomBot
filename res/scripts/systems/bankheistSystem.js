@@ -281,7 +281,7 @@ function processBankheist() {
 function startHeist() {
 
     $.startBankHeist = $.timer.addTimer("./systems/bankheistSystem.js", "bankheist", true, function () {
-        if (!$.isOnline($.botowner)) {
+        if (!$.isOnline($.channelName)) {
             return;
         }
         $.enterBankheist = $.timer.addTimer("./systems/bankheistSystem.js", "enterbankheist", true, function () {
