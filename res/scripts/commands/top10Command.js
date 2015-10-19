@@ -1,4 +1,3 @@
-
 $.getTimeString = function (time) {
     var minutes = parseInt((time / 60) % 60);
     var hours = parseInt((time / 3600) % 24);
@@ -49,7 +48,7 @@ $.on('command', function(event) {
     
     if (command.equalsIgnoreCase("top10")) {
         if (!$.moduleEnabled("./systems/pointSystem.js")) {
-        	$.say($.getWhisperString(sender) + $.lang.get("net.phantombot.top10.points-disabled"));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.top10.points-disabled"));
             return;
         }
         
@@ -59,17 +58,17 @@ $.on('command', function(event) {
         var topTenString = "";
 
         for (var i = keys.length - 1; i >= 0; i--) {
-        	if (keys[i] != $.botowner && keys[i] != $.botname && keys[i] != "moobot"  && keys[i] != "wizebot" && keys[i] != "nightbot") {
-        	    topComplete.push([keys[i], $.inidb.get("points", keys[i])]);
-        	}
+            if (keys[i] != $.botowner && keys[i] != $.botname && keys[i] != "moobot"  && keys[i] != "wizebot" && keys[i] != "nightbot") {
+                topComplete.push([keys[i], $.inidb.get("points", keys[i])]);
+            }
         };
 
         topComplete.sort($.sortNumber);
 
         for (var i = topComplete.length - 1; i >= topComplete.length - 10; i--) {
-        	if (topComplete[i] != undefined) {
-        		topTen.push([topComplete[i][0], topComplete[i][1]]);
-        	}
+            if (topComplete[i] != undefined) {
+                topTen.push([topComplete[i][0], topComplete[i][1]]);
+            }
         };
 
         for (i = 0; i < topTen.length; i++) {
@@ -81,22 +80,22 @@ $.on('command', function(event) {
         };
 
         if (topTenString.trim() == "") {
-        	$.say($.getWhisperString(sender) + $.lang.get("net.phantombot.top10.points-error-noresults", $.inidb.get('settings', 'pointNameMultiple')));
-        	return;
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.top10.points-error-noresults", $.inidb.get('settings', 'pointNameMultiple')));
+            return;
         } else {
-        	if (!$.isModv3(sender, event.getTags())) {
-        		$.say($.getWhisperStringStatic(sender) + $.lang.get("net.phantombot.top10.points-success-whisper", $.inidb.get('settings', 'pointNameMultiple'), topTenString.trim()));
-        	    return;
-        	}
+            if (!$.isModv3(sender, event.getTags())) {
+                $.say($.getWhisperStringStatic(sender) + $.lang.get("net.phantombot.top10.points-success-whisper", $.inidb.get('settings', 'pointNameMultiple'), topTenString.trim()));
+                return;
+            }
 
-        	$.say($.lang.get("net.phantombot.top10.points-success", $.inidb.get('settings', 'pointNameMultiple'), topTenString.trim()));
-        	return;
+            $.say($.lang.get("net.phantombot.top10.points-success", $.inidb.get('settings', 'pointNameMultiple'), topTenString.trim()));
+            return;
         }
     }
     
     if (command.equalsIgnoreCase("top10time")) {
         if (!$.moduleEnabled("./systems/timeSystem.js")) {
-        	$.say($.getWhisperString(sender) + $.lang.get("net.phantombot.top10.time-disabled"));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.top10.time-disabled"));
             return;
         }
         
@@ -106,17 +105,17 @@ $.on('command', function(event) {
         var topTenString = "";
 
         for (var i = keys.length - 1; i >= 0; i--) {
-        	if (keys[i] != $.botowner && keys[i] != $.botname && keys[i] != "moobot"  && keys[i] != "wizebot" && keys[i] != "nightbot") {
-        	    topComplete.push([keys[i], $.inidb.get("time", keys[i])]);
-        	}
+            if (keys[i] != $.botowner && keys[i] != $.botname && keys[i] != "moobot"  && keys[i] != "wizebot" && keys[i] != "nightbot") {
+                topComplete.push([keys[i], $.inidb.get("time", keys[i])]);
+            }
         };
 
         topComplete.sort($.sortNumber);
 
         for (var i = topComplete.length - 1; i >= topComplete.length - 10; i--) {
-        	if (topComplete[i] != undefined) {
-        		topTen.push([topComplete[i][0], topComplete[i][1]]);
-        	}
+            if (topComplete[i] != undefined) {
+                topTen.push([topComplete[i][0], topComplete[i][1]]);
+            }
         };
 
         for (i = 0; i < topTen.length; i++) {
@@ -128,19 +127,20 @@ $.on('command', function(event) {
         };
 
         if (topTenString.trim() == "") {
-        	$.say($.getWhisperString(sender) + $.lang.get("net.phantombot.top10.time-error-noresults"));
-        	return;
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.top10.time-error-noresults"));
+            return;
         } else {
-        	if (!$.isModv3(sender, event.getTags())) {
-        		$.say($.getWhisperStringStatic(sender) + $.lang.get("net.phantombot.top10.time-success-whisper", topTenString.trim()));
-        	    return;
-        	}
+            if (!$.isModv3(sender, event.getTags())) {
+                $.say($.getWhisperStringStatic(sender) + $.lang.get("net.phantombot.top10.time-success-whisper", topTenString.trim()));
+                return;
+            }
 
-        	$.say($.getWhisperString(sender) + $.lang.get("net.phantombot.top10.time-success", topTenString.trim()));
-        	return;
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.top10.time-success", topTenString.trim()));
+            return;
         }
     }
 });
+
 setTimeout(function(){ 
     if ($.moduleEnabled('./commands/top10Command.js')) {
         $.registerChatCommand("./commands/top10Command.js", "top10");

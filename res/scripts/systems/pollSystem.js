@@ -68,6 +68,7 @@ $.runPoll = function (callback, options, time, pollMaster) {
         var option = options[i];
         $.pollResults.put(option.toLowerCase(), 0);
     }
+    
     $var.pollOptions = options;
     $var.pollMaster = pollMaster;
     $var.pollTotalVotes = 0;
@@ -126,11 +127,7 @@ $.on('command', function (event) {
             } else if ($var.vote_toggle == false) {
                 println("Your vote has been recorded, " + username + ".");
             }
-            
         }
-
-
-
     } else if (command.equalsIgnoreCase("poll")) {
         if (!argsString.isEmpty()) {
             action = args[0].toLowerCase();
@@ -153,20 +150,14 @@ $.on('command', function (event) {
                 }
 
                 if ($var.vote_toggle == false) {
-
                     $var.vote_toggle = true;
                     $.inidb.set('settings', 'vote_toggle', 1);
                     $.say($.getWhisperString(sender) + "Vote messages have been turned on!");
-
                 } else if ($var.vote_toggle == true) {
-
                     $var.vote_toggle = false;
                     $.inidb.set('settings', 'vote_toggle', 2);
                     $.say($.getWhisperString(sender) + "Vote messages have been turned off!");
                 }
-
-
-
             }
             if (action.equalsIgnoreCase("results")) {
                 if ($var.vote_running) {
@@ -198,9 +189,7 @@ $.on('command', function (event) {
 
                         $.say("[" + date + "] - [" + vTotal + " Total Votes] - [Winning Result: " + WinR + " with " + WinRV + " votes] - [Options: " + vOptions + "]") 
                     }
-
                 }
-
             }
         }
 
@@ -261,7 +250,6 @@ $.on('command', function (event) {
                     $.inidb.set('polls', 'winning_result_votes', $.pollResults.get(result[0]).intValue());
 
                 }
-
             }, options, length * 1000, sender)) {
                 optionsStr = "";
                 l = options.length - 2;
@@ -275,8 +263,6 @@ $.on('command', function (event) {
                 $.inidb.set('polls', 'vote_options', $.displayOptions);
                 $.inidb.set('polls', 'date', date);
             }
-
-
         } else if (args.length >= 1 && action.equalsIgnoreCase("close")) {
             if ($var.pollMaster == null) {
                 
@@ -292,18 +278,13 @@ $.on('command', function (event) {
             if (!$.endPoll()) {
                 $.say("There is no poll running.");
             }
-        
-
         } else {
             if (argsString.isEmpty()) {
                 $.say($.getWhisperString(sender) + "Usage: '!poll open [-t (seconds)] (option 1) (option 2)' -- '!poll results' -- '!poll close'");
             }
 
         }
-
     }
-    
-
 });
 
 setTimeout(function(){ 
