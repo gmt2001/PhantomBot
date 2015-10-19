@@ -94,8 +94,12 @@ $.on('command', function(event) {
     var argsString = event.getArguments().trim();
     var args = event.getArgs();
 	
-    if (command.equalsIgnoreCase("follow")) {
+    if (command.equalsIgnoreCase("followed")) {
         if (args[0] != null) {
+            if (!$.isModv3(sender)) {
+                $.say($.getWhisperString(sender) + $.modmsg);
+                return;
+            }
             if($.inidb.get("followed",args[0].toLowerCase())==1){
                 $.say($.getWhisperString(sender) + $.username.resolve(args[0]) + " is following the channel.");
                 return;                    
@@ -103,6 +107,22 @@ $.on('command', function(event) {
                 $.say($.getWhisperString(sender) + $.username.resolve(args[0]) + " is not following the channel.");
                 return;    
             }
+        }
+        $.say($.getWhisperString(sender) + "!followmessage <message>, !followreward <amount>");
+        
+    }
+    if (command.equalsIgnoreCase("follow")) {
+        if (args[0] != null) {
+            if (!$.isModv3(sender)) {
+                $.say($.getWhisperString(sender) + $.modmsg);
+                return;
+            }
+            if($.username.resolve(args[0])) {
+                $.say("Please give " + $.username.resolve(args[0]) + " a follow at: twitch.tv/" + $.username.resolve(args[0]));
+            }
+        } else {
+                $.say($.getWhisperString(sender) + "Usage: !follow (username).");
+                return;    
         }
         $.say($.getWhisperString(sender) + "!followmessage <message>, !followreward <amount>");
         
@@ -203,3 +223,10 @@ for (var i = 0; i < keys.length; i++) {
         $.followers.addFollower(keys[i]);
     }
 }
+
+setTimeout(function () {
+    if ($.moduleEnabled('./handlers/followHandler.js')) {
+        $.registerChatCommand("./handlers/followHandler.js", "followed", "mod");
+        $.registerChatCommand("./handlers/followHandler.js", "follow", "mod");
+    }
+}, 10 * 1000);
