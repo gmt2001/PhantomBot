@@ -184,6 +184,10 @@ $.lang.data["net.phantombot.timezone.error-invalid"] = "\"$1\" is not a valid ti
 $.lang.data["net.phantombot.timezone.get"] = "The streamer's time zone is currently set to \"$1\".";
 $.lang.data["net.phantombot.timezone.success"] = "The time zone has been set to \"$1\".";
 $.lang.data["net.phantombot.timezone.usage"] = "Usage: \"!timezone <name>\"";
+$.lang.data["net.phantombot.uptime.success-online"] = "/me [Stream Uptime] $1 has been online for $2.";
+$.lang.data["net.phantombot.uptime.success-offline"] = "$1 is currently not streaming.";
+$.lang.data["net.phantombot.botuptime.success"] = "/me [Bot Uptime] $1 has been online for $2.";
+
 
 // raidSystem.js
 $.lang.data["net.phantombot.raidsystem.success"] = "Thank you for the raid, $1! This is the $2 time $1 has raided! Please give them a follow at \"http://twitch.tv/$3\"!";

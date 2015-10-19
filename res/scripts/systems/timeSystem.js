@@ -35,51 +35,6 @@ if($.firstrun) {
     $.say("");
 }
 
-$.displayTime = function(time) {
-    // Date object takes starting time in ms - multiply by 1000
-    var DateFormatter = new Date(time * 1000);
-
-    // Create a string to stuff the output into.
-    var output = "";
-
-    // If you've triggered, you want to trigger on every subsequent. 
-    // Not quite a switch case, which won't work here, but close.
-    var bFallThrough = false;
-
-    // Date object is defined using the Unix Epoch (1/1/1970 00:00:00.000) - Trim off the 1970
-    if (DateFormatter.getUTCFullYear() > 1970) {
-        output += (DateFormatter.getUTCFullYear() - 1970) + " years, ";
-        bFallThrough = true;
-    }
-    if (DateFormatter.getUTCMonth() > 0 || bFallThrough) {
-        output += DateFormatter.getUTCMonth() + " months, ";
-        bFallThrough = true;
-    }
-    if (DateFormatter.getUTCDate() > 1 || bFallThrough) {
-        output += DateFormatter.getUTCDate() + " days, ";
-        bFallThrough = true;
-    }
-    if (DateFormatter.getUTCHours() > 0 || bFallThrough) {
-        output += DateFormatter.getUTCHours() + " hours, ";
-        bFallThrough = true;
-    }
-    if (DateFormatter.getUTCMinutes() > 0 || bFallThrough) {
-        output += DateFormatter.getUTCMinutes() + " minutes, ";
-        bFallThrough = true;
-    }
-    if (DateFormatter.getUTCSeconds() > 0 || bFallThrough) {
-        if (bFallThrough) {
-            output += "and ";
-        }
-        output += DateFormatter.getUTCSeconds() + " seconds";
-    }
-
-    // Done with concatenation and the like, return the output.
-    return output;
-}
-
-
-
 $.getUserTime = function (user) {
     // "getUserTime" instead of "getTime" to prevent issues with the "real" function.
     var time = $.inidb.get('time', user.toLowerCase());
@@ -114,12 +69,12 @@ $.getTimeString = function (time) {
             timeString += "m "
         }
         if (weeks == 0 && days == 0 && hours == 0 && minutes == 0) {
-            return "0s";
+            return "0m";
         }
 
         timeString = timeString.trim();
     } else {
-        return false;
+        return "0m";
     }
 
     return timeString;
@@ -418,13 +373,38 @@ $.on('command', function(event) {
         datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.timeZone));
         var timestamp = datefmt.format(now);
             
-        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.streamertime", timestamp, $.username.resolve($.ownerName)));
+        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.streamertime", timestamp, $.username.resolve($.channelName)));
+    }
+
+    if (command.equalsIgnoreCase("botuptime")) {
+        $.say($.lang.get("net.phantombot.botuptime.success", $.username.resolve($.botname), $.getTimeString($.botUptime * 60)));
+        return;
+    }
+    
+    if (command.equalsIgnoreCase("uptime")) {
+        if ($.isOnline($.channelName)) {
+            $.say($.lang.get("net.phantombot.uptime.success-online", $.username.resolve($.channelName), $.getUptime($.channelName)));
+            return;
+        } else {
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.uptime.success-offline", $.username.resolve($.channelName)));
+            return;
+        }
     }
 });
+
+$.timer.addTimer("./systems/timeSystem.js", "autosave", true, function() {
+    $.inidb.SaveAll(true);
+}, 300 * 1000);
 
 $.timer.addTimer("./systems/timeSystem.js", "timesystem", true, function() {
     if (!$.moduleEnabled("./systems/timeSystem.js")) {
         return;
+    }
+
+    if ($.botUptime == 0 || $.botUptime == undefined || $.botUptime == null) {
+        $.botUptime = 1;
+    } else {
+        $.botUptime++;
     }
 
     for (var i = 0; i < $.users.length; i++) {
@@ -452,49 +432,6 @@ $.timer.addTimer("./systems/timeSystem.js", "timesystem", true, function() {
         }
     }
 }, 60 * 1000);
-
-$.timer.addTimer("./systems/timeSystem.js", "autosave", true, function() {
-    $.inidb.SaveAll(true);
-}, 300* 1000);
-
-
-var streamSeconds = 0; // stream uptime in seconds
-var botSeconds = 0;
-
-$.timer.addTimer("./systems/timeSystem.js", "uptimecommand", true, function() {
-    if (!$.isOnline($.channelName)) {
-        streamSeconds=0;
-        botSeconds++;
-        return;
-    }
-    else {
-        streamSeconds++;
-        botSeconds++;
-        return;
-    }
-
-}, 1000);
-
-$.on('command', function (event) {
-    var command = event.getCommand();
-    var argsString = event.getArguments().trim();
-	
-    // Only command that reads botSeconds, so check it first.
-    if (command.equalsIgnoreCase("botuptime") && argsString.isEmpty()) {
-        $.say("/me 's uptime: " + $.displayTime(botSeconds));
-        return;
-    }
-	
-    if (command.equalsIgnoreCase("uptime")) {
-        if ($.isOnline($.channelName)) {
-            $.say("/me " + $.username.resolve($.channelName) + " has been live for " + $.getUptime($.channelName) + ".");
-        } else {
-            $.say($.getWhisperString(event.getSender()) + "Stream is Offline!");
-        }
-        return;
-    }	
-    return;
-});
 
 setTimeout(function(){ 
     if ($.moduleEnabled('./systems/timeSystem.js')) {

@@ -96,7 +96,7 @@ $.on('command', function (event) {
                         $.say($.lang.get("net.phantombot.betsystem.autoclose-success", $.getPointsString($.betPot)));
                     }, $.betLength * 1000);
                 }
-            } else if (action.equalsIgnoreCase("close") || action.equalsIgnoreCase("end") || action.equalsIgnoreCase("stop")) {
+            } else if (action.equalsIgnoreCase("close") || action.equalsIgnoreCase("end") || action.equalsIgnoreCase("stop") || action.equalsIgnoreCase("win")) {
                 if (!$.isModv3(sender, event.getTags())) {
                     $.say($.getWhisperString(sender) + $.modmsg);
                     return;
