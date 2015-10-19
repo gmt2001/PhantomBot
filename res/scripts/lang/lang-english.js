@@ -360,3 +360,27 @@ $.lang.data["net.phantombot.top10.time-disabled"] = "You can not use this comman
 $.lang.data["net.phantombot.top10.time-error-noresults"] = "Could not find any users with time spent in the chat.";
 $.lang.data["net.phantombot.top10.time-success"] = "/me [Top 10 Time] $1";
 $.lang.data["net.phantombot.top10.time-success-whisper"] = "[Top 10 Time] $1";
+
+// greetingSystem.js
+$.lang.data["net.phantombot.greetingsystem.maxchars-error-negative"] = "You can not set the maximum greeting character amount to a negative number.";
+$.lang.data["net.phantombot.greetingsystem.maxchars-success"] = "Set the maximum greeting character amount to $1.";
+$.lang.data["net.phantombot.greetingsystem.maxchars-usage"] = "Usage: \"!greet max <amount>\"";
+$.lang.data["net.phantombot.greetingsystem.set-cleared"] = "Your greeting message has been reset.";
+$.lang.data["net.phantombot.greetingsystem.set-cleared-global"] = "The default greeting message has been reset.";
+$.lang.data["net.phantombot.greetingsystem.set-cleared-other"] = "The greeting message of $1 has been reset.";
+$.lang.data["net.phantombot.greetingsystem.set-error-noname"] = "Your greeting message must contain \"(name)\" to display your name.";
+$.lang.data["net.phantombot.greetingsystem.set-error-noname-global"] = "The default greeting message must contain \"(name)\" to display someone's name.";
+$.lang.data["net.phantombot.greetingsystem.set-error-noname-other"] = "The greeting message of $1 must contain \"(name)\" to display their name.";
+$.lang.data["net.phantombot.greetingsystem.set-error-toolong"] = "Your greeting message can not be longer than $1 characters. It is now $2 characters long.";
+$.lang.data["net.phantombot.greetingsystem.set-error-toolong-global"] = "The default greeting message can not be longer than $1 characters. It is now $2 characters long.";
+$.lang.data["net.phantombot.greetingsystem.set-error-toolong-other"] = "The greeting message of $1 can not be longer than $2 characters. It is now $3 characters long.";
+$.lang.data["net.phantombot.greetingsystem.set-success"] = "Your greeting message has been set to \"$1\".";
+$.lang.data["net.phantombot.greetingsystem.set-success-global"] = "The default greeting message has been set to \"$1\".";
+$.lang.data["net.phantombot.greetingsystem.set-success-other"] = "The greeting message of $1 has been set to \"$2\".";
+$.lang.data["net.phantombot.greetingsystem.toggle-disabled"] = "A greeting message will no longer be displayed when you join.";
+$.lang.data["net.phantombot.greetingsystem.toggle-disabled-global"] = "A greeting message will no longer be displayed when anyone joins.";
+$.lang.data["net.phantombot.greetingsystem.toggle-disabled-other"] = "A greeting message will no longer be displayed when $1 joins.";
+$.lang.data["net.phantombot.greetingsystem.toggle-enabled"] = "A greeting message will now be displayed when you join.";
+$.lang.data["net.phantombot.greetingsystem.toggle-enabled-global"] = "A greeting message will now be displayed when anyone joins.";
+$.lang.data["net.phantombot.greetingsystem.toggle-enabled-other"] = "A greeting message will now be displayed when $1 joins.";
+$.lang.data["net.phantombot.greetingsystem.usage"] = "Usage: \"!greet max <amount>\", \"!greet set [global OR user <name>] <message>\", \"!greet toggle [global OR user <name>]\"";
