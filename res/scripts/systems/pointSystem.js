@@ -103,7 +103,7 @@ $.getTimeString = function (time) {
         println("[raidSystem.js] The time prefixes did not contain all numbers. String: net.phantombot.common.time-prefixes");
         return minutes;
     } else if (s.length != 4) {
-        $.logError("./systems/raidSystem.js", 99, "The time suffixes did not contain all numbers. String: net.phantombot.common.time-suffixes");
+        $.logError("./systems/pointSystem.js", 99, "The time suffixes did not contain all numbers. String: net.phantombot.common.time-suffixes");
         println("[raidSystem.js] The time suffixes did not contain all numbers. String: net.phantombot.common.time-suffixes");
         return minutes;
     }
