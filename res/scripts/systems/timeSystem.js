@@ -51,32 +51,40 @@ $.getTimeString = function (time) {
 
     var timeString = "";
 
-    if (time > 0) {
-        if (weeks > 0) {
-            timeString += weeks.toString();
-            timeString += "w "
-        }
-        if (days > 0) {
-            timeString += days.toString();
-            timeString += "d "
-        }
-        if (hours > 0) {
-            timeString += hours.toString();
-            timeString += "h "
-        }
-        if (minutes > 0) {
-            timeString += minutes.toString();
-            timeString += "m "
-        }
-        if (weeks == 0 && days == 0 && hours == 0 && minutes == 0) {
-            return "0m";
-        }
+    var p = $.lang.get("net.phantombot.common.time-prefixes");
+    var s = $.lang.get("net.phantombot.common.time-suffixes");
 
-        timeString = timeString.trim();
-    } else {
-        return "0m";
+    if (p.length != 4) {
+        $.logError("./systems/raidSystem.js", 47, "The time prefixes did not contain all numbers. String: net.phantombot.common.time-prefixes");
+        println("[raidSystem.js] The time prefixes did not contain all numbers. String: net.phantombot.common.time-prefixes");
+        return minutes;
+    } else if (s.length != 4) {
+        $.logError("./systems/raidSystem.js", 48, "The time suffixes did not contain all numbers. String: net.phantombot.common.time-suffixes");
+        println("[raidSystem.js] The time suffixes did not contain all numbers. String: net.phantombot.common.time-suffixes");
+        return minutes;
     }
 
+    if (time > 0) {
+        if (weeks > 0) {
+            timeString += p[0] + weeks.toString() + s[0] + " ";
+        }
+        if (days > 0) {
+            timeString += p[1] + days.toString() + s[1] + " ";
+        }
+        if (hours > 0) {
+            timeString += p[2] + hours.toString() + s[2] + " ";
+        }
+        if (minutes > 0) {
+            timeString += p[3] + minutes.toString() + s[3] + " ";
+        }
+        if (weeks == 0 && days == 0 && hours == 0 && minutes == 0) {
+            timeString += p[3] + "0" + s[3] + " ";
+        }
+    } else {
+        timeString += p[3] + "0" + s[3] + " ";
+    }
+
+    timeString = timeString.trim();
     return timeString;
 }
 
