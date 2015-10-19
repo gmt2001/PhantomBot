@@ -375,7 +375,7 @@ $.on('command', function (event) {
                     }
 
                     if (betWager > userPoints) {
-                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.enter-error-notenough", $.getPointsString(betWager)));
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.enter-error-notenough", $.inidb.get('settings', 'pointNameMultiple'), $.getPointsString(betWager)));
                         return;
                     }
 

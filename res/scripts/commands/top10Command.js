@@ -89,7 +89,7 @@ $.on('command', function(event) {
         	    return;
         	}
 
-        	$.say($.getWhisperString(sender) + $.lang.get("net.phantombot.top10.points-success", $.inidb.get('settings', 'pointNameMultiple'), topTenString.trim()));
+        	$.say($.lang.get("net.phantombot.top10.points-success", $.inidb.get('settings', 'pointNameMultiple'), topTenString.trim()));
         	return;
         }
     }

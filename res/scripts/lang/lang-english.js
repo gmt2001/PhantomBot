@@ -336,9 +336,9 @@ $.lang.data["net.phantombot.betsystem.entries-usage"] = "Usage: \"!bet entries <
 // top10Command.js
 $.lang.data["net.phantombot.top10.points-disabled"] = "You can not use this command while the points module is disabled.";
 $.lang.data["net.phantombot.top10.points-error-noresults"] = "Could not find any users with $1.";
-$.lang.data["net.phantombot.top10.points-success"] = "[Top 10 $1] $2";
+$.lang.data["net.phantombot.top10.points-success"] = "/me [Top 10 $1] $2";
 $.lang.data["net.phantombot.top10.points-success-whisper"] = "[Top 10 $1] $2";
 $.lang.data["net.phantombot.top10.time-disabled"] = "You can not use this command while the time module is disabled.";
 $.lang.data["net.phantombot.top10.time-error-noresults"] = "Could not find any users with time spent in the chat.";
-$.lang.data["net.phantombot.top10.time-success"] = "[Top 10 Time] $1";
+$.lang.data["net.phantombot.top10.time-success"] = "/me [Top 10 Time] $1";
 $.lang.data["net.phantombot.top10.time-success-whisper"] = "[Top 10 Time] $1";
