@@ -1,3 +1,8 @@
+$.auctionMinimum = 1;
+$.auctionIncrement = 1;
+$.auctionRunning = 0;
+$.auctionTopUser = "";
+$.auctionTopPoints = 0;
 
 $.on('command', function(event) {
     var sender = event.getSender();
@@ -93,7 +98,7 @@ $.on('command', function(event) {
                     }
                 }
             } else {
-                if (isNaN(action)) {
+                if (isNaN(parseInt(action))) {
                     $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bidsystem.usage"));
                     return;
                 } else {
@@ -144,10 +149,10 @@ $.on('command', function(event) {
                 return;
             } else {
                 if ($.auctionTopPoints == 0) {
-                    $.say($.lang.get($.getWhisperString(sender) + "net.phantombot.bidsystem.get-running-noentries", $.getPointsString($.auctionMinimum)));
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bidsystem.get-running-noentries", $.getPointsString($.auctionMinimum)));
                     return;
                 } else {
-                    $.say($.lang.get($.getWhisperString(sender) + "net.phantombot.bidsystem.get-running-entries", $.getPointsString($.auctionTopPoints), $.username.resolve($.auctionTopUser), $.getPointsString($.auctionTopPoints + $.auctionIncrement)));
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bidsystem.get-running-entries", $.getPointsString($.auctionTopPoints), $.username.resolve($.auctionTopUser), $.getPointsString($.auctionTopPoints + $.auctionIncrement)));
                     return;
                 }
             }
