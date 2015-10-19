@@ -380,7 +380,7 @@ $.on('command', function(event) {
             if ($.inidb.exists("pricecom", commandname) && parseInt($.inidb.get("pricecom", commandname)) > 0) {
                 var retrieveprice = $.inidb.get("pricecom", commandname);
 		
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.pricecom-current-set-price", args[0], retrieveprice, $.getPointsString(retrieveprice)));
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.pricecom-current-set-price", args[0], $.getPointsString(retrieveprice)));
                 return;
             } else {
                 $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.pricecom-current-set-price2", args[0], $.pointNameMultiple));
@@ -405,7 +405,7 @@ $.on('command', function(event) {
                 return;
             } else {
                 $.inidb.set("pricecom", sourceCommand, commandprice);
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.pricecom-success", args[0], commandprice, $.getPointsString(commandprice)));
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.pricecom-success", args[0], $.getPointsString(commandprice)));
             }
         }		
     }

@@ -1,14 +1,3 @@
-$.getPointsString = function (points) {
-    points = parseInt(points);
-    var pointsString;
-
-    if (points == 1) {
-        pointsString = points + " " + $.inidb.get('settings', 'pointNameSingle');
-    } else {
-        pointsString = points + " " + $.inidb.get('settings', 'pointNameMultiple');
-    }
-    return pointsString;
-}
 
 $.getTimeString = function (time) {
     var minutes = parseInt((time / 60) % 60);
@@ -147,7 +136,7 @@ $.on('command', function(event) {
         	    return;
         	}
 
-        	$.say($.lang.get("net.phantombot.top10.time-success", topTenString.trim()));
+        	$.say($.getWhisperString(sender) + $.lang.get("net.phantombot.top10.time-success", topTenString.trim()));
         	return;
         }
     }

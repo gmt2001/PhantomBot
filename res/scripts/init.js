@@ -410,13 +410,13 @@ $api.on($script, 'command', function (event) {
 
     if ($.moduleEnabled("./systems/pointSystem.js") && !$.isModv3(sender, event.getTags()) && $.inidb.exists("pricecom", command.toLowerCase())) {
         if (parseInt($.inidb.get("points", sender)) < parseInt($.inidb.get("pricecom", command.toLowerCase()))) {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.needpoints", $.inidb.get("pricecom", command.toLowerCase()), $.getPointsString(parseInt($.inidb.get("pricecom", command.toLowerCase())))));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.needpoints", $.getPointsString(parseInt($.inidb.get("pricecom", command.toLowerCase())))));
             return;
         } else {
             if (parseInt($.inidb.get("pricecom", command.toLowerCase())) > 0)
             {
                 $.inidb.decr("points", sender, parseInt($.inidb.get("pricecom", command.toLowerCase())));
-                $.println($.lang.get("net.phantombot.cmd.paid", sender, $.inidb.get('points', sender), $.getPointsString(parseInt($.inidb.get("pricecom", command.toLowerCase())))));
+                $.println($.lang.get("net.phantombot.cmd.paid", sender, $.getPointsString(parseInt($.inidb.get("pricecom", command.toLowerCase())))));
             }
         }
     }

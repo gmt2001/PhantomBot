@@ -10,7 +10,7 @@ $.getRewardString = function(reward) {
         return reward;
     } else {
         $.raffleMode = 1;
-        return getPointsString(Math.max(parseInt(reward), 0));
+        return $.getPointsString(Math.max(parseInt(reward), 0));
     }
 }
 
@@ -360,10 +360,10 @@ $.on('command', function (event) {
                 }
 
                 if ($.raffleRunning == 1) {
-                    $.say($.lang.get("net.phantombot.rafflesystem.result-success-running", getRewardString(prevRaffleReward), getPointsString(prevRafflePrice), prevRaffleMode, prevRaffleFollowers, prevRaffleKeyword, prevRaffleEntrantsCount));
+                    $.say($.lang.get("net.phantombot.rafflesystem.result-success-running", getRewardString(prevRaffleReward), $.getPointsString(prevRafflePrice), prevRaffleMode, prevRaffleFollowers, prevRaffleKeyword, prevRaffleEntrantsCount));
                     return;
                 } else {
-                    $.say($.lang.get("net.phantombot.rafflesystem.result-success-norunning", getRewardString(prevRaffleReward), getPointsString(prevRafflePrice), prevRaffleMode, prevRaffleFollowers, prevRaffleKeyword, prevRaffleEntrantsCount, prevRaffleWinner, prevRaffleDate));
+                    $.say($.lang.get("net.phantombot.rafflesystem.result-success-norunning", getRewardString(prevRaffleReward), $.getPointsString(prevRafflePrice), prevRaffleMode, prevRaffleFollowers, prevRaffleKeyword, prevRaffleEntrantsCount, prevRaffleWinner, prevRaffleDate));
                     return;
                 }
             } else if (action.equalsIgnoreCase("entries") || action.equalsIgnoreCase("entrants")) {
