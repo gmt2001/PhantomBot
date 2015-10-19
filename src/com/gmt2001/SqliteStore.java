@@ -44,7 +44,6 @@ public class SqliteStore extends DataStore
         return instance;
     }
 
-    @SuppressWarnings("OverridableMethodCallInConstructor")
     private SqliteStore()
     {
         try
@@ -55,54 +54,92 @@ public class SqliteStore extends DataStore
             com.gmt2001.Console.err.printStackTrace(ex);
         }
 
-        LoadConfig("");
+        Object o[] = LoadConfigReal("");
+
+        dbname = (String) o[0];
+        cache_size = (int) o[1];
+        safe_write = (boolean) o[2];
+        connection = (Connection) o[3];
     }
 
     @Override
     public void LoadConfig(String configStr)
+    {
+        Object o[] = LoadConfigReal(configStr);
+
+        dbname = (String) o[0];
+        cache_size = (int) o[1];
+        safe_write = (boolean) o[2];
+        connection = (Connection) o[3];
+    }
+
+    private static Object[] LoadConfigReal(String configStr)
     {
         if (configStr.isEmpty())
         {
             configStr = "sqlite3config.txt";
         }
 
+        String dbname = "phantombot.db";
+        int cache_size = 2000;
+        boolean safe_write = false;
+        Connection connection = null;
+
         try
         {
             File f = new File("./" + configStr);
 
-            if (!f.exists())
+            if (f.exists())
             {
-                return;
+                String data = FileUtils.readFileToString(new File("./" + configStr));
+                String[] lines = data.replaceAll("\\r", "").split("\\n");
+
+                for (String line : lines)
+                {
+                    if (line.startsWith("dbname=") && line.length() > 8)
+                    {
+                        dbname = line.substring(7);
+                    }
+                    if (line.startsWith("cachesize=") && line.length() > 11)
+                    {
+                        cache_size = Integer.parseInt(line.substring(10));
+                    }
+                    if (line.startsWith("safewrite=") && line.length() > 11)
+                    {
+                        safe_write = line.substring(10).equalsIgnoreCase("true") || line.substring(10).equalsIgnoreCase("1");
+                    }
+                }
+
+                connection = CreateConnection(dbname, cache_size, safe_write);
             }
+        } catch (IOException ex)
+        {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
 
-            String data = FileUtils.readFileToString(new File("./" + configStr));
-            String[] lines = data.replaceAll("\\r", "").split("\\n");
+        return new Object[]
+        {
+            dbname, cache_size, safe_write, connection
+        };
+    }
 
-            for (String line : lines)
-            {
-                if (line.startsWith("dbname=") && line.length() > 8)
-                {
-                    dbname = line.substring(7);
-                }
-                if (line.startsWith("cachesize=") && line.length() > 11)
-                {
-                    cache_size = Integer.parseInt(line.substring(10));
-                }
-                if (line.startsWith("safewrite=") && line.length() > 11)
-                {
-                    safe_write = line.substring(10).equalsIgnoreCase("true") || line.substring(10).equalsIgnoreCase("1");
-                }
-            }
+    private static Connection CreateConnection(String dbname, int cache_size, boolean safe_write)
+    {
+        Connection connection = null;
 
+        try
+        {
             SQLiteConfig config = new SQLiteConfig();
             config.setCacheSize(cache_size);
             config.setSynchronous(safe_write ? SQLiteConfig.SynchronousMode.FULL : SQLiteConfig.SynchronousMode.NORMAL);
             connection = DriverManager.getConnection("jdbc:sqlite:" + dbname.replaceAll("\\\\", "/"), config.toProperties());
             connection.setAutoCommit(true);
-        } catch (IOException | SQLException ex)
+        } catch (SQLException ex)
         {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
+
+        return connection;
     }
 
     @Override
@@ -110,12 +147,31 @@ public class SqliteStore extends DataStore
     {
         super.finalize();
 
-        connection.close();
+        if (connection != null && !connection.isClosed())
+        {
+            connection.close();
+        }
+    }
+
+    private void CheckConnection()
+    {
+        try
+        {
+            if (connection == null || connection.isClosed() || !connection.isValid(10))
+            {
+                connection = CreateConnection(dbname, cache_size, safe_write);
+            }
+        } catch (SQLException ex)
+        {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
     }
 
     @Override
     public void AddFile(String fName)
     {
+        CheckConnection();
+
         fName = fName.replaceAll(" ", "_");
 
         if (!FileExists(fName))
@@ -136,6 +192,8 @@ public class SqliteStore extends DataStore
     @Override
     public void RemoveKey(String fName, String section, String key)
     {
+        CheckConnection();
+
         fName = fName.replaceAll(" ", "_");
 
         if (FileExists(fName))
@@ -156,6 +214,8 @@ public class SqliteStore extends DataStore
     @Override
     public void RemoveSection(String fName, String section)
     {
+        CheckConnection();
+
         fName = fName.replaceAll(" ", "_");
 
         if (FileExists(fName))
@@ -176,6 +236,8 @@ public class SqliteStore extends DataStore
     @Override
     public void RemoveFile(String fName)
     {
+        CheckConnection();
+
         fName = fName.replaceAll(" ", "_");
 
         if (FileExists(fName))
@@ -196,6 +258,8 @@ public class SqliteStore extends DataStore
     @Override
     public boolean FileExists(String fName)
     {
+        CheckConnection();
+
         fName = fName.replaceAll(" ", "_");
 
         try
@@ -217,6 +281,8 @@ public class SqliteStore extends DataStore
     @Override
     public String[] GetFileList()
     {
+        CheckConnection();
+
         try
         {
             Statement statement = connection.createStatement();
@@ -246,8 +312,10 @@ public class SqliteStore extends DataStore
     @Override
     public String[] GetCategoryList(String fName)
     {
+        CheckConnection();
+
         fName = fName.replaceAll(" ", "_");
-        
+
         if (FileExists(fName))
         {
             try
@@ -276,12 +344,14 @@ public class SqliteStore extends DataStore
         {
         };
     }
-    
+
     @Override
     public String[] GetKeyList(String fName, String section)
     {
+        CheckConnection();
+
         fName = fName.replaceAll(" ", "_");
-        
+
         if (FileExists(fName))
         {
             try
@@ -320,6 +390,8 @@ public class SqliteStore extends DataStore
     @Override
     public String GetString(String fName, String section, String key)
     {
+        CheckConnection();
+
         String result = null;
 
         fName = fName.replaceAll(" ", "_");
@@ -351,6 +423,8 @@ public class SqliteStore extends DataStore
     @Override
     public void SetString(String fName, String section, String key, String value)
     {
+        CheckConnection();
+
         fName = fName.replaceAll(" ", "_");
 
         AddFile(fName);

@@ -53,10 +53,9 @@ public class IniStore extends DataStore implements ActionListener
         return instance;
     }
 
-    @SuppressWarnings("OverridableMethodCallInConstructor")
     private IniStore()
     {
-        LoadConfig("");
+        inifolder = LoadConfigReal("");
 
         t = new Timer((int) saveInterval, this);
         t2 = new Timer(1, this);
@@ -229,12 +228,17 @@ public class IniStore extends DataStore implements ActionListener
     @Override
     public void LoadConfig(String configStr)
     {
+        inifolder = LoadConfigReal(configStr);
+    }
+    
+    private static String LoadConfigReal(String configStr)
+    {
         if (configStr.isEmpty())
         {
-            inifolder = "inistore";
+            return "inistore";
         } else
         {
-            inifolder = configStr;
+            return configStr;
         }
     }
 
