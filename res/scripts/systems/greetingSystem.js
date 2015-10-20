@@ -39,7 +39,7 @@ $.on("command", function (event) {
                             $.greetToggleGlobal = $.inidb.get("greeting", "autogreet");
 
                             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.greetingsystem.toggle-enabled-global"));
-                        } else if ($.greetToggleGlobal == "true") {
+                        } else {
                             $.inidb.set("greeting", "autogreet", "false");
                             $.greetToggleGlobal = $.inidb.get("greeting", "autogreet");
 
@@ -60,7 +60,7 @@ $.on("command", function (event) {
                                 greetToggle = $.inidb.get("greeting", greetuser + "_enabled");
 
                                 $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.greetingsystem.toggle-enabled-other", $.username.resolve(greetuser)));
-                            } else if (greetToggle == "true") {
+                            } else {
                                 $.inidb.set("greeting", greetuser + "_enabled", "false");
                                 greetToggle = $.inidb.get("greeting", greetuser + "_enabled");
 
@@ -78,7 +78,7 @@ $.on("command", function (event) {
                         greetToggle = $.inidb.get("greeting", sender + "_enabled");
 
                         $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.greetingsystem.toggle-enabled"));
-                    } else if (greetToggle == "true") {
+                    } else {
                         $.inidb.set("greeting", sender + "_enabled", "false");
                         greetToggle = $.inidb.get("greeting", sender + "_enabled");
 
@@ -201,7 +201,7 @@ $.on('ircChannelJoin', function(event) {
 
     $.inidb.set("visited", sender, "visited");
     
-    if ($.inidb.get("greeting", sender + "_enabled") == "1") {
+    if ($.inidb.get("greeting", sender + "_enabled") == "true") {
         var greet = $.inidb.get("greeting", sender);
 
         if (greet == null || greet == undefined || greet == "") {
