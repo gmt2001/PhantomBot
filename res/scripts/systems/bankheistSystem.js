@@ -120,7 +120,7 @@ if ($.heistCancelled == null) {
 $.betTooLarge = $.inidb.get("bankheist_strings", "betTooLarge");
 if ($.betTooLarge == null) {
     $.betTooLarge = "The maximum amount allowed is ";
-    $.inidb.set("bankheist_strings", "stringNoJoin", $.betTooLarge);
+    $.inidb.set("bankheist_strings", "betTooLarge", $.betTooLarge);
 }
 
 $.chances50 = $.inidb.get("bankheist_chances", "chances50");
