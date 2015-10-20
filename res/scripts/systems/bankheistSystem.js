@@ -17,7 +17,7 @@ if ($.bankheistToggle == null) {
 
 $.bankheistMaxBet = $.inidb.get("settings", "bankheistmaxbet");
 if ($.bankheistMaxBet == null) {
-    $.bankheistMaxBet = 100; //in minute
+    $.bankheistMaxBet = 1000; //max amount available to bet
     $.inidb.set("settings", "bankheistmaxbet", $.bankheistMaxBet);
 }
 

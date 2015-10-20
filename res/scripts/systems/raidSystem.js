@@ -45,7 +45,11 @@ $.on('command', function(event) {
                 }
 
                 for(var i = 0; i < parseInt(args[1]); i++) {
-                    $.say($.lang.get("net.phantombot.raidsystem.raid-success", args[0].toLowerCase()));
+                    if(args.length >=3 && !isNaN(parseInt(args[1]))) {
+                        $.say($.lang.get("net.phantombot.raidsystem.raid-success", args[0].toLowerCase(), argsString.substring(argsString.indexOf(args[2].toString()), argsString.length())));
+                    } else {
+                        $.say($.lang.get("net.phantombot.raidsystem.raid-success", args[0].toLowerCase(),""));
+                    }
                 }
 
                 return;
