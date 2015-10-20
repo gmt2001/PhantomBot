@@ -18,7 +18,7 @@ $.on('twitchFollow', function(event) {
             p = 100;
         }
         
-        if ($.announceFollows && $.moduleEnabled("./handlers/followHandler.js")) {
+        if (($.announceFollows == true) && $.moduleEnabled("./handlers/followHandler.js")) {
             var s = $.inidb.get('settings', 'followmessage');
             
             if (s == null || s == undefined || $.strlen(s) == 0) {
