@@ -37,27 +37,34 @@ $.on('command', function(event) {
                 $.say($.getWhisperString(sender) + $.modmsg);
                 return;
             }
-
-            if (args.length >=2 && !isNaN(parseInt(args[1]))) {
-                if(parseInt(args[1]) > maxSpamCount) {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.raidsystem.raid-error-toomuch", maxSpamCount));
-                    return;
-                }
-                if(!isNaN(parseInt(args[1]))) {
-                    for(var i = 0; i < parseInt(args[1]); i++) {
-                        if(args.length >=3 && !isNaN(parseInt(args[1])) && args[2]!=null) {
-                            $.say($.lang.get("net.phantombot.raidsystem.raid-success", args[0].toLowerCase(), argsString.substring(argsString.indexOf(args[2].toString()), argsString.length())));
-                            return;
-                        }
-                    }
-                } else {
-                    if(args[1]!=null) {
-                        $.say($.lang.get("net.phantombot.raidsystem.raid-success", args[0].toLowerCase(), argsString.substring(argsString.indexOf(args[1].toString()), argsString.length())));
-                        return;
-                    } else {
+            
+            if (args[1]==null) {
                         $.say($.lang.get("net.phantombot.raidsystem.raid-success", args[0].toLowerCase(), ""));
                         return;
+            }
 
+            if (args.length >=2) {               
+                if(args[1]!=null) {
+                    if(parseInt(args[1])) {
+                        
+                        if(parseInt(args[1]) > maxSpamCount) {
+                            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.raidsystem.raid-error-toomuch", maxSpamCount));
+                            return;
+                        }
+                        
+                        for(var i = 0; i < parseInt(args[1]); i++) {
+                            if(args.length >=2) {
+                                if(args[2]!=null) {
+                                    $.say($.lang.get("net.phantombot.raidsystem.raid-success", args[0].toLowerCase(), argsString.substring(argsString.indexOf(args[2].toString()), argsString.length())));
+                                } else {
+                                    $.say($.lang.get("net.phantombot.raidsystem.raid-success", args[0].toLowerCase(), ""));                                
+                                }
+                            }
+                        }
+                        return;
+                    } else {
+                        $.say($.lang.get("net.phantombot.raidsystem.raid-success", args[0].toLowerCase(), argsString.substring(argsString.indexOf(args[1].toString()), argsString.length())));
+                        return;       
                     }
                 }
             }
