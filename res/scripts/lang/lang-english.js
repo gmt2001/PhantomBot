@@ -204,7 +204,7 @@ $.lang.data["net.phantombot.botuptime.success"] = "/me [Bot Uptime] $1 has been 
 $.lang.data["net.phantombot.raidsystem.raid-error-toomuch"] = "To prevent a global ban from Twitch, the maximum has been set to $1.";
 $.lang.data["net.phantombot.raidsystem.raid-success"] = "/me http://www.twitch.tv/$1 $2";
 $.lang.data["net.phantombot.raidsystem.raid-usage"] = "Usage: \"!raid (name) | !raid (name) (message) | !raid (name) (amount) | !raid (name) (amount) (message)\"";
-$.lang.data["net.phantombot.raidsystem.raider-success"] = "Thank you for the raid, $1! This is the $2 time $1 has raided! Please give them a follow at \"http://twitch.tv/$3\"!";
+$.lang.data["net.phantombot.raidsystem.raider-success"] = "Thank you for the raid, $1! This is the $2 time $1 has raided! Please give them a follow at http://twitch.tv/$3 !";
 $.lang.data["net.phantombot.raidsystem.raider-usage"] = "Usage: \"!raider <name>\"";
 
 //addCommand.js
