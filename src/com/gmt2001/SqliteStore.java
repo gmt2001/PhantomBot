@@ -269,7 +269,7 @@ public class SqliteStore extends DataStore
 
             ResultSet rs = statement.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='phantombot_" + fName + "';");
 
-            return rs.first();
+            return rs.next();
         } catch (SQLException ex)
         {
             com.gmt2001.Console.err.printStackTrace(ex);
@@ -408,7 +408,7 @@ public class SqliteStore extends DataStore
 
             ResultSet rs = statement.executeQuery("SELECT * FROM phantombot_" + fName + " WHERE section='" + section + "' AND variable='" + key + "';");
 
-            if (rs.first())
+            if (rs.next())
             {
                 result = rs.getString("value");
             }
