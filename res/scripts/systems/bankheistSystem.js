@@ -316,13 +316,13 @@ $.on('command', function (event) {
 
     if (command.equalsIgnoreCase("bankheist")) {
         if (args[0] == null) {
-            $.say($.getWhisperString(event.getSender()) + $.banksClosed);
+            $.say($.getWhisperString(sender) + $.banksClosed);
             return;
         }
         if (args[0] == "toggle") {
 
             if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                $.say($.getWhisperString(event.getSender()) + "You must be a moderator to use this command.");
+                $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
                 return;
             }
 
@@ -332,7 +332,7 @@ $.on('command', function (event) {
 
                 startHeist();
 
-                $.say($.getWhisperString(event.getSender()) + "Bankheists are now enabled!");
+                $.say($.getWhisperString(sender) + "Bankheists are now enabled!");
                 return;
 
             } else {
@@ -340,13 +340,13 @@ $.on('command', function (event) {
                 $.inidb.set("settings", "bankheistToggle", "false");
                 $.timer.clearTimer("./systems/bankheistSystem.js", "bankheist", true);
                 $.timer.clearTimer("./systems/bankheistSystem.js", "enterbankheist", true);
-                $.say($.getWhisperString(event.getSender()) + "Bankheists are now disabled!");
+                $.say($.getWhisperString(sender) + "Bankheists are now disabled!");
                 return;
             }
         } else if (args[0].equalsIgnoreCase("start")) {
 
             if (!$.isModv3(sender, event.getTags())) {
-                $.say($.getWhisperString(event.getSender()) + "You must be a moderator to use this command.");
+                $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
                 return;
             }
 
@@ -373,30 +373,27 @@ $.on('command', function (event) {
             }, (parseInt($.signupMinutes) * 60) * 1000); //60 second entry window
             return;
 
-        } else if (parseInt(args[0])) {
+        } else if (!isNaN(betAmount)) {
 
             if ($.bankheistIsOn == false) {
-                $.say($.getWhisperString(event.getSender()) + $.banksClosed);
+                $.say($.getWhisperString(sender) + $.banksClosed);
                 return;
             } else {
                 $.heistUserPoints = parseInt($.inidb.get("points", sender));
                 $.userPointsId = parseInt($.pointsId + 1);
 
-                if (!parseInt(betAmount) || !parseInt($.userPointsId)) {
-                    $.say($.getWhisperString(event.getSender()) + $.enterABet);
-                    return;
-                } else if (parseInt(betAmount) > $.heistUserPoints || parseInt(betAmount) == 0) {
-                    $.say($.getWhisperString(event.getSender()) + $.affordBet + "[Points available: " + $.heistUserPoints.toString());
+                if (parseInt(betAmount) > $.heistUserPoints || parseInt(betAmount) == 0) {
+                    $.say($.getWhisperString(sender) + $.affordBet + "[Points available: " + $.heistUserPoints.toString());
                     return;
                 } else if (parseInt(betAmount) > $.bankheistMaxBet) {
-                    $.say($.getWhisperString(event.getSender()) + $.betTooLarge + $.bankheistMaxBet + ".");
+                    $.say($.getWhisperString(sender) + $.betTooLarge + $.bankheistMaxBet + ".");
                     return;
                 } else {
                     if ($.inidb.exists("bankheist_roster", sender))
                     {
                         $.senderId = $.inidb.get("bankheist_roster", sender);
                         $.senderBet = $.inidb.get("bankheist_bets", $.senderId);
-                        $.say($.getWhisperString(event.getSender()) + username + $.alreadyBet + $.senderBet.toString());
+                        $.say($.getWhisperString(sender) + username + $.alreadyBet + $.senderBet.toString());
                         return;
                     } else {
                         $.inidb.set("bankheist_roster", $.userPointsId.toString(), sender);
@@ -406,321 +403,330 @@ $.on('command', function (event) {
                         if ($.userPointsId == 1) {
                             $.say(username + " " + $.startedHeist);
                         } else {
-                            $.say($.getWhisperString(event.getSender()) + username + $.joinedHeist);
+                            $.say($.getWhisperString(sender) + username + $.joinedHeist);
                         }
                     }
                 }
             }
         } else {
             var argsString = event.getArguments().trim();
-            var modValue = argsString.substring(argsString.indexOf(args[0]) + $.strlen(args[0]) + 1);
+            var modValue = "";
+            if(args[1]!=null) {
+                modValue = argsString.substring(argsString.indexOf(args[1]), args[1].length());
+            }
 
             if (args[0].equalsIgnoreCase("signupMinutes")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(event.getSender()) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
                     return;
                 }
                 $.signupMinutes = modValue;
                 $.inidb.set("bankheist_timers", "signupMinutes", modValue);
-                $.say($.getWhisperString(event.getSender()) + "The value for signupMinutes has been set to " + modValue);
+                $.say($.getWhisperString(sender) + "The value for signupMinutes has been set to " + modValue);
                 return;
             }
 
             if (args[0].equalsIgnoreCase("heistMinutes")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(event.getSender()) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
                     return;
                 }
                 $.heistMinutes = modValue;
                 $.inidb.set("bankheist_timers", "heistMinutes", modValue);
-                $.say($.getWhisperString(event.getSender()) + "The value for heistMinutes has been set to " + modValue);
+                $.say($.getWhisperString(sender) + "The value for heistMinutes has been set to " + modValue);
                 return;
             }
 
             if (args[0].equalsIgnoreCase("heistCancelled")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(event.getSender()) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
                     return;
                 }
                 $.heistCancelled = modValue;
                 $.inidb.set("bankheist_strings", "heistCancelled", modValue);
-                $.say($.getWhisperString(event.getSender()) + "The value for heistCancelled has been set to " + modValue);
+                $.say($.getWhisperString(sender) + "The value for heistCancelled has been set to " + modValue);
                 return;
             }
 
             if (args[0].equalsIgnoreCase("banksOpen")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(event.getSender()) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
                     return;
                 }
                 $.banksOpen = modValue;
                 $.inidb.set("bankheist_strings", "banksOpen", modValue);
-                $.say($.getWhisperString(event.getSender()) + "The value for banksOpen has been set to " + modValue);
+                $.say($.getWhisperString(sender) + "The value for banksOpen has been set to " + modValue);
                 return;
             }
 
             if (args[0].equalsIgnoreCase("startedHeist")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(event.getSender()) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
                     return;
                 }
                 $.startedHeist = modValue;
                 $.inidb.set("bankheist_strings", "startedHeist", modValue);
-                $.say($.getWhisperString(event.getSender()) + "The value for startedHeist has been set to " + modValue);
+                $.say($.getWhisperString(sender) + "The value for startedHeist has been set to " + modValue);
                 return;
             }
 
             if (args[0].equalsIgnoreCase("stringStarting")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(event.getSender()) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
                     return;
                 }
                 $.stringStarting = modValue;
                 $.inidb.set("bankheist_strings", "stringStarting", modValue);
-                $.say($.getWhisperString(event.getSender()) + "The value for stringStarting has been set to " + modValue);
+                $.say($.getWhisperString(sender) + "The value for stringStarting has been set to " + modValue);
                 return;
             }
 
             if (args[0].equalsIgnoreCase("stringNoJoin")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(event.getSender()) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
                     return;
                 }
                 $.stringNoJoin = modValue;
                 $.inidb.set("bankheist_strings", "stringNoJoin", modValue);
-                $.say($.getWhisperString(event.getSender()) + "The value for stringNoJoin has been set to " + modValue);
+                $.say($.getWhisperString(sender) + "The value for stringNoJoin has been set to " + modValue);
                 return;
             }
 
             if (args[0].equalsIgnoreCase("banksClosed")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(event.getSender()) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
                     return;
                 }
                 $.banksClosed = modValue;
                 $.inidb.set("bankheist_strings", "banksClosed", modValue);
-                $.say($.getWhisperString(event.getSender()) + "The value for banksClosed has been set to " + modValue);
+                $.say($.getWhisperString(sender) + "The value for banksClosed has been set to " + modValue);
                 return;
             }
 
             if (args[0].equalsIgnoreCase("stringAllDead")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(event.getSender()) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
                     return;
                 }
                 $.stringAllDead = modValue;
                 $.inidb.set("bankheist_strings", "stringAllDead", modValue);
-                $.say($.getWhisperString(event.getSender()) + "The value for stringAllDead has been set to " + modValue);
+                $.say($.getWhisperString(sender) + "The value for stringAllDead has been set to " + modValue);
                 return;
             }
 
             if (args[0].equalsIgnoreCase("affordBet")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(event.getSender()) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
                     return;
                 }
                 $.affordBet = modValue;
                 $.inidb.set("bankheist_strings", "affordBet", modValue);
-                $.say($.getWhisperString(event.getSender()) + "The value for affordBet has been set to " + modValue);
+                $.say($.getWhisperString(sender) + "The value for affordBet has been set to " + modValue);
                 return;
             }
 
             if (args[0].equalsIgnoreCase("alreadyBet")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(event.getSender()) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
                     return;
                 }
                 $.alreadyBet = modValue;
                 $.inidb.set("bankheist_strings", "alreadyBet", modValue);
-                $.say($.getWhisperString(event.getSender()) + "The value for alreadyBet has been set to " + modValue);
+                $.say($.getWhisperString(sender) + "The value for alreadyBet has been set to " + modValue);
                 return;
             }
 
             if (args[0].equalsIgnoreCase("joinedHeist")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(event.getSender()) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
                     return;
                 }
                 $.joinedHeist = modValue;
                 $.inidb.set("bankheist_strings", "joinedHeist", modValue);
-                $.say($.getWhisperString(event.getSender()) + "The value for joinedHeist has been set to " + modValue);
+                $.say($.getWhisperString(sender) + "The value for joinedHeist has been set to " + modValue);
                 return;
             }
 
             if (args[0].equalsIgnoreCase("enterABet")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(event.getSender()) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
                     return;
                 }
                 $.enterABet = modValue;
                 $.inidb.set("bankheist_strings", "enterABet", modValue);
-                $.say($.getWhisperString(event.getSender()) + "The value for enterABet has been set to " + modValue);
+                $.say($.getWhisperString(sender) + "The value for enterABet has been set to " + modValue);
                 return;
             }
 
             if (args[0].equalsIgnoreCase("stringPayouts")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(event.getSender()) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
                     return;
                 }
                 $.stringPayouts = modValue;
                 $.inidb.set("bankheist_strings", "stringPayouts", modValue);
-                $.say($.getWhisperString(event.getSender()) + "The value for stringPayouts has been set to " + modValue);
+                $.say($.getWhisperString(sender) + "The value for stringPayouts has been set to " + modValue);
                 return;
             }
             if (args[0].equalsIgnoreCase("stringFlawless")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(event.getSender()) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
                     return;
                 }
                 $.stringFlawless = modValue;
                 $.inidb.set("bankheist_strings", "stringFlawless", modValue);
-                $.say($.getWhisperString(event.getSender()) + "The value for stringFlawless has been set to " + modValue);
+                $.say($.getWhisperString(sender) + "The value for stringFlawless has been set to " + modValue);
                 return;
             }
             if (args[0].equalsIgnoreCase("stringCasualties")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(event.getSender()) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
                     return;
                 }
                 $.stringCasualties = modValue;
                 $.inidb.set("bankheist_strings", "stringCasualties", modValue);
-                $.say($.getWhisperString(event.getSender()) + "The value for stringCasualties has been set to " + modValue);
+                $.say($.getWhisperString(sender) + "The value for stringCasualties has been set to " + modValue);
                 return;
             }
             if (args[0].equalsIgnoreCase("betTooLarge")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(event.getSender()) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
                     return;
                 }
                 $.betTooLarge = modValue;
                 $.inidb.set("bankheist_strings", "betTooLarge", modValue);
-                $.say($.getWhisperString(event.getSender()) + "The value for betTooLarge has been set to " + modValue);
+                $.say($.getWhisperString(sender) + "The value for betTooLarge has been set to " + modValue);
                 return;
             }
 
             if (args[0].equalsIgnoreCase("chances50")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(event.getSender()) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
                     return;
                 }
                 $.chances50 = modValue;
                 $.inidb.set("bankheist_chances", "chances50", modValue);
-                $.say($.getWhisperString(event.getSender()) + "The value for chances50 has been set to " + modValue);
+                $.say($.getWhisperString(sender) + "The value for chances50 has been set to " + modValue);
                 return;
             }
 
             if (args[0].equalsIgnoreCase("chances40")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(event.getSender()) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
                     return;
                 }
                 $.chances40 = modValue;
                 $.inidb.set("bankheist_chances", "chances40", modValue);
-                $.say($.getWhisperString(event.getSender()) + "The value for chances40 has been set to " + modValue);
+                $.say($.getWhisperString(sender) + "The value for chances40 has been set to " + modValue);
                 return;
             }
 
             if (args[0].equalsIgnoreCase("chances30")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(event.getSender()) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
                     return;
                 }
                 $.chances30 = modValue;
                 $.inidb.set("bankheist_chances", "chances30", modValue);
-                $.say($.getWhisperString(event.getSender()) + "The value for chances30 has been set to " + modValue);
+                $.say($.getWhisperString(sender) + "The value for chances30 has been set to " + modValue);
                 return;
             }
 
             if (args[0].equalsIgnoreCase("chances20")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(event.getSender()) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
                     return;
                 }
                 $.chances20 = modValue;
                 $.inidb.set("bankheist_chances", "chances20", modValue);
-                $.say($.getWhisperString(event.getSender()) + "The value for chances20 has been set to " + modValue);
+                $.say($.getWhisperString(sender) + "The value for chances20 has been set to " + modValue);
                 return;
             }
 
             if (args[0].equalsIgnoreCase("chances10")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(event.getSender()) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
                     return;
                 }
                 $.chances10 = modValue;
                 $.inidb.set("bankheist_chances", "chances10", modValue);
-                $.say($.getWhisperString(event.getSender()) + "The value for chances10 has been set to " + modValue);
+                $.say($.getWhisperString(sender) + "The value for chances10 has been set to " + modValue);
                 return;
             }
 
             if (args[0].equalsIgnoreCase("ratio50")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(event.getSender()) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
                     return;
                 }
                 $.ratio50 = modValue;
                 $.inidb.set("bankheist_ratios", "ratio50", modValue);
-                $.say($.getWhisperString(event.getSender()) + "The value for ratio50 has been set to " + modValue);
+                $.say($.getWhisperString(sender) + "The value for ratio50 has been set to " + modValue);
                 return;
             }
 
             if (args[0].equalsIgnoreCase("ratio40")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(event.getSender()) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
                     return;
                 }
                 $.ratio40 = modValue;
                 $.inidb.set("bankheist_ratios", "ratio40", modValue);
-                $.say($.getWhisperString(event.getSender()) + "The value for ratio40 has been set to " + modValue);
+                $.say($.getWhisperString(sender) + "The value for ratio40 has been set to " + modValue);
                 return;
             }
 
             if (args[0].equalsIgnoreCase("ratio30")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(event.getSender()) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
                     return;
                 }
                 $.ratio30 = modValue;
                 $.inidb.set("bankheist_ratios", "ratio30", modValue);
-                $.say($.getWhisperString(event.getSender()) + "The value for ratio30 has been set to " + modValue);
+                $.say($.getWhisperString(sender) + "The value for ratio30 has been set to " + modValue);
                 return;
             }
 
             if (args[0].equalsIgnoreCase("ratio20")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(event.getSender()) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
                     return;
                 }
                 $.ratio20 = modValue;
                 $.inidb.set("bankheist_ratios", "ratio20", modValue);
-                $.say($.getWhisperString(event.getSender()) + "The value for ratio20 has been set to " + modValue);
+                $.say($.getWhisperString(sender) + "The value for ratio20 has been set to " + modValue);
                 return;
             }
 
             if (args[0].equalsIgnoreCase("ratio10")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(event.getSender()) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
                     return;
                 }
                 $.ratio10 = modValue;
                 $.inidb.set("bankheist_ratios", "ratio10", modValue);
-                $.say($.getWhisperString(event.getSender()) + "The value for ratio10 has been set to " + modValue);
+                $.say($.getWhisperString(sender) + "The value for ratio10 has been set to " + modValue);
                 return;
             }
 
             if (args[0].equalsIgnoreCase("maxbet")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(event.getSender()) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
                     return;
                 }
                 $.bankheistMaxBet = modValue;
                 $.inidb.set("settings", "bankheistmaxbet", modValue);
-                $.say($.getWhisperString(event.getSender()) + "The max bet amount has been set to " + modValue);
+                $.say($.getWhisperString(sender) + "The max bet amount has been set to " + modValue);
                 return;
             }
 
-            $.say($.getWhisperString(event.getSender()) + "Action not recognized");
+            if($.isModv3(sender)) {
+                $.say($.getWhisperString(sender) + "Action not recognized");
+                return;
+            } else {
+                $.say($.getWhisperString(sender) + $.enterABet);
+                return;
+            }
 
         }
     }
