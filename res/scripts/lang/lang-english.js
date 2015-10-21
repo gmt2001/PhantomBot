@@ -12,6 +12,18 @@ $.lang.data["net.phantombot.common.user-404"] = "The user \"$1\" has not visited
 $.lang.data["net.phantombot.common.whisper-disabled"] = "[Whisper Mode] has been disabled.";
 $.lang.data["net.phantombot.common.whisper-enabled"] = "[Whisper Mode] has been enabled.";
 
+// To translate the ordinal number prefixes or suffixes, edit the lines below.
+// Warning: Make sure each line contains 10 items total; 0 through 9.
+// Order: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].
+$.lang.data["net.phantombot.common.ordinal-prefixes"] = ["","","","", "", "", "", "", "", ""];
+$.lang.data["net.phantombot.common.ordinal-suffixes"] = ["th","st","nd","rd", "th", "th", "th", "th", "th", "th"];
+
+// To translate the time prefixes or suffixes, edit the lines below. This is used for both a single w/d/h/m and multiple w/d/h/m.
+// Warning: Make sure each line contains 4 items total; w, d, h, m.
+// Order: [w, d, h, m].
+$.lang.data["net.phantombot.common.time-prefixes"] = ["","","",""];
+$.lang.data["net.phantombot.common.time-suffixes"] = ["w","d","h","m"];
+
 //command perm/price
 $.lang.data["net.phantombot.cmd.noperm"] = "Your user group, $1, does not have permission to use the command $2.";
 $.lang.data["net.phantombot.cmd.needpoints"] = "That command costs $1, which you don't have.";
@@ -188,10 +200,12 @@ $.lang.data["net.phantombot.uptime.success-online"] = "/me [Stream Uptime] $1 ha
 $.lang.data["net.phantombot.uptime.success-offline"] = "$1 is currently not streaming.";
 $.lang.data["net.phantombot.botuptime.success"] = "/me [Bot Uptime] $1 has been online for $2.";
 
-
 // raidSystem.js
-$.lang.data["net.phantombot.raidsystem.success"] = "Thank you for the raid, $1! This is the $2 time $1 has raided! Please give them a follow at \"http://twitch.tv/$3\"!";
-$.lang.data["net.phantombot.raidsystem.usage"] = "Usage: \"!raider <name>\"";
+$.lang.data["net.phantombot.raidsystem.raid-error-toomuch"] = "To prevent a global ban from Twitch, the maximum has been set to $1.";
+$.lang.data["net.phantombot.raidsystem.raid-success"] = "/me http://www.twitch.tv/$1 $2";
+$.lang.data["net.phantombot.raidsystem.raid-usage"] = "Usage: \"!raid (name) | !raid (name) (message) | !raid (name) (amount) | !raid (name) (amount) (message)\"";
+$.lang.data["net.phantombot.raidsystem.raider-success"] = "Thank you for the raid, $1! This is the $2 time $1 has raided! Please give them a follow at http://twitch.tv/$3 !";
+$.lang.data["net.phantombot.raidsystem.raider-usage"] = "Usage: \"!raider <name>\"";
 
 //addCommand.js
 $.lang.data["net.phantombot.addcommand.addcom-success"] = "$1, has successfully created the command: !$2";
@@ -346,3 +360,27 @@ $.lang.data["net.phantombot.top10.time-disabled"] = "You can not use this comman
 $.lang.data["net.phantombot.top10.time-error-noresults"] = "Could not find any users with time spent in the chat.";
 $.lang.data["net.phantombot.top10.time-success"] = "/me [Top 10 Time] $1";
 $.lang.data["net.phantombot.top10.time-success-whisper"] = "[Top 10 Time] $1";
+
+// greetingSystem.js
+$.lang.data["net.phantombot.greetingsystem.maxchars-error-negative"] = "You can not set the maximum greeting character amount to a negative number.";
+$.lang.data["net.phantombot.greetingsystem.maxchars-success"] = "Set the maximum greeting character amount to $1.";
+$.lang.data["net.phantombot.greetingsystem.maxchars-usage"] = "Usage: \"!greet max <amount>\"";
+$.lang.data["net.phantombot.greetingsystem.set-cleared"] = "Your greeting message has been reset.";
+$.lang.data["net.phantombot.greetingsystem.set-cleared-global"] = "The default greeting message has been reset.";
+$.lang.data["net.phantombot.greetingsystem.set-cleared-other"] = "The greeting message of $1 has been reset.";
+$.lang.data["net.phantombot.greetingsystem.set-error-noname"] = "Your greeting message must contain \"(name)\" to display your name.";
+$.lang.data["net.phantombot.greetingsystem.set-error-noname-global"] = "The default greeting message must contain \"(name)\" to display someone's name.";
+$.lang.data["net.phantombot.greetingsystem.set-error-noname-other"] = "The greeting message of $1 must contain \"(name)\" to display their name.";
+$.lang.data["net.phantombot.greetingsystem.set-error-toolong"] = "Your greeting message can not be longer than $1 characters. It is now $2 characters long.";
+$.lang.data["net.phantombot.greetingsystem.set-error-toolong-global"] = "The default greeting message can not be longer than $1 characters. It is now $2 characters long.";
+$.lang.data["net.phantombot.greetingsystem.set-error-toolong-other"] = "The greeting message of $1 can not be longer than $2 characters. It is now $3 characters long.";
+$.lang.data["net.phantombot.greetingsystem.set-success"] = "Your greeting message has been set to \"$1\".";
+$.lang.data["net.phantombot.greetingsystem.set-success-global"] = "The default greeting message has been set to \"$1\".";
+$.lang.data["net.phantombot.greetingsystem.set-success-other"] = "The greeting message of $1 has been set to \"$2\".";
+$.lang.data["net.phantombot.greetingsystem.toggle-disabled"] = "A greeting message will no longer be displayed when you join.";
+$.lang.data["net.phantombot.greetingsystem.toggle-disabled-global"] = "A greeting message will no longer be displayed when anyone joins.";
+$.lang.data["net.phantombot.greetingsystem.toggle-disabled-other"] = "A greeting message will no longer be displayed when $1 joins.";
+$.lang.data["net.phantombot.greetingsystem.toggle-enabled"] = "A greeting message will now be displayed when you join.";
+$.lang.data["net.phantombot.greetingsystem.toggle-enabled-global"] = "A greeting message will now be displayed when anyone joins.";
+$.lang.data["net.phantombot.greetingsystem.toggle-enabled-other"] = "A greeting message will now be displayed when $1 joins.";
+$.lang.data["net.phantombot.greetingsystem.usage"] = "Usage: \"!greet max <amount>\", \"!greet set [global OR user <name>] <message>\", \"!greet toggle [global OR user <name>]\"";

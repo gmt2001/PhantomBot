@@ -1,10 +1,3 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-
 $.levelqueue = [];
 $.levelrequestusers = {};
 
@@ -50,11 +43,8 @@ function LevelRequest(user, levelId) {
         if(($.levelrequestusers[user] - amount) >= 1 ){
             $.levelrequestusers[user] = $.levelrequestusers[user] - amount;            
         }
-
     }
 }
-
-
 
 $.on('command', function (event) {
     var sender = event.getSender().toLowerCase();
@@ -106,7 +96,6 @@ $.on('command', function (event) {
                     return;
                 }
             }
-            
         }
         
         var list = $.levelqueue;

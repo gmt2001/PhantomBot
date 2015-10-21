@@ -461,7 +461,6 @@ $.on('command', function (event) {
                             if ($.raffleToggle == "true") $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.enter-success"));
                             break;
                         case 2:
-                            // Don't know how we would get here, but it's there if it needs to be.
                             if ($.raffleToggle == "true") $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.enter-error-notrunning", "Moderator"));
                             break;
                         case 3:
@@ -477,7 +476,6 @@ $.on('command', function (event) {
                             if ($.raffleToggle == "true") $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.enter-error-nofollow"));
                             break;
                         default:
-                            // We realistically aren't able to reach this. Just return.
                             return;
                     }
                 }
@@ -495,14 +493,12 @@ $.on('ircChannelMessage', function(event) {
     if ($.raffleRunning == 1) {
         switch ($.enterRaffle(sender, message)) {
             case 0:
-                // We don't want spam. Just return.
                 return;
                 break;
             case 1:
                 if ($.raffleToggle == "true") $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.enter-success"));
                 break;
             case 2:
-                // We don't want spam. Just return.
                 return;
                 break;
             case 3:
@@ -518,11 +514,9 @@ $.on('ircChannelMessage', function(event) {
                 if ($.raffleToggle == "true") $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.rafflesystem.enter-error-nofollow"));
                 break;
             default:
-                // We realistically aren't able to reach this. Just return.
                 return;
         }
     } else {
-        // We don't want spam. Just return.
         return;
     }
 });

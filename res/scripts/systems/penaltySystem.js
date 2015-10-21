@@ -157,7 +157,6 @@ $.on('command', function(event) {
 
 $.timer.addTimer("./systems/penaltySystem.js", "penaltySystem", true, function() {
     if (!$.moduleEnabled("./systems/pointSystem.js")) {
-        // No spammerino, pleaserino.
         return;
     }
 
