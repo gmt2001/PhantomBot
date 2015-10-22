@@ -373,7 +373,7 @@ $.on('command', function (event) {
             }, (parseInt($.signupMinutes) * 60) * 1000); //60 second entry window
             return;
 
-        } else if (!isNaN(betAmount)) {
+        } else if (!isNaN(betAmount) && parseInt(betAmount) > 0) {
 
             if ($.bankheistIsOn == false) {
                 $.say($.getWhisperString(sender) + $.banksClosed);
@@ -412,7 +412,11 @@ $.on('command', function (event) {
             var argsString = event.getArguments().trim();
             var modValue = "";
             if(args[1]!=null) {
-                modValue = argsString.substring(argsString.indexOf(args[1]), args[1].length());
+                if(isNaN(args[1])) {
+                    modValue = argsString.substring(argsString.indexOf(args[0]) + 1, argsString.length());
+                } else {
+                    modValue = args[1];
+                }
             }
 
             if (args[0].equalsIgnoreCase("signupMinutes")) {
