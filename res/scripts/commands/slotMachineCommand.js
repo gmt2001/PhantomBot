@@ -145,7 +145,7 @@ $.on('command', function (event) {
         if (command.equalsIgnoreCase("slot") && argsString.isEmpty()) {
 
 
-            for (i = 0; i < arrSlotLimiter.length; i++) {
+            for (i = 0; i < $var.arrSlotLimiter.length; i++) {
                 if ($var.arrSlotLimiter[i][0].equalsIgnoreCase(username)) {
                     if ($var.arrSlotLimiter[i][1] < System.currentTimeMillis()) {
                         $var.arrSlotLimiter[i][1] = System.currentTimeMillis() + ($.slotTimer * 1000);
