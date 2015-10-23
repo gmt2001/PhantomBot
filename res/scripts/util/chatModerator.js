@@ -46,17 +46,10 @@ for (i = 0; i < lines.length; i++) {
     sinbin.push(new Array(spl[0], parseInt(spl[1]), parseInt(spl[2])));
 }
 
-function issueCommand(command) {
-    for (var i = 0; i < 4; i++) {
-        
-        $.say(command);
-    }
-}
 
 function issueCommand(command) {
     $.say(command);
     setTimeout(function() {
-        $.say(command);
         $.say(command);
         $.say(command);
     }, 1800);
