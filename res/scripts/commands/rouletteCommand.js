@@ -86,12 +86,12 @@ $.on('command', function(event) {
     	 	if (d1 == d2) {
     	 		do {
     	 			s = $.randElement(Win);
-    	 		} while (s.equalsIgnoreCase($var.lastRandomWin) && Win.length > 1);
+    	 		} while (s.equalsIgnoreCase($.lastRandomWin) && Win.length > 1);
     	 		$.say(s);	
     	 	} else {
     	 		do {
     	 			s = $.randElement(lost);  
-    	 		} while (s.equalsIgnoreCase($var.lastRandomlost) && lost.length > 1);
+    	 		} while (s.equalsIgnoreCase($.lastRandomlost) && lost.length > 1);
                 if (!$.isModv3(sender, event.getTags())) {
                     $.say(s);
                     setTimeout(function() {$.say(".timeout "+ username +" "+ roulettetimeout);},2000);
@@ -99,7 +99,7 @@ $.on('command', function(event) {
                     return;
                 }
                 m = $.randElement(lostmod);
-                while (m.equalsIgnoreCase($var.lastRandomlostmod) && lostmod.length > 1);
+                while (m.equalsIgnoreCase($.lastRandomlostmod) && lostmod.length > 1);
                 $.say(m);
                 }
             }
