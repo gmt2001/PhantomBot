@@ -296,8 +296,8 @@ function startHeist() {
                 $.senderBet = "";
                 $.say($.banksOpen + $.signupMinutes + " minute(s) remaining to join!");
             } else {
-                $.timer.clearTimer("./systems/bankheistSystem.js", "enterbankheist", true);
                 $.processBankheist();
+                $.timer.clearTimer("./systems/bankheistSystem.js", "enterbankheist", true);
             }
             return;
         }, (parseInt($.signupMinutes) * 60) * 1000); //signup time
@@ -365,9 +365,9 @@ $.on('command', function (event) {
                     $.senderBet = "";
                     $.say($.banksOpen);
                 } else {
-                    $.timer.clearTimer("./systems/bankheistSystem.js", "enterbankheist", true);
                     $.processBankheist();
                     startHeist();
+                    $.timer.clearTimer("./systems/bankheistSystem.js", "enterbankheist", true);
                 }
                 return;
             }, (parseInt($.signupMinutes) * 60) * 1000); //60 second entry window
