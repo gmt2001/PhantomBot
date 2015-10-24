@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -153,6 +154,13 @@ public class SqliteStore extends DataStore
         }
     }
 
+    private String validateFname(String fName)
+    {
+        fName = fName.replaceAll("([^a-zA-Z0-9_-])", "_");
+
+        return fName;
+    }
+
     private void CheckConnection()
     {
         try
@@ -172,7 +180,7 @@ public class SqliteStore extends DataStore
     {
         CheckConnection();
 
-        fName = fName.replaceAll(" ", "_");
+        fName = validateFname(fName);
 
         if (!FileExists(fName))
         {
@@ -194,16 +202,17 @@ public class SqliteStore extends DataStore
     {
         CheckConnection();
 
-        fName = fName.replaceAll(" ", "_");
+        fName = validateFname(fName);
 
         if (FileExists(fName))
         {
             try
             {
-                Statement statement = connection.createStatement();
+                PreparedStatement statement = connection.prepareStatement("DELETE FROM phantombot_" + fName + " WHERE section=? AND variable=?;");
                 statement.setQueryTimeout(10);
-
-                statement.executeUpdate("DELETE FROM phantombot_" + fName + " WHERE section='" + section + "' AND variable='" + key + "';");
+                statement.setString(1, section);
+                statement.setString(2, key);
+                statement.executeUpdate();
             } catch (SQLException ex)
             {
                 com.gmt2001.Console.err.printStackTrace(ex);
@@ -216,16 +225,16 @@ public class SqliteStore extends DataStore
     {
         CheckConnection();
 
-        fName = fName.replaceAll(" ", "_");
+        fName = validateFname(fName);
 
         if (FileExists(fName))
         {
             try
             {
-                Statement statement = connection.createStatement();
+                PreparedStatement statement = connection.prepareStatement("DELETE FROM phantombot_" + fName + " WHERE section=?;");
                 statement.setQueryTimeout(10);
-
-                statement.executeUpdate("DELETE FROM phantombot_" + fName + " WHERE section='" + section + "';");
+                statement.setString(1, section);
+                statement.executeUpdate();
             } catch (SQLException ex)
             {
                 com.gmt2001.Console.err.printStackTrace(ex);
@@ -238,7 +247,7 @@ public class SqliteStore extends DataStore
     {
         CheckConnection();
 
-        fName = fName.replaceAll(" ", "_");
+        fName = validateFname(fName);
 
         if (FileExists(fName))
         {
@@ -260,7 +269,7 @@ public class SqliteStore extends DataStore
     {
         CheckConnection();
 
-        fName = fName.replaceAll(" ", "_");
+        fName = validateFname(fName);
 
         try
         {
@@ -314,7 +323,7 @@ public class SqliteStore extends DataStore
     {
         CheckConnection();
 
-        fName = fName.replaceAll(" ", "_");
+        fName = validateFname(fName);
 
         if (FileExists(fName))
         {
@@ -350,16 +359,16 @@ public class SqliteStore extends DataStore
     {
         CheckConnection();
 
-        fName = fName.replaceAll(" ", "_");
+        fName = validateFname(fName);
 
         if (FileExists(fName))
         {
             try
             {
-                Statement statement = connection.createStatement();
+                PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=?;");
                 statement.setQueryTimeout(10);
-
-                ResultSet rs = statement.executeQuery("SELECT variable FROM phantombot_" + fName + " WHERE section='" + section + "';");
+                statement.setString(1, section);
+                ResultSet rs = statement.executeQuery();
 
                 String[] s = new String[rs.getFetchSize()];
                 int i = 0;
@@ -394,7 +403,7 @@ public class SqliteStore extends DataStore
 
         String result = null;
 
-        fName = fName.replaceAll(" ", "_");
+        fName = validateFname(fName);
 
         if (!FileExists(fName))
         {
@@ -403,10 +412,11 @@ public class SqliteStore extends DataStore
 
         try
         {
-            Statement statement = connection.createStatement();
+            PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? AND variable=?;");
             statement.setQueryTimeout(10);
-
-            ResultSet rs = statement.executeQuery("SELECT * FROM phantombot_" + fName + " WHERE section='" + section + "' AND variable='" + key + "';");
+            statement.setString(1, section);
+            statement.setString(2, key);
+            ResultSet rs = statement.executeQuery();
 
             if (rs.next())
             {
@@ -425,21 +435,28 @@ public class SqliteStore extends DataStore
     {
         CheckConnection();
 
-        fName = fName.replaceAll(" ", "_");
+        fName = validateFname(fName);
 
         AddFile(fName);
 
         try
         {
-            Statement statement = connection.createStatement();
-            statement.setQueryTimeout(10);
-
             if (HasKey(fName, section, key))
             {
-                statement.executeUpdate("UPDATE phantombot_" + fName + " SET value='" + value + "' WHERE section='" + section + "' AND variable='" + key + "';");
+                PreparedStatement statement = connection.prepareStatement("UPDATE phantombot_" + fName + " SET value=? WHERE section=? AND variable=?;");
+                statement.setQueryTimeout(10);
+                statement.setString(1, value);
+                statement.setString(2, section);
+                statement.setString(3, key);
+                statement.executeUpdate();
             } else
             {
-                statement.executeUpdate("INSERT INTO phantombot_" + fName + " values('" + section + "', '" + key + "', '" + value + "');");
+                PreparedStatement statement = connection.prepareStatement("INSERT INTO phantombot_" + fName + " values(?, ?, ?);");
+                statement.setQueryTimeout(10);
+                statement.setString(1, section);
+                statement.setString(2, key);
+                statement.setString(3, value);
+                statement.executeUpdate();
             }
         } catch (SQLException ex)
         {
