@@ -412,7 +412,7 @@ public class SqliteStore extends DataStore
 
         try
         {
-            PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=? AND variable=?;");
+            PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE section=? AND variable=?;");
             statement.setQueryTimeout(10);
             statement.setString(1, section);
             statement.setString(2, key);
