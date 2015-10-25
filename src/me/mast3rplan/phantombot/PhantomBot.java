@@ -806,7 +806,8 @@ public class PhantomBot implements Listener
             com.gmt2001.Console.out.print("Please enter the bot's username: ");
             user = System.console().readLine().trim();
 
-            com.gmt2001.Console.out.print("Please enter the bot's tmi oauth string: ");
+            com.gmt2001.Console.out.print("Visit https://twitchapps.com/tmi/ to generate a OAuth token (including 'oauth:') and type it below.");
+            com.gmt2001.Console.out.println("Please enter the bot's tmi oauth token: ");
             oauth = System.console().readLine().trim();
 
             com.gmt2001.Console.out.print("Please enter the channel the bot should join: ");
