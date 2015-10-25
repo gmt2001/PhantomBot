@@ -803,7 +803,7 @@ public class PhantomBot implements Listener
         {
             com.gmt2001.Console.out.println("Login details for bot not found");
 
-            com.gmt2001.Console.out.print("Please enter the bot's username: ");
+            com.gmt2001.Console.out.print("Please enter the bot's twitch username: ");
             user = System.console().readLine().trim();
 
             com.gmt2001.Console.out.print("Visit https://twitchapps.com/tmi/ to generate a OAuth token (including 'oauth:') and type it below.");
@@ -811,7 +811,7 @@ public class PhantomBot implements Listener
             com.gmt2001.Console.out.println("Please enter the bot's tmi oauth token: ");
             oauth = System.console().readLine().trim();
 
-            com.gmt2001.Console.out.print("Please enter the twitch channel (not the link, just the channel name) the bot should join: ");
+            com.gmt2001.Console.out.print("Please enter the name of the twitch channel the bot should join (not the link, just the name): ");
             channel = System.console().readLine().trim();
 
             changed = true;
@@ -819,8 +819,7 @@ public class PhantomBot implements Listener
 
         if (owner.isEmpty())
         {
-            com.gmt2001.Console.out.print("Please enter the username of the bot's super admin (usually this is the same as the twitch channel entered above): ");
-            owner = System.console().readLine().trim();
+            owner = channel;
 
             changed = true;
         }
