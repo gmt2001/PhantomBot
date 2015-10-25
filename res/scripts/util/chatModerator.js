@@ -125,7 +125,7 @@ function autoPurgeUser(user, warnmessage) {
     
     count++;
     
-    warning = $.username.resolve(user) + " -> " + warnmessage;
+    warning = warnmessage;
     
     if (count == 1) {
         if ($.strlen(warningmessages[0]) > 0) {
@@ -1158,7 +1158,7 @@ $.on('ircChannelMessage', function(event) {
             && !$.isModv3(sender, event.getTags()) && phlen > 0) {
             $.logEvent("chatModerator.js", 1123, "Autopurge triggered by " + username + ". Message: " + omessage);
             
-            autoPurgeUser(username, username + " auto-purged for using banned phrase #" + i);            
+            autoPurgeUser(username, " auto-purged for using banned phrase #" + i);            
             return;
         }
     }

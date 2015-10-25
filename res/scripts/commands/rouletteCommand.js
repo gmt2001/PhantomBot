@@ -1,9 +1,6 @@
 var arrrouletteLimiter = new Array();
 var arrroulettetimeout = new Array();
 
-if ($.roulettetimer === undefined || $.roulettetimer === null || isNaN($.roulettetimer) || $.roulettetimer < 0) {
-    $.roulettetimer = 30;
-}
 if ($.roulettetimeout === undefined || $.roulettetimeout === null || isNaN($.roulettetimeout) || $.roulettetimeout < 0) {
     $.roulettetimeout = 600;
 }
@@ -32,21 +29,14 @@ $.on('command', function(event) {
             var d2 = $.randRange(1, 2);
     
             if (!$.isAdmin(sender)) {
-                for (i = 0; i < arrrouletteLimiter.length; i++) {           
-                    if (arrrouletteLimiter[i][1] < System.currentTimeMillis()) {
-                        arrrouletteLimiter[i][1] = System.currentTimeMillis() + ($.roulettetimer * 1000);
-                        break;
-                    } else {
-                        return;
-                    }
-
+                for (i = 0; i < arrrouletteLimiter.length; i++) {        
                     found = true;
                     return;
                 }
             }
             
             if (found === false) {
-                arrrouletteLimiter.push(new Array(username, System.currentTimeMillis() + ($.roulettetimer * 1000)));
+                arrrouletteLimiter.push(new Array(username));
             }
 
     	 	var Win = new Array();
@@ -107,17 +97,6 @@ $.on('command', function(event) {
     }
 }
 
-    if (command.equalsIgnoreCase("roulettecooldown")) {
-        if (!$.isAdmin(sender)) {
-            $.say($.adminmsg);
-            return;
-    }
-
-    $.inidb.set('settings', 'roulette_timer', parseInt(args[0]));
-    $.roulettetimer = parseInt(args[0]);
-    $.say(username +", the !roulette command cooldown has been set to "+ $.roulettetimer +" seconds!");
-    
-    }
 
     if (command.equalsIgnoreCase("roulettetimeouttime")) {
         if (!$.isAdmin(sender)) {

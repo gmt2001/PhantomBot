@@ -3,7 +3,6 @@ $.lastRandomWin = "";
 $.lastRandomLoss = "";
 
 $.slotBonus = parseInt($.inidb.get('slotMachine', 'slotBonus'));
-$.slotTimer = parseInt($.inidb.get('slotMachine', 'slotTimer'));
 $.slotCost = parseInt($.inidb.get('slotMachine', 'slotCost'));
 $.slotCMessages = parseInt($.inidb.get('slotMachine', 'slotCMessages'));
 $.slotEmote1 = $.inidb.get('slotMachine', 'slotEmote1');
@@ -29,10 +28,6 @@ $.slotHalfRewards = parseInt($.inidb.get('slotMachine', 'slotHalfRewards'));
 
 if ($.slotBonus === undefined || $.slotBonus === null || isNaN($.slotBonus) || $.slotBonus < 0) {
     $.slotBonus = 1;
-}
-
-if ($.slotTimer === undefined || $.slotTimer === null || isNaN($.slotTimer) || $.slotTimer < 0) {
-    $.slotTimer = 30;
 }
 
 if ($.slotCost === undefined || $.slotCost === null || isNaN($.slotCost) || $.slotCost < 0) {
@@ -147,24 +142,15 @@ $.on('command', function (event) {
 
             for (i = 0; i < $.arrSlotLimiter.length; i++) {
                 if ($.arrSlotLimiter[i][0].equalsIgnoreCase(username)) {
-                    if ($.arrSlotLimiter[i][1] < System.currentTimeMillis()) {
-                        $.arrSlotLimiter[i][1] = System.currentTimeMillis() + ($.slotTimer * 1000);
-                        break;
-                    } else if ($.slotCMessages == 1){
-                        $.say($.getWhisperString(username) + " You can only use !slot once every " + $.slotTimer + " seconds!");
-                        return;
-                    } else {
-                        return;
-                    }
-
                     found = true;
                 }
             }
 
             if (found === false) {
-                $.arrSlotLimiter.push(new Array(username, System.currentTimeMillis() + ($.slotTimer * 1000)));
+                $.arrSlotLimiter.push(new Array(username));
             }
         }
+        
         if (args.length === 0 && $.moduleEnabled("./systems/pointSystem.js")) {
             var b1 = $.randRange(1, 1000);
             var b2 = $.randRange(1, 1000);
@@ -384,47 +370,6 @@ $.on('command', function (event) {
                 $.inidb.set('slotMachine', 'slotBonus', args[1]);
                 $.slotBonus = parseInt(args[1]);
                 $.say($.getWhisperString(sender) + "The bonus for each win will now be multiplied by x" + $.slotBonus + "!");
-            }
-
-            if (action.equalsIgnoreCase("time") && !argsString.isEmpty()) {
-                if (!$.isMod(sender)) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
-                    return;
-                }
-
-                $.inidb.set('slotMachine', 'slotTimer', parseInt(args[1]));
-                $.slotTimer = parseInt(args[1]);
-                $.say($.getWhisperString(sender) + "Slot limit set to once every " + $.slotTimer + " seconds!");
-
-            }
-
-            if (action.equalsIgnoreCase("CooldownMessages") || action.equalsIgnoreCase("CMessages") && !argsString.isEmpty()) {
-                if (!$.isMod(sender)) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
-                    return;
-                }
-                if (args[1].equalsIgnoreCase("off")) {
-                    $.inidb.set('slotMachine', 'slotCMessages', 0);
-                    $.slotCMessages = 0;
-                    $.say($.getWhisperString(sender) + "Slot cooldown messages off!");
-                }
-                if (args[1].equalsIgnoreCase("on")) {
-                    $.inidb.set('slotMachine', 'slotCMessages', 1);
-                    $.slotCMessages = 1;
-                    $.say($.getWhisperString(sender) + "Slot cooldown messages on!");
-                }
-                if (args[1].equalsIgnoreCase("toggle")) {
-                    if(!$.slotCMessages) {
-                        $.inidb.set('slotMachine', 'slotCMessages', 1);
-                        $.slotCMessages = 1;
-                        $.say($.getWhisperString(sender) + "Slot cooldown messages on!");
-                    } else {
-                        $.inidb.set('slotMachine', 'slotCMessages', 0);
-                        $.slotCMessages = 0;
-                        $.say($.getWhisperString(sender) + "Slot cooldown messages off!");
-                    }
-                }
-
             }
 
             if (action.equalsIgnoreCase("emote") && !argsString.isEmpty()) {
