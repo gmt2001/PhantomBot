@@ -599,10 +599,10 @@ $.on('ircChannelLeave', function (event) {
 
             if ($.inidb.exists("subscribed", username) && $.isSub(username) == false) {
                 $.inidb.del("subscribed", username);
-                if ($.inidb.exists("tempsubgroup", username) && $.isAdmin(username) == false) {
+                if ($.inidb.exists("tempsubgroup", username) && $.isModv3(username) == false && $.isBot(username)==false && $.isOwner(username)==false) {
                     $.inidb.set("group", username, $.inidb.get("tempsubgroup", username));
                 }
-                if ($.inidb.exists("group", username) == false && $.isAdmin(username) == false) {
+                if ($.inidb.exists("group", username) == false && $.isModv3(username) == false && $.isBot(username)==false && $.isOwner(username)==false) {
                     $.inidb.set("group", username, 7);
                 }
             }
@@ -615,10 +615,10 @@ $.on('ircChannelLeave', function (event) {
             $.modeOUsers.splice(i, 1);
             if ($.inidb.exists("subscribed", username) && $.isSub(username) == false) {
                 $.inidb.del("subscribed", username);
-                if ($.inidb.exists("tempsubgroup", username) && $.isAdmin(username) == false && $.isBot(username)==false) {
+                if ($.inidb.exists("tempsubgroup", username) && $.isModv3(username) == false && $.isBot(username)==false && $.isOwner(username)==false) {
                     $.inidb.set("group", username, $.inidb.get("tempsubgroup", username));
                 }
-                if ($.inidb.exists("group", username) == false && $.isAdmin(username) == false && $.isBot(username)==false) {
+                if ($.inidb.exists("group", username) == false && $.isModv3(username) == false && $.isBot(username)==false && $.isOwner(username)==false) {
                         $.inidb.set("group", username, 7);
                 }
             }
@@ -655,10 +655,10 @@ $.on('ircChannelUserMode', function (event) {
 
                     if ($.inidb.exists("subscribed", username) && $.isSub(username) == false) {
                         $.inidb.del("subscribed", username);
-                        if ($.inidb.exists("tempsubgroup", username) && $.isAdmin(username) == false && $.isBot(username)==false) {
+                        if ($.inidb.exists("tempsubgroup", username) && $.isModv3(username) == false && $.isBot(username)==false && $.isOwner(username)==false) {
                             $.inidb.set("group", username, $.inidb.get("tempsubgroup", username));
                         }
-                        if ($.inidb.exists("group", username) == false && $.isAdmin(username) == false && $.isBot(username)==false ) {
+                        if ($.inidb.exists("group", username) == false && $.isModv3(username) == false && $.isBot(username)==false && $.isOwner(username)==false ) {
                             $.inidb.set("group", username, 7);
                         }
                     }
