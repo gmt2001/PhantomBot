@@ -357,34 +357,35 @@ public class SqliteStore extends DataStore
     @Override
     public String[] GetKeyList(String fName, String section)
     {
-        CheckConnection();
+        CheckConnection();com.gmt2001.Console.err.println("cc");
 
-        fName = validateFname(fName);
+        fName = validateFname(fName);com.gmt2001.Console.err.println("fn");
 
         if (FileExists(fName))
-        {
+        {com.gmt2001.Console.err.println("fe");
             try
             {
-                PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=?;");
+                PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=?;");com.gmt2001.Console.err.println("ps");
                 statement.setQueryTimeout(10);
-                statement.setString(1, section);
-                ResultSet rs = statement.executeQuery();
+                statement.setString(1, section);com.gmt2001.Console.err.println("pre");
+                ResultSet rs = statement.executeQuery();com.gmt2001.Console.err.println("post");
 
-                String[] s = new String[rs.getFetchSize()];
+                String[] s = new String[rs.getFetchSize()];com.gmt2001.Console.err.println("fs=" + rs.getFetchSize());
                 int i = 0;
-
+                com.gmt2001.Console.err.println("loop");
                 while (rs.next())
                 {
+                    com.gmt2001.Console.err.println("it=" + i);
                     s[i++] = rs.getString("variable");
                 }
-
+                com.gmt2001.Console.err.println("endloop");
                 return s;
             } catch (SQLException ex)
             {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         }
-
+        com.gmt2001.Console.err.println("default");
         return new String[]
         {
         };
