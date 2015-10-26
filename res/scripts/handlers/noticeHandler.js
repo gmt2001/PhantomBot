@@ -239,13 +239,38 @@ function sendMessage() {
     }
 
     var message = $.inidb.get('notices', 'message_' + $.messageIndex);
+    var cmds = "";
+    
+    if (message.toLowerCase().startsWith("(runcommand:") && message.indexOf(")") > 12) {
+        message = message.substring(12);
+        cmds = message.substring(0, message.indexOf(")"));
+        message = message.substring(message.indexOf(")") + 1);
+    }
 
     $.messageIndex++;
 
     if ($.messageIndex >= num_messages) {
         $.messageIndex = 0;
     }
-    $.say(message);
+    
+    if ($.strlen(cmds) > 0) {
+       var cmd = cmds;
+       var prm = "";
+       
+       if (cmd.indexOf(" ") > 0) {
+           cmd = cmd.substring(0, cmd.indexOf(" "));
+           prm = cmd.substring(cmd.indexOf(" "));
+       }
+       
+       var EventBus = Packages.me.mast3rplan.phantombot.event.EventBus;
+       var CommandEvent = Packages.me.mast3rplan.phantombot.event.command.CommandEvent;
+       
+       EventBus.instance().post(new CommandEvent($.botname, cmd, prm));
+    }
+    
+    if ($.strlen(message) > 0) {
+       $.say(message);
+    }
 }
 
 
