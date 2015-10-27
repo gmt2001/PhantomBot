@@ -64,9 +64,37 @@ public class IniStore extends DataStore implements ActionListener
 
         t.start();
     }
+    
+    private String validatefName(String fName)
+    {
+        fName = fName.replaceAll("([^a-zA-Z0-9_-])", "_");
+        
+        return fName;
+    }
+    
+    private String validateSection(String section)
+    {
+        section = section.replaceAll("([^a-zA-Z0-9_-])", "_");
+        
+        return section;
+    }
+    
+    private String validateKey(String key)
+    {
+        key = key.replaceAll("=", "_eq_");
+
+        if (key.startsWith(";") || key.startsWith("["))
+        {
+            key = "_" + key;
+        }
+        
+        return key;
+    }
 
     private boolean LoadFile(String fName, boolean force)
     {
+        fName = validatefName(fName);
+        
         if (!files.containsKey(fName) || force)
         {
             try
@@ -222,6 +250,8 @@ public class IniStore extends DataStore implements ActionListener
     @Override
     public void ReloadFile(String fName)
     {
+        fName = validatefName(fName);
+        
         LoadFile(fName, true);
     }
 
@@ -263,6 +293,8 @@ public class IniStore extends DataStore implements ActionListener
     @Override
     public String[] GetCategoryList(String fName)
     {
+        fName = validatefName(fName);
+        
         if (!LoadFile(fName, false))
         {
             return new String[]
@@ -288,12 +320,16 @@ public class IniStore extends DataStore implements ActionListener
     @Override
     public String[] GetKeyList(String fName, String section)
     {
+        fName = validatefName(fName);
+        
         if (!LoadFile(fName, false))
         {
             return new String[]
             {
             };
         }
+        
+        section = validateSection(section);
 
         Set<String> o = files.get(fName).data.get(section).keySet();
 
@@ -313,17 +349,15 @@ public class IniStore extends DataStore implements ActionListener
     @Override
     public String GetString(String fName, String section, String key)
     {
+        fName = validatefName(fName);
+        
         if (!LoadFile(fName, false))
         {
             return null;
         }
 
-        key = key.replaceAll("=", "_eq_");
-
-        if (key.startsWith(";") || key.startsWith("["))
-        {
-            key = "_" + key;
-        }
+        section = validateSection(section);
+        key = validateKey(key);
 
         if (!files.containsKey(fName) || !files.get(fName).data.containsKey(section)
                 || !files.get(fName).data.get(section).containsKey(key))
@@ -337,14 +371,12 @@ public class IniStore extends DataStore implements ActionListener
     @Override
     public void SetString(String fName, String section, String key, String value)
     {
+        fName = validatefName(fName);
+        
         LoadFile(fName, false);
 
-        key = key.replaceAll("=", "_eq_");
-
-        if (key.startsWith(";") || key.startsWith("["))
-        {
-            key = "_" + key;
-        }
+        section = validateSection(section);
+        key = validateKey(key);
 
         if (!files.get(fName).data.containsKey(section))
         {
@@ -448,12 +480,12 @@ public class IniStore extends DataStore implements ActionListener
     @Override
     public void RemoveKey(String fName, String section, String key)
     {
+        fName = validatefName(fName);
+        
         LoadFile(fName, false);
 
-        if (key.startsWith(";") || key.startsWith("["))
-        {
-            key = "_" + key;
-        }
+        section = validateSection(section);
+        key = validateKey(key);
 
         files.get(fName).data.get(section).remove(key);
 
@@ -463,7 +495,11 @@ public class IniStore extends DataStore implements ActionListener
     @Override
     public void RemoveSection(String fName, String section)
     {
+        fName = validatefName(fName);
+        
         LoadFile(fName, false);
+        
+        section = validateSection(section);
 
         files.get(fName).data.remove(section);
 
@@ -473,6 +509,8 @@ public class IniStore extends DataStore implements ActionListener
     @Override
     public void RemoveFile(String fName)
     {
+        fName = validatefName(fName);
+        
         File f = new File("./" + inifolder + "/" + fName + ".ini");
 
         f.delete();
@@ -481,6 +519,8 @@ public class IniStore extends DataStore implements ActionListener
     @Override
     public boolean FileExists(String fName)
     {
+        fName = validatefName(fName);
+     
         File f = new File("./" + inifolder + "/" + fName + ".ini");
 
         return f.exists();
@@ -489,6 +529,10 @@ public class IniStore extends DataStore implements ActionListener
     @Override
     public boolean HasKey(String fName, String section, String key)
     {
+        fName = validatefName(fName);
+        section = validateSection(section);
+        key = validateKey(key);
+        
         return GetString(fName, section, key) != null;
     }
 
