@@ -377,10 +377,11 @@ public class SqliteStore extends DataStore
                 {
                     com.gmt2001.Console.err.println("it=" + i);
                     s[i++] = rs.getString("variable");
+                    com.gmt2001.Console.err.println("end it=" + i);
                 }
                 com.gmt2001.Console.err.println("endloop");
                 return s;
-            } catch (SQLException ex)
+            } catch (Exception ex)
             {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
