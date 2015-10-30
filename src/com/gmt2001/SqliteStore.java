@@ -302,9 +302,12 @@ public class SqliteStore extends DataStore
             String[] s = new String[rs.getFetchSize()];
             int i = 0;
 
-            while (rs.next())
+            if (rs.getFetchSize() > 0)
             {
-                s[i++] = rs.getString("name");
+                while (rs.next())
+                {
+                    s[i++] = rs.getString("name");
+                }
             }
 
             return s;
@@ -337,9 +340,12 @@ public class SqliteStore extends DataStore
                 String[] s = new String[rs.getFetchSize()];
                 int i = 0;
 
-                while (rs.next())
+                if (rs.getFetchSize() > 0)
                 {
-                    s[i++] = rs.getString("section");
+                    while (rs.next())
+                    {
+                        s[i++] = rs.getString("section");
+                    }
                 }
 
                 return s;
@@ -373,13 +379,16 @@ public class SqliteStore extends DataStore
                 String[] s = new String[rs.getFetchSize()];com.gmt2001.Console.err.println("fs=" + rs.getFetchSize());
                 int i = 0;
                 com.gmt2001.Console.err.println("loop");
-                while (rs.next())
+                if (rs.getFetchSize() > 0)
                 {
-                    com.gmt2001.Console.err.println("it=" + i);
-                    s[i++] = rs.getString("variable");
-                    com.gmt2001.Console.err.println("end it=" + i);
+                    com.gmt2001.Console.err.println("startloop");
+                    while (rs.next())
+                    {
+                        com.gmt2001.Console.err.println("it=" + i);
+                        s[i++] = rs.getString("variable");
+                        com.gmt2001.Console.err.println("end it=" + i);
+                    } com.gmt2001.Console.err.println("endloop");
                 }
-                com.gmt2001.Console.err.println("endloop");
                 return s;
             } catch (Exception ex)
             {
@@ -420,9 +429,12 @@ public class SqliteStore extends DataStore
             statement.setString(2, key);
             ResultSet rs = statement.executeQuery();
 
-            if (rs.next())
+            if (rs.getFetchSize() > 0)
             {
-                result = rs.getString("value");
+                if (rs.next())
+                {
+                    result = rs.getString("value");
+                }
             }
         } catch (SQLException ex)
         {
