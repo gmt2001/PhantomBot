@@ -190,7 +190,7 @@ public class SqliteStore extends DataStore
                 Statement statement = connection.createStatement();
                 statement.setQueryTimeout(10);
 
-                statement.executeUpdate("CREATE TABLE phantombot_" + fName + " (section TEXT, variable TEXT, value TEXT);");
+                statement.executeUpdate("CREATE TABLE phantombot_" + fName + " (section string, variable string, value string);");
             } catch (SQLException ex)
             {
                 com.gmt2001.Console.err.printStackTrace(ex);
