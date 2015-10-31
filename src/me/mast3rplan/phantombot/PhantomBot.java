@@ -99,7 +99,7 @@ public class PhantomBot implements Listener
     private ChannelUsersCache channelUsersCache;
     private MusicWebSocketServer mws;
     private HTTPServer mhs;
-    ConsoleInputListener cil;
+    private ConsoleInputListener cil;
     private static final boolean debugD = false;
     public static boolean enableDebugging = false;
     public static boolean interactive;
