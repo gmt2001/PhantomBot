@@ -385,6 +385,28 @@ $.lang.data["net.phantombot.greetingsystem.toggle-enabled-global"] = "A greeting
 $.lang.data["net.phantombot.greetingsystem.toggle-enabled-other"] = "A greeting message will now be displayed when $1 joins.";
 $.lang.data["net.phantombot.greetingsystem.usage"] = "Usage: \"!greet max <amount>\", \"!greet set [global OR user <name>] <message>\", \"!greet toggle [global OR user <name>]\"";
 
-//followhandler.js
+//followHandler.js
 $.lang.data["net.phantombot.followagecommand.error-not-following"] = "You are not following the channel";
 $.lang.data["net.phantombot.followagecommand.followtime"] = "You have been following channel $1 since $2";
+$.lang.data["net.phantombot.followHandler.default-say"] = "Thanks for the follow (name)! +(pointname)!";
+$.lang.data["net.phantombot.followHandler.default-say-2"] = "Thanks for the follow (name)!";
+$.lang.data["net.phantombot.followHandler.not-following"] = "$1 is not following the channel.";
+$.lang.data["net.phantombot.followHandler.is-following"] = "$1 is following the channel";
+$.lang.data["net.phantombot.followHandler.followed-command-usage"] = "Usage: !follow (username), !followed (username), !followmessage (message), !followreward (reward)";
+$.lang.data["net.phantombot.followHandler.shoutout-command"] = "Please go give $1 a follow over at twitch.tv/$1";
+$.lang.data["net.phantombot.followHandler.follow-ads-on"] = "Follow announcements are now turned on.";
+$.lang.data["net.phantombot.followHandler.follow-ads-off"] = "Follow announcements are now turned off.";
+$.lang.data["net.phantombot.followHandler.current-follow-message"] = "The current new follower message is:";
+$.lang.data["net.phantombot.followHandler.follow-message-usage"] = "To change it use '!followmessage <message>'. You can also add the string '(name)' to put the followers name and '(pointname) for the reward.";
+$.lang.data["net.phantombot.followHandler.follow-message-usage-points"] = ", '(reward)' to put the number of points received for following.";
+$.lang.data["net.phantombot.followHandler.follow-message-set"] = "New follower message set!";
+$.lang.data["net.phantombot.followHandler.current-follow-reward"] = "The current new follower reward is $1 points! To change it use '!followreward <reward>'";
+$.lang.data["net.phantombot.followHandler.current-follow-reward-usage"] = "The current new follower reward is 100 points! To change it use '!followreward <reward>'";
+$.lang.data["net.phantombot.followHandler.follow-reward-error"] = "Please put a valid reward greater than or equal to 0!";
+$.lang.data["net.phantombot.followHandler.follow-reward-set"] = "New follower reward set!";
+$.lang.data["net.phantombot.followHandler.triple-follow-train"] = "Triple follow!!";
+$.lang.data["net.phantombot.followHandler.Quadra-follow-train"] = "Quadra follow!!";
+$.lang.data["net.phantombot.followHandler.penta-follow-train"] = "Penta follow!!";
+$.lang.data["net.phantombot.followHandler.mega-follow-train"] = "Mega follow train!! ($1)";
+$.lang.data["net.phantombot.followHandler.ultra-follow-train"] = "ultra follow train!! ($1)";
+$.lang.data["net.phantombot.followHandler.massive-follow-train"] = "Unbelievable follow train!! ($1)";
