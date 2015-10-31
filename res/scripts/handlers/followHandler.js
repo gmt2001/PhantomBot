@@ -217,14 +217,14 @@ $.on('command', function(event) {
     }
 
     if (command.equalsIgnoreCase("followage") || command.equalsIgnoreCase("followtime") || command.equalsIgnoreCase("following")) {
-        if ($.inidb.get('followed', sender) == null) {
+        if (check.getInt("_http") != 200) {
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.followagecommand.error-not-following"));
             return;
         } else {
-        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.followagecommand.followtime", $.channelName, $.getFollowAge(sender, $.channelName)));
-        return;
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.followagecommand.followtime", $.channelName, $.getFollowAge(sender, $.channelName)));
+            return;
+        }
     }
-} 
 });
 
 setTimeout(function(){ 
