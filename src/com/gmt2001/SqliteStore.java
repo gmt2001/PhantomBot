@@ -307,7 +307,7 @@ public class SqliteStore extends DataStore
                 s.add(rs.getString("name"));
             }
 
-            return (String[]) s.toArray();
+            return s.toArray(new String[s.size()]);
         } catch (SQLException ex)
         {
             com.gmt2001.Console.err.printStackTrace(ex);
@@ -341,7 +341,7 @@ public class SqliteStore extends DataStore
                     s.add(rs.getString("section"));
                 }
 
-                return (String[]) s.toArray();
+                return s.toArray(new String[s.size()]);
             } catch (SQLException ex)
             {
                 com.gmt2001.Console.err.printStackTrace(ex);
@@ -376,7 +376,7 @@ public class SqliteStore extends DataStore
                     s.add(rs.getString("variable"));
                 }
                 
-                return (String[]) s.toArray();
+                return s.toArray(new String[s.size()]);
             } catch (SQLException ex)
             {
                 com.gmt2001.Console.err.printStackTrace(ex);

@@ -20,88 +20,110 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 -->
 
- <project basedir="." default="dist">
+<project basedir="." default="dist">
 
-     <property environment="env"/>
-     <property name="project.base.dir" value="."/>
-     <property name="name" value="PhantomBot"/>
-     <property name="version" value="1.6.5"/>
-     <property name="java.class.path" value=""/>
-     <property name="src" value="${project.base.dir}/src"/>
-     <property name="reference" value="${project.base.dir}/lib"/>
-     <property name="build" value="${project.base.dir}/build"/>
-     <property name="classes" value="${build}/classes"/>
-     <property name="dist" value="${project.base.dir}/dist"/>
-     <property name="versionfolder" value="${dist}/${name}-${version}"/>
+    <property environment="env" />
+    <property name="project.base.dir" value="." />
+    <property name="name" value="PhantomBot" />
+    <property name="version" value="1.6.5" />
+    <property name="java.class.path" value="" />
+    <property name="src" value="${project.base.dir}/src" />
+    <property name="reference" value="${project.base.dir}/lib" />
+    <property name="build" value="${project.base.dir}/build" />
+    <property name="classes" value="${build}/classes" />
+    <property name="dist" value="${project.base.dir}/dist" />
+    <property name="versionfolder" value="${dist}/${name}-${version}" />
+    <property name="version.name" value="${name}-${version}" />
+    <property name="build.dir" value="${dist}/build" />
+    <property name="res.dir" value="${build.dir}" />
+    <property name="lib.dir" value="${build.dir}/lib" />
+    <path id="classpath">
+        <fileset dir="${lib.dir}" includes="**/*.jar" />
+    </path>
 
-     <path id="reference.class.path">
-         <fileset dir="${reference}">
-             <include name="*.jar" />
-         </fileset>
-     </path>
+    <path id="reference.class.path">
+        <fileset dir="${reference}">
+            <include name="*.jar" />
+        </fileset>
+    </path>
 
-   <target name="init">
-    	<mkdir dir="${build}"/>
-    	<mkdir dir="${classes}"/>
-    	<mkdir dir="${dist}"/>
-    	<mkdir dir="${versionfolder}"/>
+    <target name="init">
+        <mkdir dir="${build}" />
+        <mkdir dir="${classes}" />
+        <mkdir dir="${dist}" />
+        <mkdir dir="${versionfolder}" />
 
-    	<pathconvert property="mf.classpath" pathsep=" ">
-  		<path refid="reference.class.path"/>
-            	<mapper>
-                    <chainedmapper>
-                    	<flattenmapper/>
-                        <globmapper from="*.jar" to="lib/*.jar"/>
-                    </chainedmapper>
-            	</mapper>
-    	</pathconvert>
-     </target>
+        <pathconvert property="mf.classpath" pathsep=" ">
+            <path refid="reference.class.path" />
+            <mapper>
+                <chainedmapper>
+                    <flattenmapper/>
+                    <globmapper from="*.jar" to="lib/*.jar" />
+                </chainedmapper>
+            </mapper>
+        </pathconvert>
+    </target>
 
-     <target depends="init" name="pre.compile.test">
-     </target>
+    <target depends="init" name="pre.compile.test">
+    </target>
 
-     <target depends="pre.compile.test" name="compile.src">
-         <javac target="1.7" source="1.7" debug="on" destdir="${classes}" srcdir="${src}" includeantruntime="false" >
-             <compilerarg value="-Xlint:unchecked"/>
-             <compilerarg value="-Xlint:-options"/>
-             <classpath refid="reference.class.path" />
-         </javac>
-     </target>
-     
-     <target depends="compile.src" name="test"></target>
+    <target depends="pre.compile.test" name="compile.src">
+        <javac target="1.7" source="1.7" debug="on" destdir="${classes}" srcdir="${src}" includeantruntime="false" >
+            <compilerarg value="-Xlint:unchecked" />
+            <compilerarg value="-Xlint:-options" />
+            <classpath refid="reference.class.path" />
+        </javac>
+    </target>
 
-     <target depends="compile.src" name="dist">
-	<jar destfile="${versionfolder}/PhantomBot.jar">
-  		<fileset dir="${classes}"/>
-		<manifest>
-			<attribute name="Bundle-Name" value="${project.name}" />           
-			<attribute name="Bundle-Version" value="${version.num}" />
-			<attribute name="Bundle-Date" value="${NOW}" />
-			<attribute name="Implementation-Title" value="${project.name}" />
-			<attribute name="Implementation-Version" value="${version.num}" />
-			<attribute name="Implementation-URL" value="http://www.phantombot.net" />
-			<attribute name="Class-Path" value="${mf.classpath}"/>
-			<attribute name="Main-Class" value="me.mast3rplan.phantombot.PhantomBot"/>
-		</manifest>
-	</jar>
-        <property name="res.dir" value="${versionfolder}" />
-        <property name="lib.dir" value="${versionfolder}/lib" />
-	<mkdir dir="${lib.dir}"/>
+    <target depends="compile.src" name="jar">
+        <jar destfile="${build.dir}/PhantomBot.jar">
+            <fileset dir="${classes}" />
+            <manifest>
+                <attribute name="Bundle-Name" value="${project.name}" />           
+                <attribute name="Bundle-Version" value="${version.num}" />
+                <attribute name="Bundle-Date" value="${NOW}" />
+                <attribute name="Implementation-Title" value="${project.name}" />
+                <attribute name="Implementation-Version" value="${version.num}" />
+                <attribute name="Implementation-URL" value="http://www.phantombot.net" />
+                <attribute name="Class-Path" value="${mf.classpath}" />
+                <attribute name="Main-Class" value="me.mast3rplan.phantombot.PhantomBot" />
+            </manifest>
+        </jar>
+        <mkdir dir="${lib.dir}" />
         <copy todir="${lib.dir}">
             <fileset dir="./lib" />
         </copy>
-        <echo level="info" message="lib folder content was copied."/>
+        <echo level="info" message="lib folder content was copied." />
         <copy todir="${res.dir}">
             <fileset dir="./res" />
         </copy>
-        <echo level="info" message="res folder content was copied."/>
-        <delete file="${dist}/${name}-${version}.zip"/>
-	<zip destfile="${dist}/${name}-${version}.zip" basedir="${dist}" update="false" />
-     </target>
+        <echo level="info" message="res folder content was copied." />
+        <copy todir="${versionfolder}">
+            <fileset dir="${build.dir}" />
+        </copy>
+    </target>
+     
+    <target depends="compile.src" name="test"></target>
+     
+    <target name="run" depends="jar">
+        <java fork="true" classname="me.mast3rplan.phantombot.PhantomBot" dir="${build.dir}">
+            <classpath>
+                <path refid="classpath" />
+                <path location="${build.dir}/PhantomBot.jar" />
+            </classpath>
+        </java>
+    </target>
+     
+    <target depends="jar" name="dist">
+        <delete file="${dist}/${version.name}.zip" />
+        <zip destfile="${dist}/${version.name}.zip" basedir="${dist}" update="false">
+            <include name="${version.name}/**" />
+        </zip>
+    </target>
 
-     <target name="clean">
-         <delete dir="${build}"/>
-	 <delete dir="${dist}"/>
-     </target>
+    <target name="clean">
+        <delete dir="${build}" />
+        <delete dir="${dist}" />
+    </target>
 
- </project>
+</project>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir=".." name="PhantomBot-IDE">
+    <import file="../build.xml"/>
+    <!-- TODO: edit the following target according to your needs -->
+    <!-- (more info: http://www.netbeans.org/kb/articles/freeform-config.html#debugj2se) -->
+    <target depends="jar" name="debug-nb">
+        <nbjpdastart addressproperty="jpda.address" name="PhantomBot" transport="dt_socket">
+            <classpath>
+                <path refid="classpath"/>
+                <path location="${build.dir}/PhantomBot.jar"/>
+            </classpath>
+        </nbjpdastart>
+        <java classname="me.mast3rplan.phantombot.PhantomBot" dir="${build.dir}" fork="true">
+            <classpath>
+                <path refid="classpath"/>
+                <path location="${build.dir}/PhantomBot.jar"/>
+            </classpath>
+            <jvmarg value="-Xdebug"/>
+            <jvmarg value="-Xrunjdwp:transport=dt_socket,address=${jpda.address}"/>
+        </java>
+    </target>
+</project>

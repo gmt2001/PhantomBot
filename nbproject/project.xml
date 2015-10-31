@@ -47,7 +47,19 @@ auxiliary.show.customizer.message=<message>
                     <target>clean</target>
                     <target>dist</target>
                 </action>
+                <action name="run">
+                    <target>run</target>
+                </action>
+                <action name="debug">
+                    <script>nbproject/ide-targets.xml</script>
+                    <target>debug-nb</target>
+                </action>
             </ide-actions>
+            <export>
+                <type>jar</type>
+                <location>dist/build/PhantomBot.jar</location>
+                <build-target>dist</build-target>
+            </export>
             <view>
                 <items>
                     <source-folder style="packages">
@@ -66,7 +78,9 @@ auxiliary.show.customizer.message=<message>
                     <ide-action name="build"/>
                     <ide-action name="rebuild"/>
                     <ide-action name="clean"/>
+                    <ide-action name="run"/>
                     <ide-action name="test"/>
+                    <ide-action name="debug"/>
                 </context-menu>
             </view>
             <subprojects/>
@@ -75,6 +89,7 @@ auxiliary.show.customizer.message=<message>
             <compilation-unit>
                 <package-root>src</package-root>
                 <classpath mode="compile">lib/commons-io-2.4.jar;lib/commons-lang3-3.3.2.jar;lib/commons-pool2-2.0.jar;lib/core-1.47.1.jar;lib/java_websocket.jar;lib/javax.mail.jar;lib/joda-time-2.4.jar;lib/guava-18.0.jar;lib/rhino-1.7.7.jar;lib/sqlite-jdbc-3.8.11.2.jar</classpath>
+                <built-to>dist/build/PhantomBot.jar</built-to>
                 <source-level>1.7</source-level>
             </compilation-unit>
             <compilation-unit>
