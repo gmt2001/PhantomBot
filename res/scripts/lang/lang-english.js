@@ -384,3 +384,7 @@ $.lang.data["net.phantombot.greetingsystem.toggle-enabled"] = "A greeting messag
 $.lang.data["net.phantombot.greetingsystem.toggle-enabled-global"] = "A greeting message will now be displayed when anyone joins.";
 $.lang.data["net.phantombot.greetingsystem.toggle-enabled-other"] = "A greeting message will now be displayed when $1 joins.";
 $.lang.data["net.phantombot.greetingsystem.usage"] = "Usage: \"!greet max <amount>\", \"!greet set [global OR user <name>] <message>\", \"!greet toggle [global OR user <name>]\"";
+
+//followhandler.js
+$.lang.data["net.phantombot.followagecommand.error-not-following"] = "You are not following the channel";
+$.lang.data["net.phantombot.followagecommand.followtime"] = "You have been following channel $1 since $2";
