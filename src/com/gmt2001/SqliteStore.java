@@ -24,6 +24,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import org.apache.commons.io.FileUtils;
 import org.sqlite.SQLiteConfig;
 
@@ -299,15 +300,14 @@ public class SqliteStore extends DataStore
 
             ResultSet rs = statement.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name LIKE 'phantombot_%';");
 
-            String[] s = new String[rs.getFetchSize()];
-            int i = 0;
+            ArrayList<String> s = new ArrayList<>();
 
             while (rs.next())
             {
-                s[i++] = rs.getString("name");
+                s.add(rs.getString("name"));
             }
 
-            return s;
+            return (String[]) s.toArray();
         } catch (SQLException ex)
         {
             com.gmt2001.Console.err.printStackTrace(ex);
@@ -334,15 +334,14 @@ public class SqliteStore extends DataStore
 
                 ResultSet rs = statement.executeQuery("SELECT section FROM phantombot_" + fName + " GROUP BY section;");
 
-                String[] s = new String[rs.getFetchSize()];
-                int i = 0;
+                ArrayList<String> s = new ArrayList<>();
 
                 while (rs.next())
                 {
-                    s[i++] = rs.getString("section");
+                    s.add(rs.getString("section"));
                 }
 
-                return s;
+                return (String[]) s.toArray();
             } catch (SQLException ex)
             {
                 com.gmt2001.Console.err.printStackTrace(ex);
@@ -357,35 +356,33 @@ public class SqliteStore extends DataStore
     @Override
     public String[] GetKeyList(String fName, String section)
     {
-        CheckConnection();com.gmt2001.Console.err.println("cc");
+        CheckConnection();
 
-        fName = validateFname(fName);com.gmt2001.Console.err.println("fn");
+        fName = validateFname(fName);
 
         if (FileExists(fName))
-        {com.gmt2001.Console.err.println("fe");
+        {
             try
             {
-                PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=?;");com.gmt2001.Console.err.println("ps");
+                PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=?;");
                 statement.setQueryTimeout(10);
-                statement.setString(1, section);com.gmt2001.Console.err.println("pre");
-                ResultSet rs = statement.executeQuery();com.gmt2001.Console.err.println("post");
+                statement.setString(1, section);
+                ResultSet rs = statement.executeQuery();
 
-                String[] s = new String[rs.getFetchSize()];com.gmt2001.Console.err.println("fs=" + rs.getFetchSize());
-                int i = 0;
-                com.gmt2001.Console.err.println("loop");
+                ArrayList<String> s = new ArrayList<>();
+                
                 while (rs.next())
                 {
-                    com.gmt2001.Console.err.println("it=" + i);
-                    s[i++] = rs.getString("variable");
+                    s.add(rs.getString("variable"));
                 }
-                com.gmt2001.Console.err.println("endloop");
-                return s;
+                
+                return (String[]) s.toArray();
             } catch (SQLException ex)
             {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         }
-        com.gmt2001.Console.err.println("default");
+        
         return new String[]
         {
         };
@@ -394,7 +391,33 @@ public class SqliteStore extends DataStore
     @Override
     public boolean HasKey(String fName, String section, String key)
     {
-        return GetString(fName, section, key) != null;
+        CheckConnection();
+
+        fName = validateFname(fName);
+
+        if (!FileExists(fName))
+        {
+            return false;
+        }
+
+        try
+        {
+            PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE section=? AND variable=?;");
+            statement.setQueryTimeout(10);
+            statement.setString(1, section);
+            statement.setString(2, key);
+            ResultSet rs = statement.executeQuery();
+
+            if (rs.next())
+            {
+                return true;
+            }
+        } catch (SQLException ex)
+        {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+
+        return false;
     }
 
     @Override
