@@ -119,13 +119,6 @@ public class TempStore extends DataStore
     {
         AddFile(fName);
 
-        key = key.replaceAll("=", "_eq_");
-
-        if (key.startsWith(";") || key.startsWith("["))
-        {
-            key = "_" + key;
-        }
-
         if (!files.containsKey(fName) || !files.get(fName).data.containsKey(section)
                 || !files.get(fName).data.get(section).containsKey(key))
         {
@@ -139,13 +132,6 @@ public class TempStore extends DataStore
     public void SetObject(String fName, String section, String key, Object value)
     {
         AddFile(fName);
-
-        key = key.replaceAll("=", "_eq_");
-
-        if (key.startsWith(";") || key.startsWith("["))
-        {
-            key = "_" + key;
-        }
 
         if (!files.get(fName).data.containsKey(section))
         {
@@ -220,11 +206,6 @@ public class TempStore extends DataStore
     {
         AddFile(fName);
 
-        if (key.startsWith(";") || key.startsWith("["))
-        {
-            key = "_" + key;
-        }
-
         files.get(fName).data.get(section).remove(key);
     }
 
@@ -251,50 +232,6 @@ public class TempStore extends DataStore
     @Override
     public boolean HasKey(String fName, String section, String key)
     {
-        return GetString(fName, section, key) != null;
-    }
-
-    @Override
-    public boolean exists(String type, String key)
-    {
-        return HasKey(type, "", key);
-    }
-
-    @Override
-    public String get(String type, String key)
-    {
-        return GetString(type, "", key);
-    }
-
-    @Override
-    public void set(String type, String key, String value)
-    {
-        SetString(type, "", key, value);
-    }
-
-    @Override
-    public void del(String type, String key)
-    {
-        RemoveKey(type, "", key);
-    }
-
-    @Override
-    public void incr(String type, String key, int amount)
-    {
-        int ival = GetInteger(type, "", key);
-
-        ival += amount;
-
-        SetInteger(type, "", key, ival);
-    }
-
-    @Override
-    public void decr(String type, String key, int amount)
-    {
-        int ival = GetInteger(type, "", key);
-
-        ival -= amount;
-
-        SetInteger(type, "", key, ival);
+        return GetObject(fName, section, key) != null;
     }
 }

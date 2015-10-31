@@ -82,47 +82,91 @@ public class DataStore
 
     public Object GetObject(String fName, String section, String key)
     {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     public void SetObject(String fName, String section, String key, Object value)
     {
+        throw new UnsupportedOperationException();
     }
 
     public int GetInteger(String fName, String section, String key)
     {
-        return 0;
+        String sval = GetString(fName, section, key);
+
+        try
+        {
+            return Integer.parseInt(sval);
+        } catch (Exception ex)
+        {
+            return 0;
+        }
     }
 
     public void SetInteger(String fName, String section, String key, int value)
     {
+        String sval = Integer.toString(value);
+
+        SetString(fName, section, key, sval);
     }
 
     public float GetFloat(String fName, String section, String key)
     {
-        return 0.0f;
+        String sval = GetString(fName, section, key);
+
+        try
+        {
+            return Float.parseFloat(sval);
+        } catch (Exception ex)
+        {
+            return 0.0f;
+        }
     }
 
     public void SetFloat(String fName, String section, String key, float value)
     {
+        String sval = Float.toString(value);
+
+        SetString(fName, section, key, sval);
     }
 
     public double GetDouble(String fName, String section, String key)
     {
-        return 0.0;
+        String sval = GetString(fName, section, key);
+
+        try
+        {
+            return Double.parseDouble(sval);
+        } catch (Exception ex)
+        {
+            return 0.0;
+        }
     }
 
     public void SetDouble(String fName, String section, String key, double value)
     {
+        String sval = Double.toString(value);
+
+        SetString(fName, section, key, sval);
     }
 
     public Boolean GetBoolean(String fName, String section, String key)
     {
-        return false;
+        int ival = GetInteger(fName, section, key);
+
+        return ival == 1;
     }
 
     public void SetBoolean(String fName, String section, String key, Boolean value)
     {
+        int ival = 0;
+
+        if (value)
+        {
+            ival = 1;
+        }
+
+        SetInteger(fName, section, key, ival);
     }
 
     public void RemoveKey(String fName, String section, String key)
@@ -148,7 +192,7 @@ public class DataStore
 
     public boolean HasKey(String fName, String section, String key)
     {
-        return false;
+        return GetString(fName, section, key) != null;
     }
 
     public boolean exists(String type, String key)
