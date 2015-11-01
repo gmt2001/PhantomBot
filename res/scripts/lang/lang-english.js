@@ -480,3 +480,9 @@ $.lang.data["net.phantombot.subscribeHandler.current-subs"] = "There are current
 $.lang.data["net.phantombot.subscribeHandler.current-sub-mode"] = "Currently using $1 subscription detection. twitchnotify mode does not save to the database. To change it use '!subscribemode <auto or twitchnotify>";
 $.lang.data["net.phantombot.subscribeHandler.changed-sub-mode-twitchnotify"] = "Switched to twitchnotify subscription detection!";
 $.lang.data["net.phantombot.subscribeHandler.changed-sub-mode-auto"] = "Switched to auto subscription detection!";
+
+//8ballCommand.js
+$.lang.data["net.phantombot.8ballCommand.new-cost"] = "new cost set!";
+$.lang.data["net.phantombot.8ballCommand.new-cooldown"] = "new cooldown set!";
+$.lang.data["net.phantombot.8ballCommand.not-enough-points"] = "You need more points to use this command ";
+$.lang.data["net.phantombot.8ballCommand.proper-usage"] = "ask the magic-8ball a question with !8ball";
