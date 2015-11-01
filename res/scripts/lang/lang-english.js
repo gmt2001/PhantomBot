@@ -386,8 +386,9 @@ $.lang.data["net.phantombot.greetingsystem.toggle-enabled-other"] = "A greeting 
 $.lang.data["net.phantombot.greetingsystem.usage"] = "Usage: \"!greet max <amount>\", \"!greet set [global OR user <name>] <message>\", \"!greet toggle [global OR user <name>]\"";
 
 //followHandler.js
-$.lang.data["net.phantombot.followagecommand.error-not-following"] = "You are not following the channel";
-$.lang.data["net.phantombot.followagecommand.followtime"] = "You have been following channel $1 since $2";
+$.lang.data["net.phantombot.followHandler.error-not-following"] = "You are not following the channel";
+$.lang.data["net.phantombot.followHandler.followtime"] = "You have been following channel $1 since $2";
+$.lang.data["net.phantombot.followHandler.followtime-check-user"] = "$1 been following channel $2 since $3";
 $.lang.data["net.phantombot.followHandler.default-say"] = "Thanks for the follow (name)! +(pointname)!";
 $.lang.data["net.phantombot.followHandler.default-say-2"] = "Thanks for the follow (name)!";
 $.lang.data["net.phantombot.followHandler.not-following"] = "$1 is not following the channel.";
