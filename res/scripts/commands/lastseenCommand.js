@@ -5,18 +5,17 @@ $.on('command', function (event) {
     var lastTarget = $.inidb.get('lastseen', args[0]);
     
     if (command.equalsIgnoreCase("lastseen")) {
-
-        
-        if (lastTarget == null ) {
-            lastTarget = "No data.";
+        if (lastTarget == null) {
+            lastTarget = $.lang.get("net.phantombot.lastseencommand.error-no-data");
         }
         
         if (args.length >= 1) {
-            $.say ($.getWhisperString($.username.resolve(args[0])) + " was last seen at: " + lastTarget);
+            $.say ($.getWhisperString($.username.resolve(args[0])) + $.lang.get("net.phantombot.lastseencommand.say", lastTarget));
+            return;
         } else {
-            $.say($.getWhisperString(sender) + "Usage: !lastseen <name>");
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.lastseencommand.usage"));
+            return;
         }
-        
     }
 });
 
@@ -47,4 +46,4 @@ setTimeout(function(){
     if ($.moduleEnabled('./commands/lastseenCommand.js')) {
         $.registerChatCommand("./commands/lastseenCommand.js", "lastseen");
     }
-},10*1000);
+},10 * 1000);
