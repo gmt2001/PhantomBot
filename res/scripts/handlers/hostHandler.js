@@ -8,10 +8,10 @@ if ($.hostlist == null || $.hostlist == undefined) {
 if ($.hosttimeout == null || $.hosttimeout == undefined || isNaN($.hosttimeout)) {
     $.hosttimeout =  60 * 60 * 1000;
 } else {
-    $.hosttimeout =  $.hosttimeout * 60 * 1000;
+    $.hosttimeout = $.hosttimeout * 60 * 1000;
 }
 
-if ($.hostreward == null || $.hostreward == undefined) {
+if ($.hostreward == null || $.hostreward == undefined || isNaN($.hostreward)) { // added isNaN() so NaN does not come up if there is no reward
     $.hostreward = 0;
 }
 
@@ -32,9 +32,9 @@ $.on('twitchHosted', function(event) {
             
         if (s == null || s == undefined || $.strlen(s) == 0) {
             if ($.hostreward < 1) {
-                s = "Thanks for the host (name)!";
+                s = $.lang.get("net.phantombot.hosthandler.default-host-welcome-message");
             } else if ($.hostreward > 0 && $.moduleEnabled('./systems/pointSystem.js')) {
-                s = "Thanks for the host (name)! you're rewarded " + $.getPointsString($.hostreward) + ".";
+                s = $.lang.get("net.phantombot.hosthandler.default-host-welcome-message-and-reward", $.getPointsString($.hostreward));
                 $.inidb.incr('points', username.toLowerCase(), $.hostreward);
             }
         }
@@ -84,21 +84,28 @@ $.on('command', function(event) {
             $.say($.getWhisperString(sender) + $.adminmsg);
             return;
         }
-        
+        var hmessage = $.inidb.get('settings', 'hostmessage');
+        if (hmessage == null) { // added check if there is no host message so it does not come out as null
+            hmessage = "There is no host message as this time.";
+        }
+
         if ($.strlen(argsString) == 0) {
-            $.say($.getWhisperString(sender) + "The current new hoster message is: " + $.inidb.get('settings', 'hostmessage'));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.hosthandler.current-host-message", hmessage));
             
-            var s = "To change it use '!hostmessage <message>'. You can also add the string '(name)' to put the hosters name";
+            var s = $.lang.get("net.phantombot.hosthandler.host-message-usage");
             
             $.say($.getWhisperString(sender) + s);
+            return;
         } else {
             $.logEvent("hostHandler.js", 73, username + " changed the new hoster message to: " + argsString);
             
             $.inidb.set('settings', 'hostmessage', argsString);
             
-            $.say($.getWhisperString(sender) + "New host message set!");
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.hosthandler.host-message-set-success"));
+            return;
         }
     }
+
     if (command.equalsIgnoreCase("hostreward")) {
         if (!$.isAdmin(sender)) {
             $.say($.getWhisperString(sender) + $.adminmsg);
@@ -107,13 +114,15 @@ $.on('command', function(event) {
         
         if ($.strlen(argsString) == 0) {
             if ($.inidb.exists('settings', 'hostreward')) {
-                $.say($.getWhisperString(sender) + "The current host reward is " + $.getPointsString($.hostreward) + "! To change it use '!hostreward <amount>'");
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.hosthandler.host-reward-current-and-usage", $.getPointsString($.hostreward)));
+                return;
             } else {
-                $.say($.getWhisperString(sender) + "The current host reward is " + $.getPointsString($.hostreward) + "! To change it use '!hostreward (amount)'");
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.hosthandler.host-reward-current-and-usage", $.getPointsString($.hostreward)));
+                return;
             }
         } else {
             if (!parseInt(argsString) < 0) {
-                $.say($.getWhisperString(sender) + "Please put a valid reward greater than or equal to 0!");
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.hosthandler.host-reward-error"));
                 return;
             }
             
@@ -121,32 +130,37 @@ $.on('command', function(event) {
             
             $.inidb.set('settings', 'hostreward', argsString);
             $.hostreward = parseInt(argsString);
-            $.say($.getWhisperString(sender) + "New hoster reward set to: " + argsString);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.hosthandler.host-reward-set-success"));
+            return;
         }
     }
 	
     if (command.equalsIgnoreCase("hostcount")) {
-        $.say($.getWhisperString(sender) + "This channel is currently being hosted by " + $.hostlist.length + " channels!");
+        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.hosthandler.host-count", $.hostlist.length));
+        return;
     }
     
     if (command.equalsIgnoreCase("hosttime")) {
         if (args.length < 1) {
-            $.say($.getWhisperString(sender) + "Host timeout duration is currently set to: " + parseInt($.inidb.get('settings', 'hosttimeout')) + " minutes!");
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.hosthandler.host-timeout-time", $.hosttimeout));
+            return;
         } else if (args.length >= 1){
             if (!$.isAdmin(sender)) {
                 $.say($.getWhisperString(sender) + $.adminmsg);
                 return;
             }
             if (parseInt(args[0]) < 30) {
-                $.say($.getWhisperString(sender) + "Host timeout duration can't be less than 30 minutes!");
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.hosthandler.host-timeout-time-error"));
                 return;
             } else {
                 $.inidb.set('settings', 'hosttimeout', parseInt(args[0]));
                 $.hosttimeout = parseInt(args[0]);
-                $.say($.getWhisperString(sender) + "Host timeout duration is now set to: " + parseInt(args[0]) + " minutes!");
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.hosthandler.host-timeout-time-set", parseInt(args[0])));
+                return;
             }
         }
     }
+
     if (command.equalsIgnoreCase("hostlist")) {
         var m = "";
         
@@ -162,17 +176,19 @@ $.on('command', function(event) {
             }
         
             if (b == 0) {
-                $.say("This channel is currently being hosted by the hosting " + $.hostlist.length + " channels: " + m);
+                $.say($.lang.get("net.phantombot.hosthandler.host-list", $.hostlist.length, m));
+                return;
             } else {
                 $.say(">>" + m);
+                return;
             }
         }
         
         if ($.hostlist.length == 0) {
-        	$.say($.getWhisperString(sender) + "Noone is currently hosting this channel.");
+        	$.say($.getWhisperString(sender) + $.lang.get("net.phantombot.hosthandler.host-list-error"));
+            return;
         }
     }
-	
 });
 setTimeout(function(){ 
     if ($.moduleEnabled('./handlers/hostHandler.js')) {
@@ -182,4 +198,4 @@ setTimeout(function(){
         $.registerChatCommand("./handlers/hostHandler.js", "hostcount");
         $.registerChatCommand("./handlers/hostHandler.js", "hostlist");
     }
-},10*1000);
+},10 * 1000);
