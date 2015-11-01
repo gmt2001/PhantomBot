@@ -20,11 +20,11 @@ $.on('twitchSubscribe', function(event) {
     var username = $.username.resolve(subscriber);
     var subscribed = $.inidb.get('subscribed', subscriber);
     
-    if (subscribed == null || subscribed == undefined || subscribed.isEmpty() || parseInt(subscribed)==0) {
+    if (subscribed == null || subscribed == undefined || subscribed.isEmpty() || parseInt(subscribed) == 0) {
         $.inidb.set('subscribed', subscriber, 1);      
     } 
     
-    if($.isAdmin(subscriber)==false || $.isModv3(subscriber, event.getTags())==false) {
+    if($.isAdmin(subscriber) == false || $.isModv3(subscriber, event.getTags()) == false) {
         $.inidb.set("tempsubgroup", subscriber, $.inidb.get("group",subscriber));
         $.inidb.set("group", subscriber, 3);
     }
@@ -35,9 +35,10 @@ $.on('twitchSubscribe', function(event) {
             
         if (s == null || s == undefined || $.strlen(s) == 0) {
             if ($.moduleEnabled("./systems/pointSystem.js")) {
-                s = "Thanks for the subscription (name)! +(pointname)!";
+                s = $.lang.get("net.phantombot.subscribeHandler.default-sub-message-whit-points");
+                return;
             } else {
-                s = "Thanks for the subscription (name)!";
+                s = $.lang.get("net.phantombot.subscribeHandler.default-sub-message");
             }
         }
             
@@ -58,7 +59,7 @@ $.on('twitchSubscribe', function(event) {
                 s = s.replace('(reward)', p);
             }
         }
-        if($.sub_silentmode==0) {
+        if ($.sub_silentmode == 0) {
             $.say(s);
         }
     }
@@ -66,7 +67,6 @@ $.on('twitchSubscribe', function(event) {
     if ($.moduleEnabled("./systems/pointSystem.js") && p > 0) {
         $.inidb.incr('points', subscriber, p);
     }
- 
 });
 
 $.on('twitchUnsubscribe', function(event) {
@@ -82,18 +82,17 @@ $.on('twitchUnsubscribe', function(event) {
     if (subscribed.equalsIgnoreCase("1")) {
         $.inidb.set('subscribed', subscriber, 0);
     }
-    if($.isAdmin(subscriber)==false || $.isModv3(subscriber, event.getTags())==false) {
+
+    if ($.isAdmin(subscriber)==false || $.isModv3(subscriber, event.getTags()) == false) {
         $.inidb.set("group", subscriber, $.inidb.get("tempsubgroup", subscriber));
     }
-    
-
 });
 
 $.on('twitchSubscribesInitialized', function(event) {
     println(">>Enabling new subscriber announcements");
     $.announceSubscribes = true;
 });
-
+$.announceSubscribes = true;
 $.on('command', function(event) {
     var sender = event.getSender();
     var username = $.username.resolve(sender, event.getTags());
@@ -107,21 +106,25 @@ $.on('command', function(event) {
         }
         
         if ($.strlen(argsString) == 0) {
-            $.say($.getWhisperString(sender) + "The current new subscriber message is: " + $.inidb.get('settings', 'subscribemessage'));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.subscribeHandler.current.sub-message", $.inidb.get('settings', 'subscribemessage')));
+            return;
             
-            var s = "To change it use '!subscribemessage <message>'. You can also add the string '(name)' to put the subscribers name";
+            var s = $.lang.get("net.phantombot.subscribeHandler.sub-message-usage");
             
             if ($.moduleEnabled("./systems/pointSystem.js")) {
-                s += ", '(reward)' to put the number of points received for subscribing, and '(pointname)' to put the name of your points";
+                s += $.lang.get("net.phantombot.subscribeHandler.sub-message-points-usage");
+                return;
             }
             
             $.say($.getWhisperString(sender) + s);
+            return;
         } else {
             $.logEvent("subscribeHandler.js", 107, username + " changed the new subscriber message to: " + argsString);
             
             $.inidb.set('settings', 'subscribemessage', argsString);
             
-            $.say($.getWhisperString(sender) + "New subscriber message set to!");
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.subscribeHandler.new-sub-message-set"));
+            return;
         }
     }
     
@@ -131,15 +134,15 @@ $.on('command', function(event) {
             return;
         }
         
-        if($.sub_silentmode==1) {
+        if($.sub_silentmode == 1) {
             $.inidb.set("settings", 'sub_silentmode', 0);
-            $.say($.getWhisperString(sender) + 'Subscribe handler now set to silent mode');
-            $.sub_silentmode=0;
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.subscribeHandler.sub-silent-mode-on"));
+            $.sub_silentmode = 0;
             return;
-        } else if($.sub_silentmode==0) {
+        } else if($.sub_silentmode == 0) {
             $.inidb.set("settings", 'sub_silentmode', 1);
-            $.say($.getWhisperString(sender) + 'Subscribe handler now set to verbose mode');
-            $.sub_silentmode=1;
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.subscribeHandler.sub-silent-mode-off"));
+            $.sub_silentmode = 1;
             return;
         }
     }
@@ -149,16 +152,23 @@ $.on('command', function(event) {
             $.say($.getWhisperString(sender) + $.adminmsg);
             return;
         }
+
+        var reward = $.inidb.get('settings', 'subscribereward');
+        if (reward == null) {
+            reward = 0;
+        }
         
         if ($.strlen(argsString) == 0) {
             if ($.inidb.exists('settings', 'subscribereward')) {
-                $.say($.getWhisperString(sender) + "The current new subscriber reward is " + $.inidb.get('settings', 'subscribereward') + " points! To change it use '!subscribereward <reward>'");
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.subscribeHandler.new-sub-current-reward", reward, $.pointname));
+                return;
             } else {
-                $.say($.getWhisperString(sender) + "The current new subscriber reward is 100 points! To change it use '!subscribereward <reward>'");
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.subscribeHandler.new-sub-current-reward", reward, $.pointname));
+                return;
             }
         } else {
             if (parseInt(argsString) < 0) {
-                $.say($.getWhisperString(sender) + "Please put a valid reward greater than or equal to 0!");
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.subscribeHandler.sub-reward-error"));
                 return;
             }
             
@@ -166,7 +176,8 @@ $.on('command', function(event) {
             
             $.inidb.set('settings', 'subscribereward', argsString);
             
-            $.say($.getWhisperString(sender) + "New subscriber reward set to " + argsString + " " + $.getPointsString($.argsString) + "!");
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.subscribeHandler.new-sub-reward-set", argsString, $.getPointsString($.argsString)));
+            return;
         }
     }
     
@@ -183,7 +194,8 @@ $.on('command', function(event) {
                 count++;
             }
         }
-        $.println("There are currently " + count + " subscribers!");
+        $.println($.lang.get("net.phantombot.subscribeHandler.current-subs", count));
+        return;
     }
     
     if (command.equalsIgnoreCase("subscribemode")) {
@@ -193,8 +205,7 @@ $.on('command', function(event) {
         }
         
         if ($.strlen(argsString) == 0) {
-            $.say($.getWhisperString(sender) + "Currently using " + $.subscribemode + " subscription detection. twitchnotify mode does not save to the database. To change it use '!subscribemode <auto or twitchnotify>'");
-            
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.subscribeHandler.current-sub-mode", $.subscribemode));
             return;
         }
         
@@ -205,13 +216,15 @@ $.on('command', function(event) {
             
             $.inidb.set('settings', 'subscribemode', 'twitchnotify');
             
-            $.say($.getWhisperString(sender) + "Switched to twitchnotify subscription detection!");
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.subscribeHandler.changed-sub-mode-twitchnotify"));
+            return;
         } else {
             $.logEvent("subscribeHandler.js", 175, username + " changed the new subscriber detection method to auto");
             
             $.inidb.set('settings', 'subscribemode', 'auto');
             
-            $.say($.getWhisperString(sender) + "Switched to auto subscription detection!");
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.subscribeHandler.changed-sub-mode-auto"));
+            return;
         }
         
         $.subscribemode = $.inidb.get('settings', 'subscribemode');
@@ -222,7 +235,7 @@ $.on('ircPrivateMessage', function(event) {
     if (event.getSender().equalsIgnoreCase("twitchnotify")) {
         var message = event.getMessage().toLowerCase();
 
-        if (message.indexOf("subscribed") != -1 && message.indexOf("resubscribed") == -1) {
+        if (message.indexOf("subscribed") != -1 && message.indexOf("resubscribed") != -1) {
             var spl = message.split(" ");
             var EventBus = Packages.me.mast3rplan.phantombot.event.EventBus;
             var TwitchSubscribeEvent = Packages.me.mast3rplan.phantombot.event.twitch.subscriber.TwitchSubscribeEvent;
@@ -240,8 +253,7 @@ setTimeout(function(){
         $.registerChatCommand("./handlers/subscribeHandler.js", "subscribecount");
         $.registerChatCommand("./handlers/subscribeHandler.js", "subscribemode", "admin");
     }
-},10*1000);
-
+},10 * 1000);
 
 $.timer.addTimer("./handlers/subscribeHandler.js", "subscribehandler", true, function() {
     if (!$.moduleEnabled("./handlers/subscribeHandler.js")) {
