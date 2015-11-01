@@ -8,7 +8,7 @@ $.on('command', function(event) {
     var quote;
     var num;
     
-    if(command.equalsIgnoreCase("quote")) {
+    if (command.equalsIgnoreCase("quote")) {
         if (argsString.length() > 0) {
             num = parseInt(argsString);
         } else {
@@ -16,15 +16,16 @@ $.on('command', function(event) {
         }
 
         if (isNaN(num_quotes) || num_quotes == 0) {
-            $.say($.getWhisperString(sender) + "There are no quotes at this time");
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.quotecommand.error-no-quotes"));
             return;
         }
 
         if ($.inidb.get("quotes", "quote_" + num) == null) {
-            $.say($.getWhisperString(sender) + "There are only " + (num_quotes) + " quotes right now! Remember that quotes are numbered from 0 to " + (num_quotes - 1 )+ "!");
-
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.quotecommand.quote-number", (num_quotes), (num_quotes - 1)));
+            return;
         } else {
-            $.say("#" + num + ": " + $.inidb.get("quotes", "quote_" + num));
+            $.say($.lang.get("net.phantombot.quotecommand.random-quote", num, $.inidb.get("quotes", "quote_" + num))); // I don't think the quote needs to be whispered.
+            return;
         }
     }
     
@@ -39,14 +40,15 @@ $.on('command', function(event) {
         }
         
         if (argsString.isEmpty()) {
-            $.say($.getWhisperString(sender) + "Usage: !addquote \"This is a quote!\"");
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.quotecommand.error-quote-usage"));
             return;
         }
 
         $.inidb.incr("quotes", "num_quotes", 1);
         $.inidb.set("quotes", "quote_" + num_quotes, argsString);
         
-        $.say($.getWhisperString(sender) + "Quote added! There are now " + (num_quotes + 1) + " quotes!");
+        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.quotecommand.quote-add-success", (num_quotes + 1)));
+        return;
     }
 
     if (command.equalsIgnoreCase("editquote")) {
@@ -58,19 +60,19 @@ $.on('command', function(event) {
         num = parseInt(args[0]);
 
         if (num > num_quotes) {
-            $.say($.getWhisperString(sender) + "There is no quote under that ID, " + sender + "!");
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.quotecommand.editquote-error"));
             return;
         }
 
         if (argsString2.isEmpty()) {
-            $.say($.getWhisperString(sender) + "Usage: !editquote <ID> \"This is a quote!\"");
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.quotecommand.editquote-error-usage"));
             return;
         }
-
         
         $.inidb.set("quotes", "quote_" + num, argsString2);
         
-        $.say($.getWhisperString(sender) + "Quote #" + num + " changed to: " + $.inidb.get("quotes", "quote_" + num));
+        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.quotecommand.editquote-success", num, $.inidb.get("quotes", "quote_" + num)));
+        return;
     }
     
     if (command.equalsIgnoreCase("delquote")) {
@@ -80,19 +82,24 @@ $.on('command', function(event) {
         }
 
         if (num_quotes == null || isNaN(num_quotes) || num_quotes == 0) {
-            $.say($.getWhisperString(sender) + "There are no quotes at this time");
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.quotecommand.delquote-error"));
             return;
         }
         
         if (argsString.isEmpty()) {
-            $.say($.getWhisperString(sender) + "Usage: !delquote <id>");
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.quotecommand.delquote-error-usage"));
+            return;
+        }
+
+        if ($.inidb.get('quotes', 'quote_' + parseInt(args[0])) == null) { // added this check to make sure that the quote ID is true.
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.quotecommand.delquote-error-wrong-id", $.inidb.get('quotes', 'num_quotes')));
             return;
         }
         
         if (num_quotes > 1) {
             for (i = 0; i < num_quotes; i++) {
                 if (i > parseInt(argsString)) {
-                    $.inidb.set('quotes', 'quote_' + (i - 1), $.inidb.get('quotes', 'quote_' + i))
+                    $.inidb.set('quotes', 'quote_' + (i - 1), $.inidb.get('quotes', 'quote_' + i));
                 }
             }
         }
@@ -101,7 +108,8 @@ $.on('command', function(event) {
         
         $.inidb.decr("quotes", "num_quotes", 1);
         
-        $.say($.getWhisperString(sender) + "Quote removed! There are now " + (num_quotes - 1) + " quotes!");
+        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.quotecommand.delquote-success", (num_quotes - 1)));
+        return;
     }
 });
 
@@ -112,4 +120,4 @@ setTimeout(function(){
         $.registerChatCommand("./commands/quoteCommand.js", "editquote", "mod");
         $.registerChatCommand("./commands/quoteCommand.js", "delquote", "mod");
     }
-},10*1000);
+},10 * 1000);
