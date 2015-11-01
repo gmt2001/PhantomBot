@@ -411,3 +411,72 @@ $.lang.data["net.phantombot.followHandler.penta-follow-train"] = "Penta follow!!
 $.lang.data["net.phantombot.followHandler.mega-follow-train"] = "Mega follow train!! ($1)";
 $.lang.data["net.phantombot.followHandler.ultra-follow-train"] = "ultra follow train!! ($1)";
 $.lang.data["net.phantombot.followHandler.massive-follow-train"] = "Unbelievable follow train!! ($1)";
+
+// noticeHandler.js
+$.lang.data["net.phantombot.noticehandler.notice-get-usage"] = "There are $1 notices. Say '!notice get <id>' to get a messages content. Message IDs go from 0 to $2";
+$.lang.data["net.phantombot.noticehandler.notice-get-error"] = "There are $1 notices. Message IDs go from 0 to $2 and $3 isn't one of them";
+$.lang.data["net.phantombot.noticehandler.notice-insert-usage"] = "Insert an event into a specific slot, pushing the event currently in that slot and all others after it forward by one slot. !notice insert <id> <message>";
+$.lang.data["net.phantombot.noticehandler.notice-added-success"] = "Notice added! '$1' There are now $2 notices!";
+$.lang.data["net.phantombot.noticehandler.notice-current-interval"] = "The current interval is $1 minutes. Set it with !notice timer <minutes> (Minimum is 2 minutes)";
+$.lang.data["net.phantombot.noticehandler.notice-interval-set-success"] = "The interval between notices has been set to $1 minutes!";
+$.lang.data["net.phantombot.noticehandler.notice-config"] = "[Notice Settings] - [Notices: $1] - [Interval: $2 minutes] - [Msg Trigger: $3 messages] - [Amount: $4 notices]";
+$.lang.data["net.phantombot.noticehandler.notice-toggle-on"] = "Notices have been turned on!";
+$.lang.data["net.phantombot.noticehandler.notice-toggle-off"] = "Notices have been turned off!";
+$.lang.data["net.phantombot.noticehandler.notice-req-message-usage"] = "The current amount is $1 messages. Set it with !notice req <amount> (Minimum is 5 messages)";
+$.lang.data["net.phantombot.noticehandler.norice-req-message-set-success"] = "The minimum number messages to trigger a notice has been set to $1 messages!";
+$.lang.data["net.phantombot.noticehandler.notice-usage"] = "Usage: !addnotice <message>, !delnotice <id>, !notice insert <id> <message>, !notice get <id>, !notice timer <minutes>, !notice req <amount>, !notice config";
+$.lang.data["net.phantombot.noticehandler.notice-add-usage"] = "Insert an notice at the end of the rotation. !addnotice <message>";
+$.lang.data["net.phantombot.noticehandler.notice-remove-usage"] = "Delete the notice at the specified slot. !delnotice <id>";
+$.lang.data["net.phantombot.noticehandler.notice-remove-error"] = "There are no notices at this time";
+$.lang.data["net.phantombot.noticehandler.notice-remove-success"] = "Notice removed! There are now $1 notices!";
+$.lang.data["net.phantombot.noticehandler.notice-enabled"] = "Enabled";
+$.lang.data["net.phantombot.noticehandler.notice-disabled"] = "Disabled";
+$.lang.data["net.phantombot.noticehandler.notice-remove-error2"] = "That notice does not exist, get the notice id whit the command !notice get (id)";
+
+//phraseHandler.js
+$.lang.data["net.phantombot.phrasehandler.trigger-error-add-usage"] = "Usage: !addphrase \"trigger\" \"message\" - (sender) can be used in the message to display the username.";
+$.lang.data["net.phantombot.phrasehandler.trigger-add-success"] = "Phrase trigger: $1, Message: '$2' was added!";
+$.lang.data["net.phantombot.phrasehandler.trigger-remove-usage"] = "Usage: !delphrase (trigger)";
+$.lang.data["net.phantombot.phrasehandler.trigger-remove-success"] = "Phrase trigger: '$1' was removed!";
+$.lang.data["net.phantombot.phrasehandler.trigger-not-found"] = "That phrase trigger does not exist!";
+
+//hostHandler.js 
+$.lang.data["net.phantombot.hosthandler.default-host-welcome-message"] = "Thanks for the host (name)!";
+$.lang.data["net.phantombot.hosthandler.default-host-welcome-message-and-reward"] = "Thanks for the host (name)! you're rewarded $1!";
+$.lang.data["net.phantombot.hosthandler.current-host-message"] = "The current new hoster message is: $1";
+$.lang.data["net.phantombot.hosthandler.host-message-usage"] = "To change it use '!hostmessage (message)'. You can also add the string '(name)' to put the hosters name";
+$.lang.data["net.phantombot.hosthandler.host-message-set-success"] = "New host message set!";
+$.lang.data["net.phantombot.hosthandler.host-reward-current-and-usage"] = "The current host reward is $1! To change it use '!hostreward <amount>";
+$.lang.data["net.phantombot.hosthandler.host-reward-error"] = "Please put a valid reward greater than or equal to 0!";
+$.lang.data["net.phantombot.hosthandler.host-reward-set-success"] = "New hoster reward set!";
+$.lang.data["net.phantombot.hosthandler.host-count"] = "This channel is currently being hosted by $1 channels!";
+$.lang.data["net.phantombot.hosthandler.host-timeout-time"] = "Host timeout duration is currently set to: $1 minutes!";
+$.lang.data["net.phantombot.hosthandler.host-timeout-time-error"] = "Host timeout duration can't be less than 30 minutes!";
+$.lang.data["net.phantombot.hosthandler.host-timeout-time-set"] = "Host timeout duration is now set to: $1 minutes!";
+$.lang.data["net.phantombot.hosthandler.host-list"] = "This channel is currently being hosted by the hosting $1 channels: $2";
+$.lang.data["net.phantombot.hosthandler.host-list-error"] = "No one is currently hosting this channel.";
+
+//donationHandler.js 
+$.lang.data["net.phantombot.donationhandler.current-file-path"] = "Current donation alert file path is: $1";
+$.lang.data["net.phantombot.donationhandler.new-file-path-set"] = "File path for donation alert has been set!";
+$.lang.data["net.phantombot.donationhandler.donation-toggle-on"] = "Donation alerts have been enabled.";
+$.lang.data["net.phantombot.donationhandler.donation-toggle-off"] = "Donation alerts have been disabled.";
+$.lang.data["net.phantombot.donationhandler.new-donation"] = "$1 has received a donation from: $2";
+$.lang.data["net.phantombot.donationhandler.donationalert-usage"] = "!donationalert filepath | vieufilepath | toggle";
+
+//subscribeHandler.js 
+$.lang.data["net.phantombot.subscribeHandler.default-sub-message-whit-points"] = "Thanks for the subscription (name)! +(pointname)!";
+$.lang.data["net.phantombot.subscribeHandler.default-sub-message"] = "Thanks for the subscription (name)!";
+$.lang.data["net.phantombot.subscribeHandler.current.sub-message"] = "The current subscriber message is: $1";
+$.lang.data["net.phantombot.subscribeHandler.sub-message-usage"] = "To change it use '!subscribemessage <message>'. You can also add the string '(name)' to put the subscribers name";
+$.lang.data["net.phantombot.subscribeHandler.sub-message-points-usage"] = ", '(reward)' to put the number of points received for subscribing, and '(pointname)' to put the name of your points";
+$.lang.data["net.phantombot.subscribeHandler.new-sub-message-set"] = "New subscriber message set!";
+$.lang.data["net.phantombot.subscribeHandler.sub-silent-mode-on"] = "Subscribe handler now set to silent mode";
+$.lang.data["net.phantombot.subscribeHandler.sub-silent-mode-off"] = "Subscribe handler now set to verbose mode";
+$.lang.data["net.phantombot.subscribeHandler.new-sub-current-reward"] = "The current new subscriber reward is $1 points! To change it use '!subscribereward <reward>";
+$.lang.data["net.phantombot.subscribeHandler.sub-reward-error"] = "Please put a valid reward greater than or equal to 0!";
+$.lang.data["net.phantombot.subscribeHandler.new-sub-reward-set"] = "New subscriber reward set to $1 $2";
+$.lang.data["net.phantombot.subscribeHandler.current-subs"] = "There are currently $1 subscribers!";
+$.lang.data["net.phantombot.subscribeHandler.current-sub-mode"] = "Currently using $1 subscription detection. twitchnotify mode does not save to the database. To change it use '!subscribemode <auto or twitchnotify>";
+$.lang.data["net.phantombot.subscribeHandler.changed-sub-mode-twitchnotify"] = "Switched to twitchnotify subscription detection!";
+$.lang.data["net.phantombot.subscribeHandler.changed-sub-mode-auto"] = "Switched to auto subscription detection!";
