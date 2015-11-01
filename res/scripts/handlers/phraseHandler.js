@@ -10,7 +10,7 @@ $.on('ircChannelMessage', function(event) {
     }
 
     for (i = 0; i < emoteKey.length; i++) {
-        if (message.indexOf(emoteKey[i].toLowerCase()) != -1) {
+        if (message.equalsIgnoreCase(emoteKey[i].toLowerCase())) {
             var messageKEY = $.inidb.get('phrases', emoteKey[i]);
             while (messageKEY.contains("(sender)")) {
                 messageKEY = messageKEY.replace("(sender)", username);
@@ -26,7 +26,7 @@ $.on('command', function (event) {
     var sender = event.getSender();
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
-	var argsString2 = argsString.substring(argsString.indexOf(" ") + 1, argsString.length());
+    var argsString2 = argsString.substring(argsString.indexOf(" ") + 1, argsString.length());
     var args = event.getArgs();
     var triggerphrase = "";
     var response = "";
@@ -49,7 +49,7 @@ $.on('command', function (event) {
         triggerphrase = new String(triggerphrase);
         triggerphrase = triggerphrase.replace(/[^a-zA-Z0-9\s]+/g,'');
         
-        response = argsString2;
+        response = args[1];
          
         $.inidb.set('phrases', triggerphrase, response);
         $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.phrasehandler.trigger-add-success", triggerphrase, response));
