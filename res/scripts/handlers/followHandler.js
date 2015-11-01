@@ -217,11 +217,17 @@ $.on('command', function(event) {
     }
 
     if (command.equalsIgnoreCase("followage") || command.equalsIgnoreCase("followtime") || command.equalsIgnoreCase("following")) {
+        var action = args[0];
+        var check = $.twitch.GetUserFollowsChannel(sender.toLowerCase(), $.channelName.toLowerCase());
+        if (action) check = $.twitch.GetUserFollowsChannel($.username.resolve(action.toLowerCase()), $.channelName.toLowerCase());
         if (check.getInt("_http") != 200) {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.followagecommand.error-not-following"));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.followHandler.error-not-following"));
+            return;
+        } else if (action) {
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.followHandler.followtime-check-user", action, $.channelName, $.getFollowAge(action, $.channelName)));
             return;
         } else {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.followagecommand.followtime", $.channelName, $.getFollowAge(sender, $.channelName)));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.followHandler.followtime", $.channelName, $.getFollowAge(sender, $.channelName)));
             return;
         }
     }
@@ -276,6 +282,5 @@ setTimeout(function () {
         $.registerChatCommand("./handlers/followHandler.js", "followed", "mod");
         $.registerChatCommand("./handlers/followHandler.js", "follow", "mod");
         $.registerChatCommand("./handlers/followHandler.js", "followannounce", "mod");
-
     }
 }, 10 * 1000);
