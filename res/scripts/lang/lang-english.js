@@ -486,3 +486,28 @@ $.lang.data["net.phantombot.8ballCommand.new-cost"] = "new cost set!";
 $.lang.data["net.phantombot.8ballCommand.new-cooldown"] = "new cooldown set!";
 $.lang.data["net.phantombot.8ballCommand.not-enough-points"] = "You need more points to use this command ";
 $.lang.data["net.phantombot.8ballCommand.proper-usage"] = "ask the magic-8ball a question with !8ball";
+
+//quoteCommand.js
+$.lang.data["net.phantombot.quotecommand.error-no-quotes"] = "There are no quotes at this time!";
+$.lang.data["net.phantombot.quotecommand.quote-number"] = "There are only $1 quotes right now! Remember that quotes are numbered from 0 to $2!";
+$.lang.data["net.phantombot.quotecommand.random-quote"] = "#$1: $2";
+$.lang.data["net.phantombot.quotecommand.error-quote-usage"] = "Usage: !addquote (quote)";
+$.lang.data["net.phantombot.quotecommand.quote-add-success"] = "Quote added! There are now $1 quotes!";
+$.lang.data["net.phantombot.quotecommand.editquote-error"] = "There is no quote under that ID!";
+$.lang.data["net.phantombot.quotecommand.editquote-error-usage"] = "Usage: !editquote (ID) (quote)";
+$.lang.data["net.phantombot.quotecommand.editquote-success"] = "Quote #$1 changed to: $2";
+$.lang.data["net.phantombot.quotecommand.delquote-error"] = "There are no quotes at this time!";
+$.lang.data["net.phantombot.quotecommand.delquote-error-usage"] = "Usage: !delquote (ID)";
+$.lang.data["net.phantombot.quotecommand.delquote-success"] = "Quote removed! There are now $1 quotes!";
+$.lang.data["net.phantombot.quotecommand.delquote-error-wrong-id"] = "That quote does not exist, Remember quotes are marked from 0 to $1";
+
+//highlightCommand.js 
+$.lang.data["net.phantombot.highlightcommand.usage"] = "Usage: !highlight (note)";
+$.lang.data["net.phantombot.highlightcommand.error-stream-offline"] = "Stream is Offline!";
+$.lang.data["net.phantombot.highlightcommand.highlight-saved"] = "Highlight saved! '$1' @ $2";
+$.lang.data["net.phantombot.highlightcommand.highlight-cleared"] = "All Highlights have been erased!";
+
+//lastseenCommand.js 
+$.lang.data["net.phantombot.lastseencommand.usage"] = "Usage: !lastseen (username)";
+$.lang.data["net.phantombot.lastseencommand.say"] = "$1 was last seen at: $2";
+$.lang.data["net.phantombot.lastseencommand.error-no-data"] = "No data.";
