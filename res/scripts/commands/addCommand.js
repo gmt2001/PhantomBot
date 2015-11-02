@@ -1,4 +1,3 @@
-
 $.on('command', function(event) {
     var sender = event.getSender();
     var username = $.username.resolve(sender, event.getTags());
@@ -12,7 +11,7 @@ $.on('command', function(event) {
     var commandString;
     var message;
 
-    if(args.length >= 2 && !command.equalsIgnoreCase("pricecom")) {
+    if (args.length >= 2 && !command.equalsIgnoreCase("pricecom")) {
         if(command.equalsIgnoreCase("addcom") ) {
             if (!$.isModv3(sender, event.getTags())) {
                 $.say($.getWhisperString(sender) + $.modmsg);
@@ -27,7 +26,7 @@ $.on('command', function(event) {
             }
             
             if ($.commandExists(commandString)) {
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.addcom-error", username));
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.addcom-error"));
                 return;
             }
             
@@ -38,10 +37,10 @@ $.on('command', function(event) {
             $.registerCustomChatCommand("./commands/addCommand.js", commandString);
             
             if (sender == $.botname) {
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.addcom-success", username, commandString));
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.addcom-success", commandString));
                 return;
             }
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.addcom-success", username, commandString));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.addcom-success", commandString));
             return;
         }
     }
@@ -60,7 +59,7 @@ $.on('command', function(event) {
             }
             
             if (!$.inidb.exists('aliases', args[0].toLowerCase())) {
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.delalias-error-no-command", username));
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.delalias-error-no-command"));
                 return;
             }
             
@@ -70,12 +69,12 @@ $.on('command', function(event) {
             
             $.unregisterCustomChatCommand("./commands/addCommand.js", args[0].toLowerCase());
             
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.delalias-success", username, args[0]));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.delalias-success", args[0]));
             return;
         }
     }
-    if (command.equalsIgnoreCase("commands")) {
 
+    if (command.equalsIgnoreCase("commands")) {
         var customcommands = "";
         var keys = $.inidb.GetKeyList("command", "");
 
@@ -83,11 +82,15 @@ $.on('command', function(event) {
             customcommands +="!";
             customcommands +=keys[i];
             customcommands += " ";
-            
         }
         
-        if(customcommands.substr(customcommands.length - 1)==" ") {
+        if (customcommands.substr(customcommands.length - 1)==" ") {
             customcommands = customcommands.substring(0, customcommands.length - 1);
+        }
+
+        if (customcommands == null || customcommands == 0) {
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.error-no-custom-commands"));
+            return;
         }
         
         $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.custom-commands", customcommands));
@@ -115,12 +118,12 @@ $.on('command', function(event) {
             }
             
             if (!$.commandExists(commandString)) {
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.aliascom-error-no-command", username));
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.aliascom-error-no-command"));
                 return;
             }
             
             if ($.commandExists(message) && !$.inidb.exists('aliases', message)) {
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.aliascom-failed", username));
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.aliascom-failed"));
                 return;
             }
             
@@ -130,12 +133,12 @@ $.on('command', function(event) {
             
             $.registerCustomChatCommand("./commands/addCommand.js", message);
                         
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.aliascom-success", username, commandString, message));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.aliascom-success", commandString, message));
             return;
         }
     }
     
-    if(command.equalsIgnoreCase("delcom")) {
+    if (command.equalsIgnoreCase("delcom")) {
         if(args.length >= 1) {
             if (!$.isModv3(sender, event.getTags())) {
                 $.say($.getWhisperString(sender) + $.modmsg);
@@ -165,10 +168,10 @@ $.on('command', function(event) {
             
             $.unregisterCustomChatCommand(commandString);
             if (sender == $.botname) {
-                println($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.delcom-success", username, commandString));
+                println($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.delcom-success", commandString));
                 return;
             }
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.delcom-success", username, commandString));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.delcom-success", commandString));
             return;
         }
         $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.delcom-error-usage"));
@@ -190,7 +193,7 @@ $.on('command', function(event) {
             }
 
             if ($.inidb.get('command', commandString) == null) {
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.editcom-error", username));
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.editcom-error"));
                 return;
             }
 
@@ -198,14 +201,13 @@ $.on('command', function(event) {
                 $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.editcom-error-usage"));
                 return;
             }
-	
         
             $.inidb.set('command', commandString, message);
             if (sender == $.botname) {
-                println($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.editcom-success", username, commandString));
+                println($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.editcom-success", commandString));
                 return;
             }
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.editcom-success", username, commandString));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.editcom-success", commandString));
             return;
         }
         $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.editcom-error-usage"));
@@ -247,16 +249,16 @@ $.on('command', function(event) {
             } else {
                 mode = "";
             }
-            if(newgroup.equalsIgnoreCase("admin")) {
+            if (newgroup.equalsIgnoreCase("admin")) {
                 newgroup = "administrator";
             }
-            if(newgroup.equalsIgnoreCase("mod")) {
+            if (newgroup.equalsIgnoreCase("mod")) {
                 newgroup = "moderator";
             }
-            if(newgroup.equalsIgnoreCase("sub")) {
+            if (newgroup.equalsIgnoreCase("sub")) {
                 newgroup = "subscriber";
             }
-            if(newgroup.equalsIgnoreCase("delete")) {
+            if (newgroup.equalsIgnoreCase("delete")) {
                 for (var i = 0; i < permcommArray.length; i++) {
                     if (permcommArray[i].equalsIgnoreCase(args[0] + mode)) {
                         $.inidb.del("permcom", permcommArray[i]);
@@ -268,11 +270,12 @@ $.on('command', function(event) {
                     $.inidb.del("permcom", alias + mode);
                 }
 
-                
-                if(mode=="_recursive") {
+                if (mode == "_recursive") {
                     $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.permcom-removed-success", args[0]));
+                    return;
                 } else {
                     $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.permcom-removed-success", args[0]));
+                    return;
                 }
                 return;
             }
@@ -283,7 +286,7 @@ $.on('command', function(event) {
                 sourceCommand = args[0].toLowerCase();
             }
             
-            if(mode=="_recursive") {
+            if (mode == "_recursive") {
                 $.inidb.set("permcom", sourceCommand + mode, newgroup);
             } else {
                 if($.inidb.exists("permcom",sourceCommand)) {
@@ -294,10 +297,12 @@ $.on('command', function(event) {
                 }
             }   
             
-            if(mode=="_recursive") {
+            if (mode == "_recursive") {
                 $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.permcom-success", args[0], args[1]));
+                return;
             } else {
                 $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.permcom-success", args[0], args[1]));
+                return;
             }
         }
     }
@@ -310,6 +315,7 @@ $.on('command', function(event) {
         $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.helpcom-command-tags2"));
         
         setTimeout(function(){$.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.helpcom-command-tags3"));}, 1000); //added timeout because twitch only allows 3whisper per 1 sec.
+        return;
     }
     
     if ($.inidb.exists('command', command.toLowerCase())) {
@@ -325,15 +331,12 @@ $.on('command', function(event) {
         while (messageCommand.contains('(sender)')) {
             messageCommand = messageCommand.replace('(sender)', $.username.resolve(sender, event.getTags()));
         }
-        
         if (messageCommand.contains('(count)')) {
             $.inidb.incr('commandcount', command.toLowerCase(), 1);
         }
-        
         while (messageCommand.contains('(count)')) {
             messageCommand = messageCommand.replace('(count)', $.inidb.get('commandcount', command.toLowerCase()));
         }
-        
         while (messageCommand.contains('(z_stroke)')) {
             messageCommand = messageCommand.replace('(z_stroke)', java.lang.Character.toString(java.lang.Character.toChars(0x01B6)[0]));
         }
@@ -349,7 +352,7 @@ $.on('command', function(event) {
         if (messageCommand.contains('(code)')) {
             var text = "";
             var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            for( var i=0; i < 8; i++ )
+            for (var i = 0; i < 8; i++)
                 text += possible.charAt(Math.floor(Math.random() * possible.length));
         }
         while (messageCommand.indexOf('(code)') != -1) {
@@ -384,6 +387,7 @@ $.on('command', function(event) {
                 return;
             } else {
                 $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.pricecom-current-set-price2", args[0], $.pointNameMultiple));
+                return;
             }
         }
 	
@@ -406,11 +410,11 @@ $.on('command', function(event) {
             } else {
                 $.inidb.set("pricecom", sourceCommand, commandprice);
                 $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.pricecom-success", args[0], $.getPointsString(commandprice)));
+                return;
             }
         }		
     }
 });
-
 
 setTimeout(function(){ 
     if ($.moduleEnabled('./commands/addCommand.js')) {
@@ -424,7 +428,7 @@ setTimeout(function(){
         $.registerChatCommand("./commands/addCommand.js", "helpcom", "mod");
         $.registerChatCommand("./commands/addCommand.js", "commands");
     }
-}, 10* 1000);
+}, 10 * 1000);
 
 var commands = $.inidb.GetKeyList("command", "");
 
