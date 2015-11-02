@@ -2,9 +2,9 @@ $.levelqueue = [];
 $.levelrequestusers = {};
 
 $.request_limit = $.inidb.get("settings", "request_limit");
-if($.request_limit == "" || $.request_limit == null){
+if ($.request_limit == "" || $.request_limit == null){
     $.request_limit = 5; //amount of times a user can queue levels
-    $.inidb.set("settings","request_limit","");
+    $.inidb.set("settings", "request_limit", "");
 }
 
 function LevelRequest(user, levelId) {
@@ -13,19 +13,15 @@ function LevelRequest(user, levelId) {
 
     this.request = function () {
         if (!this.canRequest()) {
-            $.say("You can only request up to " + $.request_limit + " levels, " + user + "!");
+            $.say($.getWhisperString(user) + $.lang.get("net.phantombot.levelQueueSystem.error-wrong-level-to-request", $.request_limit));
             return;
         }
         if ($.levelrequestusers[user] != null) {
             $.levelrequestusers[user]++;
-
-
         } else {
             $.levelrequestusers[user] = 1;
-
         }
         $.levelqueue.push(this);
-
     }
 
     this.canRequest = function () {
@@ -39,8 +35,9 @@ function LevelRequest(user, levelId) {
     this.pop = function () {
         $.levelrequestusers[user]--;
     }
+
     this.decreaseRequestAmount = function (amount, user) {
-        if(($.levelrequestusers[user] - amount) >= 1 ){
+        if (($.levelrequestusers[user] - amount) >= 1) {
             $.levelrequestusers[user] = $.levelrequestusers[user] - amount;            
         }
     }
@@ -53,46 +50,44 @@ $.on('command', function (event) {
     var argsString = event.getArguments().trim();
     var args = event.getArgs();
     
-    if(command.equalsIgnoreCase("request")) {
-        if(args[0]!=null)
-        {
+    if (command.equalsIgnoreCase("request")) {
+        if (args[0] != null) {
+
             var levelId = args[0];
             $.levelrequest = new LevelRequest(username, levelId);
             $.levelrequest.request();
-            $.say("Level " + levelId + " has been queued by " + username + "!");
+            $.say($.lang.get("net.phantombot.levelQueueSystem.level-q-success", levelqueue, username));
             return;
-            
         } else {
-            $.say("Please include a level name/checksum in your request: !request 0123-4567-8910");
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.levelQueueSystem.level-q-error"));
             return;
         }
-        
     }
     
-    if(command.equalsIgnoreCase("currentlevel")) {
-        if($.levelqueue[0]==null){
-            $.say("Current level is unknown / not requested by users.");
+    if (command.equalsIgnoreCase("currentlevel")) {
+        if ($.levelqueue[0] == null){
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.levelQueueSystem.current-level-error"));
             return;
         }
-        $.say("Current level: " + $.levelqueue[0].levelId + " [Requested by: " + $.levelqueue[0].user + "]");
+        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.levelQueueSystem.current-level", $.levelqueue[0].levelId, $.levelqueue[0].user));
+        return;
     }
     
     if (command.equalsIgnoreCase("requests")) {
-        if(args[0]!=null)
-        {
-            if(!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())){
-                $.say("You must be a moderator to use this command.");
+        if (args[0] != null) {
+            if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())){
+                $.say($.getWhisperString(sender) + $.adminmsg);
                 return;
             }
             
-            if(args[0] == "limit"){
-                if(args[1]!=null) {
+            if (args[0] == "limit"){
+                if (args[1] != null) {
                     $.request_limit = args[1];
-                    $.inidb.set("settings","request_limit",$.request_limit);
-                    $.say("The queue request limit has been set to: " + $.request_limit);
+                    $.inidb.set("settings","request_limit", $.request_limit);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.levelQueueSystem.request-limit", $.request_limit));
                     return;
                 } else {
-                    $.say("You must specify a limit number greater than 0");
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.levelQueueSystem.request-limit-error"));
                     return;
                 }
             }
@@ -101,53 +96,55 @@ $.on('command', function (event) {
         var list = $.levelqueue;
         $.queuelist = "";
         
-        if(list==null )
-        {
-            $.say("No levels are queued.");
+        if (list == null) {
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.levelQueueSystem.no-levels-in-q"));
             return;
         }
         
-        for(var i=1; i< list.length; i++){
+        for (var i = 1; i < list.length; i++){
             $.playrequester = list[i].levelId;
             $.queuelist +=$.playrequester;
             $.queuelist += " ";
         }
         
-        if($.queuelist=="" || $.queuelist==null )
-        {
-            $.say("No levels are queued.");
+        if ($.queuelist == "" || $.queuelist == null) {
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.levelQueueSystem.no-levels-in-q"));
             return;
         }
         
-        if($.queuelist.substr($.queuelist.length - 1)==" ") {
+        if ($.queuelist.substr($.queuelist.length - 1) == " ") {
             $.queuelist = $.queuelist.substring(0, $.queuelist.length - 1);
         }
         
-        $.say("Next level: " + $.queuelist);
+        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.levelQueueSystem.next-level", $.queuelist));
+        return;
     }
     
-    if(command.equalsIgnoreCase("nextlevel")) {
-        if(!$.isModv3(sender, event.getTags())){
-            $.say("You must be a moderator to use this command.");
+    if (command.equalsIgnoreCase("nextlevel")) {
+        if (!$.isModv3(sender, event.getTags())){
+            $.say($.getWhisperString(sender) + $.modmsg);
             return;
         }
-        if($.levelrequest!=null) {
+
+        if ($.levelrequest != null) {
             $.levelrequest.decreaseRequestAmount(1,$.levelrequest.user);            
         }
+
         $.levelqueue.shift();
-        if($.levelqueue[0]!=null){
-            $.say($.levelqueue[0].user + " your level is coming up! [Level ID: " + $.levelqueue[0].levelId + "]");
+        if ($.levelqueue[0]!=null){
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.levelQueueSystem.level-coming", $.levelqueue[0].levelId));
+            return;
         } else {
-            $.say("All levels from queue have been played!");
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.levelQueueSystem.level-error"));
+            return;
         }
     }
-
 });
 setTimeout(function(){ 
     if ($.moduleEnabled('./systems/queueSystem.js')) {
-        $.registerChatCommand("./systems/queueSystem.js", "request");
+        $.registerChatCommand("./systems/queueSystem.js", "requests", "admin");
         $.registerChatCommand("./systems/queueSystem.js", "currentlevel");
-        $.registerChatCommand("./systems/queueSystem.js", "requests");
-        $.registerChatCommand("./systems/queueSystem.js", "nextlevel");
+        $.registerChatCommand("./systems/queueSystem.js", "request");
+        $.registerChatCommand("./systems/queueSystem.js", "nextlevel", "mod");
     }
-},10*1000);
+},10 * 1000);
