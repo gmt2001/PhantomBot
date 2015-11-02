@@ -35,91 +35,91 @@ if ($.heistMinutes == null) {
 
 $.stringNoJoin = $.inidb.get("bankheist_strings", "stringNoJoin");
 if ($.stringNoJoin == null) {
-    $.stringNoJoin = "No one joined the bankheist! The banks are safe for now.";
+    $.stringNoJoin = $.lang.get("net.phantombot.bankheistsystem.bank-is-safe");
     $.inidb.set("bankheist_strings", "stringNoJoin", $.stringNoJoin);
 }
 
 $.stringStarting = $.inidb.get("bankheist_strings", "stringStarting");
 if ($.stringStarting == null) {
-    $.stringStarting = "Alright guys, check your guns. We are storming into the Bank through all entrances. Let's get the cash and get out before the cops get here.";
+    $.stringStarting = $.lang.get("net.phantombot.bankheistsystem.starting");
     $.inidb.set("bankheist_strings", "stringStarting", $.stringStarting);
 }
 
 $.stringFlawless = $.inidb.get("bankheist_strings", "stringFlawless");
 if ($.stringFlawless == null) {
-    $.stringFlawless = "The crew executed the heist flawlessly and scored (pointname) from the vault without leaving a trace!";
+    $.stringFlawless = $.lang.get("net.phantombot.bankheistsystem.stringFlawless");
     $.inidb.set("bankheist_strings", "stringFlawless", $.stringFlawless);
 }
 
 $.stringCasualties = $.inidb.get("bankheist_strings", "stringCasualties");
 if ($.stringCasualties == null) {
-    $.stringCasualties = "The crew suffered a few losses engaging the local security team. The remaining crew got away scoring (pointname) from the vault before backup arrived.";
+    $.stringCasualties = $.lang.get("net.phantombot.bankheistsystem.stringCasualties");
     $.inidb.set("bankheist_strings", "stringCasualties", $.stringCasualties);
 }
 
 $.stringPayouts = $.inidb.get("bankheist_strings", "stringPayouts");
 if ($.stringPayouts == null) {
-    $.stringPayouts = "The heist payouts are: ";
+    $.stringPayouts = $.lang.get("net.phantombot.bankheistsystem.payouts");
     $.inidb.set("bankheist_strings", "stringPayouts", $.stringPayouts);
 }
 
 $.stringAllDead = $.inidb.get("bankheist_strings", "stringAllDead");
 if ($.stringAllDead == null) {
-    $.stringAllDead = "The security team killed everyone in the heist!";
+    $.stringAllDead = $.lang.get("net.phantombot.bankheistsystem.all-dead");
     $.inidb.set("bankheist_strings", "stringAllDead", $.stringAllDead);
 }
 
 $.banksClosed = $.inidb.get("bankheist_strings", "banksClosed");
 if ($.banksClosed == null) {
-    $.banksClosed = "The banks are currently closed!";
+    $.banksClosed = $.lang.get("net.phantombot.bankheistsystem.bank-closed");
     $.inidb.set("bankheist_strings", "banksClosed", $.banksClosed);
 }
 
 $.enterABet = $.inidb.get("bankheist_strings", "enterABet");
 if ($.enterABet == null) {
-    $.enterABet = "You must enter a bet! For example !bankheist (amount)";
+    $.enterABet = $.lang.get("net.phantombot.bankheistsystem.enter-bet-usage");
     $.inidb.set("bankheist_strings", "enterABet", $.enterABet);
 }
 
 $.affordBet = $.inidb.get("bankheist_strings", "affordBet");
 if ($.affordBet == null) {
-    $.affordBet = "You must enter a bet you can afford and is not 0 ";
+    $.affordBet = $.lang.get("net.phantombot.bankheistsystem.afford-bet");
     $.inidb.set("bankheist_strings", "affordBet", $.affordBet);
 }
 
 $.alreadyBet = $.inidb.get("bankheist_strings", "alreadyBet");
 if ($.alreadyBet == null) {
-    $.alreadyBet = " you have already placed a bet of ";
+    $.alreadyBet = $.lang.get("net.phantombot.bankheistsystem.already-beted");
     $.inidb.set("bankheist_strings", "alreadyBet", $.alreadyBet);
 }
 
 $.startedHeist = $.inidb.get("bankheist_strings", "startedHeist");
 if ($.startedHeist == null) {
-    $.startedHeist = "has started a bankheist! To join in type !bankheist (amount)";
+    $.startedHeist = $.lang.get("net.phantombot.bankheistsystem.heist-started");
     $.inidb.set("bankheist_strings", "startedHeist", $.startedHeist);
 }
 
 $.joinedHeist = $.inidb.get("bankheist_strings", "joinedHeist");
 if ($.joinedHeist == null) {
-    $.joinedHeist = ", you have joined in on the bank heist!";
+    $.joinedHeist = $.lang.get("net.phantombot.bankheistsystem.joined-heist");
     $.inidb.set("bankheist_strings", "joinedHeist", $.joinedHeist);
 }
 
 $.banksOpen = $.inidb.get("bankheist_strings", "banksOpen");
 if ($.banksOpen == null) {
-    $.banksOpen = "The banks are now open for the taking! Use !bankheist (amount) to bet. ";
+    $.banksOpen = $.lang.get("net.phantombot.bankheistsystem.bank-open");
     $.inidb.set("bankheist_strings", "banksOpen", $.banksOpen);
 }
 
 $.heistCancelled = $.inidb.get("bankheist_strings", "heistCancelled");
 if ($.heistCancelled == null) {
-    $.heistCancelled = "has cleared all previous bankheists. A new bankheist will start in ";
+    $.heistCancelled = $.lang.get("net.phantombot.bankheistsystem.heist-canceled");
     $.inidb.set("bankheist_strings", "heistCancelled", $.heistCancelled);
 }
 
 $.betTooLarge = $.inidb.get("bankheist_strings", "betTooLarge");
 if ($.betTooLarge == null) {
-    $.betTooLarge = "The maximum amount allowed is ";
+    $.betTooLarge = $.lang.get("net.phantombot.bankheistsystem.max-allowed");
     $.inidb.set("bankheist_strings", "betTooLarge", $.betTooLarge);
 }
 
@@ -294,7 +294,7 @@ function startHeist() {
                 $.inidb.ReloadFile("bankheist_bets");
                 $.senderId = "";
                 $.senderBet = "";
-                $.say($.banksOpen + $.signupMinutes + " minute(s) remaining to join!");
+                $.say($.banksOpen + $.signupMinutes + $.lang.get("net.phantombot.bankheistsystem.min-to-join"));
             } else {
                 $.processBankheist();
                 $.timer.clearTimer("./systems/bankheistSystem.js", "enterbankheist", true);
@@ -319,10 +319,10 @@ $.on('command', function (event) {
             $.say($.getWhisperString(sender) + $.banksClosed);
             return;
         }
-        if (args[0] == "toggle") {
 
+        if (args[0] == "toggle") {
             if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
+                $.say($.getWhisperString(sender) + $.modmsg);
                 return;
             }
 
@@ -332,7 +332,7 @@ $.on('command', function (event) {
 
                 startHeist();
 
-                $.say($.getWhisperString(sender) + "Bankheists are now enabled!");
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bankheistsystem.bankheist-enabled"));
                 return;
 
             } else {
@@ -340,13 +340,12 @@ $.on('command', function (event) {
                 $.inidb.set("settings", "bankheistToggle", "false");
                 $.timer.clearTimer("./systems/bankheistSystem.js", "bankheist", true);
                 $.timer.clearTimer("./systems/bankheistSystem.js", "enterbankheist", true);
-                $.say($.getWhisperString(sender) + "Bankheists are now disabled!");
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bankheistsystem.bankheist-disabled"));
                 return;
             }
         } else if (args[0].equalsIgnoreCase("start")) {
-
             if (!$.isModv3(sender, event.getTags())) {
-                $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
+                $.say($.getWhisperString(sender) + $.modmsg);
                 return;
             }
 
@@ -403,7 +402,7 @@ $.on('command', function (event) {
                         if ($.userPointsId == 1) {
                             $.say(username + " " + $.startedHeist);
                         } else {
-                            $.say($.getWhisperString(sender) + username + $.joinedHeist);
+                            $.say($.getWhisperString(sender) + $.joinedHeist);
                         }
                     }
                 }
@@ -421,311 +420,311 @@ $.on('command', function (event) {
 
             if (args[0].equalsIgnoreCase("signupMinutes")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + $.modmsg);
                     return;
                 }
                 $.signupMinutes = modValue;
                 $.inidb.set("bankheist_timers", "signupMinutes", modValue);
-                $.say($.getWhisperString(sender) + "The value for signupMinutes has been set to " + modValue);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bankheistsystem.new-value-for-signupMinutes", modValue));
                 return;
             }
 
             if (args[0].equalsIgnoreCase("heistMinutes")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + $.modmsg);
                     return;
                 }
                 $.heistMinutes = modValue;
                 $.inidb.set("bankheist_timers", "heistMinutes", modValue);
-                $.say($.getWhisperString(sender) + "The value for heistMinutes has been set to " + modValue);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bankheistsystem.new-value-for-heistMinutes", modValue));
                 return;
             }
 
             if (args[0].equalsIgnoreCase("heistCancelled")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + $.modmsg);
                     return;
                 }
                 $.heistCancelled = modValue;
                 $.inidb.set("bankheist_strings", "heistCancelled", modValue);
-                $.say($.getWhisperString(sender) + "The value for heistCancelled has been set to " + modValue);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bankheistsystem.new-value-for-heistCancelled", modValue));
                 return;
             }
 
             if (args[0].equalsIgnoreCase("banksOpen")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + $.modmsg);
                     return;
                 }
                 $.banksOpen = modValue;
                 $.inidb.set("bankheist_strings", "banksOpen", modValue);
-                $.say($.getWhisperString(sender) + "The value for banksOpen has been set to " + modValue);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bankheistsystem.new-value-for-banksOpen", modValue));
                 return;
             }
 
             if (args[0].equalsIgnoreCase("startedHeist")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + $.modmsg);
                     return;
                 }
                 $.startedHeist = modValue;
                 $.inidb.set("bankheist_strings", "startedHeist", modValue);
-                $.say($.getWhisperString(sender) + "The value for startedHeist has been set to " + modValue);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bankheistsystem.new-value-for-startedHeist", modValue));
                 return;
             }
 
             if (args[0].equalsIgnoreCase("stringStarting")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + $.modmsg);
                     return;
                 }
                 $.stringStarting = modValue;
                 $.inidb.set("bankheist_strings", "stringStarting", modValue);
-                $.say($.getWhisperString(sender) + "The value for stringStarting has been set to " + modValue);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bankheistsystem.new-value-for-stringStarting", modValue));
                 return;
             }
 
             if (args[0].equalsIgnoreCase("stringNoJoin")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + $.modmsg);
                     return;
                 }
                 $.stringNoJoin = modValue;
                 $.inidb.set("bankheist_strings", "stringNoJoin", modValue);
-                $.say($.getWhisperString(sender) + "The value for stringNoJoin has been set to " + modValue);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bankheistsystem.new-value-for-stringNoJoin", modValue));
                 return;
             }
 
             if (args[0].equalsIgnoreCase("banksClosed")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + $.modmsg);
                     return;
                 }
                 $.banksClosed = modValue;
                 $.inidb.set("bankheist_strings", "banksClosed", modValue);
-                $.say($.getWhisperString(sender) + "The value for banksClosed has been set to " + modValue);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bankheistsystem.new-value-for-banksClosed", modValue));
                 return;
             }
 
             if (args[0].equalsIgnoreCase("stringAllDead")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + $.modmsg);
                     return;
                 }
                 $.stringAllDead = modValue;
                 $.inidb.set("bankheist_strings", "stringAllDead", modValue);
-                $.say($.getWhisperString(sender) + "The value for stringAllDead has been set to " + modValue);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bankheistsystem.new-value-for-stringAllDead", modValue));
                 return;
             }
 
             if (args[0].equalsIgnoreCase("affordBet")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + $.modmsg);
                     return;
                 }
                 $.affordBet = modValue;
                 $.inidb.set("bankheist_strings", "affordBet", modValue);
-                $.say($.getWhisperString(sender) + "The value for affordBet has been set to " + modValue);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bankheistsystem.new-value-for-affordBet", modValue));
                 return;
             }
 
             if (args[0].equalsIgnoreCase("alreadyBet")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + $.modmsg);
                     return;
                 }
                 $.alreadyBet = modValue;
                 $.inidb.set("bankheist_strings", "alreadyBet", modValue);
-                $.say($.getWhisperString(sender) + "The value for alreadyBet has been set to " + modValue);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bankheistsystem.new-value-for-alreadyBet", modValue));
                 return;
             }
 
             if (args[0].equalsIgnoreCase("joinedHeist")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + $.modmsg);
                     return;
                 }
                 $.joinedHeist = modValue;
                 $.inidb.set("bankheist_strings", "joinedHeist", modValue);
-                $.say($.getWhisperString(sender) + "The value for joinedHeist has been set to " + modValue);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bankheistsystem.new-value-for-joinedHeist", modValue));
                 return;
             }
 
             if (args[0].equalsIgnoreCase("enterABet")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + $.modmsg);
                     return;
                 }
                 $.enterABet = modValue;
                 $.inidb.set("bankheist_strings", "enterABet", modValue);
-                $.say($.getWhisperString(sender) + "The value for enterABet has been set to " + modValue);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bankheistsystem.new-value-for-enterABet", modValue));
                 return;
             }
 
             if (args[0].equalsIgnoreCase("stringPayouts")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + $.modmsg);
                     return;
                 }
                 $.stringPayouts = modValue;
                 $.inidb.set("bankheist_strings", "stringPayouts", modValue);
-                $.say($.getWhisperString(sender) + "The value for stringPayouts has been set to " + modValue);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bankheistsystem.new-value-for-stringPayouts", modValue));
                 return;
             }
             if (args[0].equalsIgnoreCase("stringFlawless")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + $.modmsg);
                     return;
                 }
                 $.stringFlawless = modValue;
                 $.inidb.set("bankheist_strings", "stringFlawless", modValue);
-                $.say($.getWhisperString(sender) + "The value for stringFlawless has been set to " + modValue);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bankheistsystem.new-value-for-stringFlawless", modValue));
                 return;
             }
             if (args[0].equalsIgnoreCase("stringCasualties")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + $.modmsg);
                     return;
                 }
                 $.stringCasualties = modValue;
                 $.inidb.set("bankheist_strings", "stringCasualties", modValue);
-                $.say($.getWhisperString(sender) + "The value for stringCasualties has been set to " + modValue);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bankheistsystem.new-value-for-stringCasualties", modValue));
                 return;
             }
             if (args[0].equalsIgnoreCase("betTooLarge")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + $.modmsg);
                     return;
                 }
                 $.betTooLarge = modValue;
                 $.inidb.set("bankheist_strings", "betTooLarge", modValue);
-                $.say($.getWhisperString(sender) + "The value for betTooLarge has been set to " + modValue);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bankheistsystem.new-value-for-betTooLarge", modValue));
                 return;
             }
 
             if (args[0].equalsIgnoreCase("chances50")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + $.modmsg);
                     return;
                 }
                 $.chances50 = modValue;
                 $.inidb.set("bankheist_chances", "chances50", modValue);
-                $.say($.getWhisperString(sender) + "The value for chances50 has been set to " + modValue);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bankheistsystem.new-value-for-chances50", modValue));
                 return;
             }
 
             if (args[0].equalsIgnoreCase("chances40")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + $.modmsg);
                     return;
                 }
                 $.chances40 = modValue;
                 $.inidb.set("bankheist_chances", "chances40", modValue);
-                $.say($.getWhisperString(sender) + "The value for chances40 has been set to " + modValue);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bankheistsystem.new-value-for-chances40", modValue));
                 return;
             }
 
             if (args[0].equalsIgnoreCase("chances30")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + $.modmsg);
                     return;
                 }
                 $.chances30 = modValue;
                 $.inidb.set("bankheist_chances", "chances30", modValue);
-                $.say($.getWhisperString(sender) + "The value for chances30 has been set to " + modValue);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bankheistsystem.new-value-for-chances30", modValue));
                 return;
             }
 
             if (args[0].equalsIgnoreCase("chances20")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + $.modmsg);
                     return;
                 }
                 $.chances20 = modValue;
                 $.inidb.set("bankheist_chances", "chances20", modValue);
-                $.say($.getWhisperString(sender) + "The value for chances20 has been set to " + modValue);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bankheistsystem.new-value-for-chances20", modValue));
                 return;
             }
 
             if (args[0].equalsIgnoreCase("chances10")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + $.modmsg);
                     return;
                 }
                 $.chances10 = modValue;
                 $.inidb.set("bankheist_chances", "chances10", modValue);
-                $.say($.getWhisperString(sender) + "The value for chances10 has been set to " + modValue);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bankheistsystem.new-value-for-chances10", modValue));
                 return;
             }
 
             if (args[0].equalsIgnoreCase("ratio50")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + $.modmsg);
                     return;
                 }
                 $.ratio50 = modValue;
                 $.inidb.set("bankheist_ratios", "ratio50", modValue);
-                $.say($.getWhisperString(sender) + "The value for ratio50 has been set to " + modValue);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bankheistsystem.new-value-for-ratio50", modValue));
                 return;
             }
 
             if (args[0].equalsIgnoreCase("ratio40")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + $.modmsg);
                     return;
                 }
                 $.ratio40 = modValue;
                 $.inidb.set("bankheist_ratios", "ratio40", modValue);
-                $.say($.getWhisperString(sender) + "The value for ratio40 has been set to " + modValue);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bankheistsystem.new-value-for-ratio40", modValue));
                 return;
             }
 
             if (args[0].equalsIgnoreCase("ratio30")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + $.modmsg);
                     return;
                 }
                 $.ratio30 = modValue;
                 $.inidb.set("bankheist_ratios", "ratio30", modValue);
-                $.say($.getWhisperString(sender) + "The value for ratio30 has been set to " + modValue);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bankheistsystem.new-value-for-ratio30", modValue));
                 return;
             }
 
             if (args[0].equalsIgnoreCase("ratio20")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + $.modmsg);
                     return;
                 }
                 $.ratio20 = modValue;
                 $.inidb.set("bankheist_ratios", "ratio20", modValue);
-                $.say($.getWhisperString(sender) + "The value for ratio20 has been set to " + modValue);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bankheistsystem.new-value-for-ratio20", modValue));
                 return;
             }
 
             if (args[0].equalsIgnoreCase("ratio10")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + $.modmsg);
                     return;
                 }
                 $.ratio10 = modValue;
                 $.inidb.set("bankheist_ratios", "ratio10", modValue);
-                $.say($.getWhisperString(sender) + "The value for ratio10 has been set to " + modValue);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bankheistsystem.new-value-for-ratio10", modValue));
                 return;
             }
 
             if (args[0].equalsIgnoreCase("maxbet")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + "You must be a moderator to use this command.");
+                    $.say($.getWhisperString(sender) + $.modmsg);
                     return;
                 }
                 $.bankheistMaxBet = modValue;
                 $.inidb.set("settings", "bankheistmaxbet", modValue);
-                $.say($.getWhisperString(sender) + "The max bet amount has been set to " + modValue);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bankheistsystem.new-value-for-maxbet", modValue));
                 return;
             }
 
-            if($.isModv3(sender)) {
-                $.say($.getWhisperString(sender) + "Action not recognized");
+            if ($.isModv3(sender)) {
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bankheistsystem.new-value-for-user-error-404"));
                 return;
             } else {
                 $.say($.getWhisperString(sender) + $.enterABet);
@@ -735,6 +734,7 @@ $.on('command', function (event) {
         }
     }
 });
+
 setTimeout(function () {
     if ($.moduleEnabled('./systems/bankheistSystem.js')) {
         $.registerChatCommand("./systems/bankheistSystem.js", "bankheist");
