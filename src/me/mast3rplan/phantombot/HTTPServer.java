@@ -120,12 +120,14 @@ public class HTTPServer extends Thread
                     {
                         case "GET":
                             File target = null;
+                            String data = null;
+
                             if (args.containsKey("password"))
                             {
                                 String password = URLDecoder.decode(args.get("password"), "UTF-8").replace("oauth:", "");
 
-                                if (password.equals(pass) && (request[1].startsWith("inistore") || request[1].startsWith("/inistore")
-                                        || request[1].startsWith("addons") || request[1].startsWith("/addons")))
+                                if (password.equals(pass) && (request[1].toLowerCase().startsWith("addons")
+                                        || request[1].toLowerCase().startsWith("/addons")))
                                 {
                                     if (request[1].startsWith("/"))
                                     {
@@ -134,8 +136,47 @@ public class HTTPServer extends Thread
                                     {
                                         target = new File("." + "/" + request[1]);
                                     }
+                                } else if (password.equals(pass) && (request[1].toLowerCase().startsWith("inistore")
+                                        || request[1].toLowerCase().startsWith("/inistore")))
+                                {
+                                    String realTarget = request[1];
+                                    
+                                    if (realTarget.startsWith("/"))
+                                    {
+                                        realTarget = realTarget.substring(10);
+                                    } else
+                                    {
+                                        realTarget = realTarget.substring(9);
+                                    }
+                                    
+                                    if (realTarget.toLowerCase().endsWith(".ini"))
+                                    {
+                                        realTarget = realTarget.substring(0, realTarget.length() - 4);
+                                    }
+                                    
+                                    String[] sections = PhantomBot.instance().getDataStore().GetCategoryList(realTarget);
+                                    
+                                    data = "";
+                                    
+                                    for (String section : sections)
+                                    {
+                                        if (!section.equalsIgnoreCase(""))
+                                        {
+                                            data += "\r\n\r\n[" + section + "]";
+                                        }
+                                        
+                                        String[] keys = PhantomBot.instance().getDataStore().GetKeyList(realTarget, section);
+                                        
+                                        for (String key : keys)
+                                        {
+                                            String value = PhantomBot.instance().getDataStore().GetString(realTarget, section, key);
+                                            
+                                            data += "\r\n" + key + "=" + value;
+                                        }
+                                    }
                                 }
                             }
+
                             if (target == null)
                             {
                                 if (request[1].startsWith("/"))
@@ -157,20 +198,36 @@ public class HTTPServer extends Thread
                                     }
                                 }
                             }
-                            if (target.exists())
+
+                            if (target.exists() || data != null)
                             {
-                                FileInputStream fis = new FileInputStream(target);
-                                int length = fis.available();
+                                int length;
+                                byte[] b;
+                                String contentType;
+
+                                if (data == null)
+                                {
+                                    FileInputStream fis = new FileInputStream(target);
+                                    length = fis.available();
+
+                                    b = new byte[length + 1];
+                                    fis.read(b);
+
+                                    contentType = inferContentType(target.getPath());
+                                } else
+                                {
+                                    length = data.length();
+                                    b = data.getBytes();
+
+                                    contentType = "text/text";
+                                }
 
                                 out.print("HTTP/1.0 200 OK\n"
-                                        + "ContentType: " + inferContentType(target.getPath()) + "\n"
+                                        + "ContentType: " + contentType + "\n"
                                         + "Date: " + new Date() + "\n"
                                         + "Server: basic HTTP server\n"
                                         + "Content-Length: " + length + "\n"
                                         + "\n");
-
-                                byte[] b = new byte[length + 1];
-                                fis.read(b);
 
                                 out.write(b, 0, length);
 
