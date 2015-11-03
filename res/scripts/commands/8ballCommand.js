@@ -1,6 +1,8 @@
 var arrballlimiter = new Array();
 
-if ($.ballcooldown === undefined || $.ballcooldown === null || isNaN($.ballcooldown) || $.ballcooldown < 0) {
+$.ballcost = $.inidb.get('settings', 'ballcost');
+$.ballcooldown = $.inidb.get('settings', 'ballcooldown');
+if ($.ballcooldown === undefined || $.ballcooldown === null || isNaN($.ballcooldown) || $.ballcooldown < 5) {
     $.ballcooldown = 30;
 }
 
@@ -45,40 +47,39 @@ var points = $.inidb.get('points', sender);
 	
 	var ball = new Array();
 
-	ball.push("Reply hazy try again.");
-	ball.push("Ask again later.");
-	ball.push("Better not tell you now.");
-	ball.push("Cannot predict now.");
-	ball.push("Outlook not so good.");
-	ball.push("Yes, in due time.");
-	ball.push("You will have to wait.");
-	ball.push("Ask again later.");
-	ball.push("Better not tell you now. OpieOP");
-	ball.push("Concentrate and ask again.");
-	ball.push("Reply hazy, try again.");
-	ball.push("Never going to happen!");
-	ball.push("The odds of that happening are pretty slim.");
-	ball.push("My reply is no.");
-	ball.push("My sources say no.");
-	ball.push("Very doubtful.");
-	ball.push("No.");
-	ball.push("I have no response for that question...");
-	ball.push("Why would I tell you? OMGScoots");	
-	ball.push("Forget about it.");
-	ball.push("Don't bet on it.");
-	ball.push("Who knows?");
-	ball.push("Signs point to yes.");
-	ball.push("It is certain.");
-	ball.push("Without a doubt.");
-	ball.push("Yes definitely.");
-	ball.push("You may rely on it.");
-	ball.push("As I see it, yes.");
-	ball.push("Most likely.");
-	ball.push("Outlook good.");
-	ball.push("Yes.");
-	ball.push("Signs point to yes.");
-	ball.push("This is not the Bot you're looking for ༼ﾉ۞⌂۞༽ﾉ");
-	
+	ball.push($.lang.get("net.phantombot.8ballCommand.answer-1"));
+    	ball.push($.lang.get("net.phantombot.8ballCommand.answer-2"));
+	ball.push($.lang.get("net.phantombot.8ballCommand.answer-3"));
+	ball.push($.lang.get("net.phantombot.8ballCommand.answer-4"));
+	ball.push($.lang.get("net.phantombot.8ballCommand.answer-5"));
+	ball.push($.lang.get("net.phantombot.8ballCommand.answer-6"));
+    	ball.push($.lang.get("net.phantombot.8ballCommand.answer-7"));
+	ball.push($.lang.get("net.phantombot.8ballCommand.answer-8"));
+	ball.push($.lang.get("net.phantombot.8ballCommand.answer-9"));
+	ball.push($.lang.get("net.phantombot.8ballCommand.answer-10"));
+	ball.push($.lang.get("net.phantombot.8ballCommand.answer-11"));
+	ball.push($.lang.get("net.phantombot.8ballCommand.answer-12"));
+	ball.push($.lang.get("net.phantombot.8ballCommand.answer-13"));
+	ball.push($.lang.get("net.phantombot.8ballCommand.answer-14"));
+	ball.push($.lang.get("net.phantombot.8ballCommand.answer-15"));
+	ball.push($.lang.get("net.phantombot.8ballCommand.answer-16"));
+    	ball.push($.lang.get("net.phantombot.8ballCommand.answer-17"));
+	ball.push($.lang.get("net.phantombot.8ballCommand.answer-18"));
+	ball.push($.lang.get("net.phantombot.8ballCommand.answer-19"));
+	ball.push($.lang.get("net.phantombot.8ballCommand.answer-20"));
+	ball.push($.lang.get("net.phantombot.8ballCommand.answer-21"));
+    	ball.push($.lang.get("net.phantombot.8ballCommand.answer-22"));
+	ball.push($.lang.get("net.phantombot.8ballCommand.answer-23"));
+	ball.push($.lang.get("net.phantombot.8ballCommand.answer-24"));
+	ball.push($.lang.get("net.phantombot.8ballCommand.answer-25"));
+	ball.push($.lang.get("net.phantombot.8ballCommand.answer-26"));
+	ball.push($.lang.get("net.phantombot.8ballCommand.answer-27"));
+	ball.push($.lang.get("net.phantombot.8ballCommand.answer-28"));
+	ball.push($.lang.get("net.phantombot.8ballCommand.answer-29"));
+	ball.push($.lang.get("net.phantombot.8ballCommand.answer-30"));
+	ball.push($.lang.get("net.phantombot.8ballCommand.answer-31"));
+	ball.push($.lang.get("net.phantombot.8ballCommand.answer-32"));
+	ball.push($.lang.get("net.phantombot.8ballCommand.answer-33"));
 	
 	do {
 		b = $.randElement(ball);
@@ -87,16 +88,16 @@ var points = $.inidb.get('points', sender);
 		$.say($.getWhisperString(sender) + $.lang.get("net.phantombot.8ballCommand.not-enough-points"));
 		return;
 	} else {
-	    $.say($.getWhisperString(sender) + b);
-            return;
+	    $.say($.getWhisperString(sender) + " Magic-8ball says... " + b);
+        return;
     }
 }
 
 	if (command.equalsIgnoreCase("8ballcooldown")) {
         if (!$.isAdmin(sender)) {
             $.say($.getWhisperString(sender) + $.adminmsg);
-            return;
-    }
+           return;
+        }
 
         $.inidb.set('settings', 'ballcooldown', args[0]);
         $.ballcooldown = $.inidb.get('settings', 'ballcooldown');
@@ -107,7 +108,7 @@ var points = $.inidb.get('points', sender);
         if (!$.isAdmin(sender)) {
             $.say($.getWhisperString(sender)+ $.adminmsg);
             return;
-    }
+        }
 
         $.inidb.set('settings', 'ballcost', args[0]);
         $.ballcost = $.inidb.get('settings', 'ballcost');
@@ -120,4 +121,4 @@ $.registerChatCommand("./commands/8ballCommand.js", "8ball");
 $.registerChatCommand("./commands/8ballCommand.js", "8ballcooldown", "admin");
 $.registerChatCommand("./commands/8ballCommand.js", "8ballcost", "admin");
 }
-},10*1000);
+},10 * 1000);

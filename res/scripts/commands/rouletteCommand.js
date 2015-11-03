@@ -1,86 +1,60 @@
-var arrrouletteLimiter = new Array();
-var arrroulettetimeout = new Array();
-
-if ($.roulettetimeout === undefined || $.roulettetimeout === null || isNaN($.roulettetimeout) || $.roulettetimeout < 0) {
+$.roulettetimeout = $.inidb.get('settings', 'roulettetimeout');
+if ($.roulettetimeout === undefined || $.roulettetimeout === null || isNaN($.roulettetimeout) || $.roulettetimeout < 1) {
     $.roulettetimeout = 600;
 }
 
 $.on('command', function(event) {
     var sender = event.getSender().toLowerCase();
     var username = $.username.resolve(sender);
-    var points = $.inidb.get('points', sender);
     var command = event.getCommand();
-    var argsString = event.getArguments().trim();
     var args = event.getArgs();
-    var s;
-    var m;
 
     if (command.equalsIgnoreCase("roulette")) {
         if (args.length == 0) {
             var d1 = $.randRange(1, 2);
             var d2 = $.randRange(1, 2);
 
-        var found = false;
-        var i;
-
-        if (command.equalsIgnoreCase("roulette")) {
-            if (args.length == 0) {
-            var d1 = $.randRange(1, 2);
-            var d2 = $.randRange(1, 2);
-    
-            if (!$.isAdmin(sender)) {
-                for (i = 0; i < arrrouletteLimiter.length; i++) {        
-                    found = true;
-                    return;
-                }
-            }
-            
-            if (found === false) {
-                arrrouletteLimiter.push(new Array(username));
-            }
-
     	 	var Win = new Array();
     	 	
-    	 	Win.push("The trigger is pulled, and the revolver clicks. "+ username +" has lived to survive roulette!");
-    	 	Win.push("The trigger is pulled, but the revolver malfunctions! "+ username +" is lucky, and live's another day!");
-                Win.push("The trigger is pulled, and the revolver clicks. "+ username +" has lived to survive roulette!");
-                Win.push("The trigger is pulled, but the revolver malfunctions! "+ username +" is lucky, and live's another day!");
-                Win.push("The trigger is pulled, and the revolver clicks. "+ username +" has lived to survive roulette!");
-                Win.push("The trigger is pulled, but the revolver malfunctions! "+ username +" is lucky, and live's another day!");
-                Win.push("The trigger is pulled, and the revolver clicks. "+ username +" has lived to survive roulette!");
-                Win.push("The trigger is pulled, but the revolver malfunctions! "+ username +" is lucky, and live's another day!");
-		Win.push("The trigger is pulled, but this isn't a revolver! "+ username +" is lucky, and live's another day!");
-		Win.push("The trigger is pulled, but the bullets were loaded backwards! "+ username +" is lucky, and live's another day!");
-		Win.push("The trigger is pulled, but the power went out! "+ username +" is lucky, and bluffed their way to another day!");
-		Win.push("The trigger is pulled, but the bullet was rubber! "+ username +" is lucky, and live's another day!");
+    	    Win.push($.lang.get("net.phantombot.roulettecommand-Win1", username));
+            Win.push($.lang.get("net.phantombot.roulettecommand-Win2", username));
+            Win.push($.lang.get("net.phantombot.roulettecommand-Win3", username));
+            Win.push($.lang.get("net.phantombot.roulettecommand-Win4", username));
+            Win.push($.lang.get("net.phantombot.roulettecommand-Win5", username));
+            Win.push($.lang.get("net.phantombot.roulettecommand-Win1", username));
+            Win.push($.lang.get("net.phantombot.roulettecommand-Win2", username));
+            Win.push($.lang.get("net.phantombot.roulettecommand-Win3", username));
+	    Win.push($.lang.get("net.phantombot.roulettecommand-Win4", username));
+	    Win.push($.lang.get("net.phantombot.roulettecommand-Win5", username));
+	   Win.push($.lang.get("net.phantombot.roulettecommand-Win1", username));
     	 	
     	 	var lost = new Array();
 
-    	 	lost.push("The trigger is pulled, and the revolver fires! "+ username +" lies dead in the chat.");
-                lost.push("The trigger is pulled, and "+ username +" loses their head!");
-		lost.push(username +"'s finger slides over the trigger, "+ username +" crashes to the floor like a sack of flour!");
-		lost.push("The trigger is pulled, and the hand-cannon goes off with a roar! "+ username +" lies dead in the chat.");
-		lost.push("The hammer drops, and the .44 fires! "+ username +" is now dead in the chat.");
-		lost.push("The trigger is pulled, and the revolver fires! "+ username +" is now just a blood splatter on the wall.");
-		lost.push("The trigger is pulled, and the revolver fires! "+ username +" ended their miserable life.");
+    	 lost.push($.lang.get("net.phantombot.roulettecommand-lost1", username));
+         lost.push($.lang.get("net.phantombot.roulettecommand-lost2", username));
+	 lost.push($.lang.get("net.phantombot.roulettecommand-lost3", username));
+	 lost.push($.lang.get("net.phantombot.roulettecommand-lost4", username));
+	 lost.push($.lang.get("net.phantombot.roulettecommand-lost5", username));
+	 lost.push($.lang.get("net.phantombot.roulettecommand-lost6", username));
+	 lost.push($.lang.get("net.phantombot.roulettecommand-lost7", username));
 
-                var lostmod = new Array();
+            var lostmod = new Array();
 
-                lostmod.push("The trigger is pulled, but "+ username +" has been saved by magic!");
-                lostmod.push("The trigger is pulled, but "+ username +" has lived due to not having anything in his skull to begin with.");
-                lostmod.push("The trigger is pulled, but "+ username +"'s skull was so thick the bullet could not penetrate it.");
-                lostmod.push("The trigger is pulled, but "+ username +" stopped space and time and dodged the bullet!");
-                lostmod.push("The trigger is pulled, but "+ username +" did not die from the bullet, the bullet died from him.");
-                
-                
+         lostmod.push($.lang.get("net.phantombot.roulettecommand-lostmod1", username));
+         lostmod.push($.lang.get("net.phantombot.roulettecommand-lostmod2", username));
+         lostmod.push($.lang.get("net.phantombot.roulettecommand-lostmod3", username));
+         lostmod.push($.lang.get("net.phantombot.roulettecommand-lostmod4", username));
+         lostmod.push($.lang.get("net.phantombot.roulettecommand-lostmod5", username));
+                 
     	 	if (d1 == d2) {
     	 		do {
-    	 			s = $.randElement(Win);
+    	 			var s = $.randElement(Win);
     	 		} while (s.equalsIgnoreCase($.lastRandomWin) && Win.length > 1);
-    	 		$.say(s);	
+    	 		$.say(s);
+                return;	
     	 	} else {
     	 		do {
-    	 			s = $.randElement(lost);  
+    	 			var s = $.randElement(lost);  
     	 		} while (s.equalsIgnoreCase($.lastRandomlost) && lost.length > 1);
                 if (!$.isModv3(sender, event.getTags())) {
                     $.say(s);
@@ -88,25 +62,23 @@ $.on('command', function(event) {
                     setTimeout(function() {$.say(".timeout "+ username +" "+ roulettetimeout);},2000);
                     return;
                 }
-                m = $.randElement(lostmod);
+                var m = $.randElement(lostmod);
                 while (m.equalsIgnoreCase($.lastRandomlostmod) && lostmod.length > 1);
                 $.say(m);
-                }
+                return;
             }
         }
     }
-}
-
 
     if (command.equalsIgnoreCase("roulettetimeouttime")) {
         if (!$.isAdmin(sender)) {
             $.say($.adminmsg);
             return;
-    }
+        }
 
     $.inidb.set('settings', 'roulettetimeout', parseInt(args[0]));
     $.roulettetimeout = parseInt(args[0]);
-    $.say(username +", the !roulette timeout has been set to "+ $.roulettetimeout +" seconds!");
+    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.roulettecommand-timeout-time", $.roulettetimeout));
     
     }
 });
