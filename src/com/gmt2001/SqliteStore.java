@@ -304,7 +304,7 @@ public class SqliteStore extends DataStore
 
             while (rs.next())
             {
-                s.add(rs.getString("name"));
+                s.add(rs.getString("name").substring(11));
             }
 
             return s.toArray(new String[s.size()]);

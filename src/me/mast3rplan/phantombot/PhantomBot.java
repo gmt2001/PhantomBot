@@ -712,6 +712,45 @@ public class PhantomBot implements Listener
         //Don't change this to postAsync. It cannot be processed in async or commands will be delayed
         EventBus.instance().post(new CommandEvent(sender, command, arguments));
     }
+    
+    private static void ini2sqlite()
+    {
+        com.gmt2001.Console.out.print(">>Initializing...");
+        IniStore ini = IniStore.instance();
+        SqliteStore sqlite = SqliteStore.instance();
+        com.gmt2001.Console.out.println("done");
+        
+        com.gmt2001.Console.out.print(">>Wiping existing SqliteStore...");
+        String[] deltables = sqlite.GetFileList();
+        for (String table : deltables)
+        {
+            sqlite.RemoveFile(table);
+        }
+        com.gmt2001.Console.out.println("done");
+        
+        com.gmt2001.Console.out.print(">>Copying IniStore to SqliteStore...");
+        String[] files = ini.GetFileList();
+        int i = 0;
+        for (String file : files)
+        {
+            com.gmt2001.Console.out.print("\r>>Copying IniStore to SqliteStore... " + i + " / " + files.length);
+            sqlite.AddFile(file);
+            
+            String[] sections = ini.GetCategoryList(file);
+            for (String section : sections)
+            {
+                String[] keys = ini.GetKeyList(file, section);
+                for (String key : keys)
+                {
+                    String value = ini.GetString(file, section, key);
+                    sqlite.SetString(file, section, key, value);
+                }
+            }
+        }
+        com.gmt2001.Console.out.println("\r>>Copying IniStore to SqliteStore... " + files.length + " / " + files.length);
+        
+        com.gmt2001.Console.out.println("Operation complete. The bot will now exit");
+    }
 
     public static void main(String[] args) throws IOException
     {
@@ -853,6 +892,13 @@ public class PhantomBot implements Listener
                 if (arg.equalsIgnoreCase("debugon"))
                 {
                     PhantomBot.enableDebugging = true;
+                }
+                if (arg.equalsIgnoreCase("ini2sqlite"))
+                {
+                    com.gmt2001.Console.out.println("Converting default IniStore to default SqliteStore...");
+                    ini2sqlite();
+                    System.exit(0);
+                    return;
                 }
                 if (arg.toLowerCase().startsWith("user=") && arg.length() > 8)
                 {

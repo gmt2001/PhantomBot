@@ -195,41 +195,41 @@ public class DataStore
         return GetString(fName, section, key) != null;
     }
 
-    public boolean exists(String type, String key)
+    public boolean exists(String fName, String key)
     {
-        return HasKey(type, "", key);
+        return HasKey(fName, "", key);
     }
 
-    public String get(String type, String key)
+    public String get(String fName, String key)
     {
-        return GetString(type, "", key);
+        return GetString(fName, "", key);
     }
 
-    public void set(String type, String key, String value)
+    public void set(String fName, String key, String value)
     {
-        SetString(type, "", key, value);
+        SetString(fName, "", key, value);
     }
 
-    public void del(String type, String key)
+    public void del(String fName, String key)
     {
-        RemoveKey(type, "", key);
+        RemoveKey(fName, "", key);
     }
 
-    public void incr(String type, String key, int amount)
+    public void incr(String fName, String key, int amount)
     {
-        int ival = GetInteger(type, "", key);
+        int ival = GetInteger(fName, "", key);
         
         ival += amount;
         
-        SetInteger(type, "", key, ival);
+        SetInteger(fName, "", key, ival);
     }
 
-    public void decr(String type, String key, int amount)
+    public void decr(String fName, String key, int amount)
     {
-        int ival = GetInteger(type, "", key);
+        int ival = GetInteger(fName, "", key);
         
         ival -= amount;
         
-        SetInteger(type, "", key, ival);
+        SetInteger(fName, "", key, ival);
     }
 }
