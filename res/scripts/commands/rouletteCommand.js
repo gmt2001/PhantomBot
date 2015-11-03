@@ -26,25 +26,25 @@ $.on('command', function(event) {
             Win.push($.lang.get("net.phantombot.roulettecommand-Win3", username));
 	    Win.push($.lang.get("net.phantombot.roulettecommand-Win4", username));
 	    Win.push($.lang.get("net.phantombot.roulettecommand-Win5", username));
-	   Win.push($.lang.get("net.phantombot.roulettecommand-Win1", username));
+	    Win.push($.lang.get("net.phantombot.roulettecommand-Win1", username));
     	 	
     	 	var lost = new Array();
 
-    	 lost.push($.lang.get("net.phantombot.roulettecommand-lost1", username));
-         lost.push($.lang.get("net.phantombot.roulettecommand-lost2", username));
-	 lost.push($.lang.get("net.phantombot.roulettecommand-lost3", username));
-	 lost.push($.lang.get("net.phantombot.roulettecommand-lost4", username));
-	 lost.push($.lang.get("net.phantombot.roulettecommand-lost5", username));
-	 lost.push($.lang.get("net.phantombot.roulettecommand-lost6", username));
-	 lost.push($.lang.get("net.phantombot.roulettecommand-lost7", username));
+    	    lost.push($.lang.get("net.phantombot.roulettecommand-lost1", username));
+            lost.push($.lang.get("net.phantombot.roulettecommand-lost2", username));
+	    lost.push($.lang.get("net.phantombot.roulettecommand-lost3", username));
+	    lost.push($.lang.get("net.phantombot.roulettecommand-lost4", username));
+	    lost.push($.lang.get("net.phantombot.roulettecommand-lost5", username));
+	    lost.push($.lang.get("net.phantombot.roulettecommand-lost6", username));
+	    lost.push($.lang.get("net.phantombot.roulettecommand-lost7", username));
 
             var lostmod = new Array();
 
-         lostmod.push($.lang.get("net.phantombot.roulettecommand-lostmod1", username));
-         lostmod.push($.lang.get("net.phantombot.roulettecommand-lostmod2", username));
-         lostmod.push($.lang.get("net.phantombot.roulettecommand-lostmod3", username));
-         lostmod.push($.lang.get("net.phantombot.roulettecommand-lostmod4", username));
-         lostmod.push($.lang.get("net.phantombot.roulettecommand-lostmod5", username));
+            lostmod.push($.lang.get("net.phantombot.roulettecommand-lostmod1", username));
+            lostmod.push($.lang.get("net.phantombot.roulettecommand-lostmod2", username));
+            lostmod.push($.lang.get("net.phantombot.roulettecommand-lostmod3", username));
+            lostmod.push($.lang.get("net.phantombot.roulettecommand-lostmod4", username));
+            lostmod.push($.lang.get("net.phantombot.roulettecommand-lostmod5", username));
                  
     	 	if (d1 == d2) {
     	 		do {
