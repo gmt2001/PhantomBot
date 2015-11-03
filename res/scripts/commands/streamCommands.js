@@ -28,7 +28,7 @@ $.getUptime = function(channel) {
     //initiate date formatter
     var df = new java.text.SimpleDateFormat( "yyyy-MM-dd'T'hh:mm:ssz" );
     //parse created_at from twitch, which is received in GMT
-    if ( createdAt.endsWith( "Z" ) ) {
+    if (createdAt.endsWith( "Z" )) {
             createdAt = createdAt.substring( 0, createdAt.length() - 1) + "GMT-00:00";
             //$.say(createdAt);
         } else {
@@ -115,6 +115,7 @@ $.getFollows = function(channel) {
     
     return channelData.getInt("followers").toString();
 }
+
 $.on('command', function(event) {
     var sender = event.getSender();
     var username = $.username.resolve(sender);
@@ -125,30 +126,32 @@ $.on('command', function(event) {
 
     if (command.equalsIgnoreCase("online")) {
         if (!$.isOnline($.channelName)) {
-            $.say($.getWhisperString(sender) + "Stream is offline.");
-        }
-        else {
-            $.say($.getWhisperString(sender) + "Stream is online!");
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.streamcommand.stream-offline"));
+            return;
+        } else {
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.streamcommand.stream-online"));
+            return;
         }
     }
     
     if (command.equalsIgnoreCase("follows")) {
-        if (!$.getFollows($.channelName)!=null) {
+        if (!$.getFollows($.channelName) != null) {
             $.say($.getFollows($.channelName));
+            return;
         }
     }
 	
     if (command.equalsIgnoreCase("viewers")) {
-        $.say("There are currently " + $.getViewers($.channelName) + " viewers!");
+        $.say($.lang.get("net.phantombot.streamcommand.total-viewers", $.getViewers($.channelName)));
+        return;
     }
 
     if (command.equalsIgnoreCase("game")) {
         if ($.strlen(argsString) == 0) {
-            $.say("Current Game: " + $.getGame($.channelName));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.streamcommand.current-game", $.getGame($.channelName)));
             return;
-        }
-        else if (!$.isAdmin(sender)) {
-            $.say($.getWhisperString(sender) + $.castermsg);
+        } else if (!$.isAdmin(sender)) {
+            $.say($.getWhisperString(sender) + $.adminmsg);
             return;	
         }
         
@@ -156,28 +159,29 @@ $.on('command', function(event) {
         
         if (res.getBoolean("_success")) {
             if (res.getInt("_http") == 200) {
-                $.say("Changed the game to '" + res.getString("game") + "'!");
+                $.say($.lang.get("net.phantombot.streamcommand.game-changed-success", res.getString("game")));
                 $.logEvent("streamCommands.js", 25, username + " changed the current game to " + res.getString("game"));
+                return;
             } else {
-                $.say($.getWhisperString(sender) + "Failed to change the game. TwitchAPI must be having issues");
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.streamcommand.game-change-error-api"));
                 println(res.getString("message"));
                 $.logError("streamCommands.js", 29, res.getString("message"));
+                return;
             }
         } else {
-            $.say("Failed to change the game. TwitchAPI must be having issues");
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.streamcommand.game-change-error-api"));
             println(res.getString("_exception") + " " + res.getString("_exceptionMessage"));
             $.logError("streamCommands.js", 34, res.getString("_exception") + " " + res.getString("_exceptionMessage"));
+            return;
         }
     }
     
-
     if (command.equalsIgnoreCase("title")) {
         if ($.strlen(argsString) == 0) {
-            $.say("Current Status: " + $.getStatus($.channelName));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.streamcommand.current-title", $.getStatus($.channelName)));
             return;
-        }
-        else if (!$.isAdmin(sender)) {
-            $.say($.getWhisperString(sender) + $.castermsg);
+        } else if (!$.isAdmin(sender)) {
+            $.say($.getWhisperString(sender) + $.adminmsg);
             return;	
         }
         
@@ -185,15 +189,15 @@ $.on('command', function(event) {
         
         if (res.getBoolean("_success")) {
             if (res.getInt("_http") == 200) {
-                $.say("Changed the title to '" + res.getString("status") + "'!");
+                $.say($.lang.get("net.phantombot.streamcommand.title-changed-success", res.getString("status")));
                 $.logEvent("streamCommands.js", 54, username + " changed the current status to " + res.getString("status"));
             } else {
-                $.say($.getWhisperString(sender) + "Failed to change the status. TwitchAPI must be having issues");
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.streamcommand.title-change-error-api"));
                 println(res.getString("message"));
                 $.logError("streamCommands.js", 58, res.getString("message"));
             }
         } else {
-            $.say($.getWhisperString(sender) + "Failed to change the status. TwitchAPI must be having issues");
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.streamcommand.title-change-error-api"));
             println(res.getString("_exception") + " " + res.getString("_exceptionMessage"));
             $.logError("streamCommands.js", 63, res.getString("_exception") + " " + res.getString("_exceptionMessage"));
         }
@@ -201,13 +205,13 @@ $.on('command', function(event) {
     
     if (command.equalsIgnoreCase("commercial")) {
         if (!$.isAdmin(sender)) {
-            $.say($.getWhisperString(sender) + $.castermsg);
+            $.say($.getWhisperString(sender) + $.adminmsg);
             return;
         }
         
         if (args.length > 0) {
             if (args[0].equalsIgnoreCase("disablecommand")) {
-                if (!isAdmin(sender)) {
+                if (!$.isAdmin(sender)) {
                     $.say($.getWhisperString(sender) + $.adminmsg);
                     return;
                 }
@@ -216,12 +220,12 @@ $.on('command', function(event) {
             
                 $.inidb.set("settings", "commercialcommandenabled", "0");
                 
-                $.say($.getWhisperString(sender) + "Manual commercials disabled!");
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.streamcommand.disable-commercial"));
                 return;
             }
         
             if (args[0].equalsIgnoreCase("enablecommand")) {
-                if (!isAdmin(sender)) {
+                if (!$.isAdmin(sender)) {
                     $.say($.getWhisperString(sender) + $.adminmsg);
                     return;
                 }
@@ -230,12 +234,12 @@ $.on('command', function(event) {
             
                 $.inidb.set("settings", "commercialcommandenabled", "1");
                 
-                $.say($.getWhisperString(sender) + "Manual commercials enabled!");
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.streamcommand.enable-commercial"));
                 return;
             }
         
             if (args[0].equalsIgnoreCase("autotimer")) {
-                if (!isAdmin(sender)) {
+                if (!$.isAdmin(sender)) {
                     $.say($.getWhisperString(sender) + $.adminmsg);
                     return;
                 }
@@ -245,7 +249,7 @@ $.on('command', function(event) {
                     
                     $.inidb.set("settings", "commercialtimer", args[1]);
                     
-                    $.say($.getWhisperString(sender) + "Automatic commercial timer disabled!");
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.streamcommand.auto-commercial-disable"));
                     return;
                 }
                 
@@ -254,22 +258,21 @@ $.on('command', function(event) {
                         && !args[2].equalsIgnoreCase("120") && !args[2].equalsIgnoreCase("150") && !args[2].equalsIgnoreCase("180"))) {
                     if (args.length == 1) {
                         if (!$.inidb.exists("settings", "commercialtimer") || $.inidb.get("settings", "commercialtimer").equalsIgnoreCase("0")) {
-                            $.say($.getWhisperString(sender) + "Automatic commercials are disabled! To enable them, say '!commercial autotimer <interval in minutes (at least 9)> <commercial length 30, 60, 90, 120, 150, or 180> [optional message]'");
+                            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.streamcommand.auto-commercial-info"));
                         } else {
                             var a = $.inidb.get("settings", "commercialtimer");
                             var b = $.inidb.get("settings", "commercialtimerlength");
                             var c = $.inidb.get("settings", "commercialtimermessage");
                             
-                            $.say($.getWhisperString(sender) + "Automatic commercials are enabled! They are running " + b + " seconds of ads every " + a + " minutes. To disable, say '!commercial autotimer 0'");
+                            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.streamcommand.auto-commercial-enabled", a, b));
                             
                             if (!c.isEmpty()) {
-                                $.say($.getWhisperString(sender) + "The message sent with every automatic commercial is: " + c);
+                                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.streamcommand.auto-commercial-message-op", c));
                             }
                         }
                     } else {
-                        $.say($.getWhisperString(sender) + "Usage: !commercial autotimer <interval in minutes (at least 9) or 0 to disable> <commercial length 30, 60, 90, 120, 150, or 180> [optional message]");
-                    }
-                    
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.streamcommand.auto-commercial-usage"));
+                    } 
                     return;
                 }
                 
@@ -293,14 +296,14 @@ $.on('command', function(event) {
             }
             
             if (args[0].equalsIgnoreCase("help")) {
-                $.say($.getWhisperString(sender) + "Usage: !commercial <commercial length 30, 60, 90, 120, 150, or 180>, !commercial enablecommand, !commercial disablecommand, !commercial autotimer");
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.streamcommand.auto-commercial-usage"));
                 return;
             }
         }
         
         if ($.inidb.exists("settings", "commercialcommandenabled")
             && $.inidb.get("settings", "commercialcommandenabled").equalsIgnoreCase("0") && !isAdmin(sender)) {
-            $.say($.getWhisperString(sender) + "Manual triggering of commercials is disabled!");
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.streamcommand.manual-commercial-disabled"));
             return;
         }
         
@@ -312,21 +315,21 @@ $.on('command', function(event) {
         
         if (res.getBoolean("_success")) {
             if (res.getInt("_http") == 204) {
-                $.say("Running a " + argsString + " second commercial!");
+                $.say($.lang.get("net.phantombot.streamcommand.running-commercial", argsString));
                 $.logEvent("streamCommands.js", 181, username + " ran a " + argsString + " second commercial");
             } else if (res.getInt("_http") == 422) {
-                $.say($.getWhisperString(sender) + "You must enter a valid commercial length, wait 8 minutes between commercials, and can only run commercials when the stream is online! Valid lengths are 30, 60, 90, 120, 150, and 180 seconds");
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.streamcommand.commercial-user-error"));
                 
                 if (!res.getString("message").equalsIgnoreCase("Commercials breaks are allowed every 8 min and only when you are online.")) {
                     $.logError("streamCommands.js", 186, res.getString("message"));
                 }
             } else {
-                $.say($.getWhisperString(sender) + "Failed to run a commercial. TwitchAPI must be having issues");
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.streamcommand.commercial-api-error"));
                 println(res.getString("_content"));
                 $.logError("streamCommands.js", 191, res.getString("_content"));
             }
         } else {
-            $.say($.getWhisperString(sender) + "Failed to run a commercial. TwitchAPI must be having issues");
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.streamcommand.commercial-api-error"));
             println(res.getString("_exception") + " " + res.getString("_exceptionMessage"));
             $.logError("streamCommands.js", 196, res.getString("_exception") + " " + res.getString("_exceptionMessage"));
         }
@@ -334,17 +337,16 @@ $.on('command', function(event) {
 });
 
 setTimeout(function(){ 
-if ($.moduleEnabled('./commands/streamCommands.js')) {
-$.registerChatCommand("./commands/streamCommands.js", "online", "caster");
-$.registerChatCommand("./commands/streamCommands.js", "game", "caster");
-$.registerChatCommand("./commands/streamCommands.js", "title", "caster");
-$.registerChatCommand("./commands/streamCommands.js", "commercial", "caster");
-$.registerChatCommand("./commands/streamCommands.js", "commercial help", "caster");
-$.registerChatCommand("./commands/streamCommands.js", "viewers");
-$.registerChatCommand("./commands/streamCommands.js", "follows");
-
-}
-},10*1000);
+    if ($.moduleEnabled('./commands/streamCommands.js')) {
+        $.registerChatCommand("./commands/streamCommands.js", "online", "admin");
+        $.registerChatCommand("./commands/streamCommands.js", "game", "admin");
+        $.registerChatCommand("./commands/streamCommands.js", "title", "admin");
+        $.registerChatCommand("./commands/streamCommands.js", "commercial", "admin");
+        $.registerChatCommand("./commands/streamCommands.js", "commercial help", "admin");
+        $.registerChatCommand("./commands/streamCommands.js", "viewers");
+        $.registerChatCommand("./commands/streamCommands.js", "follows");
+    }
+}, 10 * 1000);
 
 var lastCommercial = $.inidb.get("settings", "lastCommercial");
 
@@ -382,11 +384,11 @@ $.timer.addTimer("./commands/streamCommands.js", "autocommercial", true, functio
                 }
             } else {
                 println(res.getString("_content"));
-                $.say($.getWhisperString(sender) + "Failed to run a commercial. TwitchAPI must be having issues");
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.streamcommand.commercial-api-error"));
                 $.logError("streamCommands.js", 239, res.getString("message"));
             }
         } else {
-            $.say($.getWhisperString(sender) + "Failed to run a commercial. TwitchAPI must be having issues");
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.streamcommand.commercial-api-error"));
             println(res.getString("_exception") + " " + res.getString("_exceptionMessage"));
             $.logError("streamCommands.js", 244, res.getString("_exception") + " " + res.getString("_exceptionMessage"));
         }
