@@ -409,9 +409,9 @@ $.lang.data["net.phantombot.followHandler.follow-reward-set"] = "New follower re
 $.lang.data["net.phantombot.followHandler.triple-follow-train"] = "Triple follow!!";
 $.lang.data["net.phantombot.followHandler.Quadra-follow-train"] = "Quadra follow!!";
 $.lang.data["net.phantombot.followHandler.penta-follow-train"] = "Penta follow!!";
-$.lang.data["net.phantombot.followHandler.mega-follow-train"] = "Mega follow train!! ($1)";
-$.lang.data["net.phantombot.followHandler.ultra-follow-train"] = "ultra follow train!! ($1)";
-$.lang.data["net.phantombot.followHandler.massive-follow-train"] = "Unbelievable follow train!! ($1)";
+$.lang.data["net.phantombot.followHandler.mega-follow-train"] = "M-M-M-Mega follow train!! ($1)";
+$.lang.data["net.phantombot.followHandler.ultra-follow-train"] = "Ultra follow train!! ($1) *Explosions*";
+$.lang.data["net.phantombot.followHandler.massive-follow-train"] = "MASSIVE FOLLOW TRAAAAIIIN!! ($1)";
 
 // noticeHandler.js
 $.lang.data["net.phantombot.noticehandler.notice-get-usage"] = "There are $1 notices. Say '!notice get <id>' to get a messages content. Message IDs go from 0 to $2";
