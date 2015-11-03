@@ -193,7 +193,6 @@ public class MusicWebSocketServer extends WebSocketServer
                     }
                 }                                                                               //after line reading, and writing all data to stealsong.txt, exit the loop
                 out.append(songurl);                                                //add our stolen song
-                in.close();                                                         //close playlist
             } //writes stolen songs read from playlist
             out.close();                                                        //close stealsong
             playlist.delete();                                                  //delete playlist

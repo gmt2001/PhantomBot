@@ -29,6 +29,7 @@ public class Script
 {
 
     public static final NativeObject global = new NativeObject();
+    @SuppressWarnings("rawtypes")
     private final List<ScriptDestroyable> destroyables = Lists.newArrayList();
     private final NativeObject vars = new NativeObject();
     private final ScriptFileWatcher fileWatcher;
@@ -44,7 +45,8 @@ public class Script
 
         new Thread(fileWatcher).start();
     }
-
+    
+    @SuppressWarnings("rawtypes")
     public void reload() throws IOException
     {
         for (ScriptDestroyable destroyable : destroyables)
@@ -67,6 +69,7 @@ public class Script
         context.evaluateString(scope, FileUtils.readFileToString(file), file.getName(), 1, null);
     }
 
+    @SuppressWarnings("rawtypes")
     public List<ScriptDestroyable> destroyables()
     {
         return destroyables;

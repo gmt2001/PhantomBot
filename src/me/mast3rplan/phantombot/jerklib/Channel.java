@@ -109,6 +109,8 @@ public class Channel
          */
         userMap = new HashMap<String, List<ModeAdjustment>>()
         {
+            private static final long serialVersionUID = 1L;
+            
             @Override
             public List<ModeAdjustment> get(Object key)
             {
@@ -523,6 +525,8 @@ public class Channel
     {
         return new ArrayList<String>(userMap.keySet())
         {
+            private static final long serialVersionUID = 1L;
+            
             @Override
             public int indexOf(Object o)
             {

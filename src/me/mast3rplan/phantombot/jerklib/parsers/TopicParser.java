@@ -55,7 +55,7 @@ public class TopicParser implements CommandParser
             Channel chan = event.getSession().getChannel(event.arg(1));
             if (topicMap.containsKey(chan))
             {
-                TopicEvent tEvent = (TopicEvent) topicMap.get(chan);
+                TopicEvent tEvent = topicMap.get(chan);
                 topicMap.remove(chan);
                 tEvent.setSetBy(event.arg(2));
                 tEvent.setSetWhen(event.arg(3));

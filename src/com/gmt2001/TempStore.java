@@ -63,12 +63,12 @@ public class TempStore extends DataStore
 
         String[] s = new String[o.size()];
 
-        Iterator it = o.iterator();
+        Iterator<String> it = o.iterator();
         int i = 0;
 
         while (it.hasNext())
         {
-            s[i++] = (String) it.next();
+            s[i++] = it.next();
         }
 
         return s;
@@ -83,12 +83,12 @@ public class TempStore extends DataStore
 
         String[] s = new String[o.size()];
 
-        Iterator it = o.iterator();
+        Iterator<String> it = o.iterator();
         int i = 0;
 
         while (it.hasNext())
         {
-            s[i++] = (String) it.next();
+            s[i++] = it.next();
         }
 
         return s;
@@ -103,12 +103,12 @@ public class TempStore extends DataStore
 
         String[] s = new String[o.size()];
 
-        Iterator it = o.iterator();
+        Iterator<String> it = o.iterator();
         int i = 0;
 
         while (it.hasNext())
         {
-            s[i++] = (String) it.next();
+            s[i++] = it.next();
         }
 
         return s;

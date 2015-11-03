@@ -52,6 +52,7 @@ public class ScriptApi
         ScriptEventManager.instance().register(eventName, handler);
     }
 
+    @SuppressWarnings("rawtypes")
     public ScheduledFuture<?> setTimeout(Script script, Runnable task, int milliseconds)
     {
         ScheduledFuture future = scheduler.schedule(task, milliseconds, TimeUnit.MILLISECONDS);
@@ -66,6 +67,7 @@ public class ScriptApi
         return future;
     }
 
+    @SuppressWarnings("rawtypes")
     public ScheduledFuture<?> setInterval(Script script, Runnable task, int milliseconds)
     {
         ScheduledFuture future = scheduler.scheduleAtFixedRate(task, milliseconds, milliseconds, TimeUnit.MILLISECONDS);

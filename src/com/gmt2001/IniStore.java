@@ -279,12 +279,12 @@ public class IniStore extends DataStore implements ActionListener
 
         String[] s = new String[f.size()];
 
-        Iterator it = f.iterator();
+        Iterator<File> it = f.iterator();
         int i = 0;
 
         while (it.hasNext())
         {
-            s[i++] = ((File) it.next()).getName();
+            s[i++] = it.next().getName();
         }
 
         return s;
@@ -306,12 +306,12 @@ public class IniStore extends DataStore implements ActionListener
 
         String[] s = new String[o.size()];
 
-        Iterator it = o.iterator();
+        Iterator<String> it = o.iterator();
         int i = 0;
 
         while (it.hasNext())
         {
-            s[i++] = (String) it.next();
+            s[i++] = it.next();
         }
 
         return s;
@@ -335,12 +335,12 @@ public class IniStore extends DataStore implements ActionListener
 
         String[] s = new String[o.size()];
 
-        Iterator it = o.iterator();
+        Iterator<String> it = o.iterator();
         int i = 0;
 
         while (it.hasNext())
         {
-            s[i++] = (String) it.next();
+            s[i++] = it.next();
         }
 
         return s;
@@ -365,7 +365,7 @@ public class IniStore extends DataStore implements ActionListener
             return null;
         }
 
-        return (String) files.get(fName).data.get(section).get(key);
+        return files.get(fName).data.get(section).get(key);
     }
 
     @Override

@@ -74,6 +74,19 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
             <classpath refid="reference.class.path" />
         </javac>
     </target>
+    
+    <target depends="pre.compile.test" name="clean.build.test">
+        <delete dir="${build}" />
+        <mkdir dir="${build}" />
+        <mkdir dir="${classes}" />
+    </target>
+    
+    <target depends="clean.build.test" name="compile.src.test">
+        <javac target="1.7" source="1.7" debug="on" destdir="${classes}" srcdir="${src}" includeantruntime="false" >
+            <compilerarg value="-Xlint:all" />
+            <classpath refid="reference.class.path" />
+        </javac>
+    </target>
 
     <target depends="compile.src" name="jar">
         <jar destfile="${build.dir}/PhantomBot.jar">
@@ -103,7 +116,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
         </copy>
     </target>
      
-    <target depends="compile.src" name="test"></target>
+    <target depends="compile.src.test" name="test"></target>
      
     <target name="run" depends="jar">
         <java fork="true" classname="me.mast3rplan.phantombot.PhantomBot" dir="${build.dir}">
