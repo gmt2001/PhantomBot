@@ -28,22 +28,22 @@ $.on('command', function(event) {
         var self = new Array(0)
         sender = $.username.resolve(sender, event.getTags());
  
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-1", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-2", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-3", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-4", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-5", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-6", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-7", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-8", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-9", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-10", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-11", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-12", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-13", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-14", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-15", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-16", sender));
+        	self.push($.lang.get("net.phantombot.kilcommand.self-kill-1", sender));
+        	self.push($.lang.get("net.phantombot.kilcommand.self-kill-2", sender));
+        	self.push($.lang.get("net.phantombot.kilcommand.self-kill-3", sender));
+        	self.push($.lang.get("net.phantombot.kilcommand.self-kill-4", sender));
+        	self.push($.lang.get("net.phantombot.kilcommand.self-kill-5", sender));
+        	self.push($.lang.get("net.phantombot.kilcommand.self-kill-6", sender));
+        	self.push($.lang.get("net.phantombot.kilcommand.self-kill-7", sender));
+        	self.push($.lang.get("net.phantombot.kilcommand.self-kill-8", sender));
+        	self.push($.lang.get("net.phantombot.kilcommand.self-kill-9", sender));
+		self.push($.lang.get("net.phantombot.kilcommand.self-kill-10", sender));
+        	self.push($.lang.get("net.phantombot.kilcommand.self-kill-11", sender));
+        	self.push($.lang.get("net.phantombot.kilcommand.self-kill-12", sender));
+        	self.push($.lang.get("net.phantombot.kilcommand.self-kill-13", sender));
+	 	self.push($.lang.get("net.phantombot.kilcommand.self-kill-14", sender));
+		self.push($.lang.get("net.phantombot.kilcommand.self-kill-15", sender));
+        	self.push($.lang.get("net.phantombot.kilcommand.self-kill-16", sender));
 		self.push($.lang.get("net.phantombot.kilcommand.self-kill-17", sender));
 		self.push($.lang.get("net.phantombot.kilcommand.self-kill-18", sender));
 		self.push($.lang.get("net.phantombot.kilcommand.self-kill-19", sender));
