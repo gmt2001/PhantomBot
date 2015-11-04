@@ -14,7 +14,6 @@ var announceSchedule = function() {
         }
     }
     
-    
     var cal = java.util.Calendar.getInstance(java.util.TimeZone.getTimeZone($.timezone));
     var now = cal.getTime();
     var cur = null;
@@ -89,17 +88,19 @@ var announceSchedule = function() {
         $.say($.inidb.get("marathon", "link"));
     }
     
-    $.say("Current Caster's Time: " + timestamp + " " + $.timezone);
-    $.say("List of Scheduled Marathons:");
+    $.say($.lang.get("net.phantombot.marathonCommand.current-caster-time", timestamp, $.timezone));
+    $.say($.lang.get("net.phantombot.marathonCommand.current-sched"));
     
     lines.sort();
     
     if (prev != null) {
-        $.say("[Prev] >>" + prevS);
+        $.say($.lang.get("net.phantombot.marathonCommand.prev", prevS));
+        return;
     }
     
     if (cur != null) {
-        $.say("[LIVE!] >>" + curS);
+        $>say($.lang.get("net.phantombot.marathonCommand.live", curS));
+        return;
     }
     
     for (i = 0; i < lines.length; i++) {
@@ -111,7 +112,7 @@ var announceSchedule = function() {
         date = cal.getTime();
    
         if ((cur == null || date.after(cur)) && count < $.schedulelimit) {
-            $.say("[Next] >>" + datefmt.format(date) + " " + spl[1]);
+            $.say($.lang.get("net.phantombot.marathonCommand.next", datefmt.format(date), spl[1]));
             
             count++;
         }
@@ -129,16 +130,15 @@ $.on('command', function(event) {
     var args = event.getArgs();
     var groups = new Array();
 
-    
     if (command.equalsIgnoreCase("marathon")) {
         if (args.length == 0) {
             if (!$.inidb.FileExists("marathon") || $.inidb.GetKeyList("marathon", "").length == 0) {
-                $.say($.getWhisperString(sender) + "There is currently no marathon schedule");
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.marathonCommand.error-no-marathon"));
                 return;
             } 
             announceSchedule();
         } else {
-            if (!isMod(sender)) {
+            if (!$.isModv3(sender, event.getTags())) {
                 $.say($.getWhisperString(sender) + $.modmsg);
                 return;
             }
@@ -148,49 +148,48 @@ $.on('command', function(event) {
             if ($.strlen(argsString) > argsString.indexOf(args[0]) + $.strlen(args[0]) + 1) {
                 data = argsString.substring(argsString.indexOf(args[0]) + $.strlen(args[0]) + 1);
             }
-			
             
             if (args[0].equalsIgnoreCase("clear")) {
                 $.inidb.RemoveFile("marathon");
-                $.say($.getWhisperString(sender) + "The marathon schedule has been cleared!");
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.marathonCommand.marathon-cleared"));
             } else if (args[0].equalsIgnoreCase("name")) {
                 if (data.length == 0) {
                     if ($.inidb.exists("marathon", "name")) {
-                        $.say($.getWhisperString(sender) + "The current marathon name is '" + $.inidb.get("marathon", "name") + "'! To change it use '!marathon name <name>'");
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.marathonCommand.current-marathon-name", $.inidb.get("marathon", "name")));
                     } else {
-                        $.say($.getWhisperString(sender) + "There currently is no marathon name set");
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.marathonCommand.error-no-marathon"));
                     }
-                    
                     return;
                 }
                 
                 $.inidb.set("marathon", "name", data); 
-                $.say($.getWhisperString(sender) + "Marathon name set!");
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.marathonCommand.marathon-name-set"));
             } else if (args[0].equalsIgnoreCase("nameclear")) {
                 $.inidb.del("marathon", "name");
                 
-                $.say($.getWhisperString(sender) + "Marathon name cleared!");
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.marathonCommand.marathon-name-cleared"));
             } else if (args[0].equalsIgnoreCase("link")) {
                 if (data.length == 0) {
                     if ($.inidb.exists("marathon", "link")) {
-                        $.say($.getWhisperString(sender) + "The current marathon link is '" + $.inidb.get("marathon", "link") + "'! To change it use '!marathon link <link>'");
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.marathonCommand.marathon-link", $.inidb.get("marathon", "link")));
+                        return;
                     } else {
-                        $.say($.getWhisperString(sender) + "There currently is no marathon link set");
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.marathonCommand.marathon-link-error"));
+                        return;
                     }
-                    
                     return;
                 }
                 
                 $.inidb.set("marathon", "link", data);
-                
-                $.say($.getWhisperString(sender) + "Marathon link set!");
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.marathonCommand.marathon-link-set"));
+                return;
             } else if (args[0].equalsIgnoreCase("linkclear")) {
-                $.inidb.del("marathon", "link");
-                
-                $.say($.getWhisperString(sender) + "Marathon link cleared!");
+                $.inidb.del("marathon", "link"); 
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.marathonCommand.marathon-link-cleared"));
+                return;
             } else if (args[0].equalsIgnoreCase("schedule")) {
                 if (data.indexOf(" ") == -1 || $.strlen(data) < data.indexOf(" ") + 1) {
-                    $.say("Usage: '!marathon schedule add <customname> <MM/DD> <HH:MM>', '!marathon schedule delete <MM/DD> <HH:MM>'");
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.marathonCommand.marathon-sched-usage"));
                     return;
                 } else {
                     var subcommand = data.substring(0, data.indexOf(" "));
@@ -232,7 +231,7 @@ $.on('command', function(event) {
                         }
                     
                         if (month == -1 || day == -1 || hour == -1 || minute == -1) {
-                            $.say($.getWhisperString(sender) + "Invalid date or time, type '!marathon schedule' for the format");
+                            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.marathonCommand.date-error-user-404"));
                             return;
                         }
                         
@@ -254,13 +253,14 @@ $.on('command', function(event) {
                                 if (date2.equals(date)) {
                                     $.inidb.del("marathon", keys[i]);
                                     
-                                    $.say($.getWhisperString(sender) + "Deleted specified timeslot from marathon schedule");
+                                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.marathonCommand.deleted-time-slot"));
                                     return;
                                 }
                             }
                         }
                         
-                        $.say($.getWhisperString(sender) + "Specified timeslot does not exist");
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.marathonCommand.time-slot-error-404"));
+                        return;
                     } else if (subcommand.equalsIgnoreCase("add")) {
                         var first = true;
                         var count = 0;
@@ -308,7 +308,8 @@ $.on('command', function(event) {
                             if (month == -1 || day == -1 || hour == -1 || minute == -1) {
                                 if (first) {
                                     first = false;
-                                    $.say($.getWhisperString(sender) + "Invalid date or time, type '!marathon schedule' for the format");
+                                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.marathonCommand.date-error-user-404"));
+                                    return;
                                 }
                             } else {
                                 cal.set(cal.get(java.util.Calendar.YEAR), month, day, hour, minute, 0);
@@ -318,15 +319,18 @@ $.on('command', function(event) {
                                 
                                 count++;
                             }
-                        } while($.strlen(data) > 0);
+                        } while ($.strlen(data) > 0);
                         
-                        $.say($.getWhisperString(sender) + "Added " + count + " valid schedule items");
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.marathonCommand.added-items", count));
+                        return;
                     } else {
-                        $.say($.getWhisperString(sender) + "Invalid subcommand '" + subcommand + "'");
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.marathonCommand.wrong-subcommand", subcommand));
+                        return;
                     }
                 }
             } else {
-                $.say($.getWhisperString(sender) + "Usage: !marathon clear, !marathon name <name>, !marathon nameclear, !marathon link <link>, !marathon linkclear, !marathon schedule");
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.marathonCommand.marathon-command-usage"));
+                return;
             }
         }
     }
@@ -336,7 +340,7 @@ setTimeout(function(){
     if ($.moduleEnabled('./commands/marathonCommand.js')) {
         $.registerChatCommand("./commands/marathonCommand.js", "marathon");
     }
-},10*1000);
+},10 * 1000);
 
 cal.set(java.util.Calendar.MINUTE, 0);
 cal.set(java.util.Calendar.SECOND, 0);
