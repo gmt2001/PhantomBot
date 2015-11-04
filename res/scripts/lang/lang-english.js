@@ -732,3 +732,26 @@ $.lang.data["net.phantombot.roulettecommand-lostmod3"] = "The trigger is pulled,
 $.lang.data["net.phantombot.roulettecommand-lostmod4"] = "The trigger is pulled, but $1 stopped space and time and dodged the bullet!";
 $.lang.data["net.phantombot.roulettecommand-lostmod5"] = "The trigger is pulled, but $1 did not die from the bullet, the bullet died from him.";
 $.lang.data["net.phantombot.roulettecommand-timeout-time"] = "the !roulette timeout has been set to $1 seconds!";
+
+//marathonCommand.js 
+$.lang.data["net.phantombot.marathonCommand.current-caster-time"] = "Current Caster's Time: $1 $2";
+$.lang.data["net.phantombot.marathonCommand.current-sched"] = "List of Scheduled Marathons:";
+$.lang.data["net.phantombot.marathonCommand.prev"] = "[Prev] >>";
+$.lang.data["net.phantombot.marathonCommand.live"] = "[Live] >>";
+$.lang.data["net.phantombot.marathonCommand.next"] = "[Next] >>";
+$.lang.data["net.phantombot.marathonCommand.error-no-marathon"] = "There is currently no marathon schedule";
+$.lang.data["net.phantombot.marathonCommand.marathon-cleared"] = "The marathon schedule has been cleared!";
+$.lang.data["net.phantombot.marathonCommand.current-marathon-name"] = "The current marathon name is '$1'! To change it use '!marathon name <name>'";
+$.lang.data["net.phantombot.marathonCommand.marathon-name-set"] = "Marathon name set!";
+$.lang.data["net.phantombot.marathonCommand.marathon-name-cleared"] = "Marathon name cleared!";
+$.lang.data["net.phantombot.marathonCommand.marathon-link"] = "The current marathon link is '$1'! To change it use '!marathon link <link>'";
+$.lang.data["net.phantombot.marathonCommand.marathon-link-error"] = "There currently is no marathon link set";
+$.lang.data["net.phantombot.marathonCommand.marathon-link-set"] = "Marathon link set!";
+$.lang.data["net.phantombot.marathonCommand.marathon-link-cleared"] = "Marathon link cleared!";
+$.lang.data["net.phantombot.marathonCommand.marathon-sched-usage"] = "Usage: '!marathon schedule add <customname> <MM/DD> <HH:MM>', '!marathon schedule delete <MM/DD> <HH:MM>'";
+$.lang.data["net.phantombot.marathonCommand.date-error-user-404"] = "Invalid date or time, type '!marathon schedule' for the format";
+$.lang.data["net.phantombot.marathonCommand.deleted-time-slot"] = "Deleted specified timeslot from marathon schedule";
+$.lang.data["net.phantombot.marathonCommand.time-slot-error-404"] = "Specified timeslot does not exist";
+$.lang.data["net.phantombot.marathonCommand.added-items"] = "Added $1 valid schedule items";
+$.lang.data["net.phantombot.marathonCommand.wrong-subcommand"] = "Invalid subcommand '$1'";
+$.lang.data["net.phantombot.marathonCommand.marathon-command-usage"] = "Usage: !marathon clear, !marathon name <name>, !marathon nameclear, !marathon link <link>, !marathon linkclear, !marathon schedule";
