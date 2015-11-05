@@ -722,10 +722,10 @@ $.timer.addTimer("./systems/pointSystem.js", "pointsystem", true, function () {
     var points = 0;
     for (var i = 0; i < $.users.length; i++) {
         var nick = $.users[i][0].toLowerCase();
-
+        println("Points have been distributed! Settings: Point Gain: " + $.pointGain + " Offline Point Gain: " + $.pointGainOffline + "." + " Point Gain Interval: " + $.pointInterval + " Offline Point Gain Interval: " + $.pointIntervalOffline + "!");
         points = amount + ($.pointBonus * $.getGroupPointMultiplier(nick));
         $.inidb.incr('points', nick, points);
-        println("Points have been distributed! Settings: Point Gain: " + $.pointGain " Offline Point Gain: " + $.pointGainOffline; + "." + "\n" + "Point Gain Interval: " + $.pointInterval + " Offline Point Gain Interval:" + $.pointIntervalOffline + "!");
+       
 
     }
 
