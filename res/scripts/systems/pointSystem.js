@@ -711,24 +711,24 @@ $.timer.addTimer("./systems/pointSystem.js", "pointsystem", true, function () {
         amount = $.pointGainOffline;
         if ($.lastpointInterval + ($.pointIntervalOffline * 60 * 1000) >= System.currentTimeMillis()) {
             return;
+			
         }
     } else {
         amount = $.pointGain;
         if ($.lastpointInterval + ($.pointInterval * 60 * 1000) >= System.currentTimeMillis()) {
             return;
+			
         }
     }
 
     var points = 0;
     for (var i = 0; i < $.users.length; i++) {
         var nick = $.users[i][0].toLowerCase();
-        println("Points have been distributed! Settings: Point Gain: " + $.pointGain + " Offline Point Gain: " + $.pointGainOffline + "." + " Point Gain Interval: " + $.pointInterval + " Offline Point Gain Interval: " + $.pointIntervalOffline + "!");
         points = amount + ($.pointBonus * $.getGroupPointMultiplier(nick));
         $.inidb.incr('points', nick, points);
-       
-
+      
     }
-
+	println("Points Payout: " + "\n" + "Point Gain: " + $.pointGain + " - Offline Point Gain: " + $.pointGainOffline + " - Point Bonus: " + $.pointBonus + "." + "\n" + "Point Gain Interval: " + $.pointInterval + " - Offline Point Gain Interval: " + $.pointIntervalOffline + ".");
     $.lastpointInterval = System.currentTimeMillis();
 }, 60 * 1000);
 
