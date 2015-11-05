@@ -83,6 +83,7 @@ public class Script
         return destroyables;
     }
 
+    @SuppressWarnings("rawtypes")
     public void doDestroyables()
     {
         for (ScriptDestroyable destroyable : destroyables)
