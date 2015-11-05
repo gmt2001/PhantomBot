@@ -24,7 +24,7 @@ import me.mast3rplan.phantombot.jerklib.events.IRCEvent.Type;
  * An augmented {@link me.mast3rplan.phantombot.jerklib.tasks.TaskImpl} that
  * only executes once as it cancels itself out of the task queue once completed,
  * <em>until it succeeds</em> (if it bails out with a
- * <code>RuntimeException</code> or  {@linkplain #receiveEventOnce(IRCEvent) returns
+ * <code>RuntimeException</code> or null {@linkplain #receiveEventOnce(IRCEvent) returns
  * <code>false</code>}, it will remain in the task queue.
  *
  * @author pbleser

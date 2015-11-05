@@ -451,9 +451,9 @@ public class XML
      * @throws JSONException
      */
     @SuppressWarnings(
-    {
-        "UnusedAssignment", "null"
-    })
+            {
+                "UnusedAssignment", "null"
+            })
     public static String toString(Object object, String tagName)
             throws JSONException
     {

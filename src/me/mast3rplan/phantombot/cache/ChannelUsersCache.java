@@ -23,6 +23,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -51,6 +52,7 @@ public class ChannelUsersCache implements Runnable
     private Date timeoutExpire = new Date();
     private Date lastFail = new Date();
     private int numfail = 0;
+    private boolean killed = false;
 
     @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     private ChannelUsersCache(String channel)
@@ -89,9 +91,10 @@ public class ChannelUsersCache implements Runnable
         } catch (InterruptedException e)
         {
             com.gmt2001.Console.out.println("ChannelUsersCache.run>>Failed to initial sleep: [InterruptedException] " + e.getMessage());
+            com.gmt2001.Console.err.logStackTrace(e);
         }
 
-        while (true)
+        while (!killed)
         {
             try
             {
@@ -124,6 +127,7 @@ public class ChannelUsersCache implements Runnable
                 }
 
                 com.gmt2001.Console.out.println("ChannelUsersCache.run>>Failed to update users: " + e.getMessage());
+                com.gmt2001.Console.err.logStackTrace(e);
             }
 
             try
@@ -132,6 +136,7 @@ public class ChannelUsersCache implements Runnable
             } catch (InterruptedException e)
             {
                 com.gmt2001.Console.out.println("ChannelUsersCache.run>>Failed to sleep: [InterruptedException] " + e.getMessage());
+                com.gmt2001.Console.err.logStackTrace(e);
             }
         }
     }
@@ -188,6 +193,7 @@ public class ChannelUsersCache implements Runnable
                 } catch (Exception e)
                 {
                     com.gmt2001.Console.out.println("ChannelUsersCache.updateCache>>Failed to update users: " + e.getMessage());
+                    com.gmt2001.Console.err.logStackTrace(e);
                 }
             }
         } else
@@ -220,6 +226,7 @@ public class ChannelUsersCache implements Runnable
                 }
 
                 com.gmt2001.Console.out.println("ChannelUsersCache.updateCache>>Failed to update users: " + e.getMessage());
+                com.gmt2001.Console.err.logStackTrace(e);
             }
         }
 
@@ -266,5 +273,18 @@ public class ChannelUsersCache implements Runnable
     public Map<String, String> getCache()
     {
         return cache;
+    }
+
+    public void kill()
+    {
+        killed = true;
+    }
+
+    public static void killall()
+    {
+        for (Entry<String, ChannelUsersCache> instance : instances.entrySet())
+        {
+            instance.getValue().kill();
+        }
     }
 }

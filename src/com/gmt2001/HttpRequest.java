@@ -49,7 +49,7 @@ public class HttpRequest
     public static HttpResponse getData(RequestType type, String url, String post, HashMap<String, String> headers)
     {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
-        
+
         HttpResponse r = new HttpResponse();
         boolean isHttps = url.startsWith("https");
 

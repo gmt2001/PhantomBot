@@ -25,7 +25,7 @@ public class TwitchUnhostedEvent extends TwitchHostEvent
     {
         super(hoster, Type.UNHOST);
     }
-    
+
     public TwitchUnhostedEvent(String hoster, Channel channel)
     {
         super(hoster, Type.UNHOST, channel);

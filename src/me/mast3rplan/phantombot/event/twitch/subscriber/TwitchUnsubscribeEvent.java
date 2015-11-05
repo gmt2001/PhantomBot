@@ -25,7 +25,7 @@ public class TwitchUnsubscribeEvent extends TwitchSubscriberEvent
     {
         super(subscriber, Type.UNSUBSCRIBE);
     }
-    
+
     public TwitchUnsubscribeEvent(String subscriber, Channel channel)
     {
         super(subscriber, Type.UNSUBSCRIBE, channel);

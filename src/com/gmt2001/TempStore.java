@@ -113,7 +113,7 @@ public class TempStore extends DataStore
 
         return s;
     }
-    
+
     @Override
     public Object GetObject(String fName, String section, String key)
     {
@@ -127,7 +127,7 @@ public class TempStore extends DataStore
 
         return files.get(fName).data.get(section).get(key);
     }
-    
+
     @Override
     public void SetObject(String fName, String section, String key, Object value)
     {

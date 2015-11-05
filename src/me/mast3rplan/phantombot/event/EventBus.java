@@ -19,6 +19,7 @@ package me.mast3rplan.phantombot.event;
 import com.google.common.collect.Sets;
 import java.util.Set;
 import java.util.concurrent.Executors;
+import me.mast3rplan.phantombot.PhantomBot;
 
 public class EventBus
 {
@@ -49,11 +50,21 @@ public class EventBus
 
     public void post(Event event)
     {
+        if (PhantomBot.instance().isExiting())
+        {
+            return;
+        }
+
         eventBus.post(event);
     }
 
     public void postAsync(Event event)
     {
+        if (PhantomBot.instance().isExiting())
+        {
+            return;
+        }
+
         aeventBus.post(event);
     }
 }

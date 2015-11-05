@@ -28,7 +28,7 @@ public class MusicPlayerStateEvent extends MusicPlayerEvent
     {
         this.state = state;
     }
-    
+
     public MusicPlayerStateEvent(MusicPlayerState state, Channel channel)
     {
         super(channel);

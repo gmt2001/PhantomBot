@@ -25,7 +25,6 @@ import java.nio.charset.CharsetEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Logger;
 import me.mast3rplan.phantombot.jerklib.Session.State;
 import me.mast3rplan.phantombot.jerklib.events.IRCEvent;
 import me.mast3rplan.phantombot.jerklib.events.IRCEvent.Type;
@@ -39,9 +38,6 @@ import me.mast3rplan.phantombot.jerklib.listeners.WriteRequestListener;
  */
 class Connection
 {
-
-    @SuppressWarnings("NonConstantLogger")
-    private final Logger log = Logger.getLogger(this.getClass().getName());
 
     /*
      * ConnectionManager for this Connection
@@ -159,7 +155,6 @@ class Connection
 
         if (!socChannel.isConnected())
         {
-            log.severe("Read call while sochan.isConnected() == false");
             return -1;
         }
 

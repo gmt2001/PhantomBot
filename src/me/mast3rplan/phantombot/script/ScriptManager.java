@@ -27,7 +27,7 @@ public class ScriptManager
 
     public static void loadScript(File scriptFile) throws IOException
     {
-        if (scripts.containsKey(scriptFile.toPath().toString()))
+        if (scripts.containsKey(scriptFile.toPath().toString()) && !scripts.get(scriptFile.toPath().toString()).isKilled())
         {
             return;
         }
@@ -50,6 +50,18 @@ public class ScriptManager
             return null;
         }
 
+        if (scripts.get(scriptFile.toPath().toString()).isKilled())
+        {
+            scripts.remove(scriptFile.toPath().toString());
+
+            return null;
+        }
+
         return scripts.get(scriptFile.toPath().toString());
+    }
+
+    public static HashMap<String, Script> getScripts()
+    {
+        return scripts;
     }
 }

@@ -32,14 +32,15 @@ public class ScriptFileWatcher implements Runnable
 
     @Override
     @SuppressWarnings(
-    {
-        "SleepWhileInLoop", "UseSpecificCatch"
-    })
+            {
+                "SleepWhileInLoop", "UseSpecificCatch"
+            })
     public void run()
     {
         File file = script.getFile();
         long lastUpdate = file.lastModified();
-        while (true)
+        boolean run = true;
+        while (run)
         {
             try
             {
@@ -48,6 +49,11 @@ public class ScriptFileWatcher implements Runnable
                 {
                     lastUpdate = file.lastModified();
                     script.reload();
+                }
+
+                if (script.isKilled())
+                {
+                    run = false;
                 }
             } catch (Exception e)
             {

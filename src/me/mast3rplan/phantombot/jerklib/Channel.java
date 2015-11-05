@@ -18,6 +18,7 @@ package me.mast3rplan.phantombot.jerklib;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import me.mast3rplan.phantombot.PhantomBot;
 import me.mast3rplan.phantombot.jerklib.ModeAdjustment.Action;
 import me.mast3rplan.phantombot.jerklib.events.TopicEvent;
 
@@ -69,6 +70,11 @@ public class Channel
         @Override
         public void run()
         {
+            if (PhantomBot.instance().isExiting())
+            {
+                return;
+            }
+
             long now = System.currentTimeMillis();
             if (now - lastMessage >= msginterval)
             {
@@ -110,7 +116,7 @@ public class Channel
         userMap = new HashMap<String, List<ModeAdjustment>>()
         {
             private static final long serialVersionUID = 1L;
-            
+
             @Override
             public List<ModeAdjustment> get(Object key)
             {
@@ -526,7 +532,7 @@ public class Channel
         return new ArrayList<String>(userMap.keySet())
         {
             private static final long serialVersionUID = 1L;
-            
+
             @Override
             public int indexOf(Object o)
             {

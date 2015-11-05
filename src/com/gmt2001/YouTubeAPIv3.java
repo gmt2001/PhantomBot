@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 www.phantombot.net
  *
  * This program is free software: you can redistribute it and/or modify
@@ -140,34 +140,21 @@ public class YouTubeAPIv3
                 i = new BufferedInputStream(c.getErrorStream());
             }
 
-            /*if (i != null)
-            {
-                available = i.available();
-
-                while (available == 0 && (new Date().getTime() - postconnect.getTime()) < 450)
-                {
-                    Thread.sleep(500);
-                    available = i.available();
-                }
-
-                if (available == 0)
-                {
-                    i = new BufferedInputStream(c.getErrorStream());
-
-                    if (i != null)
-                    {
-                        available = i.available();
-                    }
-                }
-            }
-
-            if (available == 0)
-            {
-                content = "{}";
-            } else
-            {
-                content = IOUtils.toString(i, c.getContentEncoding());
-            }*/
+            /*
+             * if (i != null) { available = i.available();
+             *
+             * while (available == 0 && (new Date().getTime() -
+             * postconnect.getTime()) < 450) { Thread.sleep(500); available =
+             * i.available(); }
+             *
+             * if (available == 0) { i = new
+             * BufferedInputStream(c.getErrorStream());
+             *
+             * if (i != null) { available = i.available(); } } }
+             *
+             * if (available == 0) { content = "{}"; } else { content =
+             * IOUtils.toString(i, c.getContentEncoding()); }
+             */
             content = IOUtils.toString(i, c.getContentEncoding());
             rawcontent = content;
             prejson = new Date();
@@ -196,6 +183,9 @@ public class YouTubeAPIv3
                 j.put("_exception", "MalformedJSONData (HTTP " + responsecode + ")");
                 j.put("_exceptionMessage", "");
                 j.put("_content", rawcontent);
+            } else
+            {
+                com.gmt2001.Console.err.logStackTrace(ex);
             }
         } catch (NullPointerException ex)
         {
@@ -215,6 +205,9 @@ public class YouTubeAPIv3
             if (PhantomBot.enableDebugging)
             {
                 com.gmt2001.Console.err.printStackTrace(ex);
+            } else
+            {
+                com.gmt2001.Console.err.logStackTrace(ex);
             }
         } catch (SocketTimeoutException ex)
         {
@@ -231,6 +224,9 @@ public class YouTubeAPIv3
             if (PhantomBot.enableDebugging)
             {
                 com.gmt2001.Console.err.printStackTrace(ex);
+            } else
+            {
+                com.gmt2001.Console.err.logStackTrace(ex);
             }
         } catch (IOException ex)
         {
@@ -247,6 +243,9 @@ public class YouTubeAPIv3
             if (PhantomBot.enableDebugging)
             {
                 com.gmt2001.Console.err.printStackTrace(ex);
+            } else
+            {
+                com.gmt2001.Console.err.logStackTrace(ex);
             }
         } catch (Exception ex)
         {
@@ -263,6 +262,9 @@ public class YouTubeAPIv3
             if (PhantomBot.enableDebugging)
             {
                 com.gmt2001.Console.err.printStackTrace(ex);
+            } else
+            {
+                com.gmt2001.Console.err.logStackTrace(ex);
             }
         }
 
@@ -286,6 +288,9 @@ public class YouTubeAPIv3
                 if (PhantomBot.enableDebugging)
                 {
                     com.gmt2001.Console.err.printStackTrace(ex);
+                } else
+                {
+                    com.gmt2001.Console.err.logStackTrace(ex);
                 }
             }
         }
@@ -296,7 +301,7 @@ public class YouTubeAPIv3
                     + (postconnect.getTime() - start.getTime()) + " " + (prejson.getTime() - start.getTime()) + " "
                     + (postjson.getTime() - start.getTime()) + " " + start.toString() + " " + postjson.toString());
             com.gmt2001.Console.out.println(">>>[DEBUG] YouTubeAPIv3.GetData Exception " + j.getString("_exception") + " " + j.getString("_exceptionMessage"));
-            com.gmt2001.Console.out.println(">>>[DEBUG] YouTubeAPIv3.GetData HTTP/Available " + j.getInt("_http") + "("+ responsecode + ")/" + j.getInt("_available") + "("+ cl + ")");
+            com.gmt2001.Console.out.println(">>>[DEBUG] YouTubeAPIv3.GetData HTTP/Available " + j.getInt("_http") + "(" + responsecode + ")/" + j.getInt("_available") + "(" + cl + ")");
             com.gmt2001.Console.out.println(">>>[DEBUG] YouTubeAPIv3.GetData RawContent[0,100] " + j.getString("_content").substring(0, Math.min(100, j.getString("_content").length())));
         }
 

@@ -26,7 +26,7 @@ import me.mast3rplan.phantombot.jerklib.Session;
  */
 public class IrcPrivateMessageEvent extends IrcMessageEvent
 {
-    
+
     public IrcPrivateMessageEvent(Session session, String sender, String message)
     {
         super(session, sender, message, null, null);

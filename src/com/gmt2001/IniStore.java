@@ -64,21 +64,21 @@ public class IniStore extends DataStore implements ActionListener
 
         t.start();
     }
-    
+
     private String validatefName(String fName)
     {
         fName = fName.replaceAll("([^a-zA-Z0-9_-])", "_");
-        
+
         return fName;
     }
-    
+
     private String validateSection(String section)
     {
         section = section.replaceAll("([^a-zA-Z0-9_-])", "_");
-        
+
         return section;
     }
-    
+
     private String validateKey(String key)
     {
         key = key.replaceAll("=", "_eq_");
@@ -87,14 +87,14 @@ public class IniStore extends DataStore implements ActionListener
         {
             key = "_" + key;
         }
-        
+
         return key;
     }
 
     private boolean LoadFile(String fName, boolean force)
     {
         fName = validatefName(fName);
-        
+
         if (!files.containsKey(fName) || force)
         {
             try
@@ -178,6 +178,7 @@ public class IniStore extends DataStore implements ActionListener
             changed.remove(fName);
         } catch (IOException ex)
         {
+            com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
 
@@ -233,6 +234,7 @@ public class IniStore extends DataStore implements ActionListener
                             SaveFile((String) n1, files.get((String) n1));
                         } catch (java.lang.NullPointerException e2)
                         {
+                            com.gmt2001.Console.err.printStackTrace(e2);
                         }
                     }
                 }
@@ -251,7 +253,7 @@ public class IniStore extends DataStore implements ActionListener
     public void ReloadFile(String fName)
     {
         fName = validatefName(fName);
-        
+
         LoadFile(fName, true);
     }
 
@@ -260,7 +262,7 @@ public class IniStore extends DataStore implements ActionListener
     {
         inifolder = LoadConfigReal(configStr);
     }
-    
+
     private static String LoadConfigReal(String configStr)
     {
         if (configStr.isEmpty())
@@ -294,7 +296,7 @@ public class IniStore extends DataStore implements ActionListener
     public String[] GetCategoryList(String fName)
     {
         fName = validatefName(fName);
-        
+
         if (!LoadFile(fName, false))
         {
             return new String[]
@@ -321,14 +323,14 @@ public class IniStore extends DataStore implements ActionListener
     public String[] GetKeyList(String fName, String section)
     {
         fName = validatefName(fName);
-        
+
         if (!LoadFile(fName, false))
         {
             return new String[]
             {
             };
         }
-        
+
         section = validateSection(section);
 
         Set<String> o = files.get(fName).data.get(section).keySet();
@@ -350,7 +352,7 @@ public class IniStore extends DataStore implements ActionListener
     public String GetString(String fName, String section, String key)
     {
         fName = validatefName(fName);
-        
+
         if (!LoadFile(fName, false))
         {
             return null;
@@ -372,7 +374,7 @@ public class IniStore extends DataStore implements ActionListener
     public void SetString(String fName, String section, String key, String value)
     {
         fName = validatefName(fName);
-        
+
         LoadFile(fName, false);
 
         section = validateSection(section);
@@ -394,7 +396,7 @@ public class IniStore extends DataStore implements ActionListener
     public void RemoveKey(String fName, String section, String key)
     {
         fName = validatefName(fName);
-        
+
         LoadFile(fName, false);
 
         section = validateSection(section);
@@ -409,9 +411,9 @@ public class IniStore extends DataStore implements ActionListener
     public void RemoveSection(String fName, String section)
     {
         fName = validatefName(fName);
-        
+
         LoadFile(fName, false);
-        
+
         section = validateSection(section);
 
         files.get(fName).data.remove(section);
@@ -423,7 +425,7 @@ public class IniStore extends DataStore implements ActionListener
     public void RemoveFile(String fName)
     {
         fName = validatefName(fName);
-        
+
         File f = new File("./" + inifolder + "/" + fName + ".ini");
 
         f.delete();
@@ -433,7 +435,7 @@ public class IniStore extends DataStore implements ActionListener
     public boolean FileExists(String fName)
     {
         fName = validatefName(fName);
-     
+
         File f = new File("./" + inifolder + "/" + fName + ".ini");
 
         return f.exists();

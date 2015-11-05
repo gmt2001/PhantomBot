@@ -40,9 +40,13 @@ public class IrcEventHandler implements IRCEventListener
     private boolean nomodwarn = true;
 
     @Override
-    @SuppressWarnings("UnusedAssignment")
     public void receiveEvent(IRCEvent event)
     {
+        if (PhantomBot.instance().isExiting())
+        {
+            return;
+        }
+
         EventBus eventBus = EventBus.instance();
         Session session = event.getSession();
 
@@ -83,7 +87,7 @@ public class IrcEventHandler implements IRCEventListener
 
                     com.gmt2001.Console.out.println(">>End of Tags");
                 }
-                
+
                 if (cmessageTags.containsKey("subscriber"))
                 {
                     if (cmessageTags.get("subscriber").equalsIgnoreCase("1"))
@@ -240,14 +244,15 @@ public class IrcEventHandler implements IRCEventListener
                             }
                         } else
                         {
-                            if (nomodwarn) {
+                            if (nomodwarn)
+                            {
                                 nomodwarn = false;
                                 com.gmt2001.Console.out.println("!!!!!WARNING!!!!!");
                                 com.gmt2001.Console.out.println("The bot is not a moderator in this channel.");
                                 com.gmt2001.Console.out.println("The broadcaster must mod the bot for it to be able to speak in channel.");
                                 com.gmt2001.Console.out.println("To do this, type this command in Twitch chat: /mod " + PhantomBot.instance().getSession().getNick().toLowerCase());
                             }
-                            
+
                             if (mods.contains(PhantomBot.instance().getSession().getNick().toLowerCase()))
                             {
                                 mods.remove(PhantomBot.instance().getSession().getNick().toLowerCase());

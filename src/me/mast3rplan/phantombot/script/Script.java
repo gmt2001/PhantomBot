@@ -34,6 +34,8 @@ public class Script
     private final NativeObject vars = new NativeObject();
     private final ScriptFileWatcher fileWatcher;
     private final File file;
+    private Context context;
+    private boolean killed = false;
 
     @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     public Script(File file)
@@ -45,21 +47,27 @@ public class Script
 
         new Thread(fileWatcher).start();
     }
-    
+
     @SuppressWarnings("rawtypes")
     public void reload() throws IOException
     {
-        for (ScriptDestroyable destroyable : destroyables)
+        if (killed)
         {
-            destroyable.destroy();
+            return;
         }
-        destroyables.clear();
+
+        doDestroyables();
         load();
     }
 
     public void load() throws IOException
     {
-        Context context = Context.enter();
+        if (killed)
+        {
+            return;
+        }
+
+        context = Context.enter();
         ScriptableObject scope = context.initStandardObjects(global, false);
         scope.defineProperty("$", global, 0);
         scope.defineProperty("$api", ScriptApi.instance(), 0);
@@ -75,6 +83,16 @@ public class Script
         return destroyables;
     }
 
+    public void doDestroyables()
+    {
+        for (ScriptDestroyable destroyable : destroyables)
+        {
+            destroyable.destroy();
+        }
+
+        destroyables.clear();
+    }
+
     public File getFile()
     {
         return file;
@@ -83,5 +101,26 @@ public class Script
     public String getPath()
     {
         return file.toPath().toString();
+    }
+
+    public Context getContext()
+    {
+        return context;
+    }
+
+    public boolean isKilled()
+    {
+        return killed;
+    }
+
+    public void kill()
+    {
+        ObservingDebugger od = new ObservingDebugger();
+        context.setDebugger(od, 0);
+        context.setGeneratingDebug(true);
+        context.setOptimizationLevel(-1);
+        doDestroyables();
+        od.setDisconnected(true);
+        killed = true;
     }
 }

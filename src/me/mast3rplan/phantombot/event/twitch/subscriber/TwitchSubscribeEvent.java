@@ -25,7 +25,7 @@ public class TwitchSubscribeEvent extends TwitchSubscriberEvent
     {
         super(subscriber, Type.SUBSCRIBE);
     }
-    
+
     public TwitchSubscribeEvent(String subscriber, Channel channel)
     {
         super(subscriber, Type.SUBSCRIBE, channel);

@@ -27,7 +27,7 @@ public class MusicPlayerCurrentVolumeEvent extends MusicPlayerEvent
     {
         this.volume = volume;
     }
-    
+
     public MusicPlayerCurrentVolumeEvent(double volume, Channel channel)
     {
         super(channel);

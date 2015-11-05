@@ -25,7 +25,7 @@ public class TwitchSubscribesInitializedEvent extends TwitchEvent
     public TwitchSubscribesInitializedEvent()
     {
     }
-    
+
     public TwitchSubscribesInitializedEvent(Channel channel)
     {
         super(channel);

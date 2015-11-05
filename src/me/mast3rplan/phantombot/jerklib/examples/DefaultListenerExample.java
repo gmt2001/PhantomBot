@@ -72,7 +72,7 @@ public class DefaultListenerExample extends DefaultIRCEventListener implements R
                 Thread.sleep(2000);
             } catch (InterruptedException e)
             {
-                // *nothing*
+                com.gmt2001.Console.err.printStackTrace(e);
             }
             System.exit(0);
         }
@@ -88,7 +88,7 @@ public class DefaultListenerExample extends DefaultIRCEventListener implements R
             Thread.sleep(30000L); // give it the axe in 30!
         } catch (InterruptedException e)
         {
-            // *nothing*
+            com.gmt2001.Console.err.printStackTrace(e);
         }
         ble.sayGoodbye();
         try
@@ -96,7 +96,7 @@ public class DefaultListenerExample extends DefaultIRCEventListener implements R
             Thread.sleep(5000); // let the message be written!
         } catch (InterruptedException e)
         {
-            // *nothing*
+            com.gmt2001.Console.err.printStackTrace(e);
         }
         System.exit(0);
     }

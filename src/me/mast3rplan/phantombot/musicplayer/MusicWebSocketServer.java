@@ -24,8 +24,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.net.InetSocketAddress;
 import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import me.mast3rplan.phantombot.event.EventBus;
 import me.mast3rplan.phantombot.event.musicplayer.*;
@@ -94,7 +92,7 @@ public class MusicWebSocketServer extends WebSocketServer
             this.stop(2000);
         } catch (IOException | InterruptedException ex)
         {
-            Logger.getLogger(MusicWebSocketServer.class.getName()).log(Level.SEVERE, null, ex);
+            com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
 
@@ -200,6 +198,7 @@ public class MusicWebSocketServer extends WebSocketServer
 
         } catch (IOException e)
         {
+            com.gmt2001.Console.err.printStackTrace(e);
             sendToAll("Steal song failed due to playlist.txt not existing.");
         }
     }

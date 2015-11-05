@@ -175,6 +175,9 @@ public class TwitchAPIv3
                 j.put("_exception", "");
                 j.put("_exceptionMessage", "");
                 j.put("_content", rawcontent);
+            } else
+            {
+                com.gmt2001.Console.err.logStackTrace(ex);
             }
         } catch (NullPointerException ex)
         {
@@ -189,6 +192,7 @@ public class TwitchAPIv3
             j.put("_exception", "MalformedURLException");
             j.put("_exceptionMessage", ex.getMessage());
             j.put("_content", "");
+            com.gmt2001.Console.err.logStackTrace(ex);
         } catch (SocketTimeoutException ex)
         {
             j.put("_success", false);
@@ -199,6 +203,7 @@ public class TwitchAPIv3
             j.put("_exception", "SocketTimeoutException");
             j.put("_exceptionMessage", ex.getMessage());
             j.put("_content", "");
+            com.gmt2001.Console.err.logStackTrace(ex);
         } catch (IOException ex)
         {
             j.put("_success", false);
@@ -209,6 +214,7 @@ public class TwitchAPIv3
             j.put("_exception", "IOException");
             j.put("_exceptionMessage", ex.getMessage());
             j.put("_content", "");
+            com.gmt2001.Console.err.logStackTrace(ex);
         } catch (Exception ex)
         {
             j.put("_success", false);
@@ -219,6 +225,7 @@ public class TwitchAPIv3
             j.put("_exception", "Exception [" + ex.getClass().getName() + "]");
             j.put("_exceptionMessage", ex.getMessage());
             j.put("_content", "");
+            com.gmt2001.Console.err.logStackTrace(ex);
         }
 
         if (i != null)
@@ -236,6 +243,7 @@ public class TwitchAPIv3
                 j.put("_exception", "IOException");
                 j.put("_exceptionMessage", ex.getMessage());
                 j.put("_content", "");
+                com.gmt2001.Console.err.logStackTrace(ex);
             }
         }
 
@@ -406,6 +414,7 @@ public class TwitchAPIv3
             j.put("_exception", "Exception [" + ex.getClass().getName() + "]");
             j.put("_exceptionMessage", ex.getMessage());
             j.put("_content", "");
+            com.gmt2001.Console.err.logStackTrace(ex);
 
             return j;
         }

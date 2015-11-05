@@ -45,7 +45,7 @@ public class DataStore
     public void ReloadFile(String fName)
     {
     }
-    
+
     public void LoadConfig(String configStr)
     {
     }
@@ -218,18 +218,18 @@ public class DataStore
     public void incr(String fName, String key, int amount)
     {
         int ival = GetInteger(fName, "", key);
-        
+
         ival += amount;
-        
+
         SetInteger(fName, "", key, ival);
     }
 
     public void decr(String fName, String key, int amount)
     {
         int ival = GetInteger(fName, "", key);
-        
+
         ival -= amount;
-        
+
         SetInteger(fName, "", key, ival);
     }
 }

@@ -472,6 +472,7 @@ public final class ConnectionManager
                     } catch (CancelledKeyException ke)
                     {
                         session.disconnected(ke);
+                        com.gmt2001.Console.err.logStackTrace(ke);
                     }
                 }
             }
@@ -641,7 +642,6 @@ public final class ConnectionManager
                     listener.receiveEvent(event);
                 } catch (Exception e)
                 {
-                    com.gmt2001.Console.err.println("me.mast3rplan.phantombot.jerklib:Cought Client Exception");
                     com.gmt2001.Console.err.printStackTrace(e);
                 }
             }
@@ -742,12 +742,14 @@ public final class ConnectionManager
                         ErrorEvent error = new UnresolvedHostnameErrorEvent(session, msg, session.getRequestedConnection().getHostName(), e);
                         addToRelayList(error);
                         session.disconnected(e);
+                        com.gmt2001.Console.err.logStackTrace(e);
                     } catch (IOException e)
                     {
                         String msg = e.getMessage() == null ? e.toString() : e.getMessage();
                         ErrorEvent error = new GenericErrorEvent(msg, session, e);
                         addToRelayList(error);
                         session.disconnected(e);
+                        com.gmt2001.Console.err.logStackTrace(e);
                     }
                 }
             }

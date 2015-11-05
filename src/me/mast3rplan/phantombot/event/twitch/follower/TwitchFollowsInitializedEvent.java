@@ -25,7 +25,7 @@ public class TwitchFollowsInitializedEvent extends TwitchEvent
     public TwitchFollowsInitializedEvent()
     {
     }
-    
+
     public TwitchFollowsInitializedEvent(Channel channel)
     {
         super(channel);

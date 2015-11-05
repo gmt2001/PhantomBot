@@ -98,7 +98,10 @@ public class JSONObject
      * whilst Java's null is equivalent to the value that JavaScript calls
      * undefined.
      */
-    @SuppressWarnings({"EqualsAndHashcode", "overrides"})
+    @SuppressWarnings(
+    {
+        "EqualsAndHashcode", "overrides"
+    })
     private static final class Null
     {
 

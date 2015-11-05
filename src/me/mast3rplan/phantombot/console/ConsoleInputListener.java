@@ -26,6 +26,8 @@ public class ConsoleInputListener extends Thread
     @SuppressWarnings("SleepWhileInLoop")
     public void run()
     {
+        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
+
         while (true)
         {
             try
@@ -35,6 +37,7 @@ public class ConsoleInputListener extends Thread
                 Thread.sleep(10);
             } catch (Exception e)
             {
+                com.gmt2001.Console.err.printStackTrace(e);
             }
         }
     }

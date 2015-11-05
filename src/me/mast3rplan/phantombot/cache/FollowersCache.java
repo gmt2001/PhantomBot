@@ -23,6 +23,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import me.mast3rplan.phantombot.PhantomBot;
 import me.mast3rplan.phantombot.event.EventBus;
 import me.mast3rplan.phantombot.event.twitch.follower.TwitchFollowEvent;
@@ -59,6 +60,7 @@ public class FollowersCache implements Runnable
     private Date lastFail = new Date();
     private int numfail = 0;
     private boolean hasFail = false;
+    private boolean killed = false;
 
     @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     private FollowersCache(String channel)
@@ -135,7 +137,9 @@ public class FollowersCache implements Runnable
         } catch (InterruptedException e)
         {
             com.gmt2001.Console.out.println("FollowersCache.run>>Failed to initial sleep: [InterruptedException] " + e.getMessage());
+            com.gmt2001.Console.err.logStackTrace(e);
         }
+
         try
         {
             quickUpdate(channel);
@@ -164,15 +168,21 @@ public class FollowersCache implements Runnable
             }
 
             com.gmt2001.Console.out.println("FollowersCache.run>>Failed to update followers: " + e.getMessage());
+            com.gmt2001.Console.err.logStackTrace(e);
         }
+
         EventBus.instance().post(new TwitchFollowsInitializedEvent(PhantomBot.instance().getChannel(this.channel)));
-        while (true)
+
+        while (!killed)
         {
             try
             {
                 if (new Date().after(timeoutExpire))
                 {
-                    int newCount = quickUpdate(channel);
+                    /*
+                     * int newCount =
+                     */
+                    quickUpdate(channel);
 
                     /*
                      * if (new Date().after(timeoutExpire) && (Math.abs(newCount
@@ -183,7 +193,8 @@ public class FollowersCache implements Runnable
                     /*
                      * if (firstUpdate) { firstUpdate = false;
                      * EventBus.instance().post(new
-                     * TwitchFollowsInitializedEvent(PhantomBot.instance().getChannel(this.channel))); }
+                     * TwitchFollowsInitializedEvent(PhantomBot.instance().getChannel(this.channel)));
+                     * }
                      */
                 }
             } catch (Exception e)
@@ -211,6 +222,7 @@ public class FollowersCache implements Runnable
                 }
 
                 com.gmt2001.Console.out.println("FollowersCache.run>>Failed to update followers: " + e.getMessage());
+                com.gmt2001.Console.err.logStackTrace(e);
             }
 
             try
@@ -219,6 +231,7 @@ public class FollowersCache implements Runnable
             } catch (InterruptedException e)
             {
                 com.gmt2001.Console.out.println("FollowersCache.run>>Failed to sleep: [InterruptedException] " + e.getMessage());
+                com.gmt2001.Console.err.logStackTrace(e);
             }
         }
     }
@@ -264,6 +277,7 @@ public class FollowersCache implements Runnable
                             } catch (Exception e)
                             {
                                 com.gmt2001.Console.out.println("FollowersCache.updateCache>>Failed to update followers: " + e.getMessage());
+                                com.gmt2001.Console.err.logStackTrace(e);
                             }
                         }
                     } else
@@ -298,6 +312,7 @@ public class FollowersCache implements Runnable
                             }
 
                             com.gmt2001.Console.out.println("FollowersCache.updateCache>>Failed to update followers: " + e.getMessage());
+                            com.gmt2001.Console.err.logStackTrace(e);
                         }
                     }
                 }
@@ -382,5 +397,18 @@ public class FollowersCache implements Runnable
     public Map<String, JSONObject> getCache()
     {
         return cache;
+    }
+
+    public void kill()
+    {
+        killed = true;
+    }
+
+    public static void killall()
+    {
+        for (Entry<String, FollowersCache> instance : instances.entrySet())
+        {
+            instance.getValue().kill();
+        }
     }
 }

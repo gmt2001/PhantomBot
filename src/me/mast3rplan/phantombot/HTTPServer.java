@@ -28,8 +28,6 @@ import java.net.URLDecoder;
 import java.util.Date;
 import java.util.Scanner;
 import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import me.mast3rplan.phantombot.event.EventBus;
 import me.mast3rplan.phantombot.event.irc.message.IrcChannelMessageEvent;
 
@@ -60,6 +58,8 @@ public class HTTPServer extends Thread
             })
     public void run()
     {
+        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
+
         String webhome = "./web";
 
         try
@@ -68,6 +68,7 @@ public class HTTPServer extends Thread
         } catch (IOException e)
         {
             com.gmt2001.Console.err.println("Could not start HTTP server: " + e);
+            com.gmt2001.Console.err.logStackTrace(e);
             return;
         }
 
@@ -90,7 +91,7 @@ public class HTTPServer extends Thread
                             Thread.sleep(100);
                         } catch (InterruptedException ex)
                         {
-                            Logger.getLogger(HTTPServer.class.getName()).log(Level.SEVERE, null, ex);
+                            com.gmt2001.Console.err.printStackTrace(ex);
                         }
                     }
                 }
@@ -140,7 +141,7 @@ public class HTTPServer extends Thread
                                         || request[1].toLowerCase().startsWith("/inistore")))
                                 {
                                     String realTarget = request[1];
-                                    
+
                                     if (realTarget.startsWith("/"))
                                     {
                                         realTarget = realTarget.substring(10);
@@ -148,29 +149,29 @@ public class HTTPServer extends Thread
                                     {
                                         realTarget = realTarget.substring(9);
                                     }
-                                    
+
                                     if (realTarget.toLowerCase().endsWith(".ini"))
                                     {
                                         realTarget = realTarget.substring(0, realTarget.length() - 4);
                                     }
-                                    
+
                                     String[] sections = PhantomBot.instance().getDataStore().GetCategoryList(realTarget);
-                                    
+
                                     data = "";
-                                    
+
                                     for (String section : sections)
                                     {
                                         if (!section.equalsIgnoreCase(""))
                                         {
                                             data += "\r\n\r\n[" + section + "]";
                                         }
-                                        
+
                                         String[] keys = PhantomBot.instance().getDataStore().GetKeyList(realTarget, section);
-                                        
+
                                         for (String key : keys)
                                         {
                                             String value = PhantomBot.instance().getDataStore().GetString(realTarget, section, key);
-                                            
+
                                             data += "\r\n" + key + "=" + value;
                                         }
                                     }
@@ -298,7 +299,7 @@ public class HTTPServer extends Thread
 
             } catch (IOException ex)
             {
-                Logger.getLogger(HTTPServer.class.getName()).log(Level.SEVERE, null, ex);
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
 
         }
@@ -312,7 +313,7 @@ public class HTTPServer extends Thread
             socket.close();
         } catch (IOException ex)
         {
-            Logger.getLogger(HTTPServer.class.getName()).log(Level.SEVERE, null, ex);
+            com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
 

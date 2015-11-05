@@ -25,7 +25,7 @@ public class TwitchHostedEvent extends TwitchHostEvent
     {
         super(hoster, Type.HOST);
     }
-    
+
     public TwitchHostedEvent(String hoster, Channel channel)
     {
         super(hoster, Type.HOST, channel);

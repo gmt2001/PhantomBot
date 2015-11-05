@@ -23,6 +23,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import me.mast3rplan.phantombot.PhantomBot;
 import me.mast3rplan.phantombot.event.EventBus;
 import me.mast3rplan.phantombot.event.twitch.host.TwitchHostedEvent;
@@ -58,6 +59,7 @@ public class ChannelHostCache implements Runnable
     private Date lastFail = new Date();
     private int numfail = 0;
     private int id = 0;
+    private boolean killed = false;
 
     @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     private ChannelHostCache(String channel)
@@ -97,9 +99,10 @@ public class ChannelHostCache implements Runnable
         } catch (InterruptedException e)
         {
             com.gmt2001.Console.out.println("ChannelHostCache.run>>Failed to initial sleep: [InterruptedException] " + e.getMessage());
+            com.gmt2001.Console.err.logStackTrace(e);
         }
 
-        while (true)
+        while (!killed)
         {
             try
             {
@@ -132,6 +135,7 @@ public class ChannelHostCache implements Runnable
                 }
 
                 com.gmt2001.Console.out.println("ChannelHostCache.run>>Failed to update hosts: " + e.getMessage());
+                com.gmt2001.Console.err.logStackTrace(e);
             }
 
             try
@@ -140,6 +144,7 @@ public class ChannelHostCache implements Runnable
             } catch (InterruptedException e)
             {
                 com.gmt2001.Console.out.println("ChannelHostCache.run>>Failed to sleep: [InterruptedException] " + e.getMessage());
+                com.gmt2001.Console.err.logStackTrace(e);
             }
         }
     }
@@ -190,6 +195,7 @@ public class ChannelHostCache implements Runnable
                 } catch (Exception e)
                 {
                     com.gmt2001.Console.out.println("ChannelHostCache.updateCache>>Failed to update hosts: " + e.getMessage());
+                    com.gmt2001.Console.err.logStackTrace(e);
                 }
             }
         } else
@@ -222,6 +228,7 @@ public class ChannelHostCache implements Runnable
                 }
 
                 com.gmt2001.Console.out.println("ChannelHostCache.updateCache>>Failed to update hosts: " + e.getMessage());
+                com.gmt2001.Console.err.logStackTrace(e);
             }
         }
 
@@ -274,5 +281,18 @@ public class ChannelHostCache implements Runnable
     public Map<String, JSONObject> getCache()
     {
         return cache;
+    }
+
+    public void kill()
+    {
+        killed = true;
+    }
+
+    public static void killall()
+    {
+        for (Entry<String, ChannelHostCache> instance : instances.entrySet())
+        {
+            instance.getValue().kill();
+        }
     }
 }

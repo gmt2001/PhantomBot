@@ -42,6 +42,7 @@ public class IdentServer implements Runnable
             t.start();
         } catch (Exception e)
         {
+            com.gmt2001.Console.err.printStackTrace(e);
         }
     }
 
@@ -91,6 +92,7 @@ public class IdentServer implements Runnable
             socket.close();
         } catch (IOException e)
         {
+            com.gmt2001.Console.err.printStackTrace(e);
         }
     }
 }

@@ -33,10 +33,9 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.security.SecureRandom;
 import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import me.mast3rplan.phantombot.cache.BannedCache;
 import me.mast3rplan.phantombot.cache.ChannelHostCache;
 import me.mast3rplan.phantombot.cache.ChannelUsersCache;
@@ -58,7 +57,9 @@ import me.mast3rplan.phantombot.jerklib.ConnectionManager;
 import me.mast3rplan.phantombot.jerklib.Profile;
 import me.mast3rplan.phantombot.jerklib.Session;
 import me.mast3rplan.phantombot.musicplayer.MusicWebSocketServer;
+import me.mast3rplan.phantombot.script.ObservingDebugger;
 import me.mast3rplan.phantombot.script.Script;
+import me.mast3rplan.phantombot.script.ScriptApi;
 import me.mast3rplan.phantombot.script.ScriptEventManager;
 import me.mast3rplan.phantombot.script.ScriptManager;
 import org.apache.commons.io.FileUtils;
@@ -97,14 +98,15 @@ public class PhantomBot implements Listener
     private ChannelHostCache hostCache;
     private SubscribersCache subscribersCache;
     private ChannelUsersCache channelUsersCache;
-    private MusicWebSocketServer mws;
-    private HTTPServer mhs;
+    private MusicWebSocketServer musicsocketserver;
+    private HTTPServer httpserver;
     private ConsoleInputListener cil;
     private static final boolean debugD = false;
     public static boolean enableDebugging = false;
     public static boolean interactive;
     public static boolean webenabled = false;
     public static boolean musicenabled = false;
+    private boolean exiting = false;
     private Thread t;
     private static PhantomBot instance;
 
@@ -199,13 +201,17 @@ public class PhantomBot implements Listener
             try
             {
                 java.lang.management.RuntimeMXBean runtime = java.lang.management.ManagementFactory.getRuntimeMXBean();
-                /*java.lang.reflect.Field jvm = runtime.getClass().getDeclaredField("jvm");
-                jvm.setAccessible(true);
-                sun.management.VMManagement mgmt = (sun.management.VMManagement) jvm.get(runtime);
-                java.lang.reflect.Method pid_method = mgmt.getClass().getDeclaredMethod("getProcessId");
-                pid_method.setAccessible(true);
-
-                int pid = (Integer) pid_method.invoke(mgmt);*/
+                /*
+                 * java.lang.reflect.Field jvm =
+                 * runtime.getClass().getDeclaredField("jvm");
+                 * jvm.setAccessible(true); sun.management.VMManagement mgmt =
+                 * (sun.management.VMManagement) jvm.get(runtime);
+                 * java.lang.reflect.Method pid_method =
+                 * mgmt.getClass().getDeclaredMethod("getProcessId");
+                 * pid_method.setAccessible(true);
+                 *
+                 * int pid = (Integer) pid_method.invoke(mgmt);
+                 */
                 int pid = Integer.parseInt(runtime.getName().split("@")[0]);
 
                 //int pid = Integer.parseInt( ( new File("/proc/self")).getCanonicalFile().getName() ); 
@@ -219,10 +225,13 @@ public class PhantomBot implements Listener
                 }
 
                 f.deleteOnExit();
-            } catch (/*NoSuchFieldException | IllegalAccessException | NoSuchMethodException | java.lang.reflect.InvocationTargetException | */SecurityException | IllegalArgumentException | IOException ex)
+            } catch (/*
+                     * NoSuchFieldException | IllegalAccessException |
+                     * NoSuchMethodException |
+                     * java.lang.reflect.InvocationTargetException |
+                     */SecurityException | IllegalArgumentException | IOException ex)
             {
-                com.gmt2001.Console.out.println("e " + ex.getMessage());
-                Logger.getLogger(PhantomBot.class.getName()).log(Level.SEVERE, null, ex);
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
         }
 
@@ -249,7 +258,7 @@ public class PhantomBot implements Listener
     {
         PhantomBot.enableDebugging = debug;
     }
-    
+
     public DataStore getDataStore()
     {
         return dataStoreObj;
@@ -258,6 +267,11 @@ public class PhantomBot implements Listener
     public Session getSession()
     {
         return session;
+    }
+
+    public boolean isExiting()
+    {
+        return exiting;
     }
 
     public Channel getChannel()
@@ -289,12 +303,12 @@ public class PhantomBot implements Listener
         if (!webenable.equalsIgnoreCase("false"))
         {
             webenabled = true;
-            mhs = new HTTPServer(baseport, oauth);
-            mhs.start();
+            httpserver = new HTTPServer(baseport, oauth);
+            httpserver.start();
             if (!musicenable.equalsIgnoreCase("false"))
             {
                 musicenabled = true;
-                mws = new MusicWebSocketServer(baseport + 1);
+                musicsocketserver = new MusicWebSocketServer(baseport + 1);
             }
         }
 
@@ -323,7 +337,7 @@ public class PhantomBot implements Listener
         Script.global.defineProperty("channels", channels, 0);
         Script.global.defineProperty("ownerName", ownerName, 0);
         Script.global.defineProperty("channelStatus", channelStatus, 0);
-        Script.global.defineProperty("musicplayer", mws, 0);
+        Script.global.defineProperty("musicplayer", musicsocketserver, 0);
         Script.global.defineProperty("random", rng, 0);
         Script.global.defineProperty("youtube", YouTubeAPIv3.instance(), 0);
         Script.global.defineProperty("pollResults", pollResults, 0);
@@ -345,22 +359,64 @@ public class PhantomBot implements Listener
         try
         {
             ScriptManager.loadScript(new File("./scripts/init.js"));
-        } catch (IOException e)
+        } catch (IOException ex)
         {
+            com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
 
     public void onExit()
     {
+        com.gmt2001.Console.out.println("[SHUTDOWN] Bot shutting down...");
+
+        com.gmt2001.Console.out.println("[SHUTDOWN] Stopping event & message dispatching...");
+        exiting = true;
+
         if (webenabled)
         {
-            mhs.dispose();
+            com.gmt2001.Console.out.println("[SHUTDOWN] Terminating web server...");
+            httpserver.dispose();
         }
+
         if (musicenabled)
         {
-            mws.dispose();
+            com.gmt2001.Console.out.println("[SHUTDOWN] Terminating music server...");
+            musicsocketserver.dispose();
         }
+
+        com.gmt2001.Console.out.println("[SHUTDOWN] Saving data...");
         dataStoreObj.SaveAll(true);
+
+        com.gmt2001.Console.out.println("[SHUTDOWN] Waiting for running scripts to finish...");
+        try
+        {
+            Thread.sleep(30000);
+        } catch (InterruptedException ex)
+        {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+
+        com.gmt2001.Console.out.println("[SHUTDOWN] Terminating TwitchAPI caches...");
+        ChannelHostCache.killall();
+        ChannelUsersCache.killall();
+        FollowersCache.killall();
+        SubscribersCache.killall();
+
+        com.gmt2001.Console.out.println("[SHUTDOWN] Terminating pending timers...");
+        ScriptApi.instance().kill();
+
+        com.gmt2001.Console.out.println("[SHUTDOWN] Terminating scripts...");
+        HashMap<String, Script> scripts = ScriptManager.getScripts();
+
+        for (Entry<String, Script> script : scripts.entrySet())
+        {
+            script.getValue().kill();
+        }
+
+        com.gmt2001.Console.out.println("[SHUTDOWN] Disconnecting from Twitch IRC...");
+        connectionManager.quit();
+
+        com.gmt2001.Console.out.println("[SHUTDOWN] Waiting for JVM to exit...");
     }
 
     @Subscribe
@@ -616,14 +672,16 @@ public class PhantomBot implements Listener
 
                 //Commented out since you need to restart the bot for port changes anyway
                 /*
-                 * if(webenabled) { mhs.dispose(); mhs = new
-                 * HTTPServer(baseport); mhs.start(); } if(musicenabled) {
-                 * if(webenabled) { mws.dispose(); mws = new
-                 * MusicWebSocketServer(baseport + 1); } }
+                 * if(webenabled) { httpserver.dispose(); httpserver = new
+                 * HTTPServer(baseport); httpserver.start(); } if(musicenabled)
+                 * { if(webenabled) { musicsocketserver.dispose();
+                 * musicsocketserver = new MusicWebSocketServer(baseport + 1); }
+                 * }
                  */
                 com.gmt2001.Console.out.println("Changes have been saved. For web and music server settings to take effect you must restart the bot.");
             } catch (IOException ex)
             {
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
         }
 
@@ -712,14 +770,14 @@ public class PhantomBot implements Listener
         //Don't change this to postAsync. It cannot be processed in async or commands will be delayed
         EventBus.instance().post(new CommandEvent(sender, command, arguments));
     }
-    
+
     private static void ini2sqlite()
     {
         com.gmt2001.Console.out.print(">>Initializing...");
         IniStore ini = IniStore.instance();
         SqliteStore sqlite = SqliteStore.instance();
         com.gmt2001.Console.out.println("done");
-        
+
         com.gmt2001.Console.out.print(">>Wiping existing SqliteStore...");
         String[] deltables = sqlite.GetFileList();
         for (String table : deltables)
@@ -727,7 +785,7 @@ public class PhantomBot implements Listener
             sqlite.RemoveFile(table);
         }
         com.gmt2001.Console.out.println("done");
-        
+
         com.gmt2001.Console.out.print(">>Copying IniStore to SqliteStore...");
         String[] files = ini.GetFileList();
         int i = 0;
@@ -735,7 +793,7 @@ public class PhantomBot implements Listener
         {
             com.gmt2001.Console.out.print("\r>>Copying IniStore to SqliteStore... " + i + " / " + files.length);
             sqlite.AddFile(file);
-            
+
             String[] sections = ini.GetCategoryList(file);
             for (String section : sections)
             {
@@ -748,7 +806,7 @@ public class PhantomBot implements Listener
             }
         }
         com.gmt2001.Console.out.println("\r>>Copying IniStore to SqliteStore... " + files.length + " / " + files.length);
-        
+
         com.gmt2001.Console.out.println("Operation complete. The bot will now exit");
     }
 
@@ -1076,15 +1134,5 @@ public class PhantomBot implements Listener
         }
 
         PhantomBot.instance = new PhantomBot(user, oauth, apioauth, clientid, channel, owner, baseport, hostname, port, msglimit30, datastore, datastoreconfig, youtubekey, webenable, musicenable);
-    }
-
-    @Override
-    protected void finalize() throws Throwable
-    {
-        session.close("");
-
-        connectionManager.quit();
-
-        super.finalize();
     }
 }

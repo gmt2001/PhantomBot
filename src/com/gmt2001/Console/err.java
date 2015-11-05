@@ -76,6 +76,11 @@ public class err
     {
         e.printStackTrace(System.err);
 
+        logStackTrace(e);
+    }
+
+    public static void logStackTrace(Throwable e)
+    {
         Writer trace = new StringWriter();
         PrintWriter ptrace = new PrintWriter(trace);
 

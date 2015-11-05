@@ -27,7 +27,7 @@ public class MusicPlayerCurrentIdEvent extends MusicPlayerEvent
     {
         this.id = id;
     }
-    
+
     public MusicPlayerCurrentIdEvent(String id, Channel channel)
     {
         super(channel);

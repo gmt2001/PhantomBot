@@ -25,7 +25,7 @@ public class TwitchFollowEvent extends TwitchFollowerEvent
     {
         super(follower, Type.FOLLOW);
     }
-    
+
     public TwitchFollowEvent(String follower, Channel channel)
     {
         super(follower, Type.FOLLOW, channel);

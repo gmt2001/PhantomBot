@@ -370,19 +370,19 @@ public class SqliteStore extends DataStore
                 ResultSet rs = statement.executeQuery();
 
                 ArrayList<String> s = new ArrayList<>();
-                
+
                 while (rs.next())
                 {
                     s.add(rs.getString("variable"));
                 }
-                
+
                 return s.toArray(new String[s.size()]);
             } catch (SQLException ex)
             {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         }
-        
+
         return new String[]
         {
         };

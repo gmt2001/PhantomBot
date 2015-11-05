@@ -70,6 +70,11 @@ public class ScriptEventManager implements Listener
     @Subscribe
     public void onEvent(Event event)
     {
+        if (PhantomBot.instance().isExiting())
+        {
+            return;
+        }
+
         try
         {
             for (EventHandlerEntry entry : entries)
@@ -102,6 +107,7 @@ public class ScriptEventManager implements Listener
                 break;
             } catch (ClassNotFoundException e)
             {
+                com.gmt2001.Console.err.printStackTrace(e);
             }
         }
 

@@ -20,10 +20,11 @@ import me.mast3rplan.phantombot.jerklib.Channel;
 
 public class MusicPlayerConnectEvent extends MusicPlayerEvent
 {
+
     public MusicPlayerConnectEvent()
     {
     }
-    
+
     public MusicPlayerConnectEvent(Channel channel)
     {
         super(channel);

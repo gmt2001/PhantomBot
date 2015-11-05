@@ -60,6 +60,7 @@ public class InetAddressUtils
             return InetAddress.getByAddress(numericIpToByteArray(ip));
         } catch (UnknownHostException e)
         {
+            com.gmt2001.Console.err.printStackTrace(e);
             return null;
         }
     }

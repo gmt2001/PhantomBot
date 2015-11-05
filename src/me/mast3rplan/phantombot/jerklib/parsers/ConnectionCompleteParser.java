@@ -23,8 +23,8 @@ public class ConnectionCompleteParser implements CommandParser
 {
 
     /*
-     * :irc.nmglug.org 001 namnar :Welcome to the nmglug.org      *
-     * Lets user know channels can now be joined etc.
+     * :irc.nmglug.org 001 namnar :Welcome to the nmglug.org * Lets user know
+     * channels can now be joined etc.
      *
      * Lets user update *records* A requested connection to irc.freenode.net
      * might actually connect to kubrick.freenode.net etc

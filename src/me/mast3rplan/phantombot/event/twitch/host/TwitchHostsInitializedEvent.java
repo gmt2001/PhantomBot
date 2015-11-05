@@ -25,7 +25,7 @@ public class TwitchHostsInitializedEvent extends TwitchEvent
     public TwitchHostsInitializedEvent()
     {
     }
-    
+
     public TwitchHostsInitializedEvent(Channel channel)
     {
         super(channel);

@@ -97,6 +97,7 @@ public class UsernameCache
                         } catch (Exception e)
                         {
                             com.gmt2001.Console.out.println("UsernameCache.updateCache>>Failed to get username: " + e.getMessage());
+                            com.gmt2001.Console.err.logStackTrace(e);
 
                             return username;
                         }

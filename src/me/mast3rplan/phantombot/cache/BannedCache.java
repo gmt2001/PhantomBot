@@ -40,7 +40,7 @@ public class BannedCache
     {
         return bannedUsers.containsKey(user);
     }
-    
+
     public boolean userIsBanned(String user, Channel channel)
     {
         return bannedUsers.containsKey(user + "::" + channel.getName());
@@ -88,7 +88,7 @@ public class BannedCache
         bannedUsers.put(user + "::" + channel.getName(), System.currentTimeMillis() + (seconds * 1000));
     }
 
-    @SuppressWarnings("unchecked") //suppress warning about unchecked TreeMap object. You can check if it's a treemap, but there's no way to check if its a <String,Long> Treemap
+    @SuppressWarnings("unchecked")
     public void loadFromFile(String file)
     {
         FileInputStream fis;
@@ -112,20 +112,24 @@ public class BannedCache
                     }
                 } catch (ClassNotFoundException ex)
                 {
+                    com.gmt2001.Console.err.printStackTrace(ex);
                 }
 
                 ois.close();
             } catch (IOException ex)
             {
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
             try
             {
                 fis.close();
             } catch (IOException ex)
             {
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
         } catch (FileNotFoundException ex)
         {
+            com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
 
@@ -155,15 +159,18 @@ public class BannedCache
                 oos.close();
             } catch (IOException ex)
             {
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
             try
             {
                 fos.close();
             } catch (IOException ex)
             {
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
         } catch (FileNotFoundException ex)
         {
+            com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
 }

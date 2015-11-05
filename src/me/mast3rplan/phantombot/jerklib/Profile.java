@@ -223,9 +223,9 @@ public class Profile
      */
     @Override
     @SuppressWarnings(
-    {
-        "CloneDoesntCallSuperClone", "CloneDeclaresCloneNotSupported"
-    })
+            {
+                "CloneDoesntCallSuperClone", "CloneDeclaresCloneNotSupported"
+            })
     public Profile clone()
     {
         Profile impl = new Profile(name, realName, firstNick, secondNick, thirdNick);

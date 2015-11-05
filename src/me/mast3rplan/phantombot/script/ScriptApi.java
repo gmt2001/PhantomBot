@@ -106,4 +106,9 @@ public class ScriptApi
     {
         return ScriptManager.getScript(new File(new File("./scripts/"), fileName));
     }
+
+    public void kill()
+    {
+        scheduler.shutdownNow();
+    }
 }

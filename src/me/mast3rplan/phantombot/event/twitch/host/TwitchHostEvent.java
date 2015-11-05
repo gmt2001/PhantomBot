@@ -37,7 +37,7 @@ public abstract class TwitchHostEvent extends TwitchEvent
         this.hoster = hoster;
         this.type = type;
     }
-    
+
     protected TwitchHostEvent(String hoster, Type type, Channel channel)
     {
         super(channel);

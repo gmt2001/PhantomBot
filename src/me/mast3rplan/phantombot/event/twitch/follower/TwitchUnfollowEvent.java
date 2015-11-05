@@ -25,7 +25,7 @@ public class TwitchUnfollowEvent extends TwitchFollowerEvent
     {
         super(follower, Type.UNFOLLOW);
     }
-    
+
     public TwitchUnfollowEvent(String follower, Channel channel)
     {
         super(follower, Type.UNFOLLOW, channel);
