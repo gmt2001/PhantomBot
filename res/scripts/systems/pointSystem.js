@@ -725,6 +725,7 @@ $.timer.addTimer("./systems/pointSystem.js", "pointsystem", true, function () {
 
         points = amount + ($.pointBonus * $.getGroupPointMultiplier(nick));
         $.inidb.incr('points', nick, points);
+        println("Points have been distributed! Settings: Point Gain: " + $.pointGain " Offline Point Gain: " + $.pointGainOffline; + ".");
     }
 
     $.lastpointInterval = System.currentTimeMillis();
