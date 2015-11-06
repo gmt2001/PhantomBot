@@ -16,7 +16,6 @@ $.songprefix = null;
 $.song_shuffle = parseInt($.inidb.get('settings','song_shuffle'));
 $var.playChoice = false;
 
-
 if ($.song_limit == null || isNaN($.song_limit) || $.song_limit < 0) {
     $.song_limit = 3;
 }
@@ -49,11 +48,11 @@ notSearchable = function(songid,songname, user, tags) {
                     this.id = songid;
                     this.name = songname;
                     this.length = 0;
-                    $.say($.getWhisperString(user) + "Song "+ songid+" not searchable, marked private, or does not exist.");
+                    $.say($.getWhisperString(user) + $.lang.get("net.phantombot.musicplayer.song-request-error"));
                     if ($.inidb.exists("pricecom", "addsong") && parseInt($.inidb.get("pricecom", "addsong"))> 0 ){
                         if(!$.isModv3(user, tags)){
                             var cost = $.inidb.get("pricecom", "addsong");
-                            $.say($.getWhisperString(user) + "The command cost of " + $.getPointsString(cost) + " has been returned to " + $.username.resolve(user));
+                            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.command-cost", $.getPointsString(cost), $.username.resolve(sender, event.getTags())));
                             $.inidb.incr("points", user.toLowerCase(), cost);
                             $.inidb.SaveAll();
                         }
@@ -264,7 +263,7 @@ function nextDefault() {
         } else {
            playlistpos = $var.defaultplaylistpos;
         }
-        var s = new RequestedSong(new Song($var.defaultplaylist[playlistpos]), "DJ " + $.username.resolve($.botname));
+        var s = new RequestedSong(new Song($var.defaultplaylist[playlistpos]), $.lang.get("net.phantombot.musicplayer.dj") + $.username.resolve($.botname));
         
         $var.defaultplaylistpos++;
 
@@ -288,9 +287,9 @@ function nextDefault() {
     }
     
     if ($.song_toggle == 1) {
-        $.say("[\u266B] Now Playing -- " + name + " -- requested by @" + user);
+        $.say($.lang.get("net.phantombot.musicplayer.now-playing", name, user));
     } else if ($.song_toggle == 2) {
-        println("[\u266B] Now Playing -- " + name + " -- requested by @" + user);
+        $.println($.lang.get("net.phantombot.musicplayer.now-playing", name, user));
     }
     
     if (user.equalsIgnoreCase("DJ " + $.username.resolve($.botname))) {
@@ -321,22 +320,22 @@ function next() {
     }
 
     if ($var.currSong == null) {
-        println("The song request queue is empty! Request a new song with !addsong or !songrequest <youtube link>");
+        println($.lang.get("net.phantombot.musicplayer.queue-is-empty"));
         nextDefault();
         return;
     }
 
     if ($.song_toggle == 1) {
-        $.say("[\u266B] Now Playing -- " + name + " -- requested by @" + user);
+        $.say($.lang.get("net.phantombot.musicplayer.now-playing", name, user));
 
     } else if ($.song_toggle == 2) {
-        println("[\u266B] Now Playing -- " + name + " -- requested by @" + user);
+        $.println($.lang.get("net.phantombot.musicplayer.now-playing", name, user));
     }
     
-    var nextMsg = "The song request queue is empty! Request a new song with !addsong or !songrequest <youtube link>";
+    var nextMsg = $.lang.get("net.phantombot.musicplayer.queue-is-empty");
             
     if ($var.songqueue.length > 0) {
-        nextMsg = "[\u266B] Next song >> " + $var.songqueue[0].song.getName() + " requested by " + $var.songqueue[0].user;
+        nextMsg = $.lang.get("net.phantombot.musicplayer.next-song-up", $var.songqueue[0].song.getName(), $var.songqueue[0].user);
         println(nextMsg);
     }
     if (user.equalsIgnoreCase("DJ " + $.username.resolve($.botname))) {
@@ -370,9 +369,9 @@ $.on('musicPlayerConnect', function (event) {
     if($.song_toggle==1)
     {
 
-        $.say("[\u266B] Song requests have been enabled!");
+        $.say($.lang.get("net.phantombot.musicplayer.songrequest-enabled"));
     } else {
-        println("[\u266B] MusicClient connected!");
+        $.println($.lang.get("net.phantombot.musicplayer.songrequest-enabled"));
     }
     musicPlayerConnected = true;
 });
@@ -381,9 +380,9 @@ $.on('musicPlayerDisconnect', function (event) {
     if($.song_toggle==1)
     {
 
-        $.say("[\u266B] Song requests have been disabled.");
+        $.say($.lang.get("net.phantombot.musicplayer.songrequest-disabled"));
     } else {
-        println("[\u266B] MusicClient disconnected!");
+        $.println($.lang.get("net.phantombot.musicplayer.songrequest-disabled"));
     }
     musicPlayerConnected = false;
 });
@@ -415,15 +414,15 @@ $.on('command', function (event) {
             }
 
             if ($.song_toggle == 2) {
-
                 $.song_toggle = 1;
                 $.inidb.set('settings', 'song_toggle', $.song_toggle.toString());
-                $.say($.getWhisperString(sender) + "[\u266B] Song messages have been turned on!");
-
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.song-msg-enabled"));
+                return;
             } else {
                 $.song_toggle = 2;
                 $.inidb.set('settings', 'song_toggle', $.song_toggle.toString());
-                $.say($.getWhisperString(sender) + "[\u266B] Song messages have been turned off!");
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.song-msg-disabled"));
+                return;
             }
         }
         
@@ -433,9 +432,9 @@ $.on('command', function (event) {
                 return;
             }
             $.inidb.set('blacklist', args[1].toLowerCase(), "true");
-            $.say($.getWhisperString(sender) + username + ", you have denied " + $.username.resolve(args[1].toLowerCase()) + " access to song request features.");
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.song-blacklist-user", args[1].toLowerCase()));
             return;
-        } 
+        }  
             
         if (action.equalsIgnoreCase("allow")) {
             if (!$.isAdmin(sender)) {
@@ -443,10 +442,10 @@ $.on('command', function (event) {
                 return;
             }
             $.inidb.del('blacklist', args[1].toLowerCase());
-            $.say($.getWhisperString(sender) + username + ", you have released " + $.username.resolve(args[1]) + " from the blacklist for song request features.");
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.song-un-blacklist-user", args[1].toLowerCase()));
             return;   
-        } 
-            
+        }
+
         if (action.equalsIgnoreCase("limit")) {
             if (!$.isAdmin(sender)) {
                 $.say($.getWhisperString(sender) + $.adminmsg);
@@ -460,7 +459,8 @@ $.on('command', function (event) {
 
             $.inidb.set('settings', 'song_limit', args[1]);
             $.song_limit = parseInt(args[1]);
-            $.say($.getWhisperString(sender) + "Song request limit has been changed to: " + args[1] + " songs");
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.new-song-request-limit", args[1]));
+            return;
         }
 
         if (action.equalsIgnoreCase("storing")) {
@@ -470,16 +470,16 @@ $.on('command', function (event) {
             }
 
             if ($.storing == 2) {
-
                 $.storing = 1;
                 $.inidb.set('settings', 'song_storing', $.storing.toString());
                 $.defaultplaylist = $.readFile("./addons/youtubePlayer/playlist.txt");
-                $.say($.getWhisperString(sender) + "Playlists' positions and titles will now be exported to a readable file.");
-
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.song-storing"));
+                return;
             } else {
                 $.storing = 2;
                 $.inidb.set('settings', 'song_storing', $.storing.toString());
-                $.say($.getWhisperString(sender) + "Playlist storage has been disabled.");
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.song-storing-disabled"));
+                return;
             }
         }
         
@@ -490,15 +490,15 @@ $.on('command', function (event) {
             }
 
             if ($.song_shuffle == 0) {
-
                 $.song_shuffle = true;
                 $.inidb.set('settings', 'song_shuffle', "1");
-                $.say($.getWhisperString(sender) + "Default playlist will now randomly choose songs to be played.");
-
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.song-shuffle-enabled"));
+                return;
             } else {
                 $.song_shuffle = 0;
                 $.inidb.set('settings', 'song_shuffle', "0");
-                $.say($.getWhisperString(sender) + "Playlist shuffling has been disabled.");
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.song-shuffle-disabled"));
+                return;
             }
         }
         
@@ -509,21 +509,22 @@ $.on('command', function (event) {
             }
             
             if (args[1].equalsIgnoreCase('viewstorepath')) {
-                $.say($.getWhisperString(sender) + "Current song storage path: " + $.storepath);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.current-store-path", $.storepath));
                 return;
             }
             
-            while (args[1].indexOf('\\') != -1 && !args[1].equalsIgnoreCase('viewstorepath') && args[1]!="" && args[1]!=null) {
+            while (args[1].indexOf('\\') != -1 && !args[1].equalsIgnoreCase('viewstorepath') && args[1] != "" && args[1] != null) {
                 args[1] = args[1].replace('\\', '/');
             }
             
-            if($.strlen(args[1]) == 0 || args[1].substring($.strlen(args[1]) - 1) != "/" || !args[1].substring($.strlen(args[1]) - 1).equalsIgnoreCase("/")) {
+            if ($.strlen(args[1]) == 0 || args[1].substring($.strlen(args[1]) - 1) != "/" || !args[1].substring($.strlen(args[1]) - 1).equalsIgnoreCase("/")) {
                 args[1] = args[1] + "/";
             }
             
             $.inidb.set('settings','song_storepath', args[1]);
             $.storepath = args[1];
-            $.say($.getWhisperString(sender) + "Playlist storage path has been set!");
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.new-store-path", args[0].toLowerCase()));
+            return;
         }
         
         if (action.equalsIgnoreCase("titles")) {
@@ -533,18 +534,19 @@ $.on('command', function (event) {
             }
 
             if ($.titles == 2) {
-
                 $.titles = 1;
                 $.inidb.set('settings', 'song_titles', $.titles.toString());
-                $.say($.getWhisperString(sender) + "Playlist storage has been set to export as html file.");
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.titles-html"));
                 $.parseDefault();
                 $.parseSongQueue();
+                return;
             } else {
                 $.titles = 2;
                 $.inidb.set('settings', 'song_titles', $.titles.toString());
-                $.say($.getWhisperString(sender) + "Playlist storage has been set to export as text file.");
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.titles-text"));
                 $.parseDefault();
                 $.parseSongQueue();
+                return;
             }
         }
         
@@ -560,19 +562,21 @@ $.on('command', function (event) {
 
         if (action.equalsIgnoreCase("config")) {
             if ($.song_toggle == 1) {
-                $.song_t = "On";
+                $.song_t = $.lang.get("net.phantombot.common.enabled");
             } else {
-                $.song_t = "Off";
+                $.song_t = $.lang.get("net.phantombot.common.disabled");
             }
 
-            if (musicPlayerConnected == true) {
-                $.song_status = "Enabled";
+            if (!musicPlayerConnected == true) {
+                $.song_status = $.lang.get("net.phantombot.common.enabled");
             } else {
-                $.song_status = "Disabled";
+                $.song_status = $.lang.get("net.phantombot.common.disabled");
             }
             
-            $.say($.getWhisperString(sender) + "[Music Settings] - [Limit: " + $.song_limit + " songs] - [Msgs: " + $.song_t + "] - [Music Player: " + $.song_status + "]");
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.musicplayer-config", $.song_limit, $.song_t, $.song_status));
+            return;
         }
+
         if (action.equalsIgnoreCase("steal")) {
             if (!$.isAdmin(sender)) {
                 $.say($.getWhisperString(sender) + $.adminmsg);
@@ -582,24 +586,23 @@ $.on('command', function (event) {
                 var songurl = "https://www.youtube.com/watch?v=" + $var.currSong.song.getId();
                 $.musicplayer.stealSong(songurl);
                 $var.defaultplaylist = $.readFile("./addons/youtubePlayer/playlist.txt");
-                $.say("[\u266B]" + $var.currSong.song.getName() + " -- requested by @" + $var.currSong.user + " has been stolen and added to the default playlist!");
+                $.say($.lang.get("net.phantombot.musicplayer.musicplayer-config", $var.currSong.song.getName(), $var.currSong.user));
                 $.parseDefault();
                 return;
             }
-        }
-			
+        }       
     }
 
     if (command.equalsIgnoreCase("addsong")) {
 
         if ($.inidb.get('blacklist', sender) == "true") {
             //blacklisted, deny
-            $.say($.getWhisperString(sender) + "You are denied access to song request features!");
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.user-blacklisted"));
             return;
         }
         //start arguments check
         if (args.length == 0) {
-            $.say($.getWhisperString(sender) + "Type >> '!addsong or !songrequest <youtube link>' to add a song to the playlist.");
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.song-request-usage"));
             return;
         }
 
@@ -609,43 +612,42 @@ $.on('command', function (event) {
                     if(!$.isModv3(sender, event.getTags())){
 
                         var cost = $.inidb.get("pricecom", "addsong");
-                        $.say($.getWhisperString(sender) + "The command cost of " + $.getPointsString(cost) + " has been returned to " + $.username.resolve(sender, event.getTags()));
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.command-cost", $.getPointsString(cost), $.username.resolve(sender, event.getTags())));
                         $.inidb.incr("points", sender.toLowerCase(), cost);
                         $.inidb.SaveAll(true);
                     }
                 }
-                $.say($.getWhisperString(sender) + "Music player disabled.");
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.error-songrequest-off"));
                 return;
             }
 
             var video = new Song(argsString, sender, event.getTags());
 
             if (video.id == null) {
-                $.say($.getWhisperString(sender) + "Song doesn't exist or you typed something wrong.");
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.song-request-error"));
                 return;
             }
             
             var vlength = parseInt(video.getLength());
             if ( (vlength > 480.0)) {
-                $.say($.getWhisperString(sender) + "Song >> " + video.getName() + " is over " + parseInt(vlength/60) + " minutes long, maximum length is 8 minutes.");
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.song-is-too-long"));
                 return;
             }
 
             song = new RequestedSong(video, username);
             
-            if(!$.isModv3(sender, event.getTags())) {
+            if (!$.isModv3(sender, event.getTags())) {
                 if (!song.canRequest()) {
-                    $.say($.getWhisperString(sender) + "You've hit your song request limit, " + username + "!");
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.songrequest-limit-hit", $.song_limit));
                     return;
                 }
 
                 if (!song.canRequest2()) {
-                    $.say($.getWhisperString(sender) + "That song is already in the queue or the default playlist, " + username + "!");
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.song-already-in-q"));
                     return;
                 }
             }
-
-            $.say("[\u266B] Song -- " + video.name + " was added to the queue by @" + username + ".");
+            $.say($.lang.get("net.phantombot.musicplayer.song-requested-success", video.name, sender));
             song.request();
 
             if ($var.currSong == null) {
@@ -655,20 +657,20 @@ $.on('command', function (event) {
     }
     if (command.equalsIgnoreCase("delsong")) {
         if (!musicPlayerConnected) {
-            $.say($.getWhisperString(sender) + "Songrequests is currently disabled!");
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.error-songrequest-off2"));
             return;
         }
         var name = argsString;
                 
         if (name == null) {
-            $.say("Song doesn't exist or you typed something wrong.");
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.del-song-error"));
             return;
         }
 
         for (i in $var.songqueue) {
             if (name == $var.songqueue[i].song.getId() || $var.songqueue[i].song.getName().toLowerCase().contains(name.toLowerCase())) {
                 if ($var.songqueue[i].user == username || $.isModv3(sender, event.getTags())) {
-                    $.say("[\u266B] Song -- " + $var.songqueue[i].song.getName() + " has been removed from the queue!");
+                    $.say($.lang.get("net.phantombot.musicplayer.del-song-success", $var.songqueue[i].song.getName(), username.toLowerCase()));
                     $var.songqueue.splice(i, 1);
                     return;
                 } else {
@@ -678,8 +680,7 @@ $.on('command', function (event) {
             }
         }
 
-        $.say($.getWhisperString(sender) + sender + ", that song isn't in the list.");
-        
+        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.del-song-error"));
     }
 
     if (command.equalsIgnoreCase("volume")) {
@@ -691,7 +692,7 @@ $.on('command', function (event) {
 
         if (args.length > 0) {
             $.musicplayer.setVolume(parseInt(args[0]));
-            $.say($.getWhisperString(sender) + "[\u266B] Music volume set to: " + args[0] + "%");
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.volume-set", parseInt(args[0])));
         } else {
             $.musicplayer.currentVolume();
         }
@@ -708,7 +709,7 @@ $.on('command', function (event) {
 
         if ($var.skipSong) {
             if ($.pollVoters.contains(sender)) {
-                $.say($.getWhisperString(sender) + username + ", you have already voted!");
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.poll-already-voted"));
             } else if (makeVote('yes')) {
                 $.pollVoters.add(sender);
             }
@@ -720,49 +721,57 @@ $.on('command', function (event) {
             $.pollResults.get('yes').intValue();
 
             if (song != $.musicplayer.currentId()) {
-                $.say($.getWhisperString(sender) + "The poll failed due to the song ending.");
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.poll-fail"));
+                return;
             }
+
             if ($.pollResults.get('yes').intValue() == 1) {
-                $.say($.getWhisperString(sender) + "Skipping song!");
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.poll-success"));
                 next();
+                return;
             } else {
-                $.say($.getWhisperString(sender) + "Failed to skip the song.");
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.poll-fail"));
+                return;
             }
 
         }, ['yes', 'nope'], 20 * 3000, $.botname)) {
-            $.say("2 more votes are required to skip this song, to vote use '!vote yes'");
+            $.say($.lang.get("net.phantombot.musicplayer.2-vores-to-skip"));
+            return;
 
             if (makeVote('yes')) {
                 $.pollVoters.add(sender);
             }
             $var.skipSong = true;
         } else {
-            $.say($.getWhisperString(sender) + "A poll to skip a song is already open and running! " + username);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.error-poll-opened"));
+            return;
         }
     }
     
     
     if (command.equalsIgnoreCase("vetosong")) {
-        $.say(username + ", paid to skip the current song!");
+        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.veto-song"));
 
         next();
     }
-    if (command.equalsIgnoreCase("currentsong")) {
 
-        if ($.readFile("./addons/youtubePlayer/currentsong.txt")=="") {
-            $.say("There is no song playing! Request one with !addsong or !songrequest <youtube link>");
+    if (command.equalsIgnoreCase("currentsong")) {
+        if ($.readFile("./addons/youtubePlayer/currentsong.txt") == "") {
+            $.say($.lang.get("net.phantombot.musicplayer.queue-is-empty"));
             return;
         }
 
-        $.say("[\u266B] Currently playing -- " + $.readFile("./addons/youtubePlayer/currentsong.txt"));
-
+        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.current-song", $.readFile("./addons/youtubePlayer/currentsong.txt")));
+        return;
     }
 
     if (command.equalsIgnoreCase("nextsong")) {
         if ($var.songqueue.length > 0) {
-            $.say("[\u266B] Next song >> \u266B~" + $var.songqueue[0].song.getName() + "~\u266B requested by " + $var.songqueue[0].user);
+            $.say($.lang.get("net.phantombot.musicplayer.next-song-up", $var.songqueue[0].song.getName(), $var.songqueue[0].user));
+            return;
         } else {
-            $.say("There are no more songs in the queue! Request one with !addsong or !songrequest <youtube link>");
+            $.say($.lang.get("net.phantombot.musicplayer.queue-is-empty"));
+            return;
         }
     }
 
@@ -771,26 +780,29 @@ $.on('command', function (event) {
             $.say($.getWhisperString(sender) + $.adminmsg);
             return;
         }
+
         if ($var.currSong != null) {
             var currsongurl = "https://www.youtube.com/watch?v=" + $var.currSong.song.getId();
             $.musicplayer.stealSong(currsongurl);
             $var.defaultplaylist = $.readFile("./addons/youtubePlayer/playlist.txt");
-            $.say($var.currSong.song.getName() + "~\u266B requested by " + $var.currSong.user + " has been stolen and added to the default playlist!");
+            $.say($.lang.get("net.phantombot.musicplayer.musicplayer-config", $var.currSong.song.getName(), $var.currSong.user));
             $.parseDefault();
             return;
         }
     }
+
     if (command.equalsIgnoreCase("gettitle")) {
         if (!$.isAdmin(sender)) {
             $.say($.getWhisperString(sender) + $.adminmsg);
             return;
         }
-        $.say("start search");
+
+        $.say($.lang.get("net.phantombot.musicplayer.start-search"));
         var data = $.youtube.SearchForVideo(argsString);
-        while(data[0].length()<11){
+        while (data[0].length()<11){
             data = $.youtube.SearchForVideo(argsString);
         }
-        $.say("search complete");
+        $.say($.lang.get("net.phantombot.musicplayer.search-end"));
         this.id = data[0];
         this.name = data[1];
         $.say(data[0]);
@@ -801,32 +813,33 @@ $.on('command', function (event) {
             $.say($.getWhisperString(sender) + $.modmsg);
             return;
         }
-        if(parseInt(argsString) <= $var.defaultplaylist.length) {
-                $var.defaultplaylistpos = parseInt(argsString);
-                $var.playChoice=true;
-                next();
-                return;
+
+        if (parseInt(argsString) <= $var.defaultplaylist.length) {
+            $var.defaultplaylistpos = parseInt(argsString);
+            $var.playChoice = true;
+            next();
+            return;
         }
 
-        for(var pos=0;pos<$var.defaultplaylist.length;pos++) {
+        for (var pos = 0; pos < $var.defaultplaylist.length; pos++) {
             if($var.defaultplaylist[pos].toLowerCase().contains(argsString.toLowerCase())) {
                 $var.defaultplaylistpos = pos;
-                $var.playChoice=true;
+                $var.playChoice = true;
                 next();
                 return;
             }
+
             song = new Song($var.defaultplaylist[pos]);
             if(song.getName().toLowerCase().contains(argsString.toLowerCase())) {
                 $var.defaultplaylistpos = pos;
-                $var.playChoice=true;
+                $var.playChoice = true;
                 next();
                 return;
             }
         }
-        $.say($.getWhisperString(sender) + "Song not found in current playlist.");
+        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.404-error"));
         return;
     }
-
 });
 
 //Q: why is there a timeout delay here before a timer? seems redundant no?
@@ -839,9 +852,9 @@ offlinePlayer = function() {setTimeout(function(){
                 if ($var.ytcurrSong.toString()!=null || $var.ytcurrSong.toString()!="") {
                     $.inidb.set("settings", "lastsong", $var.ytcurrSong.toString());
                     if ($.song_toggle == 1) {
-                        $.say("[\u266B] Now Playing -- " + $var.ytcurrSong.toString());
+                        $.say($.lang.get("net.phantombot.musicplayer.now-playing", $var.ytcurrSong.toString()));
                     } else {
-                        println("[\u266B] Now Playing -- " + $var.ytcurrSong.toString());
+                        $.println($.lang.get("net.phantombot.musicplayer.now-playing", $var.ytcurrSong.toString()));
                     }
                 }
             }
@@ -858,7 +871,8 @@ if($.storing==1) {
 }
 
 $.on('musicPlayerCurrentVolume', function (event) {
-    $.say("[\u266B] Music volume is currently: " + parseInt(event.getVolume()) + "%");
+    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.current-volume", parseInt(event.getVolume())));
+    return;
 });
 
 chatRegister = function() {setTimeout(function(){ 
