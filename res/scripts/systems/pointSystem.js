@@ -2,7 +2,6 @@ $.pointNameSingle = $.inidb.get('settings', 'pointNameSingle');
 $.pointNameMultiple = $.inidb.get('settings', 'pointNameMultiple');
 $.pointGain = parseInt($.inidb.get('settings', 'pointGain'));
 $.pointGainOffline = parseInt($.inidb.get('settings', 'pointGainOffline'));
-$.pointBonus = parseInt($.inidb.get('settings', 'pointBonus'));
 $.pointInterval = parseInt($.inidb.get('settings', 'pointInterval'));
 $.pointIntervalOffline = parseInt($.inidb.get('settings', 'pointIntervalOffline'));
 $.pointGiftMin = parseInt($.inidb.get('settings', 'pointGiftMin'));
@@ -24,10 +23,6 @@ if ($.pointGain == undefined || $.pointGain == null || isNaN($.pointGain) || $.p
 
 if ($.pointGainOffline == undefined || $.pointGainOffline == null || isNaN($.pointGainOffline) || $.pointGainOffline < 0) {
     $.pointGainOffline = 1;
-}
-
-if ($.pointBonus == undefined || $.pointBonus == null || isNaN($.pointBonus) || $.pointBonus < 0) {
-    $.pointBonus = 0.5;
 }
 
 if ($.pointInterval == undefined || $.pointInterval == null || isNaN($.pointInterval) || $.pointInterval < 0) {
@@ -338,27 +333,6 @@ $.on('command', function (event) {
                     $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.give-all-success", $.getPointsString(args[1])));
                     return;
                 }
-            } else if (action.equalsIgnoreCase("bonus")) {
-                if (!$.isAdmin(sender)) {
-                    $.say($.getWhisperString(sender) + $.adminmsg);
-                    return;
-                }
-
-                if (args[1] == null || isNaN(parseInt(args[1]))) {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.bonus-usage"));
-                    return;
-                }
-
-                if (args[1] < 0) {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.bonus-error-negative", $.pointNameMultiple));
-                    return;
-                } else {
-                    $.inidb.set('settings', 'pointBonus', args[1]);
-                    $.pointBonus = parseInt($.inidb.get('settings', 'pointBonus'));
-
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.bonus-success", $.pointNameSingle, $.getPointsString($.pointBonus)));
-                    return;
-                }
             } else if (action.equalsIgnoreCase("interval")) {
                 if (!$.isAdmin(sender)) {
                     $.say($.getWhisperString(sender) + $.adminmsg);
@@ -548,7 +522,7 @@ $.on('command', function (event) {
                     return;
                 }
 
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.config", $.pointNameSingle, $.pointNameMultiple, $.getPointsString($.pointGain), $.getPointsString($.pointGainOffline), $.pointInterval, $.pointIntervalOffline, $.getPointsString($.pointBonus), $.getPointsString($.pointGiftMin)));
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.config", $.pointNameSingle, $.pointNameMultiple, $.getPointsString($.pointGain), $.getPointsString($.pointGainOffline), $.pointInterval, $.pointIntervalOffline, $.getPointsString($.pointGiftMin)));
                 return;
             } else if (action.equalsIgnoreCase("help")) {
                 $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.help"));
@@ -711,24 +685,27 @@ $.timer.addTimer("./systems/pointSystem.js", "pointsystem", true, function () {
         amount = $.pointGainOffline;
         if ($.lastpointInterval + ($.pointIntervalOffline * 60 * 1000) >= System.currentTimeMillis()) {
             return;
-			
         }
     } else {
         amount = $.pointGain;
         if ($.lastpointInterval + ($.pointInterval * 60 * 1000) >= System.currentTimeMillis()) {
             return;
-			
         }
     }
 
     var points = 0;
     for (var i = 0; i < $.users.length; i++) {
         var nick = $.users[i][0].toLowerCase();
-        points = amount + ($.pointBonus * $.getGroupPointMultiplier(nick));
-        $.inidb.incr('points', nick, points);
-      
+		
+		if ($.getGroupPointMultiplier(nick) == 0 || $.getGroupPointMultiplier == null || $.getGroupPointMultiplier == undefined) { // Checks for a 0 value to default to !points gain value.
+			points = amount;
+			$.inidb.incr('points', nick, points);
+		} else {
+			points = $.getGroupPointMultiplier(nick); // Does the incrementation of the custom values set by !group points
+			$.inidb.incr('points', nick, points);
+		}
     }
-	println("Points Payout: " + "\n" + "Point Gain: " + $.pointGain + " - Offline Point Gain: " + $.pointGainOffline + " - Point Bonus: " + $.pointBonus + "." + "\n" + "Point Gain Interval: " + $.pointInterval + " - Offline Point Gain Interval: " + $.pointIntervalOffline + ".");
+
     $.lastpointInterval = System.currentTimeMillis();
 }, 60 * 1000);
 
@@ -737,4 +714,4 @@ setTimeout(function () {
         $.registerChatCommand("./systems/pointSystem.js", "points");
         $.registerChatCommand("./systems/pointSystem.js", "makeitrain");
     }
-}, 10 * 1000);
+}, 10 * 1000); // 11-7-15 modified to have user settable point gain amounts -Kojitsari
