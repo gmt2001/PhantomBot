@@ -412,7 +412,7 @@ $.on('command', function (event) {
             var modValue = "";
             if(args[1]!=null) {
                 if(isNaN(args[1])) {
-                    modValue = argsString.substring(argsString.indexOf(args[0]) + 1, argsString.length());
+                    modValue = argsString.substring(argsString.indexOf(args[0]) + $.strlen(args[0]) + 1);
                 } else {
                     modValue = args[1];
                 }
