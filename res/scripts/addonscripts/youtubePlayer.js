@@ -586,7 +586,7 @@ $.on('command', function (event) {
                 var songurl = "https://www.youtube.com/watch?v=" + $var.currSong.song.getId();
                 $.musicplayer.stealSong(songurl);
                 $var.defaultplaylist = $.readFile("./addons/youtubePlayer/playlist.txt");
-                $.say($.lang.get("net.phantombot.musicplayer.musicplayer-config", $var.currSong.song.getName(), $var.currSong.user));
+                $.say($.lang.get("net.phantombot.musicplayer.steal-song", $var.currSong.song.getName(), $var.currSong.user));
                 $.parseDefault();
                 return;
             }
@@ -785,7 +785,7 @@ $.on('command', function (event) {
             var currsongurl = "https://www.youtube.com/watch?v=" + $var.currSong.song.getId();
             $.musicplayer.stealSong(currsongurl);
             $var.defaultplaylist = $.readFile("./addons/youtubePlayer/playlist.txt");
-            $.say($.lang.get("net.phantombot.musicplayer.musicplayer-config", $var.currSong.song.getName(), $var.currSong.user));
+            $.say($.lang.get("net.phantombot.musicplayer.steal-song", $var.currSong.song.getName(), $var.currSong.user));
             $.parseDefault();
             return;
         }
