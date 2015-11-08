@@ -107,7 +107,6 @@ public class ScriptEventManager implements Listener
                 break;
             } catch (ClassNotFoundException e)
             {
-                com.gmt2001.Console.err.printStackTrace(e);
             }
         }
 
