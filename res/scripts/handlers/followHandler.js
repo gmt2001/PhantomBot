@@ -127,8 +127,8 @@ $.on('twitchFollowsInitialized', function(event) {
     println(">>Enabling new follower announcements");
     
     $.announceFollows = $.inidb.get("settings", "announcefollows");
-    if($.announceFollows == null) {
-        $.inidb.set("settings","announcefollows","true");
+    if ($.announceFollows == undefined || $.announceFollows == null || isNaN($.announceFollows)) {
+        $.inidb.set("settings", "announcefollows", "true");
         $.announceFollows = true;
     }
 });
