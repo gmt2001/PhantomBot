@@ -46,6 +46,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
             <include name="*.jar" />
         </fileset>
     </path>
+    
+    <available file=".git" type="dir" property="git.present"/>
 
     <target name="init">
         <mkdir dir="${build}" />
@@ -64,10 +66,29 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
         </pathconvert>
     </target>
 
-    <target depends="init" name="pre.compile.test">
+    <target name="git.revision" if="git.present">
+        <exec executable="git" outputproperty="git.revision" failifexecutionfails="false" errorproperty="">
+            <arg value="describe"/>
+            <arg value="--tags"/>
+            <arg value="--always"/>
+            <arg value="HEAD"/>
+        </exec>
+        <condition property="repository.version" value="${git.revision}" else="unknown">
+            <and>
+                <isset property="git.revision"/>
+                <length string="${git.revision}" trim="yes" length="0" when="greater"/>
+            </and>
+        </condition>
     </target>
 
-    <target depends="pre.compile.test" name="compile.src">
+    <target depends="init,git.revision" name="pre.compile">
+        <replace
+            file="${src}/me/mast3rplan/phantombot/RepoVersion.java"
+            token="@repository.version@"
+            value="${repository.version}" />
+    </target>
+
+    <target depends="pre.compile" name="compile.src">
         <javac target="1.7" source="1.7" debug="on" destdir="${classes}" srcdir="${src}" includeantruntime="false" >
             <compilerarg value="-Xlint:unchecked" />
             <compilerarg value="-Xlint:-options" />
@@ -75,7 +96,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
         </javac>
     </target>
     
-    <target depends="pre.compile.test" name="clean.build.test">
+    <target depends="pre.compile" name="clean.build.test">
         <delete dir="${build}" />
         <mkdir dir="${build}" />
         <mkdir dir="${classes}" />
@@ -88,8 +109,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
             <classpath refid="reference.class.path" />
         </javac>
     </target>
+    
+    <target name="post.compile">
+        <replace
+            file="${src}/me/mast3rplan/phantombot/RepoVersion.java"
+            token="${repository.version}"
+            value="@repository.version@" />
+    </target>
 
-    <target depends="compile.src" name="jar">
+    <target depends="compile.src,post.compile" name="jar">
         <jar destfile="${build.dir}/PhantomBot.jar">
             <fileset dir="${classes}" />
             <manifest>
@@ -117,7 +145,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
         </copy>
     </target>
      
-    <target depends="compile.src.test" name="test"></target>
+    <target depends="compile.src.test,post.compile" name="test"></target>
      
     <target name="run" depends="jar">
         <java fork="true" classname="me.mast3rplan.phantombot.PhantomBot" dir="${build.dir}">
@@ -135,7 +163,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
         </zip>
     </target>
 
-    <target name="clean">
+    <target name="clean" depends="git.revision,post.compile">
         <delete dir="${build}" />
         <delete dir="${dist}" />
     </target>

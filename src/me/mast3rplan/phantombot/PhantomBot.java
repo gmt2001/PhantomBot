@@ -57,7 +57,6 @@ import me.mast3rplan.phantombot.jerklib.ConnectionManager;
 import me.mast3rplan.phantombot.jerklib.Profile;
 import me.mast3rplan.phantombot.jerklib.Session;
 import me.mast3rplan.phantombot.musicplayer.MusicWebSocketServer;
-import me.mast3rplan.phantombot.script.ObservingDebugger;
 import me.mast3rplan.phantombot.script.Script;
 import me.mast3rplan.phantombot.script.ScriptApi;
 import me.mast3rplan.phantombot.script.ScriptEventManager;
@@ -123,6 +122,7 @@ public class PhantomBot implements Listener
 
         com.gmt2001.Console.out.println();
         com.gmt2001.Console.out.println("PhantomBot Core 1.6.5 10/25/2015");
+        com.gmt2001.Console.err.println("Build revision " + RepoVersion.getRepoVersion());
         com.gmt2001.Console.out.println("Creator: mast3rplan");
         com.gmt2001.Console.out.println("Developers: gmt2001, GloriousEggroll, PhantomIndex");
         com.gmt2001.Console.out.println("www.phantombot.net");
@@ -834,66 +834,69 @@ public class PhantomBot implements Listener
 
         try
         {
-            String data = FileUtils.readFileToString(new File("./botlogin.txt"));
-            String[] lines = data.replaceAll("\\r", "").split("\\n");
-
-            for (String line : lines)
+            if (new File("./botlogin.txt").exists())
             {
-                if (line.startsWith("user=") && line.length() > 8)
+                String data = FileUtils.readFileToString(new File("./botlogin.txt"));
+                String[] lines = data.replaceAll("\\r", "").split("\\n");
+
+                for (String line : lines)
                 {
-                    user = line.substring(5);
-                }
-                if (line.startsWith("oauth=") && line.length() > 9)
-                {
-                    oauth = line.substring(6);
-                }
-                if (line.startsWith("apioauth=") && line.length() > 12)
-                {
-                    apioauth = line.substring(9);
-                }
-                if (line.startsWith("clientid=") && line.length() > 12)
-                {
-                    clientid = line.substring(9);
-                }
-                if (line.startsWith("channel=") && line.length() > 11)
-                {
-                    channel = line.substring(8);
-                }
-                if (line.startsWith("owner=") && line.length() > 9)
-                {
-                    owner = line.substring(6);
-                }
-                if (line.startsWith("baseport=") && line.length() > 10)
-                {
-                    baseport = Integer.parseInt(line.substring(9));
-                }
-                if (line.startsWith("hostname=") && line.length() > 10)
-                {
-                    hostname = line.substring(9);
-                }
-                if (line.startsWith("port=") && line.length() > 6)
-                {
-                    port = Integer.parseInt(line.substring(5));
-                }
-                if (line.startsWith("msglimit30=") && line.length() > 12)
-                {
-                    msglimit30 = Double.parseDouble(line.substring(11));
-                }
-                if (line.startsWith("datastore=") && line.length() > 11)
-                {
-                    datastore = line.substring(10);
-                }
-                if (line.startsWith("youtubekey=") && line.length() > 12)
-                {
-                    youtubekey = line.substring(11);
-                }
-                if (line.startsWith("webenable=") && line.length() > 11)
-                {
-                    webenable = line.substring(10);
-                }
-                if (line.startsWith("musicenable=") && line.length() > 13)
-                {
-                    musicenable = line.substring(12);
+                    if (line.startsWith("user=") && line.length() > 8)
+                    {
+                        user = line.substring(5);
+                    }
+                    if (line.startsWith("oauth=") && line.length() > 9)
+                    {
+                        oauth = line.substring(6);
+                    }
+                    if (line.startsWith("apioauth=") && line.length() > 12)
+                    {
+                        apioauth = line.substring(9);
+                    }
+                    if (line.startsWith("clientid=") && line.length() > 12)
+                    {
+                        clientid = line.substring(9);
+                    }
+                    if (line.startsWith("channel=") && line.length() > 11)
+                    {
+                        channel = line.substring(8);
+                    }
+                    if (line.startsWith("owner=") && line.length() > 9)
+                    {
+                        owner = line.substring(6);
+                    }
+                    if (line.startsWith("baseport=") && line.length() > 10)
+                    {
+                        baseport = Integer.parseInt(line.substring(9));
+                    }
+                    if (line.startsWith("hostname=") && line.length() > 10)
+                    {
+                        hostname = line.substring(9);
+                    }
+                    if (line.startsWith("port=") && line.length() > 6)
+                    {
+                        port = Integer.parseInt(line.substring(5));
+                    }
+                    if (line.startsWith("msglimit30=") && line.length() > 12)
+                    {
+                        msglimit30 = Double.parseDouble(line.substring(11));
+                    }
+                    if (line.startsWith("datastore=") && line.length() > 11)
+                    {
+                        datastore = line.substring(10);
+                    }
+                    if (line.startsWith("youtubekey=") && line.length() > 12)
+                    {
+                        youtubekey = line.substring(11);
+                    }
+                    if (line.startsWith("webenable=") && line.length() > 11)
+                    {
+                        webenable = line.substring(10);
+                    }
+                    if (line.startsWith("musicenable=") && line.length() > 13)
+                    {
+                        musicenable = line.substring(12);
+                    }
                 }
             }
         } catch (IOException ex)
