@@ -2,15 +2,44 @@ $.getFollowAge = function(user, channel) {
     var follow = $.twitch.GetUserFollowsChannel(user, channel);
     var Followed_At = follow.getString("created_at");
 
-    var DateFormate = new java.text.SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssz");
+    var date = new java.text.SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssz");
     var s0 = Followed_At.substring(0, Followed_At.length() - 6);
-    var s1 = Followed_At.substring(Followed_At.length() - 6, Followed_At.length());
-    Followed_At = s0 + "GMT" + s1;
+    var s1 = Followed_At.substring(Followed_At.length() - 6, Followed_At.length() );
+    Followed_At = s0 + "GMT" + s1;     
 
-    var Date = new java.text.SimpleDateFormat("EEEE MMMM dd, yyyy");
-    Date.setTimeZone(java.util.TimeZone.getTimeZone($.timezone));
+    var datefmt = new java.text.SimpleDateFormat("MMMM d, YYYY");
+    var gtf = new java.text.SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+    datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.timezone));
+    var now = java.util.Calendar.getInstance(java.util.TimeZone.getTimeZone($.timezone)).getTime();
 
-    return Date.format(DateFormate.parse(Followed_At));
+    var FollowTime = new java.util.Date(gtf.format(date.parse(Followed_At)));
+    var TotalFollowTime = new java.util.Date(gtf.format(now));
+    
+    var diff = (TotalFollowTime.getTime() - FollowTime.getTime());
+    var diffSeconds = diff / 1000 % 60;
+    var diffMinutes = diff / (60 * 1000) % 60;
+    var diffHours = diff / (60 * 60 * 1000) % 24;
+    var diffDays = diff / (24 * 60 * 60 * 1000);
+    var diffWeek = diff / (7 * 24 * 60 * 60 * 1000);
+    var diffMonth = diff / (31 * 24 * 60 * 60 * 1000);
+    var diffYear = diff / (12 * 31 * 24 * 60 * 60 * 1000);
+    
+    diffMinutes = diffMinutes.toString().substring(0, diffMinutes.toString().indexOf("."));
+    diffHours = diffHours.toString().substring(0, diffHours.toString().indexOf("."));
+    diffDays = diffDays.toString().substring(0, diffDays.toString().indexOf("."));
+    diffWeek = diffWeek.toString().substring(0, diffWeek.toString().indexOf("."));
+    diffMonth = diffMonth.toString().substring(0, diffMonth.toString().indexOf("."));
+    diffYear = diffYear.toString().substring(0, diffYear.toString().indexOf("."));
+
+    if (diffMonth > 12) {
+        return diffYear + " years, " + diffHours + " hrs, " + diffMinutes + " min and " + diffSeconds + " sec.";
+    } else if (diffWeek > 5) {
+        return diffMonth + " months, " + diffHours + " hrs, " + diffMinutes + " min and " + diffSeconds + " sec.";
+    } else if (diffDays > 15) {
+        return diffWeek + " weeks, " + diffHours + " hrs, " + diffMinutes + " min and " + diffSeconds + " sec.";
+    } else {
+       return diffDays + " days, " + diffHours + " hrs, " + diffMinutes + " min and " + diffSeconds + " sec.";
+    }
 }
 
 if ($.lastfollow == undefined || $.lastfollow == null) {
@@ -110,6 +139,11 @@ $.on('command', function(event) {
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
     var args = event.getArgs();
+    var action = args[0];
+    var action2 = args[1];
+    if (action == null) action = sender;
+    if (action2 == null) action2 = $.channelName;
+    var check = $.twitch.GetUserFollowsChannel($.username.resolve(action.toLowerCase()), action2.toLowerCase());
 	
     if (command.equalsIgnoreCase("followed")) {
         if (args[0] != null) {
@@ -217,17 +251,14 @@ $.on('command', function(event) {
     }
 
     if (command.equalsIgnoreCase("followage") || command.equalsIgnoreCase("followtime") || command.equalsIgnoreCase("following")) {
-        var action = args[0];
-        var check = $.twitch.GetUserFollowsChannel(sender.toLowerCase(), $.channelName.toLowerCase());
-        if (action) check = $.twitch.GetUserFollowsChannel($.username.resolve(action.toLowerCase()), $.channelName.toLowerCase());
-        if (check.getInt("_http") != 200) {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.followHandler.error-not-following"));
+        if (action.equalsIgnoreCase("help")) {
+            $.say("@" + $.getWhisperString(sender) + $.lang.get("net.phantombot.followHandler.followtime-usage"));
             return;
-        } else if (action) {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.followHandler.followtime-check-user", action, $.channelName, $.getFollowAge(action, $.channelName)));
+        } else if (check.getInt("_http") != 200) {
+            $.say("@" + $.getWhisperString(sender) + $.lang.get("net.phantombot.followHandler.error-not-following", action, action2));
             return;
         } else {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.followHandler.followtime", $.channelName, $.getFollowAge(sender, $.channelName)));
+            $.say("@" + $.getWhisperString(sender) + $.lang.get("net.phantombot.followHandler.followtime", action, action2, $.getFollowAge(action, action2)));
             return;
         }
     }
