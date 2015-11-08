@@ -46,22 +46,25 @@ public class Logger implements Runnable
                     {
                         PrintStream ps = new PrintStream(fos);
 
-                        LogItem i = queue.remove(0);
-
-                        switch (i.t)
+                        if (queue.size() > 0)
                         {
-                            case Output:
-                                ps.println(">>" + i.s);
-                                break;
-                            case Input:
-                                ps.println("<<" + i.s);
-                                break;
-                            case Error:
-                                ps.println("!!" + i.s);
-                                break;
-                            default:
-                                ps.println();
-                                break;
+                            LogItem i = queue.remove(0);
+
+                            switch (i.t)
+                            {
+                                case Output:
+                                    ps.println(">>" + i.s);
+                                    break;
+                                case Input:
+                                    ps.println("<<" + i.s);
+                                    break;
+                                case Error:
+                                    ps.println("!!" + i.s);
+                                    break;
+                                default:
+                                    ps.println();
+                                    break;
+                            }
                         }
                     }
                 } catch (FileNotFoundException ex)

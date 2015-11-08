@@ -65,7 +65,7 @@ public class ScriptEventManager implements Listener
             this.handler = handler;
         }
     }
-    private final List<EventHandlerEntry> entries = Lists.newArrayList();
+    private final List<EventHandlerEntry> entries = Lists.newCopyOnWriteArrayList();
 
     @Subscribe
     public void onEvent(Event event)
