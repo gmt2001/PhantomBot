@@ -125,43 +125,43 @@ for (var i = 0; i < keys.length; i++) {
 
 if ($.usergroups[0] == undefined || $.usergroups[0] == null || $.usergroups[0] != "Caster") {
     $.usergroups[0] = "Caster";
-    $.inidb.set("grouppoints", "Caster", "7");
+    $.inidb.set("grouppoints", "Caster", "0");
     $.inidb.set("groups", "0", "Caster");
 }
 
 if ($.usergroups[1] == undefined || $.usergroups[1] == null || $.usergroups[1] != "Administrator") {
     $.usergroups[1] = "Administrator";
-    $.inidb.set("grouppoints", "Administrator", "6");
+    $.inidb.set("grouppoints", "Administrator", "0");
     $.inidb.set("groups", "1", "Administrator");
 }
 
 if ($.usergroups[2] == undefined || $.usergroups[2] == null || $.usergroups[2] != "Moderator") {
     $.usergroups[2] = "Moderator";
-    $.inidb.set("grouppoints", "Moderator", "5");
+    $.inidb.set("grouppoints", "Moderator", "0");
     $.inidb.set("groups", "2", "Moderator");
 }
 
 if ($.usergroups[3] == undefined || $.usergroups[3] == null || $.usergroups[3] != "Subscriber") {
     $.usergroups[3] = "Subscriber";
-    $.inidb.set("grouppoints", "Subscriber", "4");
+    $.inidb.set("grouppoints", "Subscriber", "0");
     $.inidb.set("groups", "3", "Subscriber");
 }
 
 if ($.usergroups[4] == undefined || $.usergroups[4] == null || $.usergroups[4] != "Donator") {
     $.usergroups[4] = "Donator";
-    $.inidb.set("grouppoints", "Donator", "3");
+    $.inidb.set("grouppoints", "Donator", "0");
     $.inidb.set("groups", "4", "Donator");
 }
 
 if ($.usergroups[5] == undefined || $.usergroups[5] == null || $.usergroups[5] != "Hoster") {
     $.usergroups[5] = "Hoster";
-    $.inidb.set("grouppoints", "Hoster", "2");
+    $.inidb.set("grouppoints", "Hoster", "0");
     $.inidb.set("groups", "5", "Hoster");
 }
 
 if ($.usergroups[6] == undefined || $.usergroups[6] == null || $.usergroups[6] != "Regular") {
     $.usergroups[6] = "Regular";
-    $.inidb.set("grouppoints", "Regular", "1");
+    $.inidb.set("grouppoints", "Regular", "0");
     $.inidb.set("groups", "6", "Regular");
 }
 
@@ -309,8 +309,8 @@ $.on('command', function (event) {
                     $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.permissions.group-not-exists"));
                     return;
                 }
-                if (!parseInt(args[2]) || parseInt(args[2] < 0)) {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.permissions.group-points-err-zero"));
+                if (parseInt(args[2] <= -1)) { // modified to accept !group points <group> 0 to default to !points gain <amount> - Kojitsari
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.permissions.group-points-err-less-than-zero"));
                     return;
                 } else {
                     $.inidb.set("grouppoints", groupname, args[2].toString());
