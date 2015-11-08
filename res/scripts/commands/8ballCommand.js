@@ -1,15 +1,5 @@
 var arrballlimiter = new Array();
 
-$.ballcost = $.inidb.get('settings', 'ballcost');
-$.ballcooldown = $.inidb.get('settings', 'ballcooldown');
-if ($.ballcooldown === undefined || $.ballcooldown === null || isNaN($.ballcooldown) || $.ballcooldown < 5) {
-    $.ballcooldown = 30;
-}
-
-if ($.ballcost === undefined || $.ballcost === null || isNaN($.ballcost) || $.ballcost < 0) {
-    $.ballcost = 0;
-}
-
 $.on('command', function(event) {
 var sender = event.getSender();
 var username = $.username.resolve(sender);
@@ -20,25 +10,7 @@ var ballcost = $.inidb.get('settings', 'ballcost');
 var points = $.inidb.get('points', sender);
 
 
-        var found = false;
-        var i;
-
         if (command.equalsIgnoreCase("8ball")) {
-            for (i = 0; i < arrballlimiter.length; i++) {           
-                if (arrballlimiter[i][1] < System.currentTimeMillis()) {
-                    arrballlimiter[i][1] = System.currentTimeMillis() + ($.ballcooldown * 1000);
-                    break;
-                    } else {
-                    return;
-                }
-
-                    found = true;
-                    return;
-                }
-            
-            if (found === false) {
-                arrballlimiter.push(new Array(username, System.currentTimeMillis() + ($.ballcooldown * 1000)));
-            }
 
             if (args.length == 0 || args.length == null) { 
 		        $.say ($.getWhisperString(sender) + $.lang.get("net.phantombot.8ballCommand.proper-usage")); 
@@ -84,41 +56,15 @@ var points = $.inidb.get('points', sender);
 	do {
 		b = $.randElement(ball);
 	} while (b.equalsIgnoreCase($var.lastRandom) && ball.length > 1);
-	if (points < ballcost) {
-		$.say($.getWhisperString(sender) + $.lang.get("net.phantombot.8ballCommand.not-enough-points"));
-		return;
-	} else {
-	    $.say($.getWhisperString(sender) + " Magic-8ball says... " + b);
+
+	$.say("Magic-8ball says... " + b);
         return;
-    }
 }
 
-	if (command.equalsIgnoreCase("8ballcooldown")) {
-        if (!$.isAdmin(sender)) {
-            $.say($.getWhisperString(sender) + $.adminmsg);
-           return;
-        }
 
-        $.inidb.set('settings', 'ballcooldown', args[0]);
-        $.ballcooldown = $.inidb.get('settings', 'ballcooldown');
-        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.8ballCommand.new-cooldown"));
-    }
-
-    if (command.equalsIgnoreCase("8ballcost")) {
-        if (!$.isAdmin(sender)) {
-            $.say($.getWhisperString(sender)+ $.adminmsg);
-            return;
-        }
-
-        $.inidb.set('settings', 'ballcost', args[0]);
-        $.ballcost = $.inidb.get('settings', 'ballcost');
-        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.8ballCommand.new-cost"));
-    }
 });
 setTimeout(function(){ 
     if ($.moduleEnabled('./commands/8ballCommand.js')) {
 $.registerChatCommand("./commands/8ballCommand.js", "8ball");
-$.registerChatCommand("./commands/8ballCommand.js", "8ballcooldown", "admin");
-$.registerChatCommand("./commands/8ballCommand.js", "8ballcost", "admin");
 }
 },10 * 1000);

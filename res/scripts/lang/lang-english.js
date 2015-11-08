@@ -480,9 +480,6 @@ $.lang.data["net.phantombot.subscribeHandler.changed-sub-mode-twitchnotify"] = "
 $.lang.data["net.phantombot.subscribeHandler.changed-sub-mode-auto"] = "Switched to auto subscription detection!";
 
 //8ballCommand.js
-$.lang.data["net.phantombot.8ballCommand.new-cost"] = "new cost set!";
-$.lang.data["net.phantombot.8ballCommand.new-cooldown"] = "new cooldown set!";
-$.lang.data["net.phantombot.8ballCommand.not-enough-points"] = "You need more points to use this command ";
 $.lang.data["net.phantombot.8ballCommand.proper-usage"] = "ask the magic-8ball a question with !8ball";
 $.lang.data["net.phantombot.8ballCommand.answer-1"] = "Reply hazy try again.";
 $.lang.data["net.phantombot.8ballCommand.answer-2"] = "Ask again later.";
