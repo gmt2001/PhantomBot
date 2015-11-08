@@ -79,6 +79,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                 <length string="${git.revision}" trim="yes" length="0" when="greater"/>
             </and>
         </condition>
+        <echo>Building revision ${repository.version}</echo>
     </target>
 
     <target depends="init,git.revision" name="pre.compile">
