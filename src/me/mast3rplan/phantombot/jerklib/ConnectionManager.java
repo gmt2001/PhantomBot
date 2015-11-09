@@ -224,7 +224,7 @@ public final class ConnectionManager
         session.setInternalParser(internalEventParser);
         sessionMap.put(hostName, session);
 
-        new IdentServer(defaultProfile.getName());
+        IdentServer.instance().setLogin(defaultProfile.getName());
 
         return session;
     }
@@ -238,7 +238,7 @@ public final class ConnectionManager
         session.setInternalParser(internalEventParser);
         sessionMap.put(hostName, session);
 
-        new IdentServer(defaultProfile.getName());
+        IdentServer.instance().setLogin(defaultProfile.getName());
 
         return session;
     }

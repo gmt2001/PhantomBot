@@ -25,15 +25,14 @@ public class IdentServer implements Runnable
 {
 
     private ServerSocket socket;
-    private String login;
+    private String login = "";
     private Socket soc;
     private Thread t = null;
+    private static IdentServer instance = null;
 
     @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
-    public IdentServer(String login)
+    private IdentServer()
     {
-
-        this.login = login;
         try
         {
             socket = new ServerSocket(113);
@@ -44,6 +43,21 @@ public class IdentServer implements Runnable
         {
             com.gmt2001.Console.err.printStackTrace(e);
         }
+    }
+
+    public static IdentServer instance()
+    {
+        if (instance == null)
+        {
+            instance = new IdentServer();
+        }
+
+        return instance;
+    }
+
+    public void setLogin(String login)
+    {
+        this.login = login;
     }
 
     @Override
