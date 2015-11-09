@@ -121,125 +121,67 @@ $.deobfuscateLinks = function(message, aggressive) {
         }
     }
     
-    while (message.indexOf("\"") >= 0) {
-        message = message.replace("\"", "");
-    }
+    message = $.replaceAll(message, "\"", "");
     
-    while (message.indexOf("--") >= 0) {
-        message = message.replace("--", "(dot)");
-    }
+    message = $.replaceAll(message, "--", "(dot)");
     
-    while (message.indexOf("[dot]") >= 0) {
-        message = message.replace("[dot]", "(dot)");
-    }
+    message = $.replaceAll(message, "[dot]", "(dot)");
     
-    while (message.indexOf("<dot>") >= 0) {
-        message = message.replace("<dot>", "(dot)");
-    }
+    message = $.replaceAll(message, "<dot>", "(dot)");
     
-    while (message.indexOf("{dot}") >= 0) {
-        message = message.replace("{dot}", "(dot)");
-    }
+    message = $.replaceAll(message, "{dot}", "(dot)");
     
-    while (message.indexOf("(dot)") >= 0) {
-        message = message.replace("(dot)", ".");
-    }
+    message = $.replaceAll(message, "(dot)", ".");
     
     if (aggressive) {
         var ms = Pattern.compile(specialTldPattern).matcher(message);
     
         if (ms.find() == true) {
-            while (message.indexOf(" dot ") >= 0) {
-                message = message.replace(" dot ", ".");
-            }
+            message = $.replaceAll(message, " dot ", ".");
     
-            while (message.indexOf(",") >= 0) {
-                message = message.replace(",", ".");
-            }
+            message = $.replaceAll(message, ",", ".");
     
-            while (message.indexOf("|-|") >= 0) {
-                message = message.replace("|-|", "h");
-            }
+            message = $.replaceAll(message, "|-|", "h");
     
-            while (message.indexOf("|_|") >= 0) {
-                message = message.replace("|_|", "u");
-            }
+            message = $.replaceAll(message, "|_|", "u");
     
-            while (message.indexOf("\\/") >= 0) {
-                message = message.replace("\\/", "v");
-            }
+            message = $.replaceAll(message, "\\/", "v");
     
-            while (message.indexOf("7") >= 0) {
-                message = message.replace("7", "t");
-            }
+            message = $.replaceAll(message, "7", "t");
     
-            while (message.indexOf("8") >= 0) {
-                message = message.replace("8", "b");
-            }
+            message = $.replaceAll(message, "8", "b");
     
-            while (message.indexOf("|)") >= 0) {
-                message = message.replace("|)", "d");
-            }
+            message = $.replaceAll(message, "|)", "d");
     
-            while (message.indexOf("3") >= 0) {
-                message = message.replace("3", "e");
-            }
+            message = $.replaceAll(message, "3", "e");
     
-            while (message.indexOf("1") >= 0) {
-                message = message.replace("1", "i");
-            }
+            message = $.replaceAll(message, "1", "i");
     
-            while (message.indexOf("0") >= 0) {
-                message = message.replace("0", "o");
-            }
+            message = $.replaceAll(message, "0", "o");
     
-            while (message.indexOf("()") >= 0) {
-                message = message.replace("()", "o");
-            }
+            message = $.replaceAll(message, "()", "o");
     
-            while (message.indexOf("(") >= 0) {
-                message = message.replace("(", "c");
-            }
+            message = $.replaceAll(message, "(", "c");
     
-            while (message.indexOf("5") >= 0) {
-                message = message.replace("5", "s");
-            }
+            message = $.replaceAll(message, "5", "s");
     
-            while (message.indexOf("$") >= 0) {
-                message = message.replace("$", "s");
-            }
+            message = $.replaceAll(message, "$", "s");
     
-            while (message.indexOf("/-\\") >= 0) {
-                message = message.replace("/-\\", "a");
-            }
+            message = $.replaceAll(message, "/-\\", "a");
     
-            while (message.indexOf("@") >= 0) {
-                message = message.replace("@", "a");
-            }
+            message = $.replaceAll(message, "@", "a");
     
-            while (message.indexOf("|\\/|") >= 0) {
-                message = message.replace("|\\/|", "m");
-            }
+            message = $.replaceAll(message, "|\\/|", "m");
     
-            while (message.indexOf("|/|") >= 0) {
-                message = message.replace("|/|", "n");
-            }
+            message = $.replaceAll(message, "|/|", "n");
     
-            while (message.indexOf("|\\|") >= 0) {
-                message = message.replace("|\\|", "n");
-            }
+            message = $.replaceAll(message, "|\\|", "n");
     
-            while (message.indexOf(" .") >= 0) {
-                message = message.replace(" .", ".");
-            }
+            message = $.replaceAll(message, " .", ".");
     
-            while (message.indexOf(". ") >= 0) {
-                message = message.replace(". ", ".");
-            }
+            message = $.replaceAll(message, ". ", ".");
     
-            while (message.indexOf("..") >= 0) {
-                message = message.replace("..", ".");
-            }
+            message = $.replaceAll(message, "..", ".");
         }
     }
     

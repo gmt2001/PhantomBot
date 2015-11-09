@@ -270,6 +270,7 @@ function processBankheist() {
             } else {
                 string = $.stringCasualties;
             }
+            
             string = string.replace('(pointname)', $.getPointsString($.winningPot));
 
             $.say(string);

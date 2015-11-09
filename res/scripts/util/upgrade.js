@@ -232,21 +232,13 @@ if ($.inidb.GetInteger("init", "upgrade", "version") < 2) {
     if ($.inidb.exists("settings", "followmessage")) {
         s = $.inidb.get("settings", "followmessage");
         
-        while (s.indexOf('<name>') != -1) {
-            s = s.replace('<name>', '(name)');
-        }
+        s = $.replaceAll(s, '<name>', '(name)');
         
-        while (s.indexOf('< name>') != -1) {
-            s = s.replace('< name>', '(name)');
-        }
+        s = $.replaceAll(s, '< name>', '(name)');
         
-        while (s.indexOf('<pointname>') != -1) {
-            s = s.replace('<pointname>', '(pointname)');
-        }
+        s = $.replaceAll(s, '<pointname>', '(pointname)');
         
-        while (s.indexOf('< pointname>') != -1) {
-            s = s.replace('< pointname>', '(pointname)');
-        }
+        s = $.replaceAll(s, '< pointname>', '(pointname)');
         
         $.inidb.set("settings", "followmessage", s);
     }
@@ -258,22 +250,14 @@ if ($.inidb.GetInteger("init", "upgrade", "version") < 2) {
     for (i = 0; i < keys.length; i++) {
         s = $.inidb.get("command", keys[i]);
         
-        while (s.indexOf('<sender>') != -1) {
-            s = s.replace('<sender>', '(sender)');
-        }
+        s = $.replaceAll(s, '<sender>', '(sender)');
         
-        while (s.indexOf('< sender>') != -1) {
-            s = s.replace('< sender>', '(sender)');
-        }
+        s = $.replaceAll(s, '< sender>', '(sender)');
         
         for (var b = 1; b <= 10; b++) {
-            while (s.indexOf('<' + b + '>') != -1) {
-                s = s.replace('<' + b + '>', '(' + b + ')');
-            }
+            s = $.replaceAll(s, '<' + b + '>', '(' + b + ')');
             
-            while (s.indexOf('< ' + b + '>') != -1) {
-                s = s.replace('< ' + b + '>', '(' + b + ')');
-            }
+            s = $.replaceAll(s, '< ' + b + '>', '(' + b + ')');
         }
         
         $.inidb.set("command", keys[i], s);

@@ -12,9 +12,8 @@ $.on('ircChannelMessage', function(event) {
     for (i = 0; i < emoteKey.length; i++) {
         if (message.equalsIgnoreCase(emoteKey[i].toLowerCase())) {
             var messageKEY = $.inidb.get('phrases', emoteKey[i]);
-            while (messageKEY.contains("(sender)")) {
-                messageKEY = messageKEY.replace("(sender)", username);
-            }
+            
+            messageKEY = $.replaceAll(messageKEY, "(sender)", username);
 			
             $.say(messageKEY);
             return;

@@ -46,18 +46,12 @@ $.on('twitchSubscribe', function(event) {
             p = 100;
         }
             
-        while (s.indexOf('(name)') != -1) {
-            s = s.replace('(name)', username);
-        }
+        s = $.replaceAll(s, '(name)', username);
             
         if ($.moduleEnabled("./systems/pointSystem.js")) {
-            while (s.indexOf('(pointname)') != -1) {
-                s = s.replace('(pointname)', $.getPointsString(p));
-            }
+            s = $.replaceAll(s, '(pointname)', $.getPointsString(p));
                 
-            while (s.indexOf('(reward)') != -1) {
-                s = s.replace('(reward)', p);
-            }
+                s = $.replaceAll(s, '(reward)', p.toString());
         }
         if ($.sub_silentmode == 0) {
             $.say(s);

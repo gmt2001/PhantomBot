@@ -39,9 +39,8 @@ $.on('twitchHosted', function(event) {
             }
         }
             
-        while (s.indexOf('(name)') != -1) {
-            s = s.replace('(name)', username);
-        }
+        s = $.replaceAll(s, '(name)', username);
+        
         $.inidb.set('temphostgroup', username.toLowerCase(), group);
         $.inidb.set('group', username.toLowerCase(), 5);
         $.say(s);
