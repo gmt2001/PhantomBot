@@ -164,19 +164,25 @@ $.on('command', function(event) {
         }        
     }
 
-    if (command.equalsIgnoreCase("follow")) {
-        if (args[0] != null) {
-            if (!$.isModv3(sender)) {
-                $.say($.getWhisperString(sender) + $.modmsg);
-                return;
-            }
-            if ($.username.resolve(args[0])) {
-                $.say($.lang.get("net.phantombot.followHandler.shoutout-command", args[0]));
-            }
+    if (command.equalsIgnoreCase("follow") || command.equalsIgnoreCase("shoutout") || command.equalsIgnoreCase("caster")) {
+        if (!$.isModv3(sender)) {
+            $.say($.getWhisperString(sender) + $.modmsg);
+            return;
+        }
+
+        if (args.length == 0) {
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.followHandler.shoutout-usage"));
+            return;
+        }
+        var user = $.username.resolve(args[0]);
+
+        if (!$.isOnline(user)) {
+            $.say($.lang.get("net.phantombot.followHandler.shoutout-offline", user.toLowerCase(), $.getGame(user.toLowerCase())));
+            return;
         } else {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.followHandler.followed-command-usage"));
-            return;    
-        }        
+            $.say($.lang.get("net.phantombot.followHandler.shoutout-online", user.toLowerCase(), $.getGame(user.toLowerCase())));
+            return;
+        }
     }
 
     if (command.equalsIgnoreCase("followannounce")) {
