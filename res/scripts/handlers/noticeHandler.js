@@ -34,30 +34,33 @@ $.on('command', function (event) {
     }
 
     if (command.equalsIgnoreCase("notice")) {
-        if (args.length >= 1) {
-            if (!$.isAdmin(sender)) {
-                $.say($.getWhisperString(sender) + $.adminmsg);
+        if (!$.isAdmin(sender)) {
+            $.say($.getWhisperString(sender) + $.adminmsg);
+            return;
+        }
+
+        action = args[0];
+        message = args[1];
+
+        if (action == null) {
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.noticehandler.notice-usage"));
+            return;
+        }
+
+        if (args.length >= 2) {
+            message = argsString.substring(argsString.indexOf(action) + action.length() + 1)
+        }
+
+        if (action.equalsIgnoreCase("get")) {
+            if (args.length < 2) {
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.noticehandler.notice-get-usage", num_messages, (num_messages)));
                 return;
-            }
-
-            action = args[0];
-            message = args[1];
-
-            if (args.length >= 2) {
-                message = argsString.substring(argsString.indexOf(action) + action.length() + 1)
-            }
-
-            if (action.equalsIgnoreCase("get")) {
-                if (args.length < 2) {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.noticehandler.notice-get-usage", num_messages, (num_messages)));
-                    return;
-                } else if ($.inidb.get('notices', 'message_' + message) == null) {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.noticehandler.notice-get-error", num_messages, (num_messages), args[1]));
-                    return;
-                } else {
-                    $.say($.getWhisperString(sender) + $.inidb.get('notices', 'message_' + message)); // no need for lang here because who set's the notice will have it in his lang.
-                    return;
-                }
+            } else if ($.inidb.get('notices', 'message_' + message) == null) {
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.noticehandler.notice-get-error", num_messages, (num_messages), args[1]));
+                return;
+            } else {
+                $.say($.inidb.get('notices', 'message_' + message)); // no need for lang here because who set's the notice will have it in his lang.
+                return;
             }
         }
 
@@ -75,14 +78,12 @@ $.on('command', function (event) {
                             $.inidb.set('notices', 'message_' + (i + 1), $.inidb.get('notices', 'message_' + i));
                         }
                     }
-                    $.inidb.set('notices', 'message_' + parseInt(id), message);
-                } else {
-                    $.inidb.set('notices', 'message_' + num_messages, message);
-                }
-
+                $.inidb.set('notices', 'message_' + parseInt(id), message);
+            } else {
+                $.inidb.set('notices', 'message_' + num_messages, message);
+            }
                 $.inidb.incr('notice', 'num_messages', 1);
-
-                num_messages = $.inidb.get('notices', 'num_messages');
+                num_messages = $.inidb.get('notice', 'num_messages');
 
                 $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.noticehandler.notice-added-success", message, num_messages));
                 return;
@@ -128,13 +129,11 @@ $.on('command', function (event) {
             }
 
             if ($.notices_toggle == false) {
-
                 $.notices_toggle = true;
                 $.inidb.set('notice', 'notices_toggle', "true");
                 $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.noticehandler.notice-toggle-on"));
                 return;
                 } else if ($.notices_toggle == true) {
-
                 $.notices_toggle = false;
                 $.inidb.set('notice', 'notices_toggle', "false");
                 $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.noticehandler.notice-toggle-off"));
@@ -171,18 +170,18 @@ $.on('command', function (event) {
 
         message = argsString;
 
-        if (message == null) {
+        if (args.length == 0) {
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.noticehandler.notice-add-usage"));
             return;
-        } else {
-            $.inidb.incr('notice', 'num_messages', 1);
+        } 
 
-            num_messages = $.inidb.get('notice', 'num_messages');
+        $.inidb.incr('notice', 'num_messages', 1);
 
-            $.inidb.set('notices', 'message_' + (num_messages - 1), message);
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.noticehandler.notice-added-success", message, num_messages));
-            return;
-        }
+        num_messages = $.inidb.get('notice', 'num_messages');
+
+        $.inidb.set('notices', 'message_' + (num_messages - 1), message);
+        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.noticehandler.notice-added-success", message, num_messages));
+        return;
     }
 
     if (command.equalsIgnoreCase("delnotice")) {
@@ -202,9 +201,6 @@ $.on('command', function (event) {
         } else if (num_messages == null) {
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.noticehandler.notice-remove-error"));
             return;
-        } else if (isNaN(num_messages) || num_messages == 0) {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.noticehandler.notice-remove-error"));
-            return;
         }
 
         if (num_messages > 1) {
@@ -213,21 +209,23 @@ $.on('command', function (event) {
                     $.inidb.set('notices', 'message_' + (i - 1), $.inidb.get('notices', 'message_' + i));
                 }
             }
-        } else {
-            $.inidb.del('notices', 'message_' + args[0]);
-            $.inidb.decr('notice', 'num_messages', 1);
-
-            num_messages = $.inidb.get('notice', 'num_messages');
-
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.noticehandler.notice-remove-success", num_messages));
-            return;
         }
+
+        $.inidb.del('notices', 'message_' + args[0]);
+        $.inidb.decr('notice', 'num_messages', 1);
+
+        num_messages = $.inidb.get('notice', 'num_messages');
+
+        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.noticehandler.notice-remove-success", num_messages));
+        return;
     }
 });
 
 setTimeout(function(){ 
     if ($.moduleEnabled('./handlers/noticeHandler.js')) {
         $.registerChatCommand("./handlers/noticeHandler.js", "notice");
+        $.registerChatCommand("./handlers/noticeHandler.js", "delnotice");
+        $.registerChatCommand("./handlers/noticeHandler.js", "addnotice");
     }
 },10 * 1000);
 
