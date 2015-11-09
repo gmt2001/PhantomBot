@@ -384,6 +384,9 @@ $.lang.data["net.phantombot.greetingsystem.toggle-enabled-other"] = "A greeting 
 $.lang.data["net.phantombot.greetingsystem.usage"] = "Usage: \"!greet max <amount>\", \"!greet set [global OR user <name>] <message>\", \"!greet toggle [global OR user <name>]\"";
 
 //followHandler.js
+$.lang.data["net.phantombot.followHandler.shoutout-offline"] = "Hey go follow $1 over at twitch.tv/$1 they last seen playing: $2";
+$.lang.data["net.phantombot.followHandler.shoutout-online"] = "Hey go follow $1 over at twitch.tv/$1 they are currently playing: $2";
+$.lang.data["net.phantombot.followHandler.shoutout-usage"] = "Usage: !shoutout (streamer)";
 $.lang.data["net.phantombot.followHandler.error-not-following"] = "$1 is not following channel $2.";
 $.lang.data["net.phantombot.followHandler.followtime"] = "$1 has been following channel $2 for $3";
 $.lang.data["net.phantombot.followHandler.followtime-usage"] = "Followage Commands: !followage / !followage (user) / !followage (user) (channel)";
@@ -392,7 +395,6 @@ $.lang.data["net.phantombot.followHandler.default-say-2"] = "Thanks for the foll
 $.lang.data["net.phantombot.followHandler.not-following"] = "$1 is not following the channel.";
 $.lang.data["net.phantombot.followHandler.is-following"] = "$1 is following the channel";
 $.lang.data["net.phantombot.followHandler.followed-command-usage"] = "Usage: !follow (username), !followed (username), !followmessage (message), !followreward (reward)";
-$.lang.data["net.phantombot.followHandler.shoutout-command"] = "Please go give $1 a follow over at twitch.tv/$1";
 $.lang.data["net.phantombot.followHandler.follow-ads-on"] = "Follow announcements are now turned on.";
 $.lang.data["net.phantombot.followHandler.follow-ads-off"] = "Follow announcements are now turned off.";
 $.lang.data["net.phantombot.followHandler.current-follow-message"] = "The current new follower message is:";
