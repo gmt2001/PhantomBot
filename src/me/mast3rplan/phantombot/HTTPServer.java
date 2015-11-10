@@ -55,7 +55,7 @@ public class HTTPServer extends Thread
     @Override
     @SuppressWarnings(
             {
-                "SleepWhileInLoop", "null"
+                "SleepWhileInLoop", "null", "deprecation"
             })
     public void run()
     {
