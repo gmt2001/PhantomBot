@@ -30,8 +30,8 @@ public class EventBus
     {
         return instance;
     }
-    private final com.google.common.eventbus.AsyncEventBus aeventBus = new com.google.common.eventbus.AsyncEventBus(Executors.newFixedThreadPool(8));
-    private final com.google.common.eventbus.EventBus eventBus = new com.google.common.eventbus.EventBus();
+    private final com.google.common.eventbus.AsyncEventBus aeventBus = new com.google.common.eventbus.AsyncEventBus(Executors.newFixedThreadPool(8), new ExceptionHandler());
+    private final com.google.common.eventbus.EventBus eventBus = new com.google.common.eventbus.EventBus(new ExceptionHandler());
     private final Set<Listener> listeners = Sets.newHashSet();
 
     public void register(Listener listener)
