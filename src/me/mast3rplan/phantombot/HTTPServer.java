@@ -30,6 +30,7 @@ import java.util.Scanner;
 import java.util.TreeMap;
 import me.mast3rplan.phantombot.event.EventBus;
 import me.mast3rplan.phantombot.event.irc.message.IrcChannelMessageEvent;
+import me.mast3rplan.phantombot.jerklib.Channel;
 
 /**
  *
@@ -260,23 +261,42 @@ public class HTTPServer extends Thread
                                                 + "Server: basic HTTP server\n"
                                                 + "Content-Length: " + "17" + "\n"
                                                 + "\n"
-                                                + "missing parameter"
+                                                + "missing or invalid parameter"
                                                 + "\n");
                                     } else
                                     {
                                         String user = URLDecoder.decode(args.get("user"), "UTF-8");
                                         String message = URLDecoder.decode(args.get("message"), "UTF-8");
+                                        Channel channel = PhantomBot.instance().getChannel();
 
-                                        EventBus.instance().post(new IrcChannelMessageEvent(PhantomBot.instance().getSession(), user, message, PhantomBot.instance().getChannel()));
+                                        if (args.containsKey("channel"))
+                                        {
+                                            channel = PhantomBot.instance().getChannel(URLDecoder.decode(args.get("channel"), "UTF-8"));
+                                        }
 
-                                        out.print("HTTP/1.0 200 OK\n"
-                                                + "ContentType: " + "text/text" + "\n"
-                                                + "Date: " + new Date() + "\n"
-                                                + "Server: basic HTTP server\n"
-                                                + "Content-Length: " + "12" + "\n"
-                                                + "\n"
-                                                + "event posted"
-                                                + "\n");
+                                        if (channel == null)
+                                        {
+                                            out.print("HTTP/1.0 400 Bad Request\n"
+                                                    + "ContentType: " + "text/text" + "\n"
+                                                    + "Date: " + new Date() + "\n"
+                                                    + "Server: basic HTTP server\n"
+                                                    + "Content-Length: " + "17" + "\n"
+                                                    + "\n"
+                                                    + "missing or invalid parameter"
+                                                    + "\n");
+                                        } else
+                                        {
+                                            EventBus.instance().post(new IrcChannelMessageEvent(PhantomBot.instance().getSession(), user, message, channel));
+
+                                            out.print("HTTP/1.0 200 OK\n"
+                                                    + "ContentType: " + "text/text" + "\n"
+                                                    + "Date: " + new Date() + "\n"
+                                                    + "Server: basic HTTP server\n"
+                                                    + "Content-Length: " + "12" + "\n"
+                                                    + "\n"
+                                                    + "event posted"
+                                                    + "\n");
+                                        }
                                     }
                                 } else
                                 {

@@ -32,6 +32,13 @@ public abstract class TwitchFollowerEvent extends TwitchEvent
         UNFOLLOW;
     }
 
+    /**
+     * 
+     * @param follower
+     * @param type 
+     * 
+     * @deprecated Use a version which accepts the channel argument instead
+     */
     protected TwitchFollowerEvent(String follower, Type type)
     {
         this.follower = follower;

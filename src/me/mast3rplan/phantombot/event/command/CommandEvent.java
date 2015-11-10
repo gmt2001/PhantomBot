@@ -33,6 +33,14 @@ public class CommandEvent extends Event
     private final Map<String, String> tags;
     private final Channel channel;
 
+    /**
+     * 
+     * @param sender
+     * @param command
+     * @param arguments 
+     * 
+     * @deprecated Use a version which accepts the channel argument instead
+     */
     public CommandEvent(String sender, String command, String arguments)
     {
         this.sender = sender;
@@ -43,6 +51,25 @@ public class CommandEvent extends Event
         parse();
     }
 
+    public CommandEvent(String sender, String command, String arguments, Channel channel)
+    {
+        this.sender = sender;
+        this.command = command;
+        this.arguments = arguments;
+        this.tags = new HashMap<>();
+        this.channel = channel;
+        parse();
+    }
+
+    /**
+     * 
+     * @param sender
+     * @param command
+     * @param arguments
+     * @param tags 
+     * 
+     * @deprecated Use a version which accepts the channel argument instead
+     */
     public CommandEvent(String sender, String command, String arguments, Map<String, String> tags)
     {
         this.sender = sender;

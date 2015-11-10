@@ -21,6 +21,12 @@ import me.mast3rplan.phantombot.jerklib.Channel;
 public class TwitchUnsubscribeEvent extends TwitchSubscriberEvent
 {
 
+    /**
+     * 
+     * @param subscriber 
+     * 
+     * @deprecated Use a version which accepts the channel argument instead
+     */
     public TwitchUnsubscribeEvent(String subscriber)
     {
         super(subscriber, Type.UNSUBSCRIBE);

@@ -21,6 +21,12 @@ import me.mast3rplan.phantombot.jerklib.Channel;
 public class TwitchHostedEvent extends TwitchHostEvent
 {
 
+    /**
+     * 
+     * @param hoster 
+     * 
+     * @deprecated Use a version which accepts the channel argument instead
+     */
     public TwitchHostedEvent(String hoster)
     {
         super(hoster, Type.HOST);

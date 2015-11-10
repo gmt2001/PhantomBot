@@ -24,6 +24,8 @@ import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map.Entry;
 import javax.net.ssl.HttpsURLConnection;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
@@ -44,6 +46,7 @@ public class TwitchAPIv3
     private static final int timeout = 2 * 1000;
     private String clientid = "";
     private String oauth = "";
+    private final HashMap<String, String> channeloauths = new HashMap<>();
 
     private enum request_type
     {
@@ -269,6 +272,19 @@ public class TwitchAPIv3
     {
         this.oauth = oauth.replace("oauth:", "");
     }
+    
+    /**
+     * Sets the Twitch API OAuth header for specific channels
+     *
+     * @param channeloauths
+     */
+    public void SetOAuthList(HashMap<String, String> channeloauths)
+    {
+        for (Entry<String, String> kv : channeloauths.entrySet())
+        {
+            this.channeloauths.put(kv.getKey().replace("#", "").toLowerCase(), kv.getValue().replace("oauth:", ""));
+        }
+    }
 
     public boolean HasOAuth()
     {
@@ -297,7 +313,14 @@ public class TwitchAPIv3
      */
     public JSONObject UpdateChannel(String channel, String status, String game, int delay)
     {
-        return UpdateChannel(channel, this.oauth, status, game, delay);
+        String soauth = this.oauth;
+        
+        if (channeloauths.containsKey(channel.toLowerCase()) && !channeloauths.get(channel.toLowerCase()).isEmpty())
+        {
+            soauth = channeloauths.get(channel.toLowerCase());
+        }
+        
+        return UpdateChannel(channel, soauth, status, game, delay);
     }
 
     /**
@@ -324,7 +347,14 @@ public class TwitchAPIv3
      */
     public JSONObject UpdateChannel(String channel, String status, String game)
     {
-        return UpdateChannel(channel, this.oauth, status, game, -1);
+        String soauth = this.oauth;
+        
+        if (channeloauths.containsKey(channel.toLowerCase()) && !channeloauths.get(channel.toLowerCase()).isEmpty())
+        {
+            soauth = channeloauths.get(channel.toLowerCase());
+        }
+        
+        return UpdateChannel(channel, soauth, status, game, -1);
     }
 
     /**
@@ -455,7 +485,14 @@ public class TwitchAPIv3
      */
     public JSONObject GetChannelSubscriptions(String channel, int limit, int offset, boolean ascending)
     {
-        return GetChannelSubscriptions(channel, limit, offset, ascending, this.oauth);
+        String soauth = this.oauth;
+        
+        if (channeloauths.containsKey(channel.toLowerCase()) && !channeloauths.get(channel.toLowerCase()).isEmpty())
+        {
+            soauth = channeloauths.get(channel.toLowerCase());
+        }
+        
+        return GetChannelSubscriptions(channel, limit, offset, ascending, soauth);
     }
 
     /**
@@ -514,7 +551,14 @@ public class TwitchAPIv3
      */
     public JSONObject RunCommercial(String channel, int length)
     {
-        return RunCommercial(channel, length, this.oauth);
+        String soauth = this.oauth;
+        
+        if (channeloauths.containsKey(channel.toLowerCase()) && !channeloauths.get(channel.toLowerCase()).isEmpty())
+        {
+            soauth = channeloauths.get(channel.toLowerCase());
+        }
+        
+        return RunCommercial(channel, length, soauth);
     }
 
     /**

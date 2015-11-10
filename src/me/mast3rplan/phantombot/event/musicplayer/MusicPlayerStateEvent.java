@@ -24,6 +24,12 @@ public class MusicPlayerStateEvent extends MusicPlayerEvent
 
     private final MusicPlayerState state;
 
+    /**
+     * 
+     * @param state 
+     * 
+     * @deprecated Use a version which accepts the channel argument instead
+     */
     public MusicPlayerStateEvent(MusicPlayerState state)
     {
         this.state = state;

@@ -32,6 +32,13 @@ public abstract class TwitchHostEvent extends TwitchEvent
         UNHOST;
     }
 
+    /**
+     * 
+     * @param hoster
+     * @param type 
+     * 
+     * @deprecated Use a version which accepts the channel argument instead
+     */
     protected TwitchHostEvent(String hoster, Type type)
     {
         this.hoster = hoster;

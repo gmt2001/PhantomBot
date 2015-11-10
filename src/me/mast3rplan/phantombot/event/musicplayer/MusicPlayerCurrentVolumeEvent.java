@@ -23,6 +23,12 @@ public class MusicPlayerCurrentVolumeEvent extends MusicPlayerEvent
 
     private final double volume;
 
+    /**
+     * 
+     * @param volume 
+     * 
+     * @deprecated Use a version which accepts the channel argument instead
+     */
     public MusicPlayerCurrentVolumeEvent(double volume)
     {
         this.volume = volume;

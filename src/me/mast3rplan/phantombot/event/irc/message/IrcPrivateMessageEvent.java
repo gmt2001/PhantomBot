@@ -27,11 +27,28 @@ import me.mast3rplan.phantombot.jerklib.Session;
 public class IrcPrivateMessageEvent extends IrcMessageEvent
 {
 
+    /**
+     * 
+     * @param session
+     * @param sender
+     * @param message 
+     * 
+     * @deprecated Use a version which accepts the channel argument instead
+     */
     public IrcPrivateMessageEvent(Session session, String sender, String message)
     {
         super(session, sender, message, null, null);
     }
 
+    /**
+     * 
+     * @param session
+     * @param sender
+     * @param message
+     * @param tags 
+     * 
+     * @deprecated Use a version which accepts the channel argument instead
+     */
     public IrcPrivateMessageEvent(Session session, String sender, String message, Map<String, String> tags)
     {
         super(session, sender, message, tags, null);

@@ -23,6 +23,12 @@ public class MusicPlayerCurrentIdEvent extends MusicPlayerEvent
 
     private final String id;
 
+    /**
+     * 
+     * @param id 
+     * 
+     * @deprecated Use a version which accepts the channel argument instead
+     */
     public MusicPlayerCurrentIdEvent(String id)
     {
         this.id = id;

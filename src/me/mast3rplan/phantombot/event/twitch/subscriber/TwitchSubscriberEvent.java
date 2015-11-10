@@ -32,6 +32,13 @@ public abstract class TwitchSubscriberEvent extends TwitchEvent
         UNSUBSCRIBE;
     }
 
+    /**
+     * 
+     * @param subscriber
+     * @param type 
+     * 
+     * @deprecated Use a version which accepts the channel argument instead
+     */
     protected TwitchSubscriberEvent(String subscriber, Type type)
     {
         this.subscriber = subscriber;

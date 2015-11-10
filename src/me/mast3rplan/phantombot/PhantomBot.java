@@ -81,7 +81,6 @@ public class PhantomBot implements Listener
     private String youtubekey;
     private String webenable;
     private String musicenable;
-    private String channelStatus;
     private DataStore dataStoreObj;
     private SecureRandom rng;
     private BannedCache bancache;
@@ -93,9 +92,10 @@ public class PhantomBot implements Listener
     public static Session tgcSession;
     private Channel channel;
     private final HashMap<String, Channel> channels;
-    private FollowersCache followersCache;
-    private ChannelHostCache hostCache;
-    private SubscribersCache subscribersCache;
+    private final HashMap<String, String> channeloauths;
+    private final FollowersCache followersCache;
+    private final ChannelHostCache hostCache;
+    private final SubscribersCache subscribersCache;
     private ChannelUsersCache channelUsersCache;
     private MusicWebSocketServer musicsocketserver;
     private HTTPServer httpserver;
@@ -149,11 +149,6 @@ public class PhantomBot implements Listener
 
         this.profile = new Profile(username.toLowerCase());
         this.connectionManager = new ConnectionManager(profile);
-
-        this.followersCache = FollowersCache.instance(channel.toLowerCase());
-        this.hostCache = ChannelHostCache.instance(channel.toLowerCase());
-        this.subscribersCache = SubscribersCache.instance(channel.toLowerCase());
-        //this.channelUsersCache = ChannelUsersCache.instance(channel.toLowerCase());
 
         rng = new SecureRandom();
         bancache = new BannedCache();
@@ -236,6 +231,42 @@ public class PhantomBot implements Listener
         }
 
         channels = new HashMap<>();
+        channeloauths = new HashMap<>();
+
+        if (channelName.toLowerCase().contains(","))
+        {
+            String[] c = channelName.toLowerCase().split(",");
+
+            if (apioauth.contains(","))
+            {
+                String[] a = apioauth.split(",");
+                this.apioauth = a[0];
+
+                for (int i = 0; i < c.length && i < a.length; i++)
+                {
+                    channeloauths.put("#" + c[i], a[i]);
+                }
+            }
+
+            this.followersCache = FollowersCache.instance(c[0].toLowerCase());
+            this.hostCache = ChannelHostCache.instance(c[0].toLowerCase());
+            this.subscribersCache = SubscribersCache.instance(c[0].toLowerCase());
+                //this.channelUsersCache = ChannelUsersCache.instance(c[0].toLowerCase());
+
+            for (String ch : c)
+            {
+                FollowersCache.instance(ch.toLowerCase());
+                ChannelHostCache.instance(ch.toLowerCase());
+                SubscribersCache.instance(ch.toLowerCase());
+                //ChannelUsersCache.instance(ch.toLowerCase());
+            }
+        } else
+        {
+            this.followersCache = FollowersCache.instance(channelName.toLowerCase());
+            this.hostCache = ChannelHostCache.instance(channelName.toLowerCase());
+            this.subscribersCache = SubscribersCache.instance(channelName.toLowerCase());
+            //this.channelUsersCache = ChannelUsersCache.instance(channelName.toLowerCase());
+        }
 
         this.session = connectionManager.requestConnection(this.hostname, this.port, oauth);
         TwitchGroupChatHandler(this.oauth, this.connectionManager);
@@ -249,7 +280,8 @@ public class PhantomBot implements Listener
         }
 
         TwitchAPIv3.instance().SetClientID(this.clientid);
-        TwitchAPIv3.instance().SetOAuth(apioauth);
+        TwitchAPIv3.instance().SetOAuth(this.apioauth);
+        TwitchAPIv3.instance().SetOAuthList(channeloauths);
 
         this.session.addIRCEventListener(new IrcEventHandler());
     }
@@ -336,7 +368,6 @@ public class PhantomBot implements Listener
         Script.global.defineProperty("channelName", channelName, 0);
         Script.global.defineProperty("channels", channels, 0);
         Script.global.defineProperty("ownerName", ownerName, 0);
-        Script.global.defineProperty("channelStatus", channelStatus, 0);
         Script.global.defineProperty("musicplayer", musicsocketserver, 0);
         Script.global.defineProperty("random", rng, 0);
         Script.global.defineProperty("youtube", YouTubeAPIv3.instance(), 0);
@@ -453,13 +484,18 @@ public class PhantomBot implements Listener
     @Subscribe
     public void onIRCJoinComplete(IrcJoinCompleteEvent event)
     {
-        this.channel = event.getChannel();
-        this.channel.setMsgInterval((long) ((30.0 / this.msglimit30) * 1000));
+        Channel cchannel = event.getChannel();
+        cchannel.setMsgInterval((long) ((30.0 / this.msglimit30) * 1000));
 
-        this.channels.put(this.channel.getName(), this.channel);
+        this.channels.put(cchannel.getName(), cchannel);
 
         //com.gmt2001.Console.out.println("Joined channel: " + event.getChannel().getName());
-        session.sayChannel(this.channel, ".mods");
+        session.sayChannel(cchannel, ".mods");
+        
+        if (channel == null)
+        {
+            channel = cchannel;
+        }
     }
 
     @Subscribe
@@ -477,7 +513,7 @@ public class PhantomBot implements Listener
                 {
                     if (spl1.equalsIgnoreCase(this.username))
                     {
-                        channel.setAllowSendMessages(true);
+                        event.getChannel().setAllowSendMessages(true);
                     }
                 }
             }
@@ -497,7 +533,7 @@ public class PhantomBot implements Listener
         if (message.startsWith("!"))
         {
             String commandString = message.substring(1);
-            handleCommand(sender, commandString);
+            handleCommand(sender, commandString, event);
         }
 
         if (sender.equalsIgnoreCase("jtv"))
@@ -512,7 +548,7 @@ public class PhantomBot implements Listener
                 {
                     if (spl1.equalsIgnoreCase(this.username))
                     {
-                        channel.setAllowSendMessages(true);
+                        event.getChannel().setAllowSendMessages(true);
                     }
                 }
             }
@@ -522,15 +558,14 @@ public class PhantomBot implements Listener
     @Subscribe
     public void onIRCChannelUserMode(IrcChannelUserModeEvent event)
     {
-        if (event.getUser().equalsIgnoreCase(username) && event.getMode().equalsIgnoreCase("o")
-                && event.getChannel().getName().equalsIgnoreCase(channel.getName()))
+        if (event.getUser().equalsIgnoreCase(username) && event.getMode().equalsIgnoreCase("o"))
         {
             if (!event.getAdd())
             {
-                session.sayChannel(this.channel, ".mods");
+                session.sayChannel(event.getChannel(), ".mods");
             }
 
-            channel.setAllowSendMessages(event.getAdd());
+            event.getChannel().setAllowSendMessages(event.getAdd());
         }
     }
 
@@ -539,6 +574,23 @@ public class PhantomBot implements Listener
     {
         String message = msg.getMsg();
         boolean changed = false;
+
+        IrcChannelMessageEvent event = null;
+
+        if (message.startsWith("#") && message.contains(" "))
+        {
+            String chan = message.substring(1, message.indexOf(" "));
+
+            if (this.channels.containsKey(chan))
+            {
+                event = new IrcChannelMessageEvent(this.session, this.username, message.substring(message.indexOf(" ") + 1), this.channels.get(chan));
+            }
+        }
+
+        if (this.channels.size() == 1)
+        {
+            event = new IrcChannelMessageEvent(this.session, this.username, message, this.channel);
+        }
 
         if (message.equals("debugon"))
         {
@@ -656,7 +708,7 @@ public class PhantomBot implements Listener
                 data += "oauth=" + oauth + "\r\n";
                 data += "apioauth=" + apioauth + "\r\n";
                 data += "clientid=" + clientid + "\r\n";
-                data += "channel=" + channel.getName().replace("#", "") + "\r\n";
+                data += "channel=" + channelName + "\r\n";
                 data += "owner=" + ownerName + "\r\n";
                 data += "baseport=" + baseport + "\r\n";
                 data += "hostname=" + hostname + "\r\n";
@@ -700,10 +752,10 @@ public class PhantomBot implements Listener
             System.exit(0);
         }
 
-        handleCommand(username, message);
+        handleCommand(username, message, event);
     }
 
-    public void handleCommand(String sender, String commandString)
+    public void handleCommand(String sender, String commandString, IrcChannelMessageEvent event)
     {
         String command, arguments;
         int split = commandString.indexOf(' ');
@@ -768,7 +820,10 @@ public class PhantomBot implements Listener
         }
 
         //Don't change this to postAsync. It cannot be processed in async or commands will be delayed
-        EventBus.instance().post(new CommandEvent(sender, command, arguments));
+        if (event != null)
+        {
+            EventBus.instance().post(new CommandEvent(sender, command, arguments, event.getTags(), event.getChannel()));
+        }
     }
 
     private static void ini2sqlite()

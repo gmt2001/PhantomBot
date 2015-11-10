@@ -22,6 +22,9 @@ import me.mast3rplan.phantombot.jerklib.Channel;
 public class TwitchSubscribesInitializedEvent extends TwitchEvent
 {
 
+    /**
+     * @deprecated Use a version which accepts the channel argument instead
+     */
     public TwitchSubscribesInitializedEvent()
     {
     }

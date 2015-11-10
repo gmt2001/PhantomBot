@@ -21,6 +21,12 @@ import me.mast3rplan.phantombot.jerklib.Channel;
 public class TwitchFollowEvent extends TwitchFollowerEvent
 {
 
+    /**
+     * 
+     * @param follower 
+     * 
+     * @deprecated Use a version which accepts the channel argument instead
+     */
     public TwitchFollowEvent(String follower)
     {
         super(follower, Type.FOLLOW);

@@ -21,6 +21,9 @@ import me.mast3rplan.phantombot.jerklib.Channel;
 public class MusicPlayerConnectEvent extends MusicPlayerEvent
 {
 
+    /**
+     * @deprecated Use a version which accepts the channel argument instead
+     */
     public MusicPlayerConnectEvent()
     {
     }
