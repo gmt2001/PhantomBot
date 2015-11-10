@@ -306,6 +306,12 @@ public class PhantomBot implements Listener
         return exiting;
     }
 
+    /**
+     * 
+     * @return 
+     * 
+     * @deprecated Use the version which accepts a channel name instead
+     */
     public Channel getChannel()
     {
         return channel;
