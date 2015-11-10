@@ -141,7 +141,7 @@ $.on('command', function (event) {
     if (args.length > 0) {
         action = args[0];
     }
-    if (args.length > 0) {
+    if (args.length > 1) {
         action2 = args[1];
     }
     var check = $.twitch.GetUserFollowsChannel($.username.resolve(action.toLowerCase()), action2.toLowerCase());
