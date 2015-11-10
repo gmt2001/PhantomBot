@@ -229,10 +229,10 @@ function processBankheist() {
             if (randomNum <= chances) {
                 var betWin = parseInt(Math.round(winningsRatio * bet));
                 $.winningPot += betWin;
-                $.inidb.incr("points", name, betWin);
+                $.inidb.incr("points", name, betWin + bet);
                 winnersList += username;
                 winnersList += " ";
-                winnersList += "(+" + (winningsRatio * bet).toString() + ")";
+                winnersList += "(+" + betWin.toString() + ")";
 
                 if (i < people) {
                     winnersList += ", ";
@@ -240,11 +240,6 @@ function processBankheist() {
 
                 winnersListEmpty = false;
             } else {
-                if (($.heistUserPoints - bet) < 0) {
-                    $.inidb.set("points", name, "0");
-                } else {
-                    $.inidb.decr("points", name, bet);
-                }
                 $.flawless -= 1;
             }
             i++;
@@ -270,7 +265,7 @@ function processBankheist() {
             } else {
                 string = $.stringCasualties;
             }
-            
+
             string = string.replace('(pointname)', $.getPointsString($.winningPot));
 
             $.say(string);
@@ -400,6 +395,7 @@ $.on('command', function (event) {
                         $.inidb.set("bankheist_roster", sender, $.userPointsId.toString());
                         $.pointsId++;
                         $.inidb.set("bankheist_bets", $.userPointsId, betAmount);
+                        $.inidb.decr("points", sender, betAmount);
                         if ($.userPointsId == 1) {
                             $.say(username + " " + $.startedHeist);
                         } else {
@@ -411,8 +407,8 @@ $.on('command', function (event) {
         } else {
             var argsString = event.getArguments().trim();
             var modValue = "";
-            if(args[1]!=null) {
-                if(isNaN(args[1])) {
+            if (args[1] != null) {
+                if (isNaN(args[1])) {
                     modValue = argsString.substring(argsString.indexOf(args[0]) + $.strlen(args[0]) + 1);
                 } else {
                     modValue = args[1];
