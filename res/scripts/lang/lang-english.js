@@ -11,6 +11,7 @@ $.lang.data["net.phantombot.common.err-user"] = "You must specify a user to targ
 $.lang.data["net.phantombot.common.user-404"] = "The user \"$1\" has not visited this channel yet.";
 $.lang.data["net.phantombot.common.whisper-disabled"] = "[Whisper Mode] has been disabled.";
 $.lang.data["net.phantombot.common.whisper-enabled"] = "[Whisper Mode] has been enabled.";
+$.lang.data["net.phantombot.common.command-not-exists"] = "The command !$1 does not exist.";
 
 // To translate the ordinal number prefixes or suffixes, edit the lines below.
 // Warning: Make sure each line contains 10 items total; 0 through 9.
@@ -36,6 +37,8 @@ $.lang.data["net.phantombot.cmd.modonly"] = "Only a Moderator has access to that
 $.lang.data["net.phantombot.init.cmsgset"] = "Connected message set!";
 $.lang.data["net.phantombot.init.coolcom"] = "The command cooldown is $1 second(s)";
 $.lang.data["net.phantombot.init.coolcom-set"] = "The command cooldown is now $1 second(s)!";
+$.lang.data["net.phantombot.init.coolcom-set-individual"] = "The command cooldown for !$2 is now $1 second(s)!";
+$.lang.data["net.phantombot.init.coolcom-del-individual"] = "The command !$1 will now use the global cooldown!";
 $.lang.data["net.phantombot.init.coolcom-cooldown"] = "The command $1 sent by $2 was not processed because it is still on cooldown.";
 $.lang.data["net.phantombot.init.reconn"] = "Reconnect scheduled!";
 $.lang.data["net.phantombot.init.module-not-exists"] = "That module does not exist or is not loaded!";

@@ -380,11 +380,11 @@ var coolcom = new Array();
 $api.on($script, 'command', function (event) {
     var sender = event.getSender().toLowerCase();
     var origcommand = event.getCommand();
-    
+
     if ($.strlen(origcommand) == 0) {
         return;
     }
-    
+
     if ($.inidb.exists('aliases', event.getCommand().toLowerCase())) {
         event.setCommand($.inidb.get('aliases', event.getCommand().toLowerCase()));
     }
@@ -393,10 +393,11 @@ $api.on($script, 'command', function (event) {
     if ($.permCom(sender, command) == false) {
         return;
     }
-    
+
     var idx = -1;
-    if (!isNaN($.inidb.get("settings", "coolcom")) && parseInt($.inidb.get("settings", "coolcom")) > 0) {
-        for(var i = 0; i < coolcom.length; i++) {
+    if ((!isNaN($.inidb.get("settings", "coolcom")) && parseInt($.inidb.get("settings", "coolcom")) > 0)
+            || ($.inidb.exists("coolcom", command) && !isNaN($.inidb.get("coolcom", command)) && parseInt($.inidb.get("coolcom", command)) > 0)) {
+        for (var i = 0; i < coolcom.length; i++) {
             if (coolcom[i][0].equalsIgnoreCase(command)) {
                 idx = i;
                 if (coolcom[i][1] >= System.currentTimeMillis() && !$.isModv3(sender, event.getTags())) {
@@ -420,8 +421,16 @@ $api.on($script, 'command', function (event) {
             }
         }
     }
-    
-    if (!isNaN($.inidb.get("settings", "coolcom")) && parseInt($.inidb.get("settings", "coolcom")) > 0) {
+
+    if ($.inidb.exists("coolcom", command) && !isNaN($.inidb.get("coolcom", command))) {
+        if (parseInt($.inidb.get("coolcom", command)) > 0) {
+            if (idx >= 0) {
+                coolcom[idx][1] = System.currentTimeMillis() + (parseInt($.inidb.get("coolcom", command)) * 1000);
+            } else {
+                coolcom.push(new Array(command, System.currentTimeMillis() + (parseInt($.inidb.get("coolcom", command)) * 1000)));
+            }
+        }
+    } else if (!isNaN($.inidb.get("settings", "coolcom")) && parseInt($.inidb.get("settings", "coolcom")) > 0) {
         if (idx >= 0) {
             coolcom[idx][1] = System.currentTimeMillis() + (parseInt($.inidb.get("settings", "coolcom")) * 1000);
         } else {
@@ -611,13 +620,35 @@ $api.on(initscript, 'command', function (event) {
     if (command.equalsIgnoreCase("coolcom")) {
         if (args.length == 0) {
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.coolcom-set", $.inidb.get("settings", "coolcom")));
+        } else if (args.length > 1 && !isNaN(args[1]) && parseInt(args[1]) >= -1) {
+            if (!$.isModv3(sender, event.getTags())) {
+                $.say($.getWhisperString(sender) + $.modmsg);
+                return;
+            }
+
+            if (!$.commandExists(args[0].toLowerCase())) {
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.common.command-not-exists", args[0]));
+                return;
+            }
+
+            if (parseInt(args[1]) == -1) {
+                $.logEvent("init.js", 454, username + " set the command cooldown for " + args[0] + " to use the global value");
+
+                $.inidb.del("coolcom", args[0].toLowerCase());
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.coolcom-del-individual", args[0]));
+            } else {
+                $.logEvent("init.js", 455, username + " changed the command cooldown for " + args[0] + " to " + args[1] + " seconds");
+
+                $.inidb.set("coolcom", args[0].toLowerCase(), args[1]);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.coolcom-set-individual", args[1], args[0]));
+            }
         } else if (!isNaN(args[0]) && parseInt(args[0]) >= 0) {
             if (!$.isModv3(sender, event.getTags())) {
                 $.say($.getWhisperString(sender) + $.modmsg);
                 return;
             }
 
-            $.logEvent("init.js", 460, username + " changed the command cooldown to " + args[0] + " seconds");
+            $.logEvent("init.js", 460, username + " changed the global command cooldown to " + args[0] + " seconds");
 
             $.inidb.set("settings", "coolcom", args[0]);
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.coolcom-set", args[0]));
