@@ -517,7 +517,7 @@ public class PhantomBot implements Listener
 
                 for (String spl1 : spl)
                 {
-                    if (spl1.equalsIgnoreCase(this.username))
+                    if (spl1.equalsIgnoreCase(this.username) && event.getChannel() != null)
                     {
                         event.getChannel().setAllowSendMessages(true);
                     }
