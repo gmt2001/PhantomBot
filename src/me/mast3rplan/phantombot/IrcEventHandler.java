@@ -92,7 +92,7 @@ public class IrcEventHandler implements IRCEventListener
                 {
                     if (cmessageTags.get("subscriber").equalsIgnoreCase("1"))
                     {
-                        eventBus.postAsync(new IrcPrivateMessageEvent(session, "jtv", "SPECIALUSER " + cmessageEvent.getNick() + " subscriber", cmessageTags));
+                        eventBus.postAsync(new IrcPrivateMessageEvent(session, "jtv", "SPECIALUSER " + cmessageEvent.getNick() + " subscriber", cmessageTags, cmessageEvent.getChannel()));
                     }
                 }
 
@@ -145,7 +145,7 @@ public class IrcEventHandler implements IRCEventListener
                     {
                         if (ctcmessageTags.get("subscriber").equalsIgnoreCase("1"))
                         {
-                            eventBus.postAsync(new IrcPrivateMessageEvent(session, "jtv", "SPECIALUSER " + ctcmessageEvent.getNick() + " subscriber", ctcmessageTags));
+                            eventBus.postAsync(new IrcPrivateMessageEvent(session, "jtv", "SPECIALUSER " + ctcmessageEvent.getNick() + " subscriber", ctcmessageTags, ctcmessageEvent.getChannel()));
                         }
                     }
 
@@ -192,7 +192,7 @@ public class IrcEventHandler implements IRCEventListener
                 String pusername = pmessageEvent.getNick();
                 String pmessage = pmessageEvent.getMessage();
 
-                eventBus.postAsync(new IrcPrivateMessageEvent(session, pusername, pmessage, pmessageEvent.tags()));
+                eventBus.postAsync(new IrcPrivateMessageEvent(session, pusername, pmessage, pmessageEvent.tags(), pmessageEvent.getChannel()));
                 break;
             case MODE_EVENT:
                 ModeEvent modeEvent = (ModeEvent) event;
@@ -225,7 +225,7 @@ public class IrcEventHandler implements IRCEventListener
                 }
                 break;
             case NOTICE:
-                eventBus.postAsync(new IrcPrivateMessageEvent(session, "jtv", ((NoticeEvent) event).getNoticeMessage(), ((NoticeEvent) event).tags()));
+                eventBus.postAsync(new IrcPrivateMessageEvent(session, "jtv", ((NoticeEvent) event).getNoticeMessage(), ((NoticeEvent) event).tags(), ((NoticeEvent) event).getChannel()));
                 break;
             case DEFAULT:
                 if (event.command().equalsIgnoreCase("USERSTATE"))
@@ -276,7 +276,7 @@ public class IrcEventHandler implements IRCEventListener
                     Map<String, String> weventTags = event.tags();
                     String wusername = event.getNick();
                     String message = event.arg(1);
-                    eventBus.postAsync(new IrcPrivateMessageEvent(session, wusername, message, weventTags));
+                    eventBus.postAsync(new IrcPrivateMessageEvent(session, wusername, message, weventTags, null));
                 }
                 break;
         }
