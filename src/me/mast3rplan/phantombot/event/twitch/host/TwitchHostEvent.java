@@ -39,7 +39,7 @@ public abstract class TwitchHostEvent extends TwitchEvent
      * 
      * @deprecated Use a version which accepts the channel argument instead
      */
-    protected TwitchHostEvent(String hoster, Type type)
+    @Deprecated protected TwitchHostEvent(String hoster, Type type)
     {
         this.hoster = hoster;
         this.type = type;

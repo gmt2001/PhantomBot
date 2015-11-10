@@ -25,7 +25,7 @@ public class TwitchHostsInitializedEvent extends TwitchEvent
     /**
      * @deprecated Use a version which accepts the channel argument instead
      */
-    public TwitchHostsInitializedEvent()
+    @Deprecated public TwitchHostsInitializedEvent()
     {
     }
 

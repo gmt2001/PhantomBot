@@ -27,7 +27,7 @@ public class TwitchSubscribeEvent extends TwitchSubscriberEvent
      * 
      * @deprecated Use a version which accepts the channel argument instead
      */
-    public TwitchSubscribeEvent(String subscriber)
+    @Deprecated public TwitchSubscribeEvent(String subscriber)
     {
         super(subscriber, Type.SUBSCRIBE);
     }

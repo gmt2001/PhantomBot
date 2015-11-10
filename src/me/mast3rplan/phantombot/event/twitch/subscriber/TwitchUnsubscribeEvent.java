@@ -27,7 +27,7 @@ public class TwitchUnsubscribeEvent extends TwitchSubscriberEvent
      * 
      * @deprecated Use a version which accepts the channel argument instead
      */
-    public TwitchUnsubscribeEvent(String subscriber)
+    @Deprecated public TwitchUnsubscribeEvent(String subscriber)
     {
         super(subscriber, Type.UNSUBSCRIBE);
     }

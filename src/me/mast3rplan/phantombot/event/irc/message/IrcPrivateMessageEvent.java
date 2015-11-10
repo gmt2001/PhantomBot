@@ -35,7 +35,7 @@ public class IrcPrivateMessageEvent extends IrcMessageEvent
      * 
      * @deprecated Use a version which accepts the channel argument instead
      */
-    public IrcPrivateMessageEvent(Session session, String sender, String message)
+    @Deprecated public IrcPrivateMessageEvent(Session session, String sender, String message)
     {
         super(session, sender, message, null, null);
     }
@@ -49,7 +49,7 @@ public class IrcPrivateMessageEvent extends IrcMessageEvent
      * 
      * @deprecated Use a version which accepts the channel argument instead
      */
-    public IrcPrivateMessageEvent(Session session, String sender, String message, Map<String, String> tags)
+    @Deprecated public IrcPrivateMessageEvent(Session session, String sender, String message, Map<String, String> tags)
     {
         super(session, sender, message, tags, null);
     }

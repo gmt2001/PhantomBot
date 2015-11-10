@@ -25,7 +25,7 @@ public class TwitchSubscribesInitializedEvent extends TwitchEvent
     /**
      * @deprecated Use a version which accepts the channel argument instead
      */
-    public TwitchSubscribesInitializedEvent()
+    @Deprecated public TwitchSubscribesInitializedEvent()
     {
     }
 

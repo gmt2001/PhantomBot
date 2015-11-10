@@ -30,7 +30,7 @@ public class MusicPlayerStateEvent extends MusicPlayerEvent
      * 
      * @deprecated Use a version which accepts the channel argument instead
      */
-    public MusicPlayerStateEvent(MusicPlayerState state)
+    @Deprecated public MusicPlayerStateEvent(MusicPlayerState state)
     {
         this.state = state;
     }

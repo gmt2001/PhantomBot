@@ -24,7 +24,7 @@ public class MusicPlayerConnectEvent extends MusicPlayerEvent
     /**
      * @deprecated Use a version which accepts the channel argument instead
      */
-    public MusicPlayerConnectEvent()
+    @Deprecated public MusicPlayerConnectEvent()
     {
     }
 

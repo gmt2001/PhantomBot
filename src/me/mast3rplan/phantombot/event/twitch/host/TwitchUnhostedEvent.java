@@ -27,7 +27,7 @@ public class TwitchUnhostedEvent extends TwitchHostEvent
      * 
      * @deprecated Use a version which accepts the channel argument instead
      */
-    public TwitchUnhostedEvent(String hoster)
+    @Deprecated public TwitchUnhostedEvent(String hoster)
     {
         super(hoster, Type.UNHOST);
     }

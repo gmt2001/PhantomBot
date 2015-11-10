@@ -41,7 +41,7 @@ public class CommandEvent extends Event
      * 
      * @deprecated Use a version which accepts the channel argument instead
      */
-    public CommandEvent(String sender, String command, String arguments)
+    @Deprecated public CommandEvent(String sender, String command, String arguments)
     {
         this.sender = sender;
         this.command = command;
@@ -70,7 +70,7 @@ public class CommandEvent extends Event
      * 
      * @deprecated Use a version which accepts the channel argument instead
      */
-    public CommandEvent(String sender, String command, String arguments, Map<String, String> tags)
+    @Deprecated public CommandEvent(String sender, String command, String arguments, Map<String, String> tags)
     {
         this.sender = sender;
         this.command = command;

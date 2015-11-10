@@ -27,7 +27,7 @@ public class MusicPlayerEvent extends Event
     /**
      * @deprecated Use a version which accepts the channel argument instead
      */
-    protected MusicPlayerEvent()
+    @Deprecated protected MusicPlayerEvent()
     {
         this.channel = null;
     }

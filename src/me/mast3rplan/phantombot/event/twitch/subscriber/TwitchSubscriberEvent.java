@@ -39,7 +39,7 @@ public abstract class TwitchSubscriberEvent extends TwitchEvent
      * 
      * @deprecated Use a version which accepts the channel argument instead
      */
-    protected TwitchSubscriberEvent(String subscriber, Type type)
+    @Deprecated protected TwitchSubscriberEvent(String subscriber, Type type)
     {
         this.subscriber = subscriber;
         this.type = type;

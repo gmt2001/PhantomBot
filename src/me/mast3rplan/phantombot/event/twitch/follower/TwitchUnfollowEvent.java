@@ -27,7 +27,7 @@ public class TwitchUnfollowEvent extends TwitchFollowerEvent
      * 
      * @deprecated Use a version which accepts the channel argument instead
      */
-    public TwitchUnfollowEvent(String follower)
+    @Deprecated public TwitchUnfollowEvent(String follower)
     {
         super(follower, Type.UNFOLLOW);
     }

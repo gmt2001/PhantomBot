@@ -27,7 +27,7 @@ public class TwitchFollowEvent extends TwitchFollowerEvent
      * 
      * @deprecated Use a version which accepts the channel argument instead
      */
-    public TwitchFollowEvent(String follower)
+    @Deprecated public TwitchFollowEvent(String follower)
     {
         super(follower, Type.FOLLOW);
     }

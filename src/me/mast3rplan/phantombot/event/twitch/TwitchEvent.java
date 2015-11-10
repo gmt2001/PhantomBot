@@ -27,7 +27,7 @@ public class TwitchEvent extends Event
     /**
      * @deprecated Use a version which accepts the channel argument instead
      */
-    public TwitchEvent()
+    @Deprecated public TwitchEvent()
     {
         this.channel = null;
     }

@@ -312,7 +312,7 @@ public class PhantomBot implements Listener
      * 
      * @deprecated Use the version which accepts a channel name instead
      */
-    public Channel getChannel()
+    @Deprecated public Channel getChannel()
     {
         return channel;
     }
