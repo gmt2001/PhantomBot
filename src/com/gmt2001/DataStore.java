@@ -195,27 +195,66 @@ public class DataStore
         return GetString(fName, section, key) != null;
     }
 
-    public boolean exists(String fName, String key)
+    /**
+     * 
+     * @param fName
+     * @param key
+     * @return 
+     * 
+     * @deprecated This is a legacy method, use the full API with section support instead
+     */
+    @Deprecated public boolean exists(String fName, String key)
     {
         return HasKey(fName, "", key);
     }
 
-    public String get(String fName, String key)
+    /**
+     * 
+     * @param fName
+     * @param key
+     * @return 
+     * 
+     * @deprecated This is a legacy method, use the full API with section support instead
+     */
+    @Deprecated public String get(String fName, String key)
     {
         return GetString(fName, "", key);
     }
 
-    public void set(String fName, String key, String value)
+    /**
+     * 
+     * @param fName
+     * @param key
+     * @param value 
+     * 
+     * @deprecated This is a legacy method, use the full API with section support instead
+     */
+    @Deprecated public void set(String fName, String key, String value)
     {
         SetString(fName, "", key, value);
     }
 
-    public void del(String fName, String key)
+    /**
+     * 
+     * @param fName
+     * @param key 
+     * 
+     * @deprecated This is a legacy method, use the full API with section support instead
+     */
+    @Deprecated public void del(String fName, String key)
     {
         RemoveKey(fName, "", key);
     }
 
-    public void incr(String fName, String key, int amount)
+    /**
+     * 
+     * @param fName
+     * @param key
+     * @param amount 
+     * 
+     * @deprecated This is a legacy method, use the full API with section support instead
+     */
+    @Deprecated public void incr(String fName, String key, int amount)
     {
         int ival = GetInteger(fName, "", key);
 
@@ -224,7 +263,15 @@ public class DataStore
         SetInteger(fName, "", key, ival);
     }
 
-    public void decr(String fName, String key, int amount)
+    /**
+     * 
+     * @param fName
+     * @param key
+     * @param amount 
+     * 
+     * @deprecated This is a legacy method, use the full API with section support instead
+     */
+    @Deprecated public void decr(String fName, String key, int amount)
     {
         int ival = GetInteger(fName, "", key);
 
