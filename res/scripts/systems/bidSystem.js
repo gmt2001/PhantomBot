@@ -111,7 +111,7 @@ $.on('command', function(event) {
 
                         if ($.auctionTopPoints == 0) {
                             if (userBid > $.inidb.get('points', sender)) {
-                                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bidsystem.enter-error-notenough", $.inidb.get('settings', 'pointNameMultiple'), $.getPointsString(action)));
+                                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bidsystem.enter-error-notenough", $.pointNameMultiple, $.getPointsString(action)));
                                 return;
                             }
                             if (userBid < $.auctionMinimum) {
@@ -126,7 +126,7 @@ $.on('command', function(event) {
                             return;
                         } else {
                             if (userBid > $.inidb.get('points', sender)) {
-                                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bidsystem.enter-error-notenough", $.inidb.get('settings', 'pointNameMultiple'), $.getPointsString(action)));
+                                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bidsystem.enter-error-notenough", $.pointNameMultiple, $.getPointsString(action)));
                                 return;
                             }
                             if (userBid < ($.auctionTopPoints + $.auctionIncrement)) {
