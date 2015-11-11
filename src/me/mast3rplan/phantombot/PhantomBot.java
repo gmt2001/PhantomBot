@@ -809,6 +809,8 @@ public class PhantomBot implements Listener
                     sqlite.SetString(file, section, key, value);
                 }
             }
+            
+            i++;
         }
         com.gmt2001.Console.out.println("\r>>Copying IniStore to SqliteStore... " + files.length + " / " + files.length);
 
