@@ -619,7 +619,13 @@ $api.on(initscript, 'command', function (event) {
 
     if (command.equalsIgnoreCase("coolcom")) {
         if (args.length == 0) {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.coolcom-set", $.inidb.get("settings", "coolcom")));
+            var coolcomtime = 0;
+            
+            if ($.inidb.exists("settings", "coolcom") && !isNaN($.inidb.get("settings", "coolcom"))) {
+                coolcomtime = $.inidb.get("settings", "coolcom");
+            }
+            
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.coolcom", coolcomtime));
         } else if (args.length > 1 && !isNaN(args[1]) && parseInt(args[1]) >= -1) {
             if (!$.isModv3(sender, event.getTags())) {
                 $.say($.getWhisperString(sender) + $.modmsg);

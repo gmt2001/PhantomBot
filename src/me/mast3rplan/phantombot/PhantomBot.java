@@ -181,12 +181,17 @@ public class PhantomBot implements Listener
         if (datastore.equalsIgnoreCase("TempStore"))
         {
             dataStoreObj = TempStore.instance();
-        } else if (datastore.equalsIgnoreCase("SqliteStore"))
-        {
-            dataStoreObj = SqliteStore.instance();
-        } else
+        } else if (datastore.equalsIgnoreCase("IniStore"))
         {
             dataStoreObj = IniStore.instance();
+        } else
+        {
+            dataStoreObj = SqliteStore.instance();
+        }
+        
+        if (datastore.isEmpty() && IniStore.instance().GetFileList().length > 0 && SqliteStore.instance().GetFileList().length == 0)
+        {
+            ini2sqlite(true);
         }
 
         this.init();
@@ -771,7 +776,7 @@ public class PhantomBot implements Listener
         EventBus.instance().post(new CommandEvent(sender, command, arguments));
     }
 
-    private static void ini2sqlite()
+    private static void ini2sqlite(boolean delete)
     {
         com.gmt2001.Console.out.print(">>Initializing...");
         IniStore ini = IniStore.instance();
@@ -807,7 +812,18 @@ public class PhantomBot implements Listener
         }
         com.gmt2001.Console.out.println("\r>>Copying IniStore to SqliteStore... " + files.length + " / " + files.length);
 
-        com.gmt2001.Console.out.println("Operation complete. The bot will now exit");
+        if (delete)
+        {
+            com.gmt2001.Console.out.print(">>Deleting IniStore folder...");
+            for (String file : files)
+            {
+                ini.RemoveFile(file);
+            }
+
+            File f = new File("./inistore");
+            f.delete();
+            com.gmt2001.Console.out.println("done");
+        }
     }
 
     public static void main(String[] args) throws IOException
@@ -957,7 +973,8 @@ public class PhantomBot implements Listener
                 if (arg.equalsIgnoreCase("ini2sqlite"))
                 {
                     com.gmt2001.Console.out.println("Converting default IniStore to default SqliteStore...");
-                    ini2sqlite();
+                    ini2sqlite(false);
+                    com.gmt2001.Console.out.println("Operation complete. The bot will now exit");
                     System.exit(0);
                     return;
                 }
@@ -1106,9 +1123,9 @@ public class PhantomBot implements Listener
                 }
                 if (arg.equalsIgnoreCase("storetypes"))
                 {
-                    com.gmt2001.Console.out.println("DataStore types: IniStore (Default, datastoreconfig parameter is folder name, stores in .ini files), "
+                    com.gmt2001.Console.out.println("DataStore types: IniStore (datastoreconfig parameter is folder name, stores in .ini files), "
                             + "TempStore (Stores in memory, lost on shutdown), "
-                            + "SqliteStore (Stores in a SQLite3 database, datastoreconfig parameter is a config file");
+                            + "SqliteStore (Default, Stores in a SQLite3 database, datastoreconfig parameter is a config file");
                     return;
                 }
             }

@@ -35,8 +35,8 @@ $.lang.data["net.phantombot.cmd.modonly"] = "Only a Moderator has access to that
 
 //init.js
 $.lang.data["net.phantombot.init.cmsgset"] = "Connected message set!";
-$.lang.data["net.phantombot.init.coolcom"] = "The command cooldown is $1 second(s)";
-$.lang.data["net.phantombot.init.coolcom-set"] = "The command cooldown is now $1 second(s)!";
+$.lang.data["net.phantombot.init.coolcom"] = "The global command cooldown is $1 second(s)";
+$.lang.data["net.phantombot.init.coolcom-set"] = "The global command cooldown is now $1 second(s)!";
 $.lang.data["net.phantombot.init.coolcom-set-individual"] = "The command cooldown for !$2 is now $1 second(s)!";
 $.lang.data["net.phantombot.init.coolcom-del-individual"] = "The command !$1 will now use the global cooldown!";
 $.lang.data["net.phantombot.init.coolcom-cooldown"] = "The command $1 sent by $2 was not processed because it is still on cooldown.";
@@ -210,12 +210,12 @@ $.lang.data["net.phantombot.raidsystem.raider-usage"] = "Usage: \"!raider <name>
 //addCommand.js
 $.lang.data["net.phantombot.addcommand.addcom-success"] = "You have successfully created the command: !$1";
 $.lang.data["net.phantombot.addcommand.addcom-error"] = "That command already exists";
-$.lang.data["net.phantombot.addcommand.addcom-error-usage"] = "Usage: \"!addcom (command) (message)\"";
+$.lang.data["net.phantombot.addcommand.addcom-error-usage"] = "Usage: \"!addcom (command) (message)\", type !helpcom for more info";
 $.lang.data["net.phantombot.addcommand.delcom-success"] = "You have successfully removed the command: !$1";
 $.lang.data["net.phantombot.addcommand.delcom-error-usage"] = "Usage: \"!delcom (command)\"";
 $.lang.data["net.phantombot.addcommand.editcom-success"] = "You have modified the command: !$1";
 $.lang.data["net.phantombot.addcommand.editcom-error"] = "There is no such command";
-$.lang.data["net.phantombot.addcommand.editcom-error-usage"] = "Usage: \"!editcom (command) (message)\"";
+$.lang.data["net.phantombot.addcommand.editcom-error-usage"] = "Usage: \"!editcom (command) (message)\", type !helpcom for more info";
 $.lang.data["net.phantombot.addcommand.pricecom-current-set-price"] = "The command !$1 costs $2!";
 $.lang.data["net.phantombot.addcommand.pricecom-current-set-price2"] = "The command !$1 currently costs 0 $2!";
 $.lang.data["net.phantombot.addcommand.pricecom-success"] = "The price for !$1 has been set to $2 $3.";

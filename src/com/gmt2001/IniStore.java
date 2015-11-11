@@ -429,6 +429,8 @@ public class IniStore extends DataStore implements ActionListener
         File f = new File("./" + inifolder + "/" + fName + ".ini");
 
         f.delete();
+        
+        files.remove(fName);
     }
 
     @Override
