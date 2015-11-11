@@ -88,15 +88,15 @@ $.on('command', function(event) {
         };
 
         if (topTenString.trim() == "") {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.top10.points-error-noresults", $.inidb.get('settings', 'pointNameMultiple')));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.top10.points-error-noresults", $.pointNameMultiple));
             return;
         } else {
             if (!$.isModv3(sender, event.getTags())) {
-                $.say($.getWhisperStringStatic(sender) + $.lang.get("net.phantombot.top10.points-success-whisper", $.inidb.get('settings', 'pointNameMultiple'), topTenString.trim()));
+                $.say($.getWhisperStringStatic(sender) + $.lang.get("net.phantombot.top10.points-success-whisper", $.pointNameMultiple, topTenString.trim()));
                 return;
             }
 
-            $.say($.lang.get("net.phantombot.top10.points-success", $.inidb.get('settings', 'pointNameMultiple'), topTenString.trim()));
+            $.say($.lang.get("net.phantombot.top10.points-success", $.pointNameMultiple, topTenString.trim()));
             return;
         }
     }
