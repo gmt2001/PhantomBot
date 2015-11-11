@@ -16,6 +16,7 @@
  */
 package me.mast3rplan.phantombot.cache;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -94,42 +95,45 @@ public class BannedCache
         FileInputStream fis;
         ObjectInputStream ois;
 
-        try
+        if (new File(file).exists())
         {
-            fis = new FileInputStream(file);
-
             try
             {
-                ois = new ObjectInputStream(fis);
+                fis = new FileInputStream(file);
 
                 try
                 {
-                    Object obj = ois.readObject();
+                    ois = new ObjectInputStream(fis);
 
-                    if (obj instanceof TreeMap)
+                    try
                     {
-                        bannedUsers = (TreeMap) obj;
+                        Object obj = ois.readObject();
+
+                        if (obj instanceof TreeMap)
+                        {
+                            bannedUsers = (TreeMap) obj;
+                        }
+                    } catch (ClassNotFoundException ex)
+                    {
+                        com.gmt2001.Console.err.printStackTrace(ex);
                     }
-                } catch (ClassNotFoundException ex)
+
+                    ois.close();
+                } catch (IOException ex)
                 {
                     com.gmt2001.Console.err.printStackTrace(ex);
                 }
-
-                ois.close();
-            } catch (IOException ex)
+                try
+                {
+                    fis.close();
+                } catch (IOException ex)
+                {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
+            } catch (FileNotFoundException ex)
             {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
-            try
-            {
-                fis.close();
-            } catch (IOException ex)
-            {
-                com.gmt2001.Console.err.printStackTrace(ex);
-            }
-        } catch (FileNotFoundException ex)
-        {
-            com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
 

@@ -150,11 +150,6 @@ public class PhantomBot implements Listener
         this.profile = new Profile(username.toLowerCase());
         this.connectionManager = new ConnectionManager(profile);
 
-        this.followersCache = FollowersCache.instance(channel.toLowerCase());
-        this.hostCache = ChannelHostCache.instance(channel.toLowerCase());
-        this.subscribersCache = SubscribersCache.instance(channel.toLowerCase());
-        //this.channelUsersCache = ChannelUsersCache.instance(channel.toLowerCase());
-
         rng = new SecureRandom();
         bancache = new BannedCache();
         pollResults = new TreeMap<>();
@@ -193,6 +188,11 @@ public class PhantomBot implements Listener
         {
             ini2sqlite(true);
         }
+
+        this.followersCache = FollowersCache.instance(channel.toLowerCase());
+        this.hostCache = ChannelHostCache.instance(channel.toLowerCase());
+        this.subscribersCache = SubscribersCache.instance(channel.toLowerCase());
+        //this.channelUsersCache = ChannelUsersCache.instance(channel.toLowerCase());
 
         this.init();
 
@@ -370,6 +370,7 @@ public class PhantomBot implements Listener
         }
     }
 
+    @SuppressWarnings("SleepWhileInLoop")
     public void onExit()
     {
         com.gmt2001.Console.out.println("[SHUTDOWN] Bot shutting down...");
@@ -389,17 +390,20 @@ public class PhantomBot implements Listener
             musicsocketserver.dispose();
         }
 
-        com.gmt2001.Console.out.println("[SHUTDOWN] Saving data...");
-        dataStoreObj.SaveAll(true);
-
-        com.gmt2001.Console.out.println("[SHUTDOWN] Waiting for running scripts to finish...");
+        com.gmt2001.Console.out.print("[SHUTDOWN] Waiting for running scripts to finish...");
         try
         {
-            Thread.sleep(30000);
+            for (int i = 30; i > 0; i--)
+            {
+                com.gmt2001.Console.out.print("\r[SHUTDOWN] Waiting for running scripts to finish..." + i + " ");
+                Thread.sleep(1000);
+            }
         } catch (InterruptedException ex)
         {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
+        
+        com.gmt2001.Console.out.println("\r[SHUTDOWN] Waiting for running scripts to finish...  ");
 
         com.gmt2001.Console.out.println("[SHUTDOWN] Terminating TwitchAPI caches...");
         ChannelHostCache.killall();
@@ -417,6 +421,9 @@ public class PhantomBot implements Listener
         {
             script.getValue().kill();
         }
+
+        com.gmt2001.Console.out.println("[SHUTDOWN] Saving data...");
+        dataStoreObj.SaveAll(true);
 
         com.gmt2001.Console.out.println("[SHUTDOWN] Disconnecting from Twitch IRC...");
         connectionManager.quit();

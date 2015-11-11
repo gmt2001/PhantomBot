@@ -127,10 +127,7 @@ public class IniStore extends DataStore implements ActionListener
                 files.put(fName, f);
             } catch (IOException ex)
             {
-                IniFile f = new IniFile();
-                f.data.put("", new HashMap<String, String>());
-
-                files.put(fName, f);
+                AddFile(fName);
                 return false;
             }
         }
@@ -193,6 +190,20 @@ public class IniStore extends DataStore implements ActionListener
     {
 
         protected HashMap<String, HashMap<String, String>> data = new HashMap<>();
+    }
+
+    @Override
+    public void AddFile(String fName)
+    {
+        if (!new File("./" + inifolder + "/").exists())
+        {
+            new File("./" + inifolder + "/").mkdirs();
+        }
+        
+        IniFile f = new IniFile();
+        f.data.put("", new HashMap<String, String>());
+
+        files.put(fName, f);
     }
 
     @Override
@@ -277,23 +288,31 @@ public class IniStore extends DataStore implements ActionListener
     @Override
     public String[] GetFileList()
     {
-        Collection<File> f = FileUtils.listFiles(new File("./" + inifolder + "/"), null, false);
-
-        String[] s = new String[f.size()];
-
-        Iterator<File> it = f.iterator();
-        int i = 0;
-
-        while (it.hasNext())
+        if (new File("./" + inifolder + "/").exists())
         {
-            String name = it.next().getName();
-            
-            name = name.substring(0, name.lastIndexOf(".ini"));
-            
-            s[i++] = name;
+
+            Collection<File> f = FileUtils.listFiles(new File("./" + inifolder + "/"), null, false);
+
+            String[] s = new String[f.size()];
+
+            Iterator<File> it = f.iterator();
+            int i = 0;
+
+            while (it.hasNext())
+            {
+                String name = it.next().getName();
+
+                name = name.substring(0, name.lastIndexOf(".ini"));
+
+                s[i++] = name;
+            }
+
+            return s;
         }
 
-        return s;
+        return new String[]
+        {
+        };
     }
 
     @Override
@@ -433,7 +452,7 @@ public class IniStore extends DataStore implements ActionListener
         File f = new File("./" + inifolder + "/" + fName + ".ini");
 
         f.delete();
-        
+
         files.remove(fName);
     }
 

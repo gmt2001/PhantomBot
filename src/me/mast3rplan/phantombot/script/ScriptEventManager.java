@@ -125,9 +125,10 @@ public class ScriptEventManager implements Listener
         while (iterator.hasNext())
         {
             entry = iterator.next();
+            
             if (entry.handler == handler)
             {
-                iterator.remove();
+                entries.remove(entry);
             }
         }
     }
