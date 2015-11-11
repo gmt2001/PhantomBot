@@ -35,11 +35,14 @@ $.lang.data["net.phantombot.cmd.modonly"] = "Only a Moderator has access to that
 
 //init.js
 $.lang.data["net.phantombot.init.cmsgset"] = "Connected message set!";
-$.lang.data["net.phantombot.init.coolcom"] = "The global command cooldown is $1 second(s)";
+$.lang.data["net.phantombot.init.coolcom"] = "The global command cooldown is $1 second(s). Type \"!helpcoolcom\" for usage information";
+$.lang.data["net.phantombot.init.coolcom-individual"] = "The command cooldown for !$2 is $1 second(s)";
+$.lang.data["net.phantombot.init.coolcom-individual-notset"] = "The command !$2 is using the global cooldown value, which is $1 second(s)";
 $.lang.data["net.phantombot.init.coolcom-set"] = "The global command cooldown is now $1 second(s)!";
 $.lang.data["net.phantombot.init.coolcom-set-individual"] = "The command cooldown for !$2 is now $1 second(s)!";
-$.lang.data["net.phantombot.init.coolcom-del-individual"] = "The command !$1 will now use the global cooldown!";
+$.lang.data["net.phantombot.init.coolcom-del-individual"] = "The command !$1 will now use the global cooldown, which is $2 second(s)!";
 $.lang.data["net.phantombot.init.coolcom-cooldown"] = "The command $1 sent by $2 was not processed because it is still on cooldown.";
+$.lang.data["net.phantombot.init.coolcom-help"] = "Usage: \"!coolcom seconds\" sets the global cooldown, set to 0 to disable. \"!coolcom command seconds\" overrides global coolcom on the named command, 0 to disable on that command or -1 to use the global value. \"!coolcom command get\" to get a commands coolcom";
 $.lang.data["net.phantombot.init.reconn"] = "Reconnect scheduled!";
 $.lang.data["net.phantombot.init.module-not-exists"] = "That module does not exist or is not loaded!";
 $.lang.data["net.phantombot.init.module-usage"] = "Usage: !module list, !module enable <module name>, !module disable <module name>, !module status <module name>";

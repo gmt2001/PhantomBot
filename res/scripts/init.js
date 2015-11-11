@@ -617,16 +617,39 @@ $api.on(initscript, 'command', function (event) {
         $.say($.lang.get("net.phantombot.init.cmsgset"));
     }
 
+    if (command.equalsIgnoreCase("helpcoolcom")) {
+        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.coolcom-help"));
+    }
+
     if (command.equalsIgnoreCase("coolcom")) {
         if (args.length == 0) {
             var coolcomtime = 0;
+
+            if ($.inidb.exists("settings", "coolcom") && !isNaN($.inidb.get("settings", "coolcom"))) {
+                coolcomtime = $.inidb.get("settings", "coolcom");
+            }
+
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.coolcom", coolcomtime));
+        } else if (args.length > 1 && args[1].equalsIgnoreCase("get")) {
+            if (!$.isModv3(sender, event.getTags())) {
+                $.say($.getWhisperString(sender) + $.modmsg);
+                return;
+            }
             
+            var coolcomtime = 0;
+
             if ($.inidb.exists("settings", "coolcom") && !isNaN($.inidb.get("settings", "coolcom"))) {
                 coolcomtime = $.inidb.get("settings", "coolcom");
             }
             
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.coolcom", coolcomtime));
-        } else if (args.length > 1 && !isNaN(args[1]) && parseInt(args[1]) >= -1) {
+            if ($.inidb.exists("coolcom", args[0].toLowerCase()) && !isNaN("coolcom", args[0].toLowerCase())) {
+                coolcomtime = $.inidb.get("coolcom", args[0].toLowerCase());
+                
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.coolcom-individual", args[0], coolcomtime));
+            } else {
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.coolcom-individual-notset", args[0], coolcomtime));
+            }
+        }  else if (args.length > 1 && !isNaN(args[1]) && parseInt(args[1]) >= -1) {
             if (!$.isModv3(sender, event.getTags())) {
                 $.say($.getWhisperString(sender) + $.modmsg);
                 return;
@@ -641,7 +664,14 @@ $api.on(initscript, 'command', function (event) {
                 $.logEvent("init.js", 454, username + " set the command cooldown for " + args[0] + " to use the global value");
 
                 $.inidb.del("coolcom", args[0].toLowerCase());
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.coolcom-del-individual", args[0]));
+
+                var coolcomtime = 0;
+
+                if ($.inidb.exists("settings", "coolcom") && !isNaN($.inidb.get("settings", "coolcom"))) {
+                    coolcomtime = $.inidb.get("settings", "coolcom");
+                }
+
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.coolcom-del-individual", args[0], coolcomtime));
             } else {
                 $.logEvent("init.js", 455, username + " changed the command cooldown for " + args[0] + " to " + args[1] + " seconds");
 
@@ -800,3 +830,4 @@ $.registerChatCommand('./init.js', 'setconnectedmessage', 'admin');
 $.registerChatCommand('./init.js', 'reconnect', 'mod');
 $.registerChatCommand('./init.js', 'module', 'admin');
 $.registerChatCommand('./init.js', 'coolcom', 'mod');
+$.registerChatCommand('./init.js', 'helpcoolcom', 'mod');
