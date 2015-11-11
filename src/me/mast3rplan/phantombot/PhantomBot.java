@@ -183,7 +183,7 @@ public class PhantomBot implements Listener
         {
             dataStoreObj = SqliteStore.instance();
         }
-        
+
         if (datastore.isEmpty() && IniStore.instance().GetFileList().length > 0 && SqliteStore.instance().GetFileList().length == 0)
         {
             ini2sqlite(true);
@@ -402,7 +402,7 @@ public class PhantomBot implements Listener
         {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
-        
+
         com.gmt2001.Console.out.println("\r[SHUTDOWN] Waiting for running scripts to finish...  ");
 
         com.gmt2001.Console.out.println("[SHUTDOWN] Terminating TwitchAPI caches...");
@@ -801,25 +801,67 @@ public class PhantomBot implements Listener
         com.gmt2001.Console.out.print(">>Copying IniStore to SqliteStore...");
         String[] files = ini.GetFileList();
         int i = 0;
+        String str;
+        int maxlen = 0;
+        int num;
         for (String file : files)
         {
-            com.gmt2001.Console.out.print("\r>>Copying IniStore to SqliteStore... " + i + " / " + files.length);
+            str = " " + i + " / " + files.length;
+            num = maxlen - str.length();
+            for (int n = 0; n < num; n++)
+            {
+                str += " ";
+            }
+            maxlen = Math.max(maxlen, str.length());
+            com.gmt2001.Console.out.print("\r>>Copying IniStore to SqliteStore..." + str);
             sqlite.AddFile(file);
 
             String[] sections = ini.GetCategoryList(file);
+            int b = 0;
             for (String section : sections)
             {
+                str = " " + i + " / " + files.length
+                        + " [" + b + " / " + sections.length + "]";
+                num = maxlen - str.length();
+                for (int n = 0; n < num; n++)
+                {
+                    str += " ";
+                }
+                maxlen = Math.max(maxlen, str.length());
+                com.gmt2001.Console.out.print("\r>>Copying IniStore to SqliteStore..." + str);
+
                 String[] keys = ini.GetKeyList(file, section);
+                int k = 0;
                 for (String key : keys)
                 {
+                    str = " " + i + " / " + files.length
+                            + " [" + b + " / " + sections.length + "] <" + k + " / " + keys.length + ">";
+                    num = maxlen - str.length();
+                    for (int n = 0; n < num; n++)
+                    {
+                        str += " ";
+                    }
+                    maxlen = Math.max(maxlen, str.length());
+                    com.gmt2001.Console.out.print("\r>>Copying IniStore to SqliteStore..." + str);
+
                     String value = ini.GetString(file, section, key);
                     sqlite.SetString(file, section, key, value);
+
+                    k++;
                 }
+
+                b++;
             }
-            
+
             i++;
         }
-        com.gmt2001.Console.out.println("\r>>Copying IniStore to SqliteStore... " + files.length + " / " + files.length);
+
+        str = "";
+        for (i = 0; i < maxlen - 4; i++)
+        {
+            str += " ";
+        }
+        com.gmt2001.Console.out.println("\r>>Copying IniStore to SqliteStore...done" + str);
 
         if (delete)
         {

@@ -106,36 +106,42 @@ public class ChannelHostCache implements Runnable
         {
             try
             {
-                if (new Date().after(timeoutExpire))
+                try
                 {
-                    this.updateCache();
+                    if (new Date().after(timeoutExpire))
+                    {
+                        this.updateCache();
+                    }
+                } catch (Exception e)
+                {
+                    if (e.getMessage().startsWith("[SocketTimeoutException]") || e.getMessage().startsWith("[IOException]"))
+                    {
+                        Calendar c = Calendar.getInstance();
+
+                        if (lastFail.after(new Date()))
+                        {
+                            numfail++;
+                        } else
+                        {
+                            numfail = 1;
+                        }
+
+                        c.add(Calendar.MINUTE, 1);
+
+                        lastFail = c.getTime();
+
+                        if (numfail >= 5)
+                        {
+                            timeoutExpire = c.getTime();
+                        }
+                    }
+
+                    com.gmt2001.Console.out.println("ChannelHostCache.run>>Failed to update hosts: " + e.getMessage());
+                    com.gmt2001.Console.err.logStackTrace(e);
                 }
             } catch (Exception e)
             {
-                if (e.getMessage().startsWith("[SocketTimeoutException]") || e.getMessage().startsWith("[IOException]"))
-                {
-                    Calendar c = Calendar.getInstance();
-
-                    if (lastFail.after(new Date()))
-                    {
-                        numfail++;
-                    } else
-                    {
-                        numfail = 1;
-                    }
-
-                    c.add(Calendar.MINUTE, 1);
-
-                    lastFail = c.getTime();
-
-                    if (numfail >= 5)
-                    {
-                        timeoutExpire = c.getTime();
-                    }
-                }
-
-                com.gmt2001.Console.out.println("ChannelHostCache.run>>Failed to update hosts: " + e.getMessage());
-                com.gmt2001.Console.err.logStackTrace(e);
+                com.gmt2001.Console.err.printStackTrace(e);
             }
 
             try
