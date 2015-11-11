@@ -185,9 +185,8 @@ public class SqliteStore extends DataStore
 
         if (!FileExists(fName))
         {
-            try
+            try (Statement statement = connection.createStatement())
             {
-                Statement statement = connection.createStatement();
                 statement.setQueryTimeout(10);
 
                 statement.executeUpdate("CREATE TABLE phantombot_" + fName + " (section string, variable string, value string);");
@@ -207,9 +206,8 @@ public class SqliteStore extends DataStore
 
         if (FileExists(fName))
         {
-            try
+            try (PreparedStatement statement = connection.prepareStatement("DELETE FROM phantombot_" + fName + " WHERE section=? AND variable=?;"))
             {
-                PreparedStatement statement = connection.prepareStatement("DELETE FROM phantombot_" + fName + " WHERE section=? AND variable=?;");
                 statement.setQueryTimeout(10);
                 statement.setString(1, section);
                 statement.setString(2, key);
@@ -230,9 +228,8 @@ public class SqliteStore extends DataStore
 
         if (FileExists(fName))
         {
-            try
+            try (PreparedStatement statement = connection.prepareStatement("DELETE FROM phantombot_" + fName + " WHERE section=?;"))
             {
-                PreparedStatement statement = connection.prepareStatement("DELETE FROM phantombot_" + fName + " WHERE section=?;");
                 statement.setQueryTimeout(10);
                 statement.setString(1, section);
                 statement.executeUpdate();
@@ -252,9 +249,8 @@ public class SqliteStore extends DataStore
 
         if (FileExists(fName))
         {
-            try
+            try (Statement statement = connection.createStatement())
             {
-                Statement statement = connection.createStatement();
                 statement.setQueryTimeout(10);
 
                 statement.executeUpdate("DROP TABLE phantombot_" + fName + ";");
@@ -272,14 +268,15 @@ public class SqliteStore extends DataStore
 
         fName = validateFname(fName);
 
-        try
+        try (Statement statement = connection.createStatement())
         {
-            Statement statement = connection.createStatement();
             statement.setQueryTimeout(10);
 
-            ResultSet rs = statement.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='phantombot_" + fName + "';");
+            try (ResultSet rs = statement.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='phantombot_" + fName + "';"))
+            {
 
-            return rs.next();
+                return rs.next();
+            }
         } catch (SQLException ex)
         {
             com.gmt2001.Console.err.printStackTrace(ex);
@@ -293,21 +290,22 @@ public class SqliteStore extends DataStore
     {
         CheckConnection();
 
-        try
+        try (Statement statement = connection.createStatement())
         {
-            Statement statement = connection.createStatement();
             statement.setQueryTimeout(10);
 
-            ResultSet rs = statement.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name LIKE 'phantombot_%';");
-
-            ArrayList<String> s = new ArrayList<>();
-
-            while (rs.next())
+            try (ResultSet rs = statement.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name LIKE 'phantombot_%';"))
             {
-                s.add(rs.getString("name").substring(11));
-            }
 
-            return s.toArray(new String[s.size()]);
+                ArrayList<String> s = new ArrayList<>();
+
+                while (rs.next())
+                {
+                    s.add(rs.getString("name").substring(11));
+                }
+
+                return s.toArray(new String[s.size()]);
+            }
         } catch (SQLException ex)
         {
             com.gmt2001.Console.err.printStackTrace(ex);
@@ -327,21 +325,22 @@ public class SqliteStore extends DataStore
 
         if (FileExists(fName))
         {
-            try
+            try (Statement statement = connection.createStatement())
             {
-                Statement statement = connection.createStatement();
                 statement.setQueryTimeout(10);
 
-                ResultSet rs = statement.executeQuery("SELECT section FROM phantombot_" + fName + " GROUP BY section;");
-
-                ArrayList<String> s = new ArrayList<>();
-
-                while (rs.next())
+                try (ResultSet rs = statement.executeQuery("SELECT section FROM phantombot_" + fName + " GROUP BY section;"))
                 {
-                    s.add(rs.getString("section"));
-                }
 
-                return s.toArray(new String[s.size()]);
+                    ArrayList<String> s = new ArrayList<>();
+
+                    while (rs.next())
+                    {
+                        s.add(rs.getString("section"));
+                    }
+
+                    return s.toArray(new String[s.size()]);
+                }
             } catch (SQLException ex)
             {
                 com.gmt2001.Console.err.printStackTrace(ex);
@@ -362,21 +361,23 @@ public class SqliteStore extends DataStore
 
         if (FileExists(fName))
         {
-            try
+            try (PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=?;"))
             {
-                PreparedStatement statement = connection.prepareStatement("SELECT variable FROM phantombot_" + fName + " WHERE section=?;");
                 statement.setQueryTimeout(10);
                 statement.setString(1, section);
-                ResultSet rs = statement.executeQuery();
 
-                ArrayList<String> s = new ArrayList<>();
-
-                while (rs.next())
+                try (ResultSet rs = statement.executeQuery())
                 {
-                    s.add(rs.getString("variable"));
-                }
 
-                return s.toArray(new String[s.size()]);
+                    ArrayList<String> s = new ArrayList<>();
+
+                    while (rs.next())
+                    {
+                        s.add(rs.getString("variable"));
+                    }
+
+                    return s.toArray(new String[s.size()]);
+                }
             } catch (SQLException ex)
             {
                 com.gmt2001.Console.err.printStackTrace(ex);
@@ -400,17 +401,19 @@ public class SqliteStore extends DataStore
             return false;
         }
 
-        try
+        try (PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE section=? AND variable=?;"))
         {
-            PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE section=? AND variable=?;");
             statement.setQueryTimeout(10);
             statement.setString(1, section);
             statement.setString(2, key);
-            ResultSet rs = statement.executeQuery();
 
-            if (rs.next())
+            try (ResultSet rs = statement.executeQuery())
             {
-                return true;
+
+                if (rs.next())
+                {
+                    return true;
+                }
             }
         } catch (SQLException ex)
         {
@@ -434,17 +437,19 @@ public class SqliteStore extends DataStore
             return result;
         }
 
-        try
+        try (PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE section=? AND variable=?;"))
         {
-            PreparedStatement statement = connection.prepareStatement("SELECT value FROM phantombot_" + fName + " WHERE section=? AND variable=?;");
             statement.setQueryTimeout(10);
             statement.setString(1, section);
             statement.setString(2, key);
-            ResultSet rs = statement.executeQuery();
 
-            if (rs.next())
+            try (ResultSet rs = statement.executeQuery())
             {
-                result = rs.getString("value");
+
+                if (rs.next())
+                {
+                    result = rs.getString("value");
+                }
             }
         } catch (SQLException ex)
         {
@@ -467,20 +472,24 @@ public class SqliteStore extends DataStore
         {
             if (HasKey(fName, section, key))
             {
-                PreparedStatement statement = connection.prepareStatement("UPDATE phantombot_" + fName + " SET value=? WHERE section=? AND variable=?;");
-                statement.setQueryTimeout(10);
-                statement.setString(1, value);
-                statement.setString(2, section);
-                statement.setString(3, key);
-                statement.executeUpdate();
+                try (PreparedStatement statement = connection.prepareStatement("UPDATE phantombot_" + fName + " SET value=? WHERE section=? AND variable=?;"))
+                {
+                    statement.setQueryTimeout(10);
+                    statement.setString(1, value);
+                    statement.setString(2, section);
+                    statement.setString(3, key);
+                    statement.executeUpdate();
+                }
             } else
             {
-                PreparedStatement statement = connection.prepareStatement("INSERT INTO phantombot_" + fName + " values(?, ?, ?);");
-                statement.setQueryTimeout(10);
-                statement.setString(1, section);
-                statement.setString(2, key);
-                statement.setString(3, value);
-                statement.executeUpdate();
+                try (PreparedStatement statement = connection.prepareStatement("INSERT INTO phantombot_" + fName + " values(?, ?, ?);"))
+                {
+                    statement.setQueryTimeout(10);
+                    statement.setString(1, section);
+                    statement.setString(2, key);
+                    statement.setString(3, value);
+                    statement.executeUpdate();
+                }
             }
         } catch (SQLException ex)
         {
