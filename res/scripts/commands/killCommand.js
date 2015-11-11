@@ -16,49 +16,49 @@ $.on('command', function (event) {
         num = $.rand(num_kills);
 
         if (isNaN(num_kills) || num_kills == 0) {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.kilcommand.error-no-kills"));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.killcommand.error-no-kills"));
             return;
         }
 
         if ($.inidb.get("kills", "kill_" + num) == " ") {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.kilcommand.num-kills", num_kills, (num_kills - 1)));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.killcommand.num-kills", num_kills, (num_kills - 1)));
             return;
         }
     } else if (command.equalsIgnoreCase("kill") && args.length == " ") {
         var self = new Array(0)
         sender = $.username.resolve(sender, event.getTags());
 
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-1", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-2", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-3", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-4", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-5", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-6", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-7", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-8", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-9", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-10", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-11", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-12", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-13", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-14", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-15", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-16", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-17", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-18", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-19", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-20", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-21", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-22", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-23", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-24", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-25", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-26", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-27", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-28", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-29", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-30", sender));
-        self.push($.lang.get("net.phantombot.kilcommand.self-kill-30", sender));
+        self.push($.lang.get("net.phantombot.killcommand.self-kill-1", sender));
+        self.push($.lang.get("net.phantombot.killcommand.self-kill-2", sender));
+        self.push($.lang.get("net.phantombot.killcommand.self-kill-3", sender));
+        self.push($.lang.get("net.phantombot.killcommand.self-kill-4", sender));
+        self.push($.lang.get("net.phantombot.killcommand.self-kill-5", sender));
+        self.push($.lang.get("net.phantombot.killcommand.self-kill-6", sender));
+        self.push($.lang.get("net.phantombot.killcommand.self-kill-7", sender));
+        self.push($.lang.get("net.phantombot.killcommand.self-kill-8", sender));
+        self.push($.lang.get("net.phantombot.killcommand.self-kill-9", sender));
+        self.push($.lang.get("net.phantombot.killcommand.self-kill-10", sender));
+        self.push($.lang.get("net.phantombot.killcommand.self-kill-11", sender));
+        self.push($.lang.get("net.phantombot.killcommand.self-kill-12", sender));
+        self.push($.lang.get("net.phantombot.killcommand.self-kill-13", sender));
+        self.push($.lang.get("net.phantombot.killcommand.self-kill-14", sender));
+        self.push($.lang.get("net.phantombot.killcommand.self-kill-15", sender));
+        self.push($.lang.get("net.phantombot.killcommand.self-kill-16", sender));
+        self.push($.lang.get("net.phantombot.killcommand.self-kill-17", sender));
+        self.push($.lang.get("net.phantombot.killcommand.self-kill-18", sender));
+        self.push($.lang.get("net.phantombot.killcommand.self-kill-19", sender));
+        self.push($.lang.get("net.phantombot.killcommand.self-kill-20", sender));
+        self.push($.lang.get("net.phantombot.killcommand.self-kill-21", sender));
+        self.push($.lang.get("net.phantombot.killcommand.self-kill-22", sender));
+        self.push($.lang.get("net.phantombot.killcommand.self-kill-23", sender));
+        self.push($.lang.get("net.phantombot.killcommand.self-kill-24", sender));
+        self.push($.lang.get("net.phantombot.killcommand.self-kill-25", sender));
+        self.push($.lang.get("net.phantombot.killcommand.self-kill-26", sender));
+        self.push($.lang.get("net.phantombot.killcommand.self-kill-27", sender));
+        self.push($.lang.get("net.phantombot.killcommand.self-kill-28", sender));
+        self.push($.lang.get("net.phantombot.killcommand.self-kill-29", sender));
+        self.push($.lang.get("net.phantombot.killcommand.self-kill-30", sender));
+        self.push($.lang.get("net.phantombot.killcommand.self-kill-30", sender));
 
         do {
             s = $.randElement(self);
@@ -81,14 +81,14 @@ $.on('command', function (event) {
         }
 
         if (argsString.isEmpty()) {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.kilcommand.addkill-usage"));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.killcommand.addkill-usage"));
             return;
         }
 
         $.inidb.incr("kills", "num_kills", 1);
         $.inidb.set("kills", "kill_" + num_kills, argsString);
 
-        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.kilcommand.kill-added", (num_kills + 1)));
+        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.killcommand.kill-added", (num_kills + 1)));
         return;
     }
 
@@ -96,7 +96,7 @@ $.on('command', function (event) {
         if (!$.inidb.get("kills", "kill_" + parseInt(args[0])) == " ") {
             $.say($.inidb.get("kills", "kill_" + parseInt(args[0])));
         } else {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.kilcommand.error-wrong-id", num_kills, num_kills, args[0]));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.killcommand.error-wrong-id", num_kills, num_kills, args[0]));
             return;
         }
     }
@@ -110,18 +110,18 @@ $.on('command', function (event) {
         num = parseInt(args[0]);
 
         if (num > num_kills) {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.kilcommand.error-wrong-id", num_kills, num_kills, args[0]));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.killcommand.error-wrong-id", num_kills, num_kills, args[0]));
             return;
         }
 
         if (argsString2.isEmpty() || argsString.isEmpty() || args[1] == null) {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.kilcommand.edit-kill-usage"));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.killcommand.edit-kill-usage"));
             return;
         }
 
         $.inidb.set("kills", "kill_" + num, argsString2);
 
-        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.kilcommand.kill-edited", num, $.inidb.get("kills", "kill_" + num)));
+        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.killcommand.kill-edited", num, $.inidb.get("kills", "kill_" + num)));
         return;
     }
 
@@ -132,12 +132,12 @@ $.on('command', function (event) {
         }
 
         if (num_kills == null || isNaN(num_kills) || num_kills == 0) {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.kilcommand.error-no-kills"));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.killcommand.error-no-kills"));
             return;
         }
 
         if (argsString.isEmpty()) {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.kilcommand.del-kill-usage"));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.killcommand.del-kill-usage"));
             return;
         }
 
@@ -153,7 +153,7 @@ $.on('command', function (event) {
 
         $.inidb.decr("kills", "num_kills", 1);
 
-        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.kilcommand.del-kill-success", (num_kills - 1)));
+        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.killcommand.del-kill-success", (num_kills - 1)));
         return;
     }
 
@@ -179,33 +179,33 @@ $.on('command', function (event) {
     }
 });
 var ar = new Array(0);
-ar.push($.lang.get("net.phantombot.kilcommand.kill-1"));
-ar.push($.lang.get("net.phantombot.kilcommand.kill-2"));
-ar.push($.lang.get("net.phantombot.kilcommand.kill-3"));
-ar.push($.lang.get("net.phantombot.kilcommand.kill-4"));
-ar.push($.lang.get("net.phantombot.kilcommand.kill-5"));
-ar.push($.lang.get("net.phantombot.kilcommand.kill-6"));
-ar.push($.lang.get("net.phantombot.kilcommand.kill-7"));
-ar.push($.lang.get("net.phantombot.kilcommand.kill-8"));
-ar.push($.lang.get("net.phantombot.kilcommand.kill-9"));
-ar.push($.lang.get("net.phantombot.kilcommand.kill-10"));
-ar.push($.lang.get("net.phantombot.kilcommand.kill-11"));
-ar.push($.lang.get("net.phantombot.kilcommand.kill-12"));
-ar.push($.lang.get("net.phantombot.kilcommand.kill-13"));
-ar.push($.lang.get("net.phantombot.kilcommand.kill-14"));
-ar.push($.lang.get("net.phantombot.kilcommand.kill-15"));
-ar.push($.lang.get("net.phantombot.kilcommand.kill-16"));
-ar.push($.lang.get("net.phantombot.kilcommand.kill-17"));
-ar.push($.lang.get("net.phantombot.kilcommand.kill-18"));
-ar.push($.lang.get("net.phantombot.kilcommand.kill-19"));
-ar.push($.lang.get("net.phantombot.kilcommand.kill-20"));
-ar.push($.lang.get("net.phantombot.kilcommand.kill-21"));
-ar.push($.lang.get("net.phantombot.kilcommand.kill-22"));
-ar.push($.lang.get("net.phantombot.kilcommand.kill-23"));
-ar.push($.lang.get("net.phantombot.kilcommand.kill-24"));
-ar.push($.lang.get("net.phantombot.kilcommand.kill-25"));
-ar.push($.lang.get("net.phantombot.kilcommand.kill-26"));
-ar.push($.lang.get("net.phantombot.kilcommand.kill-27"));
+ar.push($.lang.get("net.phantombot.killcommand.kill-1"));
+ar.push($.lang.get("net.phantombot.killcommand.kill-2"));
+ar.push($.lang.get("net.phantombot.killcommand.kill-3"));
+ar.push($.lang.get("net.phantombot.killcommand.kill-4"));
+ar.push($.lang.get("net.phantombot.killcommand.kill-5"));
+ar.push($.lang.get("net.phantombot.killcommand.kill-6"));
+ar.push($.lang.get("net.phantombot.killcommand.kill-7"));
+ar.push($.lang.get("net.phantombot.killcommand.kill-8"));
+ar.push($.lang.get("net.phantombot.killcommand.kill-9"));
+ar.push($.lang.get("net.phantombot.killcommand.kill-10"));
+ar.push($.lang.get("net.phantombot.killcommand.kill-11"));
+ar.push($.lang.get("net.phantombot.killcommand.kill-12"));
+ar.push($.lang.get("net.phantombot.killcommand.kill-13"));
+ar.push($.lang.get("net.phantombot.killcommand.kill-14"));
+ar.push($.lang.get("net.phantombot.killcommand.kill-15"));
+ar.push($.lang.get("net.phantombot.killcommand.kill-16"));
+ar.push($.lang.get("net.phantombot.killcommand.kill-17"));
+ar.push($.lang.get("net.phantombot.killcommand.kill-18"));
+ar.push($.lang.get("net.phantombot.killcommand.kill-19"));
+ar.push($.lang.get("net.phantombot.killcommand.kill-20"));
+ar.push($.lang.get("net.phantombot.killcommand.kill-21"));
+ar.push($.lang.get("net.phantombot.killcommand.kill-22"));
+ar.push($.lang.get("net.phantombot.killcommand.kill-23"));
+ar.push($.lang.get("net.phantombot.killcommand.kill-24"));
+ar.push($.lang.get("net.phantombot.killcommand.kill-25"));
+ar.push($.lang.get("net.phantombot.killcommand.kill-26"));
+ar.push($.lang.get("net.phantombot.killcommand.kill-27"));
 
 
 if ($.inidb.get("kills", "num_kills") == null || $.inidb.get("kills", "num_kills") == 0) {

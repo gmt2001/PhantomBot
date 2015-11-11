@@ -50,7 +50,7 @@ public class EventBus
 
     public void post(Event event)
     {
-        if (PhantomBot.instance().isExiting())
+        if (PhantomBot.instance() == null || PhantomBot.instance().isExiting())
         {
             return;
         }
@@ -60,7 +60,7 @@ public class EventBus
 
     public void postAsync(Event event)
     {
-        if (PhantomBot.instance().isExiting())
+        if (PhantomBot.instance() == null || PhantomBot.instance().isExiting())
         {
             return;
         }

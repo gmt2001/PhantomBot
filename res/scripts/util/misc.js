@@ -1,8 +1,4 @@
 $.say = function (s) {
-    $.ssay(s);
-};
-
-$.ssay = function (s) {
     var str = String(s);
     var i = str.indexOf("<");
 

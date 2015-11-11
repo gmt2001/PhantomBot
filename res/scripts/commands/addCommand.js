@@ -11,38 +11,41 @@ $.on('command', function (event) {
     var commandString;
     var message;
 
-    if (args.length >= 2 && !command.equalsIgnoreCase("pricecom")) {
-        if (command.equalsIgnoreCase("addcom")) {
-            if (!$.isModv3(sender, event.getTags())) {
-                $.say($.getWhisperString(sender) + $.modmsg);
-                return;
-            }
+    if (command.equalsIgnoreCase("addcom")) {
+        if (!$.isModv3(sender, event.getTags())) {
+            $.say($.getWhisperString(sender) + $.modmsg);
+            return;
+        }
+        
+        if (args.length < 2) {
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.addcom-error-usage"));
+            return;
+        }
 
-            commandString = args[0].toLowerCase();
-            message = argsString.substring(argsString.indexOf(args[0]) + $.strlen(args[0]) + 1);
+        commandString = args[0].toLowerCase();
+        message = argsString.substring(argsString.indexOf(args[0]) + $.strlen(args[0]) + 1);
 
-            if (commandString.substring(0, 1) == '!') {
-                commandString = commandString.substring(1);
-            }
+        if (commandString.substring(0, 1) == '!') {
+            commandString = commandString.substring(1);
+        }
 
-            if ($.commandExists(commandString)) {
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.addcom-error"));
-                return;
-            }
+        if ($.commandExists(commandString)) {
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.addcom-error"));
+            return;
+        }
 
-            $.logEvent("addCommand.js", 50, username + " added the command !" + commandString + " with message: " + message);
+        $.logEvent("addCommand.js", 50, username + " added the command !" + commandString + " with message: " + message);
 
-            $.inidb.set('command', commandString, message);
+        $.inidb.set('command', commandString, message);
 
-            $.registerCustomChatCommand("./commands/addCommand.js", commandString);
+        $.registerCustomChatCommand("./commands/addCommand.js", commandString);
 
-            if (sender == $.botname) {
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.addcom-success", commandString));
-                return;
-            }
+        if (sender == $.botname) {
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.addcom-success", commandString));
             return;
         }
+        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.addcom-success", commandString));
+        return;
     }
 
     if (command.equalsIgnoreCase("delalias")) {
@@ -57,7 +60,6 @@ $.on('command', function (event) {
             if (args[0].substring(0, 1) == '!') {
                 args[0] = args[0].substring(1);
             }
-
             if (!$.inidb.exists('aliases', args[0].toLowerCase())) {
                 $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.delalias-error-no-command"));
                 return;
@@ -77,7 +79,6 @@ $.on('command', function (event) {
     if (command.equalsIgnoreCase("commands")) {
         var customcommands = "";
         var keys = $.inidb.GetKeyList("command", "");
-
         for (var i = 0; i < keys.length; i++) {
             customcommands += "!";
             customcommands += keys[i];
@@ -116,7 +117,6 @@ $.on('command', function (event) {
             if (message.substring(0, 1) == '!') {
                 message = message.substring(1);
             }
-
             if (!$.commandExists(commandString)) {
                 $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.aliascom-error-no-command"));
                 return;
@@ -128,7 +128,6 @@ $.on('command', function (event) {
             }
 
             $.logEvent("addCommand.js", 59, username + " aliased the command !" + commandString + " to !" + message);
-
             $.inidb.set('aliases', message, commandString);
 
             $.registerCustomChatCommand("./commands/addCommand.js", message);
@@ -187,7 +186,6 @@ $.on('command', function (event) {
 
             commandString = args[0].toLowerCase();
             message = argsString.substring(argsString.indexOf(args[0]) + $.strlen(args[0]) + 1);
-
             if (commandString.substring(0, 1) == '!') {
                 commandString = commandString.substring(1);
             }
@@ -306,7 +304,6 @@ $.on('command', function (event) {
             }
         }
     }
-
     if (command.equalsIgnoreCase("helpcom")) {
         $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.helpcom-error-usage"));
 
@@ -370,7 +367,6 @@ $.on('command', function (event) {
 
         if (args.length == 1) {
             var commandname = args[0].toLowerCase();
-
             if ($.inidb.exists("aliases", commandname) && $.inidb.get("aliases", commandname) != "") {
                 commandname = $.inidb.get("aliases", commandname);
             }

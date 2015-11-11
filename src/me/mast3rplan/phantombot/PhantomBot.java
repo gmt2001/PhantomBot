@@ -121,7 +121,7 @@ public class PhantomBot implements Listener
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
         com.gmt2001.Console.out.println();
-        com.gmt2001.Console.out.println("PhantomBot Core 1.6.5 10/25/2015");
+        com.gmt2001.Console.out.println("PhantomBot Core 1.6.5 11/11/2015");
         com.gmt2001.Console.err.println("Build revision " + RepoVersion.getRepoVersion());
         com.gmt2001.Console.out.println("Creator: mast3rplan");
         com.gmt2001.Console.out.println("Developers: gmt2001, GloriousEggroll, PhantomIndex");
@@ -176,13 +176,23 @@ public class PhantomBot implements Listener
         if (datastore.equalsIgnoreCase("TempStore"))
         {
             dataStoreObj = TempStore.instance();
-        } else if (datastore.equalsIgnoreCase("SqliteStore"))
-        {
-            dataStoreObj = SqliteStore.instance();
-        } else
+        } else if (datastore.equalsIgnoreCase("IniStore"))
         {
             dataStoreObj = IniStore.instance();
+        } else
+        {
+            dataStoreObj = SqliteStore.instance();
         }
+
+        if (datastore.isEmpty() && IniStore.instance().GetFileList().length > 0 && SqliteStore.instance().GetFileList().length == 0)
+        {
+            ini2sqlite(true);
+        }
+
+        this.followersCache = FollowersCache.instance(channel.toLowerCase());
+        this.hostCache = ChannelHostCache.instance(channel.toLowerCase());
+        this.subscribersCache = SubscribersCache.instance(channel.toLowerCase());
+        //this.channelUsersCache = ChannelUsersCache.instance(channel.toLowerCase());
 
         this.init();
 
@@ -402,6 +412,7 @@ public class PhantomBot implements Listener
         }
     }
 
+    @SuppressWarnings("SleepWhileInLoop")
     public void onExit()
     {
         com.gmt2001.Console.out.println("[SHUTDOWN] Bot shutting down...");
@@ -421,17 +432,20 @@ public class PhantomBot implements Listener
             musicsocketserver.dispose();
         }
 
-        com.gmt2001.Console.out.println("[SHUTDOWN] Saving data...");
-        dataStoreObj.SaveAll(true);
-
-        com.gmt2001.Console.out.println("[SHUTDOWN] Waiting for running scripts to finish...");
+        com.gmt2001.Console.out.print("[SHUTDOWN] Waiting for running scripts to finish...");
         try
         {
-            Thread.sleep(30000);
+            for (int i = 30; i > 0; i--)
+            {
+                com.gmt2001.Console.out.print("\r[SHUTDOWN] Waiting for running scripts to finish..." + i + " ");
+                Thread.sleep(1000);
+            }
         } catch (InterruptedException ex)
         {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
+
+        com.gmt2001.Console.out.println("\r[SHUTDOWN] Waiting for running scripts to finish...  ");
 
         com.gmt2001.Console.out.println("[SHUTDOWN] Terminating TwitchAPI caches...");
         ChannelHostCache.killall();
@@ -449,6 +463,9 @@ public class PhantomBot implements Listener
         {
             script.getValue().kill();
         }
+
+        com.gmt2001.Console.out.println("[SHUTDOWN] Saving data...");
+        dataStoreObj.SaveAll(true);
 
         com.gmt2001.Console.out.println("[SHUTDOWN] Disconnecting from Twitch IRC...");
         connectionManager.quit();
@@ -832,7 +849,7 @@ public class PhantomBot implements Listener
         }
     }
 
-    private static void ini2sqlite()
+    private static void ini2sqlite(boolean delete)
     {
         com.gmt2001.Console.out.print(">>Initializing...");
         IniStore ini = IniStore.instance();
@@ -850,25 +867,80 @@ public class PhantomBot implements Listener
         com.gmt2001.Console.out.print(">>Copying IniStore to SqliteStore...");
         String[] files = ini.GetFileList();
         int i = 0;
+        String str;
+        int maxlen = 0;
+        int num;
         for (String file : files)
         {
-            com.gmt2001.Console.out.print("\r>>Copying IniStore to SqliteStore... " + i + " / " + files.length);
+            str = " " + i + " / " + files.length;
+            num = maxlen - str.length();
+            for (int n = 0; n < num; n++)
+            {
+                str += " ";
+            }
+            maxlen = Math.max(maxlen, str.length());
+            com.gmt2001.Console.out.print("\r>>Copying IniStore to SqliteStore..." + str);
             sqlite.AddFile(file);
 
             String[] sections = ini.GetCategoryList(file);
+            int b = 0;
             for (String section : sections)
             {
+                str = " " + i + " / " + files.length
+                        + " [" + b + " / " + sections.length + "]";
+                num = maxlen - str.length();
+                for (int n = 0; n < num; n++)
+                {
+                    str += " ";
+                }
+                maxlen = Math.max(maxlen, str.length());
+                com.gmt2001.Console.out.print("\r>>Copying IniStore to SqliteStore..." + str);
+
                 String[] keys = ini.GetKeyList(file, section);
+                int k = 0;
                 for (String key : keys)
                 {
+                    str = " " + i + " / " + files.length
+                            + " [" + b + " / " + sections.length + "] <" + k + " / " + keys.length + ">";
+                    num = maxlen - str.length();
+                    for (int n = 0; n < num; n++)
+                    {
+                        str += " ";
+                    }
+                    maxlen = Math.max(maxlen, str.length());
+                    com.gmt2001.Console.out.print("\r>>Copying IniStore to SqliteStore..." + str);
+
                     String value = ini.GetString(file, section, key);
                     sqlite.SetString(file, section, key, value);
-                }
-            }
-        }
-        com.gmt2001.Console.out.println("\r>>Copying IniStore to SqliteStore... " + files.length + " / " + files.length);
 
-        com.gmt2001.Console.out.println("Operation complete. The bot will now exit");
+                    k++;
+                }
+
+                b++;
+            }
+
+            i++;
+        }
+
+        str = "";
+        for (i = 0; i < maxlen - 4; i++)
+        {
+            str += " ";
+        }
+        com.gmt2001.Console.out.println("\r>>Copying IniStore to SqliteStore...done" + str);
+
+        if (delete)
+        {
+            com.gmt2001.Console.out.print(">>Deleting IniStore folder...");
+            for (String file : files)
+            {
+                ini.RemoveFile(file);
+            }
+
+            File f = new File("./inistore");
+            f.delete();
+            com.gmt2001.Console.out.println("done");
+        }
     }
 
     public static void main(String[] args) throws IOException
@@ -1018,7 +1090,8 @@ public class PhantomBot implements Listener
                 if (arg.equalsIgnoreCase("ini2sqlite"))
                 {
                     com.gmt2001.Console.out.println("Converting default IniStore to default SqliteStore...");
-                    ini2sqlite();
+                    ini2sqlite(false);
+                    com.gmt2001.Console.out.println("Operation complete. The bot will now exit");
                     System.exit(0);
                     return;
                 }
@@ -1167,9 +1240,9 @@ public class PhantomBot implements Listener
                 }
                 if (arg.equalsIgnoreCase("storetypes"))
                 {
-                    com.gmt2001.Console.out.println("DataStore types: IniStore (Default, datastoreconfig parameter is folder name, stores in .ini files), "
+                    com.gmt2001.Console.out.println("DataStore types: IniStore (datastoreconfig parameter is folder name, stores in .ini files), "
                             + "TempStore (Stores in memory, lost on shutdown), "
-                            + "SqliteStore (Stores in a SQLite3 database, datastoreconfig parameter is a config file");
+                            + "SqliteStore (Default, Stores in a SQLite3 database, datastoreconfig parameter is a config file");
                     return;
                 }
             }

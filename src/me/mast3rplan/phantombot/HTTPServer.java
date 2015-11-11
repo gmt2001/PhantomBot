@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.URLDecoder;
 import java.util.Date;
 import java.util.Scanner;
@@ -317,11 +318,16 @@ public class HTTPServer extends Thread
                     conn.close();
                 }
 
+            } catch (SocketException ex)
+            {
+                if ((ex.getMessage() != null && !ex.getMessage().startsWith("socket closed")) || dorun)
+                {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
             } catch (IOException ex)
             {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
-
         }
     }
 

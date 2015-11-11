@@ -129,41 +129,47 @@ public class SubscribersCache implements Runnable
         {
             try
             {
-                if (new Date().after(timeoutExpire) && run && TwitchAPIv3.instance().HasOAuth())
+                try
                 {
-                    int newCount = getCount(channel);
-
-                    if (new Date().after(timeoutExpire) && newCount != count)
+                    if (new Date().after(timeoutExpire) && run && TwitchAPIv3.instance().HasOAuth())
                     {
-                        this.updateCache(newCount);
+                        int newCount = getCount(channel);
+
+                        if (new Date().after(timeoutExpire) && newCount != count)
+                        {
+                            this.updateCache(newCount);
+                        }
                     }
+                } catch (Exception e)
+                {
+                    if (e.getMessage().startsWith("[SocketTimeoutException]") || e.getMessage().startsWith("[IOException]"))
+                    {
+                        Calendar c = Calendar.getInstance();
+
+                        if (lastFail.after(new Date()))
+                        {
+                            numfail++;
+                        } else
+                        {
+                            numfail = 1;
+                        }
+
+                        c.add(Calendar.MINUTE, 1);
+
+                        lastFail = c.getTime();
+
+                        if (numfail >= 5)
+                        {
+                            timeoutExpire = c.getTime();
+                        }
+                    }
+
+                    com.gmt2001.Console.out.println("SubscribersCache.run>>Failed to update subscribers: " + e.getMessage());
+                    com.gmt2001.Console.err.logStackTrace(e);
                 }
             } catch (Exception e)
             {
-                if (e.getMessage().startsWith("[SocketTimeoutException]") || e.getMessage().startsWith("[IOException]"))
-                {
-                    Calendar c = Calendar.getInstance();
-
-                    if (lastFail.after(new Date()))
-                    {
-                        numfail++;
-                    } else
-                    {
-                        numfail = 1;
-                    }
-
-                    c.add(Calendar.MINUTE, 1);
-
-                    lastFail = c.getTime();
-
-                    if (numfail >= 5)
-                    {
-                        timeoutExpire = c.getTime();
-                    }
-                }
-
-                com.gmt2001.Console.out.println("SubscribersCache.run>>Failed to update subscribers: " + e.getMessage());
-                com.gmt2001.Console.err.logStackTrace(e);
+                com.gmt2001.Console.err.printStackTrace(e);
             }
 
             try

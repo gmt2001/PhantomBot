@@ -35,11 +35,11 @@ $.isCaster = function (user) {
 }
 
 $.isAdmin = function (user) {
-    return $.getUserGroupId(user) <= 1 || $.isOwner(user) || $.isBot(user);
+    return $.getUserGroupId(user) <= 1 || $.isCaster(user);
 }
 
 $.isMod = function (user) {
-    return $.getUserGroupId(user) <= 2 || $.isOwner(user) || $.isBot(user);
+    return $.getUserGroupId(user) <= 2 || $.hasModeO(user) || $.hasModList(user) || $.isAdmin(user);
 }
 
 $.isModv3 = function (user, tags) {
@@ -69,7 +69,7 @@ $.isDonator = function (user) {
 }
 
 $.isHoster = function (user) {
-    return $.getUserGroupId(user) == 5;
+    return $.getUserGroupId(user) == 5 || $.isHostUser(user);
 }
 
 $.isReg = function (user) {
@@ -523,14 +523,8 @@ $.on('ircChannelMessage', function (event) {
         if ($.users[i][0].equalsIgnoreCase(sender)) {
             $.users[i][1] = System.currentTimeMillis();
             found = true;
-            if ($.isSubv3(event.getSender(), event.getTags()) == true && $.isAdmin(event.getSender()) == false && $.isModv3(event.getSender(), event.getTags()) == false) {
-                if ($.inidb.get("group", sender) != "3") {
-                    if ($.inidb.exists("group", sender)) {
-                        $.inidb.set("tempsubgroup", sender, $.inidb.get("group", sender));
-                    }
-                    $.inidb.set("group", sender, "3");
-                    $.inidb.set("subscribed", sender, "1");
-                }
+            if ($.isSubv3(event.getSender(), event.getTags()) == true) {
+                $.inidb.set("subscribed", sender, "1");
             }
             break;
         }
@@ -571,7 +565,6 @@ $.on('ircChannelJoin', function (event) {
 
     $.lastjoinpart = System.currentTimeMillis();
 
-
     for (var i = 0; i < $.users.length; i++) {
         if ($.users[i][0].equalsIgnoreCase(username)) {
             found = true;
@@ -592,20 +585,9 @@ $.on('ircChannelLeave', function (event) {
 
     $.lastjoinpart = System.currentTimeMillis();
 
-
     for (i = 0; i < $.users.length; i++) {
         if ($.users[i][0].equalsIgnoreCase(username)) {
             $.users.splice(i, 1);
-
-            if ($.inidb.exists("subscribed", username) && $.isSub(username) == false) {
-                $.inidb.del("subscribed", username);
-                if ($.inidb.exists("tempsubgroup", username) && $.isModv3(username) == false && $.isBot(username)==false && $.isOwner(username)==false) {
-                    $.inidb.set("group", username, $.inidb.get("tempsubgroup", username));
-                }
-                if ($.inidb.exists("group", username) == false && $.isModv3(username) == false && $.isBot(username)==false && $.isOwner(username)==false) {
-                    $.inidb.set("group", username, 7);
-                }
-            }
             break;
         }
     }
@@ -613,16 +595,7 @@ $.on('ircChannelLeave', function (event) {
     for (i = 0; i < $.modeOUsers.length; i++) {
         if ($.modeOUsers[i].equalsIgnoreCase(event.getUser().toLowerCase())) {
             $.modeOUsers.splice(i, 1);
-            if ($.inidb.exists("subscribed", username) && $.isSub(username) == false) {
-                $.inidb.del("subscribed", username);
-                if ($.inidb.exists("tempsubgroup", username) && $.isModv3(username) == false && $.isBot(username)==false && $.isOwner(username)==false) {
-                    $.inidb.set("group", username, $.inidb.get("tempsubgroup", username));
-                }
-                if ($.inidb.exists("group", username) == false && $.isModv3(username) == false && $.isBot(username)==false && $.isOwner(username)==false) {
-                        $.inidb.set("group", username, 7);
-                }
-            }
-            if($.isAdmin(username) == false && $.isBot(username)==false) {
+            if ($.isAdmin(username) == false && $.isBot(username) == false) {
                 println("-Moderator: " + username);
             }
         }
@@ -635,34 +608,12 @@ $.on('ircChannelUserMode', function (event) {
         if (event.getAdd() == true) {
             if ($.array.contains($.modeOUsers, username) == false) {
                 $.modeOUsers.push(username);
-                if ($.isAdmin(username) == true) {
-                    $.inidb.set('group', username, 1);
-                    println("Admin: " + username);
-                }
-                if ($.isAdmin(event.getUser()) == false) {
-                    $.inidb.set('group', username, 2);
-                    println("Moderator: " + username);
-                }
-
-                if ($.array.contains($.modeOUsers, $.botowner.toLowerCase())) {
-                    $.inidb.set('group', $.botowner.toLowerCase(), 0);
-                }
             }
         } else {
             for (i = 0; i < $.modeOUsers.length; i++) {
                 if ($.modeOUsers[i].equalsIgnoreCase(username)) {
                     $.modeOUsers.splice(i, 1);
-
-                    if ($.inidb.exists("subscribed", username) && $.isSub(username) == false) {
-                        $.inidb.del("subscribed", username);
-                        if ($.inidb.exists("tempsubgroup", username) && $.isModv3(username) == false && $.isBot(username)==false && $.isOwner(username)==false) {
-                            $.inidb.set("group", username, $.inidb.get("tempsubgroup", username));
-                        }
-                        if ($.inidb.exists("group", username) == false && $.isModv3(username) == false && $.isBot(username)==false && $.isOwner(username)==false ) {
-                            $.inidb.set("group", username, 7);
-                        }
-                    }
-                    if($.isAdmin(username) == false && $.isBot(username)==false) {
+                    if ($.isAdmin(username) == false && $.isBot(username) == false) {
                         println("-Moderator: " + username);
                     }
                 }
@@ -697,7 +648,7 @@ $.on('ircPrivateMessage', function (event) {
                         return;
                     }
                 }
-                $.saveArray(spl, "mods.txt", false);
+                
                 $.subUsers.push(new Array(spl[1], System.currentTimeMillis() + 10000));
             }
         }

@@ -142,61 +142,9 @@ public class FollowersCache implements Runnable
 
         try
         {
-            quickUpdate(channel);
-        } catch (Exception e)
-        {
-            if (e.getMessage().startsWith("[SocketTimeoutException]") || e.getMessage().startsWith("[IOException]"))
-            {
-                Calendar c = Calendar.getInstance();
-
-                if (lastFail.after(new Date()))
-                {
-                    numfail++;
-                } else
-                {
-                    numfail = 1;
-                }
-
-                c.add(Calendar.MINUTE, 1);
-
-                lastFail = c.getTime();
-
-                if (numfail >= 5)
-                {
-                    timeoutExpire = c.getTime();
-                }
-            }
-
-            com.gmt2001.Console.out.println("FollowersCache.run>>Failed to update followers: " + e.getMessage());
-            com.gmt2001.Console.err.logStackTrace(e);
-        }
-
-        EventBus.instance().post(new TwitchFollowsInitializedEvent(PhantomBot.instance().getChannel(this.channel)));
-
-        while (!killed)
-        {
             try
             {
-                if (new Date().after(timeoutExpire))
-                {
-                    /*
-                     * int newCount =
-                     */
-                    quickUpdate(channel);
-
-                    /*
-                     * if (new Date().after(timeoutExpire) && (Math.abs(newCount
-                     * - count) > 30 || firstUpdate || new
-                     * Date().after(nextFull))) { this.updateCache(newCount); }
-                     */
-
-                    /*
-                     * if (firstUpdate) { firstUpdate = false;
-                     * EventBus.instance().post(new
-                     * TwitchFollowsInitializedEvent(PhantomBot.instance().getChannel(this.channel)));
-                     * }
-                     */
-                }
+                quickUpdate(channel);
             } catch (Exception e)
             {
                 if (e.getMessage().startsWith("[SocketTimeoutException]") || e.getMessage().startsWith("[IOException]"))
@@ -223,6 +171,71 @@ public class FollowersCache implements Runnable
 
                 com.gmt2001.Console.out.println("FollowersCache.run>>Failed to update followers: " + e.getMessage());
                 com.gmt2001.Console.err.logStackTrace(e);
+            }
+        } catch (Exception e)
+        {
+            com.gmt2001.Console.err.printStackTrace(e);
+        }
+
+        EventBus.instance().post(new TwitchFollowsInitializedEvent(PhantomBot.instance().getChannel(this.channel)));
+
+        while (!killed)
+        {
+            try
+            {
+                try
+                {
+                    if (new Date().after(timeoutExpire))
+                    {
+                        /*
+                         * int newCount =
+                         */
+                        quickUpdate(channel);
+
+                        /*
+                         * if (new Date().after(timeoutExpire) &&
+                         * (Math.abs(newCount - count) > 30 || firstUpdate ||
+                         * new Date().after(nextFull))) {
+                         * this.updateCache(newCount); }
+                         */
+
+                        /*
+                         * if (firstUpdate) { firstUpdate = false;
+                         * EventBus.instance().post(new
+                         * TwitchFollowsInitializedEvent(PhantomBot.instance().getChannel(this.channel)));
+                         * }
+                         */
+                    }
+                } catch (Exception e)
+                {
+                    if (e.getMessage().startsWith("[SocketTimeoutException]") || e.getMessage().startsWith("[IOException]"))
+                    {
+                        Calendar c = Calendar.getInstance();
+
+                        if (lastFail.after(new Date()))
+                        {
+                            numfail++;
+                        } else
+                        {
+                            numfail = 1;
+                        }
+
+                        c.add(Calendar.MINUTE, 1);
+
+                        lastFail = c.getTime();
+
+                        if (numfail >= 5)
+                        {
+                            timeoutExpire = c.getTime();
+                        }
+                    }
+
+                    com.gmt2001.Console.out.println("FollowersCache.run>>Failed to update followers: " + e.getMessage());
+                    com.gmt2001.Console.err.logStackTrace(e);
+                }
+            } catch (Exception e)
+            {
+                com.gmt2001.Console.err.printStackTrace(e);
             }
 
             try
