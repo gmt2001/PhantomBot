@@ -189,11 +189,6 @@ public class PhantomBot implements Listener
             ini2sqlite(true);
         }
 
-        this.followersCache = FollowersCache.instance(channel.toLowerCase());
-        this.hostCache = ChannelHostCache.instance(channel.toLowerCase());
-        this.subscribersCache = SubscribersCache.instance(channel.toLowerCase());
-        //this.channelUsersCache = ChannelUsersCache.instance(channel.toLowerCase());
-
         this.init();
 
         /*
