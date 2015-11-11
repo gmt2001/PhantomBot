@@ -286,7 +286,11 @@ public class IniStore extends DataStore implements ActionListener
 
         while (it.hasNext())
         {
-            s[i++] = it.next().getName();
+            String name = it.next().getName();
+            
+            name = name.substring(0, name.lastIndexOf(".ini"));
+            
+            s[i++] = name;
         }
 
         return s;
