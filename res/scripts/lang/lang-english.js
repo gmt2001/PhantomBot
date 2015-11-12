@@ -691,7 +691,7 @@ $.lang.data["net.phantombot.bankheistsystem.new-value-for-ratio20"] = "The value
 $.lang.data["net.phantombot.bankheistsystem.new-value-for-ratio10"] = "The value for ratio10 has been set to $1";
 $.lang.data["net.phantombot.bankheistsystem.new-value-for-maxbet"] = "The max bet amount has been set to $1";
 $.lang.data["net.phantombot.bankheistsystem.new-value-for-user-error-404"] = "Action not recognized";
-$.lang.data["net.phantombot.bankheistsystem.min-to-join"] = "$1 minute(s) remaining to join!";
+$.lang.data["net.phantombot.bankheistsystem.min-to-join"] = " minute(s) remaining to join!";
 
 //streamCommand.js 
 $.lang.data["net.phantombot.streamcommand.stream-offline"] = "Stream is offline.";

@@ -523,7 +523,7 @@ $.on('command', function (event) {
             
             $.inidb.set('settings','song_storepath', args[1]);
             $.storepath = args[1];
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.new-store-path", args[0].toLowerCase()));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.new-store-path", args[1]));
             return;
         }
         
