@@ -68,9 +68,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
     <target name="git.revision" if="git.present">
         <exec executable="git" outputproperty="git.revision" failifexecutionfails="false" errorproperty="">
-            <arg value="describe"/>
-            <arg value="--tags"/>
-            <arg value="--always"/>
+            <arg value="rev-parse"/>
+            <arg value="--short"/>
             <arg value="HEAD"/>
         </exec>
         <condition property="repository.version" value="${git.revision}" else="unknown">
