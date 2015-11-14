@@ -604,6 +604,8 @@ $.on('ircChannelLeave', function (event) {
 
 $.on('ircChannelUserMode', function (event) {
     var username = event.getUser().toLowerCase();
+    $.inidb.set('visited', username, "visited");
+    
     if (event.getMode().equalsIgnoreCase("o")) {
         if (event.getAdd() == true) {
             if ($.array.contains($.modeOUsers, username) == false) {
@@ -611,6 +613,7 @@ $.on('ircChannelUserMode', function (event) {
             }
         } else {
             for (i = 0; i < $.modeOUsers.length; i++) {
+
                 if ($.modeOUsers[i].equalsIgnoreCase(username)) {
                     $.modeOUsers.splice(i, 1);
                     if ($.isAdmin(username) == false && $.isBot(username) == false) {
