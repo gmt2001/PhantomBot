@@ -322,22 +322,26 @@ $.on('command', function (event) {
         var messageCommand = $.inidb.get('command', command.toLowerCase());
 
         for (var i = 0; i < args.length; i++) {
-            messageCommand = $.replaceAll(messageCommand, '(' + (i + 1) + ')', $.username.resolve(args[i]));
+            messageCommand = $.replaceAll(messageCommand, '(' + (i + 1) + ')', args[i]);
         }
 
-        messageCommand = $.replaceAll(messageCommand, '(sender)', $.username.resolve(sender, event.getTags()));
+        messageCommand = $.replaceAll(messageCommand, '(sender)', sender);
 
         if (messageCommand.contains('(count)')) {
             $.inidb.incr('commandcount', command.toLowerCase(), 1);
+        }
+
+        if (messageCommand.indexOf('(touser)') >= 0 && args.length > 0) {
+            messageCommand = $.replaceAll(messageCommand, '(touser)', $.username.resolve(args[0]));
         }
 
         messageCommand = $.replaceAll(messageCommand, '(count)', $.inidb.get('commandcount', command.toLowerCase()));
 
         messageCommand = $.replaceAll(messageCommand, '(z_stroke)', java.lang.Character.toString(java.lang.Character.toChars(0x01B6)[0]));
 
-        messageCommand = $.replaceAll(messageCommand, '(random)', $.username.resolve(randomPerson));
+        messageCommand = $.replaceAll(messageCommand, '(random)', randomPerson);
 
-        messageCommand = $.replaceAll(messageCommand, '(#)', $.username.resolve(randomNum));
+        messageCommand = $.replaceAll(messageCommand, '(#)', randomNum);
 
         messageCommand = $.replaceAll(messageCommand, '(points)', $.pointNameMultiple);
 
