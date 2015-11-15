@@ -64,21 +64,18 @@ $.on('twitchFollow', function (event) {
         }
 
         if ($.announceFollows == true && $.announceFollowsAllowed == true && $.moduleEnabled("./handlers/followHandler.js")) {
-            var s = $.inidb.get('settings', 'followmessage');
+            var s;
 
-            if (s == null || s == undefined || $.strlen(s) == 0) {
-                if ($.moduleEnabled("./systems/pointSystem.js")) {
-                    s = $.lang.get("net.phantombot.followHandler.default-say");
-                } else {
-                    s = $.lang.get("net.phantombot.followHandler.default-say-2");
-                }
+            if ($.moduleEnabled("./systems/pointSystem.js")) {
+                s = $.lang.get("net.phantombot.followHandler.new-follow-message-and-reward");
+            } else {
+                s = $.lang.get("net.phantombot.followHandler.new-follow-message-no-reward");
             }
 
             s = $.replaceAll(s, '(name)', username);
 
             if ($.moduleEnabled("./systems/pointSystem.js")) {
                 s = $.replaceAll(s, '(pointname)', $.getPointsString(p));
-
                 s = $.replaceAll(s, '(reward)', p.toString());
             }
 
@@ -92,7 +89,6 @@ $.on('twitchFollow', function (event) {
                     $.checkFollowTrain();
                 }, 1000);
             }
-
             $.say(s);
         }
 
@@ -138,6 +134,7 @@ $.on('command', function (event) {
     var args = event.getArgs();
     var action = sender;
     var action2 = $.channelName;
+
     if (args.length > 0) {
         action = args[0];
     }
@@ -197,37 +194,11 @@ $.on('command', function (event) {
             $.announceFollows = false;
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.followHandler.follow-ads-off"));
             return;
-
         } else {
             $.inidb.set("settings", "announcefollows", "true");
             $.announceFollows = true;
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.followHandler.follow-ads-on"));
             return;
-        }
-    }
-
-    if (command.equalsIgnoreCase("followmessage")) {
-        if (!$.isAdmin(sender)) {
-            $.say($.getWhisperString(sender) + $.adminmsg);
-            return;
-        }
-
-        if ($.strlen(argsString) == 0) {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.followHandler.current-follow-message", $.inidb.get('settings', 'followmessage')));
-
-            var s = $.lang.get("net.phantombot.followHandler.follow-message-usage");
-
-            if ($.moduleEnabled("./systems/pointSystem.js")) {
-                s += $.lang.get("net.phantombot.followHandler.follow-message-usage-points");
-            }
-
-            $.say($.getWhisperString(sender) + s);
-        } else {
-            $.logEvent("followHandler.js", 108, username + " changed the new follower message to: " + argsString);
-
-            $.inidb.set('settings', 'followmessage', argsString);
-
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.followHandler.follow-message-set"));
         }
     }
 
