@@ -30,16 +30,15 @@ $.on('twitchSubscribe', function(event) {
     }
     
     if ($.announceSubscribes) {
-        var s = $.inidb.get('settings', 'subscribemessage');
+        var s;
         var p = parseInt($.inidb.get('settings', 'subscribereward'));
             
-        if (s == null || s == undefined || $.strlen(s) == 0) {
-            if ($.moduleEnabled("./systems/pointSystem.js")) {
-                s = $.lang.get("net.phantombot.subscribeHandler.default-sub-message-whit-points");
-                return;
-            } else {
-                s = $.lang.get("net.phantombot.subscribeHandler.default-sub-message");
-            }
+        if ($.moduleEnabled("./systems/pointSystem.js")) {
+            s = $.lang.get("net.phantombot.subscribeHandler.default-sub-message-whit-points");
+            return;
+        } else {
+            s = $.lang.get("net.phantombot.subscribeHandler.default-sub-message");
+            return;
         }
             
         if (isNaN(p)) {
@@ -50,8 +49,7 @@ $.on('twitchSubscribe', function(event) {
             
         if ($.moduleEnabled("./systems/pointSystem.js")) {
             s = $.replaceAll(s, '(pointname)', $.getPointsString(p));
-                
-                s = $.replaceAll(s, '(reward)', p.toString());
+            s = $.replaceAll(s, '(reward)', p.toString());
         }
         if ($.sub_silentmode == 0) {
             $.say(s);
@@ -84,43 +82,15 @@ $.on('twitchUnsubscribe', function(event) {
 
 $.on('twitchSubscribesInitialized', function(event) {
     println(">>Enabling new subscriber announcements");
+
     $.announceSubscribes = true;
 });
-$.announceSubscribes = true;
+
 $.on('command', function(event) {
     var sender = event.getSender();
     var username = $.username.resolve(sender, event.getTags());
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
-    
-    if (command.equalsIgnoreCase("subscribemessage")) {
-        if (!$.isAdmin(sender)) {
-            $.say($.getWhisperString(sender) + $.adminmsg);
-            return;
-        }
-        
-        if ($.strlen(argsString) == 0) {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.subscribeHandler.current.sub-message", $.inidb.get('settings', 'subscribemessage')));
-            return;
-            
-            var s = $.lang.get("net.phantombot.subscribeHandler.sub-message-usage");
-            
-            if ($.moduleEnabled("./systems/pointSystem.js")) {
-                s += $.lang.get("net.phantombot.subscribeHandler.sub-message-points-usage");
-                return;
-            }
-            
-            $.say($.getWhisperString(sender) + s);
-            return;
-        } else {
-            $.logEvent("subscribeHandler.js", 107, username + " changed the new subscriber message to: " + argsString);
-            
-            $.inidb.set('settings', 'subscribemessage', argsString);
-            
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.subscribeHandler.new-sub-message-set"));
-            return;
-        }
-    }
     
     if (command.equalsIgnoreCase("subsilentmode")) {
         if (!$.isAdmin(sender)) {
@@ -128,7 +98,7 @@ $.on('command', function(event) {
             return;
         }
         
-        if($.sub_silentmode == 1) {
+        if ($.sub_silentmode == 1) {
             $.inidb.set("settings", 'sub_silentmode', 0);
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.subscribeHandler.sub-silent-mode-on"));
             $.sub_silentmode = 0;

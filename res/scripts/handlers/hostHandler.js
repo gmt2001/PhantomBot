@@ -11,7 +11,7 @@ if ($.hosttimeout == null || $.hosttimeout == undefined || isNaN($.hosttimeout))
     $.hosttimeout = $.hosttimeout * 60 * 1000;
 }
 
-if ($.hostreward == null || $.hostreward == undefined || isNaN($.hostreward)) { // added isNaN() so NaN does not come up if there is no reward
+if ($.hostreward == null || $.hostreward == undefined || isNaN($.hostreward)) {
     $.hostreward = 0;
 }
 
@@ -22,27 +22,21 @@ $.isHostUser = function (user) {
 $.on('twitchHosted', function (event) {
     var username = $.username.resolve(event.getHoster());
     var group = $.inidb.get('group', username.toLowerCase());
+    var s;
 
     if (group == null) {
         group = 'Viewer';
     }
 
-    if ($.announceHosts && $.moduleEnabled("./handlers/hostHandler.js")
-            && ($.hostlist[username.toLowerCase()] == null || $.hostlist[username.toLowerCase()] == undefined
-                    || $.hostlist[username.toLowerCase()] < System.currentTimeMillis())) {
-        var s = $.inidb.get('settings', 'hostmessage');
-
-        if (s == null || s == undefined || $.strlen(s) == 0) {
-            if ($.hostreward < 1) {
-                s = $.lang.get("net.phantombot.hosthandler.default-host-welcome-message");
-            } else if ($.hostreward > 0 && $.moduleEnabled('./systems/pointSystem.js')) {
-                s = $.lang.get("net.phantombot.hosthandler.default-host-welcome-message-and-reward", $.getPointsString($.hostreward));
-                $.inidb.incr('points', username.toLowerCase(), $.hostreward);
-            }
+    if ($.announceHosts && $.moduleEnabled("./handlers/hostHandler.js") && ($.hostlist[username.toLowerCase()] == null || $.hostlist[username.toLowerCase()] == undefined || $.hostlist[username.toLowerCase()] < System.currentTimeMillis())) {
+        if ($.hostreward < 1) {
+            s = $.lang.get("net.phantombot.hosthandler.default-host-welcome-message");
+        } else if ($.hostreward > 0 && $.moduleEnabled('./systems/pointSystem.js')) {
+            s = $.lang.get("net.phantombot.hosthandler.default-host-welcome-message-and-reward", $.getPointsString($.hostreward));
+            $.inidb.incr('points', username.toLowerCase(), $.hostreward);
         }
 
         s = $.replaceAll(s, '(name)', username);
-
         $.say(s);
     }
 
@@ -76,33 +70,6 @@ $.on('command', function (event) {
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
     var args = event.getArgs();
-
-    if (command.equalsIgnoreCase("hostmessage")) {
-        if (!$.isAdmin(sender)) {
-            $.say($.getWhisperString(sender) + $.adminmsg);
-            return;
-        }
-        var hmessage = $.inidb.get('settings', 'hostmessage');
-        if (hmessage == null) { // added check if there is no host message so it does not come out as null
-            hmessage = "There is no host message as this time.";
-        }
-
-        if ($.strlen(argsString) == 0) {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.hosthandler.current-host-message", hmessage));
-
-            var s = $.lang.get("net.phantombot.hosthandler.host-message-usage");
-
-            $.say($.getWhisperString(sender) + s);
-            return;
-        } else {
-            $.logEvent("hostHandler.js", 73, username + " changed the new hoster message to: " + argsString);
-
-            $.inidb.set('settings', 'hostmessage', argsString);
-
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.hosthandler.host-message-set-success"));
-            return;
-        }
-    }
 
     if (command.equalsIgnoreCase("hostreward")) {
         if (!$.isAdmin(sender)) {
