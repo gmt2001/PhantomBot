@@ -465,10 +465,6 @@ $.lang.data["net.phantombot.donationhandler.donationalert-usage"] = "!donational
 //subscribeHandler.js 
 $.lang.data["net.phantombot.subscribeHandler.default-sub-message-whit-points"] = "Thanks for the subscription (name)! +(pointname)!";
 $.lang.data["net.phantombot.subscribeHandler.default-sub-message"] = "Thanks for the subscription (name)!";
-$.lang.data["net.phantombot.subscribeHandler.current.sub-message"] = "The current subscriber message is: $1";
-$.lang.data["net.phantombot.subscribeHandler.sub-message-usage"] = "To change it use '!subscribemessage <message>'. You can also add the string '(name)' to put the subscribers name";
-$.lang.data["net.phantombot.subscribeHandler.sub-message-points-usage"] = ", '(reward)' to put the number of points received for subscribing, and '(pointname)' to put the name of your points";
-$.lang.data["net.phantombot.subscribeHandler.new-sub-message-set"] = "New subscriber message set!";
 $.lang.data["net.phantombot.subscribeHandler.sub-silent-mode-on"] = "Subscribe handler now set to silent mode";
 $.lang.data["net.phantombot.subscribeHandler.sub-silent-mode-off"] = "Subscribe handler now set to verbose mode";
 $.lang.data["net.phantombot.subscribeHandler.new-sub-current-reward"] = "The current new subscriber reward is $1 points! To change it use '!subscribereward <reward>";
