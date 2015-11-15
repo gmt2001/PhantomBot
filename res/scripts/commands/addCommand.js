@@ -358,6 +358,21 @@ $.on('command', function (event) {
         $.say(messageCommand);
     }
 
+    if (command.equalsIgnoreCase("pricecommod")) {
+        if (!$.isAdmin(sender)) {
+            $.say($.getWhisperString(sender) + $.adminmsg);
+            return;
+        }
+        
+        if (!$.inidb.exists("settings", "pricecommod") || !$.inidb.get("settings", "pricecommod").equalsIgnoreCase("true")) {
+            $.inidb.set("settings", "pricecommod", "true");
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.pricecommod-enable"));
+        } else {
+            $.inidb.set("settings", "pricecommod", "false");
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.pricecommod-disable"));
+        }
+    }
+
     if (command.equalsIgnoreCase("pricecom")) {
         if (!$.isAdmin(sender) && args.length != 1) {
             $.say($.getWhisperString(sender) + $.adminmsg);

@@ -300,7 +300,7 @@ public class HTTPServer extends Thread
 
             } catch (SocketException ex)
             {
-                if ((ex.getMessage() != null && !ex.getMessage().startsWith("socket closed")) || dorun)
+                if ((ex.getMessage() != null && !ex.getMessage().toLowerCase().contains("socket closed")) || dorun)
                 {
                     com.gmt2001.Console.err.printStackTrace(ex);
                 }
