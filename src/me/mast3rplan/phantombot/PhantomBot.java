@@ -189,11 +189,6 @@ public class PhantomBot implements Listener
             ini2sqlite(true);
         }
 
-        this.followersCache = FollowersCache.instance(channel.toLowerCase());
-        this.hostCache = ChannelHostCache.instance(channel.toLowerCase());
-        this.subscribersCache = SubscribersCache.instance(channel.toLowerCase());
-        //this.channelUsersCache = ChannelUsersCache.instance(channel.toLowerCase());
-
         this.init();
 
         /*
@@ -472,6 +467,11 @@ public class PhantomBot implements Listener
 
         //com.gmt2001.Console.out.println("Joined channel: " + event.getChannel().getName());
         session.sayChannel(this.channel, ".mods");
+
+        this.followersCache = FollowersCache.instance(this.channel.getName().toLowerCase());
+        this.hostCache = ChannelHostCache.instance(this.channel.getName().toLowerCase());
+        this.subscribersCache = SubscribersCache.instance(this.channel.getName().toLowerCase());
+        //this.channelUsersCache = ChannelUsersCache.instance(this.channel.getName().toLowerCase());
     }
 
     @Subscribe
@@ -973,20 +973,26 @@ public class PhantomBot implements Listener
 
         if (user.isEmpty() || oauth.isEmpty() || channel.isEmpty())
         {
-            com.gmt2001.Console.out.println("Login details for bot not found");
+            try
+            {
+                com.gmt2001.Console.out.println("Login details for bot not found");
 
-            com.gmt2001.Console.out.print("Please enter the bot's twitch username: ");
-            user = System.console().readLine().trim();
+                com.gmt2001.Console.out.print("Please enter the bot's twitch username: ");
+                user = System.console().readLine().trim();
 
-            com.gmt2001.Console.out.println("Visit https://twitchapps.com/tmi/ to generate an oAuth token (including 'oauth:') & type it below.");
-            com.gmt2001.Console.out.println("IMPORTANT: This MUST be done while logged in as the bot account!" + "\n");
-            com.gmt2001.Console.out.println("Please enter the bot's tmi oauth token: ");
-            oauth = System.console().readLine().trim();
+                com.gmt2001.Console.out.println("Visit https://twitchapps.com/tmi/ to generate an oAuth token (including 'oauth:') & type it below.");
+                com.gmt2001.Console.out.println("IMPORTANT: This MUST be done while logged in as the bot account!" + "\n");
+                com.gmt2001.Console.out.println("Please enter the bot's tmi oauth token: ");
+                oauth = System.console().readLine().trim();
 
-            com.gmt2001.Console.out.print("Please enter the name of the twitch channel the bot should join (not the link, just the name): ");
-            channel = System.console().readLine().trim();
+                com.gmt2001.Console.out.print("Please enter the name of the twitch channel the bot should join (not the link, just the name): ");
+                channel = System.console().readLine().trim();
 
-            changed = true;
+                changed = true;
+            } catch (NullPointerException ex)
+            {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
         }
 
         if (owner.isEmpty())
