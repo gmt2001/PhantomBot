@@ -165,6 +165,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
     <target name="clean" depends="git.revision,post.compile">
         <delete dir="${build}" />
+    </target>
+
+    <target name="distclean" depends="clean">
         <delete dir="${dist}" />
     </target>
 
