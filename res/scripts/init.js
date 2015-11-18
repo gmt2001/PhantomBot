@@ -395,7 +395,7 @@ $api.on($script, 'command', function (event) {
     }
 
     var idx = -1;
-    if ($.inidb.get("settings", "coolcomuser").equalsIgnoreCase("true")) {
+    if ($.inidb.exists("settings", "coolcomuser") && $.inidb.get("settings", "coolcomuser").equalsIgnoreCase("true")) {
         if ((!isNaN($.inidb.get("settings", "coolcom")) && parseInt($.inidb.get("settings", "coolcom")) > 0)
                 || ($.inidb.exists("coolcom", command) && !isNaN($.inidb.get("coolcom", command)) && parseInt($.inidb.get("coolcom", command)) > 0)) {
             for (var i = 0; i < coolcom.length; i++) {
@@ -648,7 +648,7 @@ $api.on(initscript, 'command', function (event) {
             $.say($.getWhisperString(sender) + $.adminmsg);
             return;
         }
-        if ($.inidb.get("settings", "coolcomuser").equalsIgnoreCase("true")) {
+        if ($.inidb.exists("settings", "coolcomuser") && $.inidb.get("settings", "coolcomuser").equalsIgnoreCase("true")) {
             $.inidb.set("settings", "coolcomuser", "false");
             $.say("cooldown will no longer be only on users, it will be on everyone.");
         } else {
