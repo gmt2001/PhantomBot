@@ -678,7 +678,7 @@ $api.on(initscript, 'command', function (event) {
                 $.logEvent("init.js", 455, username + " changed the command cooldown for " + args[0] + " to " + args[1] + " seconds");
 
                 $.inidb.set("coolcom", args[0].toLowerCase(), args[1]);
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.coolcom-set-individual", args[1], args[0]));
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.coolcom-set-individual", args[0], args[1]));
             }
         } else if (!isNaN(args[0]) && parseInt(args[0]) >= 0) {
             if (!$.isModv3(sender, event.getTags())) {
