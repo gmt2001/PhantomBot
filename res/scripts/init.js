@@ -445,9 +445,9 @@ $api.on($script, 'command', function (event) {
             if (idx >= 0) {
                 coolcom[idx][1] = System.currentTimeMillis() + (parseInt($.inidb.get("coolcom", command)) * 1000);
             } else if ($.inidb.exists("settings", "coolcomuser") && $.inidb.get("settings", "coolcomuser").equalsIgnoreCase("true")) {
-                coolcom.push(new Array(sender, System.currentTimeMillis() + (parseInt($.inidb.get("settings", "coolcom")) * 1000)));
+                coolcom.push(new Array(sender, System.currentTimeMillis() + (parseInt($.inidb.get("coolcom", command)) * 1000)));
             } else {
-                coolcom.push(new Array(command, System.currentTimeMillis() + (parseInt($.inidb.get("settings", "coolcom")) * 1000)));
+                coolcom.push(new Array(command, System.currentTimeMillis() + (parseInt($.inidb.get("coolcom", command)) * 1000)));
             }
         }
     } else if (!isNaN($.inidb.get("settings", "coolcom")) && parseInt($.inidb.get("settings", "coolcom")) > 0) {
