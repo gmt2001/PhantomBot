@@ -395,16 +395,32 @@ $api.on($script, 'command', function (event) {
     }
 
     var idx = -1;
-    if ((!isNaN($.inidb.get("settings", "coolcom")) && parseInt($.inidb.get("settings", "coolcom")) > 0)
-            || ($.inidb.exists("coolcom", command) && !isNaN($.inidb.get("coolcom", command)) && parseInt($.inidb.get("coolcom", command)) > 0)) {
-        for (var i = 0; i < coolcom.length; i++) {
-            if (coolcom[i][0].equalsIgnoreCase(command)) {
-                idx = i;
-                if (coolcom[i][1] >= System.currentTimeMillis() && !$.isModv3(sender, event.getTags())) {
-                    $.println($.lang.get("net.phantombot.init.coolcom-cooldown", origcommand, sender));
-                    return;
+    if ($.inidb.get("settings", "coolcomuser").equalsIgnoreCase("true")) {
+        if ((!isNaN($.inidb.get("settings", "coolcom")) && parseInt($.inidb.get("settings", "coolcom")) > 0)
+                || ($.inidb.exists("coolcom", command) && !isNaN($.inidb.get("coolcom", command)) && parseInt($.inidb.get("coolcom", command)) > 0)) {
+            for (var i = 0; i < coolcom.length; i++) {
+                if (coolcom[i][0].equalsIgnoreCase(sender)) {
+                    idx = i;
+                    if (coolcom[i][1] >= System.currentTimeMillis() && !$.isModv3(sender, event.getTags())) {
+                        $.println($.lang.get("net.phantombot.init.coolcom-cooldown", origcommand, sender));
+                        return;
+                    }
+                    break;
                 }
-                break;
+            }
+        }
+    } else {
+        if ((!isNaN($.inidb.get("settings", "coolcom")) && parseInt($.inidb.get("settings", "coolcom")) > 0)
+                || ($.inidb.exists("coolcom", command) && !isNaN($.inidb.get("coolcom", command)) && parseInt($.inidb.get("coolcom", command)) > 0)) {
+            for (var i = 0; i < coolcom.length; i++) {
+                if (coolcom[i][0].equalsIgnoreCase(command)) {
+                    idx = i;
+                    if (coolcom[i][1] >= System.currentTimeMillis() && !$.isModv3(sender, event.getTags())) {
+                        $.println($.lang.get("net.phantombot.init.coolcom-cooldown", origcommand, sender));
+                        return;
+                    }
+                    break;
+                }
             }
         }
     }
@@ -428,13 +444,17 @@ $api.on($script, 'command', function (event) {
         if (parseInt($.inidb.get("coolcom", command)) > 0) {
             if (idx >= 0) {
                 coolcom[idx][1] = System.currentTimeMillis() + (parseInt($.inidb.get("coolcom", command)) * 1000);
+            } else if ($.inidb.exists("settings", "coolcomuser") && $.inidb.get("settings", "coolcomuser").equalsIgnoreCase("true")) {
+                coolcom.push(new Array(sender, System.currentTimeMillis() + (parseInt($.inidb.get("settings", "coolcom")) * 1000)));
             } else {
-                coolcom.push(new Array(command, System.currentTimeMillis() + (parseInt($.inidb.get("coolcom", command)) * 1000)));
+                coolcom.push(new Array(command, System.currentTimeMillis() + (parseInt($.inidb.get("settings", "coolcom")) * 1000)));
             }
         }
     } else if (!isNaN($.inidb.get("settings", "coolcom")) && parseInt($.inidb.get("settings", "coolcom")) > 0) {
         if (idx >= 0) {
             coolcom[idx][1] = System.currentTimeMillis() + (parseInt($.inidb.get("settings", "coolcom")) * 1000);
+        } else if ($.inidb.exists("settings", "coolcomuser") && $.inidb.get("settings", "coolcomuser").equalsIgnoreCase("true")) {
+            coolcom.push(new Array(sender, System.currentTimeMillis() + (parseInt($.inidb.get("settings", "coolcom")) * 1000)));
         } else {
             coolcom.push(new Array(command, System.currentTimeMillis() + (parseInt($.inidb.get("settings", "coolcom")) * 1000)));
         }
@@ -621,6 +641,20 @@ $api.on(initscript, 'command', function (event) {
 
     if (command.equalsIgnoreCase("helpcoolcom")) {
         $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.coolcom-help"));
+    }
+    
+    if (command.equalsIgnoreCase("coolcomuser")) {
+        if (!$.isAdmin(sender)) {
+            $.say($.getWhisperString(sender) + $.adminmsg);
+            return;
+        }
+        if ($.inidb.get("settings", "coolcomuser").equalsIgnoreCase("true")) {
+            $.inidb.set("settings", "coolcomuser", "false");
+            $.say("cooldown will no longer be only on users, it will be on everyone.");
+        } else {
+            $.inidb.set("settings", "coolcomuser", "true");
+            $.say("cooldown will now be on users, and not everyone.");
+        }
     }
 
     if (command.equalsIgnoreCase("coolcom")) {
