@@ -109,8 +109,8 @@ public class FollowersCache implements Runnable
             } else
             {
                 throw new Exception("[HTTPErrorException] HTTP " + j.getInt("status") + " " + j.getString("error") + ". req="
-                        + j.getString("_type") + " " + j.getString("_url") + " " + j.getString("_post") + "   message="
-                        + (j.has("message") ? j.getString("message") : "null"));
+                        + j.getString("_type") + " " + j.getString("_url") + " " + j.getString("_post") + "   "
+                        + (j.has("message") ? "message=" + j.getString("message") : "content=" + j.getString("_content")));
             }
         } else
         {
