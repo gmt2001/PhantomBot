@@ -199,7 +199,7 @@ $.on('ircPrivateMessage', function(event) {
     if (event.getSender().equalsIgnoreCase("twitchnotify")) {
         var message = event.getMessage().toLowerCase();
 
-        if (message.indexOf("subscribed") != -1 && message.indexOf("resubscribed") != -1) {
+        if (message.indexOf("just subscribed") != -1 || message.indexOf("subscribed for") != -1) {
             var spl = message.split(" ");
             var EventBus = Packages.me.mast3rplan.phantombot.event.EventBus;
             var TwitchSubscribeEvent = Packages.me.mast3rplan.phantombot.event.twitch.subscriber.TwitchSubscribeEvent;
