@@ -230,13 +230,13 @@ $.on('command', function (event) {
 
     if (command.equalsIgnoreCase("followage") || command.equalsIgnoreCase("followtime") || command.equalsIgnoreCase("following")) {
         if (action.equalsIgnoreCase("help")) {
-            $.say("@" + $.getWhisperString(sender) + $.lang.get("net.phantombot.followHandler.followtime-usage"));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.followHandler.followtime-usage"));
             return;
         } else if (check.getInt("_http") != 200) {
-            $.say("@" + $.getWhisperString(sender) + $.lang.get("net.phantombot.followHandler.error-not-following", action, action2));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.followHandler.error-not-following", action, action2));
             return;
         } else {
-            $.say("@" + $.getWhisperString(sender) + $.lang.get("net.phantombot.followHandler.followtime", action, action2, $.getFollowAge(action, action2)));
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.followHandler.followtime", action, action2, $.getFollowAge(action, action2)));
             return;
         }
     }
