@@ -242,14 +242,6 @@ $.on('command', function (event) {
     }
 });
 
-setTimeout(function () {
-    if ($.moduleEnabled('./handlers/followHandler.js')) {
-        $.registerChatCommand("./handlers/followHandler.js", "followmessage", "admin");
-        $.registerChatCommand("./handlers/followHandler.js", "followreward", "admin");
-        $.registerChatCommand("./handlers/followHandler.js", "followcount");
-        $.registerChatCommand("./handlers/followHandler.js", "followage");
-    }
-}, 10 * 1000);
 
 $.checkFollowTrain = function () {
     if (System.currentTimeMillis() - $.lastfollow > 65 * 1000) {
@@ -289,5 +281,9 @@ setTimeout(function () {
         $.registerChatCommand("./handlers/followHandler.js", "followed", "mod");
         $.registerChatCommand("./handlers/followHandler.js", "follow", "mod");
         $.registerChatCommand("./handlers/followHandler.js", "followannounce", "mod");
+        $.registerChatCommand("./handlers/followHandler.js", "followmessage", "admin");
+        $.registerChatCommand("./handlers/followHandler.js", "followreward", "admin");
+        $.registerChatCommand("./handlers/followHandler.js", "followcount");
+        $.registerChatCommand("./handlers/followHandler.js", "followage");
     }
 }, 10 * 1000);
