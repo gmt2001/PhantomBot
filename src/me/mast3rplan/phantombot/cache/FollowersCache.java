@@ -50,6 +50,7 @@ public class FollowersCache implements Runnable
 
         return instance;
     }
+    
     private Map<String, JSONObject> cache = Maps.newHashMap();
     private final String channel;
     private int count = 0;
@@ -109,7 +110,7 @@ public class FollowersCache implements Runnable
             {
                 throw new Exception("[HTTPErrorException] HTTP " + j.getInt("status") + " " + j.getString("error") + ". req="
                         + j.getString("_type") + " " + j.getString("_url") + " " + j.getString("_post") + "   message="
-                        + j.getString("message"));
+                        + (j.has("message") ? j.getString("message") : "null"));
             }
         } else
         {
