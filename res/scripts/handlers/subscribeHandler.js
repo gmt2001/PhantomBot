@@ -221,12 +221,12 @@ setTimeout(function(){
 
 $.timer.addTimer("./handlers/subscribeHandler.js", "subscribehandler", true, function() {
     if (!$.moduleEnabled("./handlers/subscribeHandler.js")) {
-        $.subscribers.doRun(false);
+        Packages.me.mast3rplan.phantombot.cache.SubscribersCache.instance($.channelName).doRun(false);
     } else {
         if ($.subscribemode.equalsIgnoreCase("twitchnotify")) {
-            $.subscribers.doRun(false);
+            Packages.me.mast3rplan.phantombot.cache.Subscribers.doRun(false);
         } else {
-            $.subscribers.doRun(true);
+            Packages.me.mast3rplan.phantombot.cache.Subscribers.doRun(true);
         }
     }
 }, 60 * 1000);
@@ -235,6 +235,6 @@ var keys = $.inidb.GetKeyList("subscribed", "");
 
 for (var i = 0; i < keys.length; i++) {
     if ($.inidb.get("subscribed", keys[i]).equalsIgnoreCase("1")) {
-        $.subscribers.addSubscriber(keys[i]);
+        Packages.me.mast3rplan.phantombot.cache.Subscribers.addSubscriber(keys[i]);
     }
 }

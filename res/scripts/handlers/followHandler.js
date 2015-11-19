@@ -272,7 +272,7 @@ var keys = $.inidb.GetKeyList("followed", "");
 
 for (var i = 0; i < keys.length; i++) {
     if ($.inidb.get("followed", keys[i]).equalsIgnoreCase("1")) {
-        $.followers.addFollower(keys[i]);
+        Packages.me.mast3rplan.phantombot.cache.FollowersCache.instance($.channelName).addFollower(keys[i]);
     }
 }
 
