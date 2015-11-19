@@ -34,6 +34,7 @@ public class UsernameCache
     {
         return instance;
     }
+    
     private final Map<String, String> cache = Maps.newHashMap();
     private Date timeoutExpire = new Date();
     private Date lastFail = new Date();
@@ -92,8 +93,8 @@ public class UsernameCache
                         try
                         {
                             throw new Exception("[HTTPErrorException] HTTP " + user.getInt("status") + " " + user.getString("error") + ". req="
-                                    + user.getString("_type") + " " + user.getString("_url") + " " + user.getString("_post") + "   message="
-                                    + user.getString("message"));
+                                    + user.getString("_type") + " " + user.getString("_url") + " " + user.getString("_post") + "   "
+                                    + (user.has("message") && !user.isNull("message") ? "message=" + user.getString("message") : "content=" + user.getString("_content")));
                         } catch (Exception e)
                         {
                             com.gmt2001.Console.out.println("UsernameCache.updateCache>>Failed to get username: " + e.getMessage());
