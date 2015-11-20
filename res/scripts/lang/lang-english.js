@@ -751,8 +751,8 @@ $.lang.data["net.phantombot.marathonCommand.marathon-command-usage"] = "Usage: !
 //musicPlayer.js
 $.lang.data["net.phantombot.musicplayer.now-playing"] = "[\u266B] Now Playing Song ~ $1 ~ Requested by @$2";
 $.lang.data["net.phantombot.musicplayer.next-song-up"] = "[\u266B] Next Song ~ $1 ~ Requested by @$2";
-$.lang.data["net.phantombot.musicplayer.queue-is-empty"] = "The song request queue is empty! Request a song whit the command !songrequest (youtube URL)";
-$.lang.data["net.phantombot.musicplayer.song-request-error"] = "That song does not exits, or is marked private!";
+$.lang.data["net.phantombot.musicplayer.queue-is-empty"] = "The song request queue is empty! Request a song by using !songrequest (youtube URL)";
+$.lang.data["net.phantombot.musicplayer.song-request-error"] = "That song does not exist, or is marked private! ID: $1";
 $.lang.data["net.phantombot.musicplayer.dj"] = " DJ ";
 $.lang.data["net.phantombot.musicplayer.songrequest-enabled"] = "[\u266B] Song requests have been enabled!";
 $.lang.data["net.phantombot.musicplayer.songrequest-disabled"] = "[\u266B] Song requests have been disabled.";
