@@ -284,10 +284,9 @@ function startHeist() {
             $.entrySeconds++;
             if ($.entrySeconds == 1) {
                 $.bankheistIsOn = true;
-                $.writeToFile("", "inistore/bankheist_roster.ini", false);
-                $.writeToFile("", "inistore/bankheist_bets.ini", false);
-                $.inidb.ReloadFile("bankheist_roster");
-                $.inidb.ReloadFile("bankheist_bets");
+                $.inidb.RemoveFile("bankheist_roster");
+                $.inidb.RemoveFile("bankheist_bets");
+
                 $.senderId = "";
                 $.senderBet = "";
                 $.say($.banksOpen + $.signupMinutes + $.lang.get("net.phantombot.bankheistsystem.min-to-join"));
@@ -336,10 +335,9 @@ $.on('command', function (event) {
                 $.inidb.set("settings", "bankheistToggle", "false");
                 $.timer.clearTimer("./systems/bankheistSystem.js", "bankheist", true);
                 $.timer.clearTimer("./systems/bankheistSystem.js", "enterbankheist", true);
-                $.writeToFile("", "inistore/bankheist_roster.ini", false);
-                $.writeToFile("", "inistore/bankheist_bets.ini", false);
-                $.inidb.ReloadFile("bankheist_roster");
-                $.inidb.ReloadFile("bankheist_bets");
+                $.inidb.RemoveFile("bankheist_roster");
+                $.inidb.RemoveFile("bankheist_bets");
+
                 $.senderId = "";
                 $.senderBet = "";
 		$.bankheistIsOn = false;
@@ -362,10 +360,9 @@ $.on('command', function (event) {
                 $.entrySeconds++;
                 if ($.entrySeconds == 1) {
                     $.bankheistIsOn = true;
-                    $.writeToFile("", "inistore/bankheist_roster.ini", false);
-                    $.writeToFile("", "inistore/bankheist_bets.ini", false);
-                    $.inidb.ReloadFile("bankheist_roster");
-                    $.inidb.ReloadFile("bankheist_bets");
+                    $.inidb.RemoveFile("bankheist_roster");
+                    $.inidb.RemoveFile("bankheist_bets");
+
                     $.senderId = "";
                     $.senderBet = "";
                     $.say($.banksOpen);
@@ -383,10 +380,9 @@ $.on('command', function (event) {
                 $.inidb.set("settings", "bankheistToggle", "false");
                 $.timer.clearTimer("./systems/bankheistSystem.js", "bankheist", true);
                 $.timer.clearTimer("./systems/bankheistSystem.js", "enterbankheist", true);
-                $.writeToFile("", "inistore/bankheist_roster.ini", false);
-                $.writeToFile("", "inistore/bankheist_bets.ini", false);
-                $.inidb.ReloadFile("bankheist_roster");
-                $.inidb.ReloadFile("bankheist_bets");
+                $.inidb.RemoveFile("bankheist_roster");
+                $.inidb.RemoveFile("bankheist_bets");
+
                 $.senderId = "";
                 $.senderBet = "";
 		$.bankheistIsOn = false;
