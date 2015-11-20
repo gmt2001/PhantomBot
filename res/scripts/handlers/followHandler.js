@@ -95,7 +95,7 @@ $.on('twitchFollow', function (event) {
         if ($.moduleEnabled("./systems/pointSystem.js") && p > 0) {
             $.inidb.incr('points', follower, p);
         }
-    } else if (followed.equalsIgnoreCase("0")) {
+    } else if (followed==0) {
         $.inidb.set('followed', follower, 1);
     }
 });
@@ -110,7 +110,7 @@ $.on('twitchUnfollow', function (event) {
         return;
     }
 
-    if (followed.equalsIgnoreCase("1")) {
+    if (followed==1) {
         $.inidb.set('followed', follower, 0);
     }
 });
@@ -271,7 +271,7 @@ $.checkFollowTrain = function () {
 var keys = $.inidb.GetKeyList("followed", "");
 
 for (var i = 0; i < keys.length; i++) {
-    if ($.inidb.get("followed", keys[i]).equalsIgnoreCase("1")) {
+    if ($.inidb.get("followed", keys[i])==1) {
         Packages.me.mast3rplan.phantombot.cache.FollowersCache.instance($.channelName).addFollower(keys[i]);
     }
 }
