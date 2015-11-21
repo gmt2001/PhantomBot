@@ -51,6 +51,7 @@ public class SubscribersCache implements Runnable
 
         return instance;
     }
+
     private Map<String, JSONObject> cache;
     private final String channel;
     private int count;
@@ -64,6 +65,11 @@ public class SubscribersCache implements Runnable
     @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     private SubscribersCache(String channel)
     {
+        if (channel.startsWith("#"))
+        {
+            channel = channel.substring(1);
+        }
+
         this.channel = channel;
         this.updateThread = new Thread(this);
         this.cache = Maps.newHashMap();
@@ -88,8 +94,8 @@ public class SubscribersCache implements Runnable
             } else
             {
                 throw new Exception("[HTTPErrorException] HTTP " + j.getInt("status") + " " + j.getString("error") + ". req="
-                        + j.getString("_type") + " " + j.getString("_url") + " " + j.getString("_post") + "   content="
-                        + j.getString("_content"));
+                        + j.getString("_type") + " " + j.getString("_url") + " " + j.getString("_post") + "   "
+                        + (j.has("message") && !j.isNull("message") ? "message=" + j.getString("message") : "content=" + j.getString("_content")));
             }
         } else
         {
@@ -211,8 +217,8 @@ public class SubscribersCache implements Runnable
                             try
                             {
                                 throw new Exception("[HTTPErrorException] HTTP " + j.getInt("status") + " " + j.getString("error") + ". req="
-                                        + j.getString("_type") + " " + j.getString("_url") + " " + j.getString("_post") + "   message="
-                                        + j.getString("message"));
+                                        + j.getString("_type") + " " + j.getString("_url") + " " + j.getString("_post") + "   "
+                                        + (j.has("message") && !j.isNull("message") ? "message=" + j.getString("message") : "content=" + j.getString("_content")));
                             } catch (Exception e)
                             {
                                 com.gmt2001.Console.out.println("SubscribersCache.updateCache>>Failed to update subscribers: " + e.getMessage());

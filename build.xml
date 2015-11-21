@@ -25,7 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     <property environment="env" />
     <property name="project.base.dir" value="." />
     <property name="name" value="PhantomBot" />
-    <property name="version" value="1.6.5" />
+    <property name="version" value="1.6.5.1" />
     <property name="java.class.path" value="" />
     <property name="src" value="${project.base.dir}/src" />
     <property name="reference" value="${project.base.dir}/lib" />
@@ -68,9 +68,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
     <target name="git.revision" if="git.present">
         <exec executable="git" outputproperty="git.revision" failifexecutionfails="false" errorproperty="">
-            <arg value="describe"/>
-            <arg value="--tags"/>
-            <arg value="--always"/>
+            <arg value="rev-parse"/>
+            <arg value="--short"/>
             <arg value="HEAD"/>
         </exec>
         <condition property="repository.version" value="${git.revision}" else="unknown">
@@ -129,7 +128,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                 <attribute name="Implementation-Version" value="${version.num}" />
                 <attribute name="Implementation-URL" value="http://www.phantombot.net" />
                 <attribute name="Class-Path" value="${mf.classpath}" />
-                <attribute name="Main-Class" value="me.mast3rplan.phantombot.PhantomBot" />
+                <attribute name="Main-Class" value="me.mast3rplan.phantombot.Main" />
             </manifest>
         </jar>
         <mkdir dir="${lib.dir}" />
@@ -166,6 +165,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
     <target name="clean" depends="git.revision,post.compile">
         <delete dir="${build}" />
+    </target>
+
+    <target name="distclean" depends="clean">
         <delete dir="${dist}" />
     </target>
 

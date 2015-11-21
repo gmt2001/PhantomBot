@@ -395,29 +395,47 @@ $api.on($script, 'command', function (event) {
     }
 
     var idx = -1;
-    if ((!isNaN($.inidb.get("settings", "coolcom")) && parseInt($.inidb.get("settings", "coolcom")) > 0)
-            || ($.inidb.exists("coolcom", command) && !isNaN($.inidb.get("coolcom", command)) && parseInt($.inidb.get("coolcom", command)) > 0)) {
-        for (var i = 0; i < coolcom.length; i++) {
-            if (coolcom[i][0].equalsIgnoreCase(command)) {
-                idx = i;
-                if (coolcom[i][1] >= System.currentTimeMillis() && !$.isModv3(sender, event.getTags())) {
-                    $.println($.lang.get("net.phantombot.init.coolcom-cooldown", origcommand, sender));
-                    return;
+    if ($.inidb.exists("settings", "coolcomuser") && $.inidb.get("settings", "coolcomuser").equalsIgnoreCase("true")) {
+        if ((!isNaN($.inidb.get("settings", "coolcom")) && parseInt($.inidb.get("settings", "coolcom")) > 0)
+                || ($.inidb.exists("coolcom", command) && !isNaN($.inidb.get("coolcom", command)) && parseInt($.inidb.get("coolcom", command)) > 0)) {
+            for (var i = 0; i < coolcom.length; i++) {
+                if (coolcom[i][0].equalsIgnoreCase(sender)) {
+                    idx = i;
+                    if (coolcom[i][1] >= System.currentTimeMillis() && !$.isModv3(sender, event.getTags())) {
+                        $.println($.lang.get("net.phantombot.init.coolcom-cooldown", origcommand, sender));
+                        return;
+                    }
+                    break;
                 }
-                break;
+            }
+        }
+    } else {
+        if ((!isNaN($.inidb.get("settings", "coolcom")) && parseInt($.inidb.get("settings", "coolcom")) > 0)
+                || ($.inidb.exists("coolcom", command) && !isNaN($.inidb.get("coolcom", command)) && parseInt($.inidb.get("coolcom", command)) > 0)) {
+            for (var i = 0; i < coolcom.length; i++) {
+                if (coolcom[i][0].equalsIgnoreCase(command)) {
+                    idx = i;
+                    if (coolcom[i][1] >= System.currentTimeMillis() && !$.isModv3(sender, event.getTags())) {
+                        $.println($.lang.get("net.phantombot.init.coolcom-cooldown", origcommand, sender));
+                        return;
+                    }
+                    break;
+                }
             }
         }
     }
 
-    if ($.moduleEnabled("./systems/pointSystem.js") && !$.isModv3(sender, event.getTags()) && $.inidb.exists("pricecom", command.toLowerCase())) {
-        if (parseInt($.inidb.get("points", sender)) < parseInt($.inidb.get("pricecom", command.toLowerCase()))) {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.needpoints", $.getPointsString(parseInt($.inidb.get("pricecom", command.toLowerCase())))));
-            return;
-        } else {
-            if (parseInt($.inidb.get("pricecom", command.toLowerCase())) > 0)
-            {
-                $.inidb.decr("points", sender, parseInt($.inidb.get("pricecom", command.toLowerCase())));
-                $.println($.lang.get("net.phantombot.cmd.paid", sender, $.getPointsString(parseInt($.inidb.get("pricecom", command.toLowerCase())))));
+    if ($.moduleEnabled("./systems/pointSystem.js") && $.inidb.exists("pricecom", command.toLowerCase())) {
+        if (!$.isModv3(sender, event.getTags()) || ($.inidb.exists("settings", "pricecommod") && $.inidb.get("settings", "pricecommod").equalsIgnoreCase("true"))) {
+            if (parseInt($.inidb.get("points", sender)) < parseInt($.inidb.get("pricecom", command.toLowerCase()))) {
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.needpoints", $.getPointsString(parseInt($.inidb.get("pricecom", command.toLowerCase())))));
+                return;
+            } else {
+                if (parseInt($.inidb.get("pricecom", command.toLowerCase())) > 0)
+                {
+                    $.inidb.decr("points", sender, parseInt($.inidb.get("pricecom", command.toLowerCase())));
+                    $.println($.lang.get("net.phantombot.cmd.paid", sender, $.getPointsString(parseInt($.inidb.get("pricecom", command.toLowerCase())))));
+                }
             }
         }
     }
@@ -426,6 +444,8 @@ $api.on($script, 'command', function (event) {
         if (parseInt($.inidb.get("coolcom", command)) > 0) {
             if (idx >= 0) {
                 coolcom[idx][1] = System.currentTimeMillis() + (parseInt($.inidb.get("coolcom", command)) * 1000);
+            } else if ($.inidb.exists("settings", "coolcomuser") && $.inidb.get("settings", "coolcomuser").equalsIgnoreCase("true")) {
+                coolcom.push(new Array(sender, System.currentTimeMillis() + (parseInt($.inidb.get("coolcom", command)) * 1000)));
             } else {
                 coolcom.push(new Array(command, System.currentTimeMillis() + (parseInt($.inidb.get("coolcom", command)) * 1000)));
             }
@@ -433,6 +453,8 @@ $api.on($script, 'command', function (event) {
     } else if (!isNaN($.inidb.get("settings", "coolcom")) && parseInt($.inidb.get("settings", "coolcom")) > 0) {
         if (idx >= 0) {
             coolcom[idx][1] = System.currentTimeMillis() + (parseInt($.inidb.get("settings", "coolcom")) * 1000);
+        } else if ($.inidb.exists("settings", "coolcomuser") && $.inidb.get("settings", "coolcomuser").equalsIgnoreCase("true")) {
+            coolcom.push(new Array(sender, System.currentTimeMillis() + (parseInt($.inidb.get("settings", "coolcom")) * 1000)));
         } else {
             coolcom.push(new Array(command, System.currentTimeMillis() + (parseInt($.inidb.get("settings", "coolcom")) * 1000)));
         }
@@ -620,6 +642,20 @@ $api.on(initscript, 'command', function (event) {
     if (command.equalsIgnoreCase("helpcoolcom")) {
         $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.coolcom-help"));
     }
+    
+    if (command.equalsIgnoreCase("coolcomuser")) {
+        if (!$.isAdmin(sender)) {
+            $.say($.getWhisperString(sender) + $.adminmsg);
+            return;
+        }
+        if ($.inidb.exists("settings", "coolcomuser") && $.inidb.get("settings", "coolcomuser").equalsIgnoreCase("true")) {
+            $.inidb.set("settings", "coolcomuser", "false");
+            $.say("cooldown will no longer be only on users, it will be on everyone.");
+        } else {
+            $.inidb.set("settings", "coolcomuser", "true");
+            $.say("cooldown will now be on users, and not everyone.");
+        }
+    }
 
     if (command.equalsIgnoreCase("coolcom")) {
         if (args.length == 0) {
@@ -635,21 +671,21 @@ $api.on(initscript, 'command', function (event) {
                 $.say($.getWhisperString(sender) + $.modmsg);
                 return;
             }
-            
+
             var coolcomtime = 0;
 
             if ($.inidb.exists("settings", "coolcom") && !isNaN($.inidb.get("settings", "coolcom"))) {
                 coolcomtime = $.inidb.get("settings", "coolcom");
             }
-            
+
             if ($.inidb.exists("coolcom", args[0].toLowerCase()) && !isNaN("coolcom", args[0].toLowerCase())) {
                 coolcomtime = $.inidb.get("coolcom", args[0].toLowerCase());
-                
+
                 $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.coolcom-individual", args[0], coolcomtime));
             } else {
                 $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.coolcom-individual-notset", args[0], coolcomtime));
             }
-        }  else if (args.length > 1 && !isNaN(args[1]) && parseInt(args[1]) >= -1) {
+        } else if (args.length > 1 && !isNaN(args[1]) && parseInt(args[1]) >= -1) {
             if (!$.isModv3(sender, event.getTags())) {
                 $.say($.getWhisperString(sender) + $.modmsg);
                 return;
@@ -676,7 +712,7 @@ $api.on(initscript, 'command', function (event) {
                 $.logEvent("init.js", 455, username + " changed the command cooldown for " + args[0] + " to " + args[1] + " seconds");
 
                 $.inidb.set("coolcom", args[0].toLowerCase(), args[1]);
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.coolcom-set-individual", args[1], args[0]));
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.coolcom-set-individual", args[0], args[1]));
             }
         } else if (!isNaN(args[0]) && parseInt(args[0]) >= 0) {
             if (!$.isModv3(sender, event.getTags())) {

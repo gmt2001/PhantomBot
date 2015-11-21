@@ -84,7 +84,7 @@ $.on('command', function(event) {
 						$.say($.getWhisperString(username) + username + ", you are waiting " +
 							Math.ceil((objRoll.limiter[i].time - curTime) /
 								1000) + " out of " +
-								Mail.ceil(objRoll.timer / 1000) +
+								Math.ceil(objRoll.timer / 1000) +
 								" seconds for next \u001F!roll\u001F!");
 						return;
 					}
@@ -244,7 +244,7 @@ $.on('command', function(event) {
 						$.say($.getWhisperString(username) + username + ",you are waiting " +
 							Math.ceil((objRoll.limiter[i].time - curTime) /
 								1000) + " out of " +
-								Mail.ceil(objRoll.timer / 1000) +
+								Math.ceil(objRoll.timer / 1000) +
 								" seconds for next \u001F!roll\u001F!");
 						return;
 					}

@@ -46,6 +46,7 @@ public class ChannelUsersCache implements Runnable
 
         return instance;
     }
+
     private Map<String, String> cache;
     private final String channel;
     private final Thread updateThread;
@@ -57,6 +58,11 @@ public class ChannelUsersCache implements Runnable
     @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     private ChannelUsersCache(String channel)
     {
+        if (channel.startsWith("#"))
+        {
+            channel = channel.substring(1);
+        }
+
         this.channel = channel;
         this.updateThread = new Thread(this);
 
@@ -194,8 +200,8 @@ public class ChannelUsersCache implements Runnable
                 try
                 {
                     throw new Exception("[HTTPErrorException] HTTP " + j.getString("error") + ". req="
-                            + j.getString("_type") + " " + j.getString("_url") + " " + j.getString("_post") + "   message="
-                            + j.getString("message"));
+                            + j.getString("_type") + " " + j.getString("_url") + " " + j.getString("_post") + "   "
+                            + (j.has("message") && !j.isNull("message") ? "message=" + j.getString("message") : "content=" + j.getString("_content")));
                 } catch (Exception e)
                 {
                     com.gmt2001.Console.out.println("ChannelUsersCache.updateCache>>Failed to update users: " + e.getMessage());

@@ -272,8 +272,8 @@ function processBankheist() {
             $.say(winnersList);
         }
     }
-}
-;
+};
+
 function startHeist() {
 
     $.startBankHeist = $.timer.addTimer("./systems/bankheistSystem.js", "bankheist", true, function () {
@@ -284,10 +284,9 @@ function startHeist() {
             $.entrySeconds++;
             if ($.entrySeconds == 1) {
                 $.bankheistIsOn = true;
-                $.writeToFile("", "inistore/bankheist_roster.ini", false);
-                $.writeToFile("", "inistore/bankheist_bets.ini", false);
-                $.inidb.ReloadFile("bankheist_roster");
-                $.inidb.ReloadFile("bankheist_bets");
+                $.inidb.RemoveFile("bankheist_roster");
+                $.inidb.RemoveFile("bankheist_bets");
+
                 $.senderId = "";
                 $.senderBet = "";
                 $.say($.banksOpen + $.signupMinutes + $.lang.get("net.phantombot.bankheistsystem.min-to-join"));
@@ -336,6 +335,15 @@ $.on('command', function (event) {
                 $.inidb.set("settings", "bankheistToggle", "false");
                 $.timer.clearTimer("./systems/bankheistSystem.js", "bankheist", true);
                 $.timer.clearTimer("./systems/bankheistSystem.js", "enterbankheist", true);
+                $.inidb.RemoveFile("bankheist_roster");
+                $.inidb.RemoveFile("bankheist_bets");
+
+                $.senderId = "";
+                $.senderBet = "";
+		$.bankheistIsOn = false;
+		$.entrySeconds = 0;
+		$.winningPot = 0;
+		$.pointsId = 0;
                 $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bankheistsystem.bankheist-disabled"));
                 return;
             }
@@ -352,10 +360,9 @@ $.on('command', function (event) {
                 $.entrySeconds++;
                 if ($.entrySeconds == 1) {
                     $.bankheistIsOn = true;
-                    $.writeToFile("", "inistore/bankheist_roster.ini", false);
-                    $.writeToFile("", "inistore/bankheist_bets.ini", false);
-                    $.inidb.ReloadFile("bankheist_roster");
-                    $.inidb.ReloadFile("bankheist_bets");
+                    $.inidb.RemoveFile("bankheist_roster");
+                    $.inidb.RemoveFile("bankheist_bets");
+
                     $.senderId = "";
                     $.senderBet = "";
                     $.say($.banksOpen);
@@ -368,6 +375,22 @@ $.on('command', function (event) {
             }, (parseInt($.signupMinutes) * 60) * 1000); //60 second entry window
             return;
 
+        } else if (args[0].equalsIgnoreCase("clear")) {
+            
+                $.inidb.set("settings", "bankheistToggle", "false");
+                $.timer.clearTimer("./systems/bankheistSystem.js", "bankheist", true);
+                $.timer.clearTimer("./systems/bankheistSystem.js", "enterbankheist", true);
+                $.inidb.RemoveFile("bankheist_roster");
+                $.inidb.RemoveFile("bankheist_bets");
+
+                $.senderId = "";
+                $.senderBet = "";
+		$.bankheistIsOn = false;
+		$.entrySeconds = 0;
+		$.winningPot = 0;
+		$.pointsId = 0;
+                return;
+                
         } else if (!isNaN(betAmount) && parseInt(betAmount) > 0) {
 
             if ($.bankheistIsOn == false) {

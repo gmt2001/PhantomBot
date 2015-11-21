@@ -51,6 +51,7 @@ public class ChannelHostCache implements Runnable
 
         return instance;
     }
+
     private Map<String, JSONObject> cache;
     private final String channel;
     private final Thread updateThread;
@@ -64,6 +65,11 @@ public class ChannelHostCache implements Runnable
     @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     private ChannelHostCache(String channel)
     {
+        if (channel.startsWith("#"))
+        {
+            channel = channel.substring(1);
+        }
+
         this.channel = channel;
         this.updateThread = new Thread(this);
 
@@ -196,8 +202,8 @@ public class ChannelHostCache implements Runnable
                 try
                 {
                     throw new Exception("[HTTPErrorException] HTTP " + j.getInt("status") + " " + j.getString("error") + ". req="
-                            + j.getString("_type") + " " + j.getString("_url") + " " + j.getString("_post") + "   message="
-                            + j.getString("message"));
+                            + j.getString("_type") + " " + j.getString("_url") + " " + j.getString("_post") + "   "
+                            + (j.has("message") && !j.isNull("message") ? "message=" + j.getString("message") : "content=" + j.getString("_content")));
                 } catch (Exception e)
                 {
                     com.gmt2001.Console.out.println("ChannelHostCache.updateCache>>Failed to update hosts: " + e.getMessage());
