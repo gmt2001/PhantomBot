@@ -93,10 +93,6 @@ public class PhantomBot implements Listener
     private Channel channel;
     private final HashMap<String, Channel> channels;
     private final HashMap<String, String> channeloauths;
-    private final FollowersCache followersCache;
-    private final ChannelHostCache hostCache;
-    private final SubscribersCache subscribersCache;
-    private ChannelUsersCache channelUsersCache;
     private MusicWebSocketServer musicsocketserver;
     private HTTPServer httpserver;
     private ConsoleInputListener cil;
@@ -139,6 +135,7 @@ public class PhantomBot implements Listener
         this.datastore = datastore;
         this.datastoreconfig = datastoreconfig;
         this.youtubekey = youtubekey;
+
         if (!youtubekey.isEmpty())
         {
             YouTubeAPIv3.instance().SetAPIKey(youtubekey);
@@ -191,9 +188,6 @@ public class PhantomBot implements Listener
 
         this.init();
 
-        /*
-         * try { Thread.sleep(3000); } catch (InterruptedException ex) { }
-         */
         String osname = System.getProperty("os.name");
 
         if (osname.toLowerCase().contains("linux") && !interactive)
@@ -253,10 +247,10 @@ public class PhantomBot implements Listener
                 }
             }
 
-            this.followersCache = FollowersCache.instance(c[0].toLowerCase());
-            this.hostCache = ChannelHostCache.instance(c[0].toLowerCase());
-            this.subscribersCache = SubscribersCache.instance(c[0].toLowerCase());
-                //this.channelUsersCache = ChannelUsersCache.instance(c[0].toLowerCase());
+            FollowersCache.instance(c[0].toLowerCase());
+            ChannelHostCache.instance(c[0].toLowerCase());
+            SubscribersCache.instance(c[0].toLowerCase());
+            //ChannelUsersCache.instance(c[0].toLowerCase());
 
             for (String ch : c)
             {
@@ -267,10 +261,10 @@ public class PhantomBot implements Listener
             }
         } else
         {
-            this.followersCache = FollowersCache.instance(channelName.toLowerCase());
-            this.hostCache = ChannelHostCache.instance(channelName.toLowerCase());
-            this.subscribersCache = SubscribersCache.instance(channelName.toLowerCase());
-            //this.channelUsersCache = ChannelUsersCache.instance(channelName.toLowerCase());
+            FollowersCache.instance(channelName.toLowerCase());
+            ChannelHostCache.instance(channelName.toLowerCase());
+            SubscribersCache.instance(channelName.toLowerCase());
+            //ChannelUsersCache.instance(channelName.toLowerCase());
         }
 
         this.session = connectionManager.requestConnection(this.hostname, this.port, oauth);
@@ -312,12 +306,13 @@ public class PhantomBot implements Listener
     }
 
     /**
-     * 
-     * @return 
-     * 
+     *
+     * @return
+     *
      * @deprecated Use the version which accepts a channel name instead
      */
-    @Deprecated public Channel getChannel()
+    @Deprecated
+    public Channel getChannel()
     {
         return channel;
     }
@@ -371,10 +366,6 @@ public class PhantomBot implements Listener
         Script.global.defineProperty("bancache", bancache, 0);
         Script.global.defineProperty("username", UsernameCache.instance(), 0);
         Script.global.defineProperty("twitch", TwitchAPIv3.instance(), 0);
-        Script.global.defineProperty("followers", followersCache, 0);
-        Script.global.defineProperty("hosts", hostCache, 0);
-        Script.global.defineProperty("subscribers", subscribersCache, 0);
-        Script.global.defineProperty("channelUsers", channelUsersCache, 0);
         Script.global.defineProperty("botName", username, 0);
         Script.global.defineProperty("channelName", channelName, 0);
         Script.global.defineProperty("channels", channels, 0);
@@ -509,7 +500,7 @@ public class PhantomBot implements Listener
 
         //com.gmt2001.Console.out.println("Joined channel: " + event.getChannel().getName());
         session.sayChannel(cchannel, ".mods");
-        
+
         if (channel == null)
         {
             channel = cchannel;
@@ -740,14 +731,6 @@ public class PhantomBot implements Listener
                 Files.write(Paths.get("./botlogin.txt"), data.getBytes(StandardCharsets.UTF_8),
                         StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
 
-                //Commented out since you need to restart the bot for port changes anyway
-                /*
-                 * if(webenabled) { httpserver.dispose(); httpserver = new
-                 * HTTPServer(baseport); httpserver.start(); } if(musicenabled)
-                 * { if(webenabled) { musicsocketserver.dispose();
-                 * musicsocketserver = new MusicWebSocketServer(baseport + 1); }
-                 * }
-                 */
                 com.gmt2001.Console.out.println("Changes have been saved. For web and music server settings to take effect you must restart the bot.");
             } catch (IOException ex)
             {
@@ -837,7 +820,6 @@ public class PhantomBot implements Listener
             }
         }
 
-        //Don't change this to postAsync. It cannot be processed in async or commands will be delayed
         if (event != null)
         {
             EventBus.instance().post(new CommandEvent(sender, command, arguments, event.getTags(), event.getChannel()));
