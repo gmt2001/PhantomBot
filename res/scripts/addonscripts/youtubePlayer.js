@@ -48,11 +48,11 @@ notSearchable = function(songid,songname, user, tags) {
                     this.id = songid;
                     this.name = songname;
                     this.length = 0;
-                    $.say($.getWhisperString(user) + $.lang.get("net.phantombot.musicplayer.song-request-error"));
+                    $.say($.getWhisperString(user) + $.lang.get("net.phantombot.musicplayer.song-request-error", songid));
                     if ($.inidb.exists("pricecom", "addsong") && parseInt($.inidb.get("pricecom", "addsong"))> 0 ){
                         if(!$.isModv3(user, tags)){
                             var cost = $.inidb.get("pricecom", "addsong");
-                            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.command-cost", $.getPointsString(cost), $.username.resolve(sender, event.getTags())));
+                            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.command-cost", $.getPointsString(cost), $.username.resolve(sender, event.getTags()), songid));
                             $.inidb.incr("points", user.toLowerCase(), cost);
                             $.inidb.SaveAll();
                         }
@@ -320,7 +320,7 @@ function next() {
     }
 
     if ($var.currSong == null) {
-        println($.lang.get("net.phantombot.musicplayer.queue-is-empty"));
+        $.say($.lang.get("net.phantombot.musicplayer.queue-is-empty"));
         nextDefault();
         return;
     }
@@ -329,7 +329,7 @@ function next() {
         $.say($.lang.get("net.phantombot.musicplayer.now-playing", name, user));
 
     } else if ($.song_toggle == 2) {
-        $.println($.lang.get("net.phantombot.musicplayer.now-playing", name, user));
+        $.say($.lang.get("net.phantombot.musicplayer.now-playing", name, user));
     }
     
     var nextMsg = $.lang.get("net.phantombot.musicplayer.queue-is-empty");
@@ -854,7 +854,7 @@ offlinePlayer = function() {setTimeout(function(){
                     if ($.song_toggle == 1) {
                         $.say($.lang.get("net.phantombot.musicplayer.now-playing", $var.ytcurrSong.toString()));
                     } else {
-                        $.println($.lang.get("net.phantombot.musicplayer.now-playing", $var.ytcurrSong.toString()));
+                        $.say($.lang.get("net.phantombot.musicplayer.now-playing", $var.ytcurrSong.toString()));
                     }
                 }
             }

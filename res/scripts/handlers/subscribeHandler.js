@@ -16,6 +16,7 @@ if ($.subscribemode.equalsIgnoreCase("twitchnotify")) {
 }
 
 $.on('twitchSubscribe', function(event) {
+
     var subscriber = event.getSubscriber().toLowerCase();
     var username = $.username.resolve(subscriber);
     var subscribed = $.inidb.get('subscribed', subscriber);
@@ -30,27 +31,27 @@ $.on('twitchSubscribe', function(event) {
     }
     
     if ($.announceSubscribes) {
+
         var s;
         var p = parseInt($.inidb.get('settings', 'subscribereward'));
-            
+
         if ($.moduleEnabled("./systems/pointSystem.js")) {
             s = $.lang.get("net.phantombot.subscribeHandler.default-sub-message-whit-points");
-            return;
         } else {
             s = $.lang.get("net.phantombot.subscribeHandler.default-sub-message");
-            return;
         }
-            
+
         if (isNaN(p)) {
             p = 100;
         }
-            
+
         s = $.replaceAll(s, '(name)', username);
-            
+
         if ($.moduleEnabled("./systems/pointSystem.js")) {
             s = $.replaceAll(s, '(pointname)', $.getPointsString(p));
             s = $.replaceAll(s, '(reward)', p.toString());
         }
+        
         if ($.sub_silentmode == 0) {
             $.say(s);
         }
@@ -198,7 +199,6 @@ $.on('command', function(event) {
 $.on('ircPrivateMessage', function(event) {
     if (event.getSender().equalsIgnoreCase("twitchnotify")) {
         var message = event.getMessage().toLowerCase();
-
         if (message.indexOf("just subscribed") != -1 || message.indexOf("subscribed for") != -1) {
             var spl = message.split(" ");
             var EventBus = Packages.me.mast3rplan.phantombot.event.EventBus;
