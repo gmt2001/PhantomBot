@@ -401,17 +401,20 @@ $.on('command', function (event) {
                 $.userPointsId = parseInt($.pointsId + 1);
 
                 if (parseInt(betAmount) > $.heistUserPoints || parseInt(betAmount) == 0) {
-                    $.say($.getWhisperString(sender) + $.affordBet + "[Points available: " + $.heistUserPoints.toString());
+				//Changed to use point system for formatting
+                    $.say($.getWhisperString(sender) + $.affordBet + "[Points available: " + $.getPointsString($.heistUserPoints) + " ]");
                     return;
                 } else if (parseInt(betAmount) > $.bankheistMaxBet) {
-                    $.say($.getWhisperString(sender) + $.betTooLarge + $.bankheistMaxBet + ".");
+				//Only reformats the numbers and doesn't add suffix
+                    $.say($.getWhisperString(sender) + $.betTooLarge + $.formatNumbers($.bankheistMaxBet) + ".");
                     return;
                 } else {
                     if ($.inidb.exists("bankheist_roster", sender))
                     {
                         $.senderId = $.inidb.get("bankheist_roster", sender);
                         $.senderBet = $.inidb.get("bankheist_bets", $.senderId);
-                        $.say($.getWhisperString(sender) + username + $.alreadyBet + $.senderBet.toString());
+						//Changed to point system for formatting
+                        $.say($.getWhisperString(sender) + username + $.alreadyBet + $.getPointsString($.senderBet));
                         return;
                     } else {
                         $.inidb.set("bankheist_roster", $.userPointsId.toString(), sender);

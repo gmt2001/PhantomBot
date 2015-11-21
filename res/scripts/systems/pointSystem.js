@@ -50,13 +50,17 @@ $.getPoints = function (user) {
 
 $.getPointsString = function (points) {
     points = parseInt(points);
+	//format = $.formatNumbers(points);
+	
     var pointsString = "";
-
-    if (points == 1) {
-        pointsString += points.toString() + " " + $.pointNameSingle;
+	
+	pointsString += $.econNameFormat(points, $.pointNameSingle);
+	//Old way of sending point/currency information
+	/*if (points == 1) {
+		pointsString += points.toString() + " " + $.pointNameSingle;
     } else {
-        pointsString += points.toString() + " " + $.pointNameMultiple;
-    }
+		pointsString += points.toString() + " " + $.pointNameMultiple;
+    }*/
 
     return pointsString;
 }

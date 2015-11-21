@@ -330,6 +330,11 @@ $.on('command', function (event) {
         if (messageCommand.contains('(count)')) {
             $.inidb.incr('commandcount', command.toLowerCase(), 1);
         }
+		//Added Points Tag with call to point system
+		if (messageCommand.contains('(points)')) {
+			currency = parseInt($.inidb.get("points", sender));
+            messageCommand = $.replaceAll(messageCommand, '(points)', $.getPointsString(currency));
+        }
 
         if (messageCommand.indexOf('(touser)') >= 0 && args.length > 0) {
             messageCommand = $.replaceAll(messageCommand, '(touser)', $.username.resolve(args[0]));
