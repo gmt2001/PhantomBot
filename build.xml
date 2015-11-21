@@ -128,7 +128,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                 <attribute name="Implementation-Version" value="${version.num}" />
                 <attribute name="Implementation-URL" value="http://www.phantombot.net" />
                 <attribute name="Class-Path" value="${mf.classpath}" />
-                <attribute name="Main-Class" value="me.mast3rplan.phantombot.PhantomBot" />
+                <attribute name="Main-Class" value="me.mast3rplan.phantombot.Main" />
             </manifest>
         </jar>
         <mkdir dir="${lib.dir}" />
