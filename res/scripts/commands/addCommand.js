@@ -4,10 +4,6 @@ $.on('command', function (event) {
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
     var args = event.getArgs();
-    var num2 = $.users.length;
-    var rnd = $.rand(num2);
-    var randomPerson = $.users[rnd][0];
-    var randomNum = $.randRange(1, 100);
     var commandString;
     var message;
 
@@ -320,6 +316,10 @@ $.on('command', function (event) {
     if ($.inidb.exists('command', command.toLowerCase())) {
 
         var messageCommand = $.inidb.get('command', command.toLowerCase());
+        var num2 = $.users.length;
+        var rnd = $.rand(num2);
+        var randomPerson = $.users[rnd][0];
+        var randomNum = $.randRange(1, 100);
 
         for (var i = 0; i < args.length; i++) {
             messageCommand = $.replaceAll(messageCommand, '(' + (i + 1) + ')', args[i]);
