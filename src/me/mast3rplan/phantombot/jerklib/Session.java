@@ -17,6 +17,8 @@
 package me.mast3rplan.phantombot.jerklib;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import me.mast3rplan.phantombot.PhantomBot;
 import me.mast3rplan.phantombot.jerklib.ModeAdjustment.Action;
 import me.mast3rplan.phantombot.jerklib.events.ConnectionLostEvent;
 import me.mast3rplan.phantombot.jerklib.events.IRCEvent.Type;
@@ -63,8 +65,10 @@ public class Session extends RequestGenerator
     private IRCEventListener internalEventHandler;
     private final List<ModeAdjustment> userModes = new ArrayList<>();
     private final Map<String, Channel> channelMap = new HashMap<>();
+    private final ConcurrentLinkedQueue<Message> messages = new ConcurrentLinkedQueue<>();
     private int retries = 0;
     public boolean isClosing = false;
+    private final Timer sayTimer = new Timer();
 
     public enum State
     {
@@ -79,6 +83,59 @@ public class Session extends RequestGenerator
         NEED_TO_RECONNECT
     }
 
+    class Message
+    {
+
+        public Channel channel;
+        public String message;
+
+        public Message(Channel channel, String message)
+        {
+            this.channel = channel;
+            this.message = message;
+        }
+    }
+
+    class MessageTask extends TimerTask
+    {
+
+        private final Session s;
+        private long lastMessage = 0;
+
+        public MessageTask(Session s)
+        {
+            super();
+
+            this.s = s;
+
+            Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
+        }
+
+        @Override
+        public void run()
+        {
+            if (PhantomBot.instance().isExiting())
+            {
+                return;
+            }
+
+            long now = System.currentTimeMillis();
+            if (now - lastMessage >= PhantomBot.instance().getMessageInterval())
+            {
+                Message msg = s.messages.poll();
+                if (msg != null)
+                {
+                    if (msg.channel.getAllowSendMessages())
+                    {
+                        s.sayChannelReal(msg.channel, msg.message);
+                    }
+
+                    lastMessage = now;
+                }
+            }
+        }
+    }
+
     /**
      * @param rCon
      * @param conman
@@ -91,6 +148,8 @@ public class Session extends RequestGenerator
         setSession(this);
 
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
+
+        sayTimer.schedule(new MessageTask(this), 300, 100);
     }
 
     /**
@@ -237,9 +296,46 @@ public class Session extends RequestGenerator
      */
     public void sayChannel(Channel channel, String msg)
     {
-        super.sayChannel(msg, channel);
+        if (msg.startsWith(".timeout ") || msg.startsWith(".ban ")
+                || msg.startsWith(".unban ") || msg.equals(".clear") || msg.equals(".mods"))
+        {
+            this.sayChannelReal(channel, msg);
+        } else
+        {
+            if (msg.startsWith("/w "))
+            {
+                msg = msg.replace("/w ", "PRIVMSG #jtv :/w ");
+                me.mast3rplan.phantombot.PhantomBot.tgcSession.sayRaw(msg);
+                return;
+            }
+            if (msg.length() + 14 + channel.getName().length() < 512)
+            {
+                messages.add(new Message(channel, msg));
+            } else
+            {
+                int maxlen = 512 - 14 - channel.getName().length();
+                int pos = 0;
+
+                while (pos < msg.length())
+                {
+                    if (pos + maxlen >= msg.length())
+                    {
+                        messages.add(new Message(channel, msg.substring(pos)));
+                    } else
+                    {
+                        messages.add(new Message(channel, msg.substring(pos, pos + maxlen)));
+                    }
+
+                    pos += maxlen;
+                }
+            }
+        }
     }
 
+    public void sayChannelReal(Channel channel, String msg)
+    {
+        super.sayChannel(msg, channel);
+    }
 
     /*
      * general methods

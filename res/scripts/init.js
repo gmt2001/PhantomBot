@@ -597,17 +597,20 @@ if ($.inidb.GetBoolean("init", "initialsettings", "loaded") == false
 }
 
 $.upgrade_version = 16;
+
+if ($.firstrun) {
+    $.inidb.SetInteger("init", "upgrade", "version", parseInt($.upgrade_version));
+    $.inidb.SaveAll(true);
+}
+
 if ($.inidb.GetInteger("init", "upgrade", "version") < $.upgrade_version) {
     $.logEvent("init.js", 426, "Running upgrade from v" + $.inidb.GetInteger("init", "upgrade", "version") + " to v" + $.upgrade_version + "...");
     $.loadScript('./util/upgrade.js');
 }
 
+$.loadScript('./util/whisperSystem.js');
 $.loadScript('./util/permissions.js');
 $.loadScript('./util/chatModerator.js');
-
-if ($.firstrun && !$.moduleEnabled("./handlers/subscribeHandler.js")) {
-    $.inidb.set('modules', './handlers/subscribeHandler.js' + '_enabled', "0");
-}
 
 $.loadScriptsRecursive(".");
 

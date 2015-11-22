@@ -36,7 +36,6 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import me.mast3rplan.phantombot.cache.BannedCache;
 import me.mast3rplan.phantombot.cache.ChannelHostCache;
 import me.mast3rplan.phantombot.cache.ChannelUsersCache;
 import me.mast3rplan.phantombot.cache.FollowersCache;
@@ -84,7 +83,6 @@ public class PhantomBot implements Listener
     private String channelStatus;
     private DataStore dataStoreObj;
     private SecureRandom rng;
-    private BannedCache bancache;
     private TreeMap<String, Integer> pollResults;
     private TreeSet<String> voters;
     private Profile profile;
@@ -151,7 +149,6 @@ public class PhantomBot implements Listener
         this.connectionManager = new ConnectionManager(profile);
 
         rng = new SecureRandom();
-        bancache = new BannedCache();
         pollResults = new TreeMap<>();
         voters = new TreeSet<>();
 
@@ -279,6 +276,11 @@ public class PhantomBot implements Listener
         return channel;
     }
 
+    public long getMessageInterval()
+    {
+        return (long) ((30.0 / this.msglimit30) * 1000);
+    }
+
     public Channel getChannel(String channelName)
     {
         return channels.get(channelName);
@@ -325,7 +327,6 @@ public class PhantomBot implements Listener
 
         Script.global.defineProperty("inidb", dataStoreObj, 0);
         Script.global.defineProperty("tempdb", TempStore.instance(), 0);
-        Script.global.defineProperty("bancache", bancache, 0);
         Script.global.defineProperty("username", UsernameCache.instance(), 0);
         Script.global.defineProperty("twitch", TwitchAPIv3.instance(), 0);
         Script.global.defineProperty("followers", followersCache, 0);
@@ -461,7 +462,6 @@ public class PhantomBot implements Listener
     public void onIRCJoinComplete(IrcJoinCompleteEvent event)
     {
         this.channel = event.getChannel();
-        this.channel.setMsgInterval((long) ((30.0 / this.msglimit30) * 1000));
 
         this.channels.put(this.channel.getName(), this.channel);
 

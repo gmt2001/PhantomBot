@@ -30,7 +30,6 @@ var graphemelimit = parseInt($.inidb.get("settings", "graphemelimit"));
 var graphememessage = $.inidb.get("settings", "graphememessage");
 var warningtypes = new Array($.inidb.get("settings", "warning1type"), $.inidb.get("settings", "warning2type"), $.inidb.get("settings", "warning3type"));
 var warningmessages = new Array($.inidb.get("settings", "warning1message"), $.inidb.get("settings", "warning2message"), $.inidb.get("settings", "warning3message"));
-$.bancache.loadFromFile ("bannedUsers.bin");
 
 if ($.spamtracker == null || $.spamtracker == undefined) {
     $.spamtracker = new Array();
@@ -55,33 +54,12 @@ function issueCommand(command) {
     }, 1800);
 }
 
-function banUserFor (user, time) {
-    $.bancache.addUser (user, time);
-    $.bancache.syncToFile ("bannedUsers.bin");
-    
-    banUser(user);
-}
-
-function cbanUserFor (user, time, channel) {
-    $.bancache.addUser (user, time, channel);
-    $.bancache.syncToFile ("bannedUsers.bin");
-    
-    banUser(user);
-}
-
 function banUser (user) {
     issueCommand(ircPrefix + "ban " + user);
 }
 
 function unbanUser (user) {
     issueCommand(ircPrefix + "unban " + user);
-    $.bancache.removeUser (user);
-}
-
-function cunbanUser (user, channel) {
-    issueCommand(ircPrefix + "unban " + user);
-    $.bancache.removeUser (user, channel);
-    $.bancache.syncToFile ("bannedUsers.bin");
 }
  
 function clearChat () {
@@ -1240,16 +1218,7 @@ $.registerChatCommand("./util/chatModerator.js", "permit", "mod");
 $.registerChatCommand("./util/chatModerator.js", "chatmod", "mod");
 
 $.timer.addTimer("./util/chatModerator.js", "maintainlists", true, function() {
-    var reformed = $.bancache.getReformedUsers();
-    var l = reformed.length;
     var i;
-    
-    for (i = 0; i < l; ++i) {
-        unbanUser (reformed[i]);
-    }
-    
-    $.bancache.syncToFile ("bannedUsers.bin");
-    
     for (i = 0; i < permitList.length; i++) {
         if (i < permitList.length) {
             if (permitList[i][1] < System.currentTimeMillis()) {
