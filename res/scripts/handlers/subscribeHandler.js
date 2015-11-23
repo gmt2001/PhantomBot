@@ -1,14 +1,23 @@
 $.subscribemode = $.inidb.get('settings', 'subscribemode');
 $.sub_silentmode = $.inidb.get('settings', 'sub_silentmode');
+$.subscribeMessage = $.inidb.get('settings', 'subscribemessage');
+        
+if ($.subscribemode == null || $.subscribemode == undefined) {
+    $.inidb.set('settings', 'subscribemode', 'auto');
+    $.subscribemode = $.inidb.get('settings', 'subscribemode');
+}
 
 if ($.sub_silentmode == null || $.sub_silentmode == undefined) {
     $.inidb.set('settings', 'sub_silentmode', '1');
     $.sub_silentmode = $.inidb.get('settings', 'sub_silentmode');
 }
 
-if ($.subscribemode == null || $.subscribemode == undefined) {
-    $.inidb.set('settings', 'subscribemode', 'auto');
-    $.subscribemode = $.inidb.get('settings', 'subscribemode');
+if ($.subscribeMessage == null || $.subscribeMessage == undefined || $.strlen($.subscribeMessage) == 0) {
+    if ($.moduleEnabled("./systems/pointSystem.js")) {
+        $.subscribeMessage = $.lang.get("net.phantombot.subscribeHandler.default-sub-message-whit-points");
+    } else {
+        $.subscribeMessage = $.lang.get("net.phantombot.subscribeHandler.default-sub-message");
+    }
 }
 
 if ($.subscribemode.equalsIgnoreCase("twitchnotify")) {
@@ -32,14 +41,9 @@ $.on('twitchSubscribe', function(event) {
     
     if ($.announceSubscribes) {
 
-        var s;
         var p = parseInt($.inidb.get('settings', 'subscribereward'));
+        var s = $.subscribeMessage;
 
-        if ($.moduleEnabled("./systems/pointSystem.js")) {
-            s = $.lang.get("net.phantombot.subscribeHandler.default-sub-message-whit-points");
-        } else {
-            s = $.lang.get("net.phantombot.subscribeHandler.default-sub-message");
-        }
 
         if (isNaN(p)) {
             p = 100;
@@ -161,6 +165,38 @@ $.on('command', function(event) {
         }
         $.println($.lang.get("net.phantombot.subscribeHandler.current-subs", count));
         return;
+    }
+    
+    if (command.equalsIgnoreCase("subscribemessage")) {		
+        if (!$.isAdmin(sender)) {		
+            $.say($.getWhisperString(sender) + $.adminmsg);		
+            return;		
+        }		
+        		
+        if ($.strlen(argsString) == 0) {
+            
+            
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.subscribeHandler.current.sub-message", $.subscribeMessage));		
+            return;		
+            		
+            var s = $.lang.get("net.phantombot.subscribeHandler.sub-message-usage");		
+            		
+            if ($.moduleEnabled("./systems/pointSystem.js")) {		
+                s += $.lang.get("net.phantombot.subscribeHandler.sub-message-points-usage");		
+                return;		
+            }		
+            		
+            $.say($.getWhisperString(sender) + s);		
+            return;		
+        } else {		
+            $.logEvent("subscribeHandler.js", 107, username + " changed the new subscriber message to: " + argsString);		
+            		
+            $.inidb.set('settings', 'subscribemessage', argsString);
+            $.subscribeMessage = $.inidb.get('settings', 'subscribemessage');
+            		
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.subscribeHandler.new-sub-message-set"));		
+            return;		
+        }		
     }
     
     if (command.equalsIgnoreCase("subscribemode")) {
