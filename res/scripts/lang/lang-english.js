@@ -455,6 +455,9 @@ $.lang.data["net.phantombot.hosthandler.host-timeout-time-error"] = "Host timeou
 $.lang.data["net.phantombot.hosthandler.host-timeout-time-set"] = "Host timeout duration is now set to: $1 minutes!";
 $.lang.data["net.phantombot.hosthandler.host-list"] = "This channel is currently being hosted by the hosting $1 channels: $2";
 $.lang.data["net.phantombot.hosthandler.host-list-error"] = "No one is currently hosting this channel.";
+$.lang.data["net.phantombot.hosthandler.current-host-message"] = "The current new hoster message is: $1";		
+$.lang.data["net.phantombot.hosthandler.host-message-usage"] = "To change it use '!hostmessage (message)'. You can also add the string '(name)' to put the hosters name";		
+$.lang.data["net.phantombot.hosthandler.host-message-set-success"] = "New host message set!";
 
 //donationHandler.js 
 $.lang.data["net.phantombot.donationhandler.current-file-path"] = "Current donation alert file path is: $1";
