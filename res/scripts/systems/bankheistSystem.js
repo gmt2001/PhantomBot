@@ -11,8 +11,6 @@ $.bankheistToggle = $.inidb.get("settings", "bankheistToggle");
 if ($.bankheistToggle == null) {
     $.bankheistToggle = false;
     $.inidb.set("settings", "bankheistToggle", "false");
-} else {
-    $.bankheistToggle = true;
 }
 
 $.bankheistMaxBet = $.inidb.get("settings", "bankheistmaxbet");
