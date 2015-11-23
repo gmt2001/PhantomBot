@@ -61,6 +61,7 @@ import me.mast3rplan.phantombot.script.ScriptApi;
 import me.mast3rplan.phantombot.script.ScriptEventManager;
 import me.mast3rplan.phantombot.script.ScriptManager;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.SystemUtils;
 
 public class PhantomBot implements Listener
 {
@@ -191,9 +192,7 @@ public class PhantomBot implements Listener
         /*
          * try { Thread.sleep(3000); } catch (InterruptedException ex) { }
          */
-        String osname = System.getProperty("os.name");
-
-        if (osname.toLowerCase().contains("linux") && !interactive)
+        if (SystemUtils.IS_OS_LINUX && !interactive)
         {
             try
             {
