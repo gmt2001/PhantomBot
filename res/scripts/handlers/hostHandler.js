@@ -16,7 +16,7 @@ if ($.hostreward == null || $.hostreward == undefined || isNaN($.hostreward)) {
     $.hostreward = 0;
 }
 
-if ($.hostMessage == null || $.hostMessage == undefined || $.strlen($.hostMessage) == 0) {
+if ($.hostMessage == null || $.hostMessage == undefined || $.strlen($.hostMessage) == 0 || $.hostMessage == "") {
     if ($.moduleEnabled("./systems/pointSystem.js")) {
         if ($.hostreward < 1) {
             $.hostMessage = $.lang.get("net.phantombot.hosthandler.default-host-welcome-message");
@@ -122,7 +122,8 @@ $.on('command', function (event) {
             var s = $.lang.get("net.phantombot.hosthandler.host-message-usage");		
 		
             $.say($.getWhisperString(sender) + s);		
-            return;		
+            return;
+            
         } else {		
             $.logEvent("hostHandler.js", 73, username + " changed the new hoster message to: " + argsString);		
 		

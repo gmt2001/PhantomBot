@@ -392,14 +392,14 @@ $.lang.data["net.phantombot.greetingsystem.toggle-enabled-other"] = "A greeting 
 $.lang.data["net.phantombot.greetingsystem.usage"] = "Usage: \"!greet max <amount>\", \"!greet set [global OR user <name>] <message>\", \"!greet toggle [global OR user <name>]\"";
 
 //followHandler.js
-$.lang.data["net.phantombot.followHandler.shoutout-offline"] = "Hey go give $1 a follow over at twitch.tv/$1 they were last seen playing: $2!";
-$.lang.data["net.phantombot.followHandler.shoutout-online"] = "Hey go give $1 a follow over at twitch.tv/$1 they are currently playing: $2!";
+$.lang.data["net.phantombot.followHandler.shoutout-offline"] = "Hey go give $1 a follow over at twitch.tv/$1! They were last seen playing: $2!";
+$.lang.data["net.phantombot.followHandler.shoutout-online"] = "Hey go give $1 a follow over at twitch.tv/$1! They are currently playing: $2!";
 $.lang.data["net.phantombot.followHandler.shoutout-usage"] = "Usage: !shoutout (streamer)";
 $.lang.data["net.phantombot.followHandler.error-not-following"] = "$1 is not following channel $2.";
 $.lang.data["net.phantombot.followHandler.followtime"] = "$1 has been following channel $2 for $3";
 $.lang.data["net.phantombot.followHandler.followtime-usage"] = "Followage Commands: !followage / !followage (user) / !followage (user) (channel)";
 $.lang.data["net.phantombot.followHandler.new-follow-message-and-reward"] = "Thanks for the follow (name)! +(pointname)!";
-$.lang.data["net.phantombot.followHandler.new-follow-messae-no-reward"] = "Thanks for the follow (name)!";
+$.lang.data["net.phantombot.followHandler.new-follow-message-no-reward"] = "Thanks for the follow (name)!";
 $.lang.data["net.phantombot.followHandler.not-following"] = "$1 is not following the channel.";
 $.lang.data["net.phantombot.followHandler.is-following"] = "$1 is following the channel";
 $.lang.data["net.phantombot.followHandler.follow-ads-on"] = "Follow announcements are now turned on.";
@@ -414,6 +414,12 @@ $.lang.data["net.phantombot.followHandler.penta-follow-train"] = "Penta follow!!
 $.lang.data["net.phantombot.followHandler.mega-follow-train"] = "M-M-M-Mega follow train!! ($1)";
 $.lang.data["net.phantombot.followHandler.ultra-follow-train"] = "Ultra follow train!! ($1) *Explosions*";
 $.lang.data["net.phantombot.followHandler.massive-follow-train"] = "MASSIVE FOLLOW TRAAAAIIIN!! ($1)";
+$.lang.data["net.phantombot.followHandler.followed-command-usage"] = "Usage: !follow (username), !followed (username), !followmessage (message), !followreward (reward)";
+$.lang.data["net.phantombot.followHandler.current-follow-message"] = "The current new follower message is: $1";		
+$.lang.data["net.phantombot.followHandler.follow-message-usage"] = "To change it use '!followmessage <message>'. You can also add the string '(name)' to put the followers name and '(pointname) for the reward.";		
+$.lang.data["net.phantombot.followHandler.follow-message-usage-points"] = ", '(reward)' to put the number of points received for following.";		
+$.lang.data["net.phantombot.followHandler.follow-message-set"] = "New follower message set!";
+
 
 // noticeHandler.js
 $.lang.data["net.phantombot.noticehandler.notice-get-usage"] = "There are $1 notices. Say '!notice get <id>' to get a messages content. Message IDs go from 0 to $2";
@@ -434,7 +440,7 @@ $.lang.data["net.phantombot.noticehandler.notice-remove-error"] = "There are no 
 $.lang.data["net.phantombot.noticehandler.notice-remove-success"] = "Notice removed! There are now $1 notices!";
 $.lang.data["net.phantombot.noticehandler.notice-enabled"] = "Enabled";
 $.lang.data["net.phantombot.noticehandler.notice-disabled"] = "Disabled";
-$.lang.data["net.phantombot.noticehandler.notice-remove-error2"] = "That notice does not exist, get the notice id whit the command !notice get (id)";
+$.lang.data["net.phantombot.noticehandler.notice-remove-error2"] = "That notice does not exist, get the notice id with the command !notice get (id)";
 
 //phraseHandler.js
 $.lang.data["net.phantombot.phrasehandler.trigger-error-add-usage"] = "Usage: !addphrase \"trigger\" \"message\" - (sender) can be used in the message to display the username.";
@@ -468,7 +474,7 @@ $.lang.data["net.phantombot.donationhandler.new-donation"] = "$1 has received a 
 $.lang.data["net.phantombot.donationhandler.donationalert-usage"] = "!donationalert filepath | vieufilepath | toggle";
 
 //subscribeHandler.js 
-$.lang.data["net.phantombot.subscribeHandler.default-sub-message-whit-points"] = "Thanks for the subscription (name)! +(pointname)!";
+$.lang.data["net.phantombot.subscribeHandler.default-sub-message-with-points"] = "Thanks for the subscription (name)! +(pointname)!";
 $.lang.data["net.phantombot.subscribeHandler.default-sub-message"] = "Thanks for the subscription (name)!";
 $.lang.data["net.phantombot.subscribeHandler.sub-silent-mode-on"] = "Subscribe handler now set to silent mode";
 $.lang.data["net.phantombot.subscribeHandler.sub-silent-mode-off"] = "Subscribe handler now set to verbose mode";

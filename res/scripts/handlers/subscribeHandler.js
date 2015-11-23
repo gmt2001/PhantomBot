@@ -12,9 +12,13 @@ if ($.sub_silentmode == null || $.sub_silentmode == undefined) {
     $.sub_silentmode = $.inidb.get('settings', 'sub_silentmode');
 }
 
-if ($.subscribeMessage == null || $.subscribeMessage == undefined || $.strlen($.subscribeMessage) == 0) {
+if ($.subscribeMessage == null || $.subscribeMessage == undefined || $.strlen($.subscribeMessage) == 0 || $.subscribeMessage == "") {
     if ($.moduleEnabled("./systems/pointSystem.js")) {
-        $.subscribeMessage = $.lang.get("net.phantombot.subscribeHandler.default-sub-message-whit-points");
+        if ($.hostreward < 1) {
+            $.subscribeMessage = $.lang.get("net.phantombot.hosthandler.default-host-welcome-message");
+        } else if ($.hostreward > 0 && $.moduleEnabled('./systems/pointSystem.js')) {
+            $.subscribeMessage = $.lang.get("net.phantombot.subscribeHandler.default-sub-message-with-points");
+        }
     } else {
         $.subscribeMessage = $.lang.get("net.phantombot.subscribeHandler.default-sub-message");
     }
@@ -177,7 +181,6 @@ $.on('command', function(event) {
             
             
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.subscribeHandler.current.sub-message", $.subscribeMessage));		
-            return;		
             		
             var s = $.lang.get("net.phantombot.subscribeHandler.sub-message-usage");		
             		
