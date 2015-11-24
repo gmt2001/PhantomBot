@@ -65,7 +65,7 @@ $.hasLinks = function(event, aggressive) {
         lastlink = s;
 
         println(">>>>Matched link on linkPattern from " + event.getSender() + ": " + s);
-        $.logLink(event.getSender(), "Matched link on linkPattern: " + s)
+        $.logLink(event.getSender(), event.getChannel(), "Matched link on linkPattern: " + s)
 
         return true;
     }
@@ -76,7 +76,7 @@ $.hasLinks = function(event, aggressive) {
         lastlink = s;
             
         println(">>>>Matched link on emailPattern from " + event.getSender() + ": " + s);
-        $.logLink(event.getSender(), "Matched link on emailPattern: " + s)
+        $.logLink(event.getSender(), event.getChannel(), "Matched link on emailPattern: " + s)
 
         return true;
     }
@@ -87,7 +87,7 @@ $.hasLinks = function(event, aggressive) {
         lastlink = s;
             
         println(">>>>Matched link on otherPattern from " + event.getSender() + ": " + s);
-        $.logLink(event.getSender(), "Matched link on otherPattern: " + s)
+        $.logLink(event.getSender(), event.getChannel(), "Matched link on otherPattern: " + s)
 
         return true;
     }
