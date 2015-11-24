@@ -676,6 +676,38 @@ $.on('command', function (event) {
         $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.del-song-error"));
     }
     
+    if (command.equalsIgnoreCase("defaultaddsong")) {
+        if (!$.isAdmin(sender)) {
+                $.say($.getWhisperString(sender) + $.adminmsg);
+                return;
+        }
+
+        if (args.length == 0) {
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.song-request-usage"));
+            return;
+        }
+
+        if (args.length >= 1) {
+            if (!musicPlayerConnected) {
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.error-songrequest-off"));
+                return;
+            }
+
+            var video = new Song(argsString, sender, event.getTags());
+
+            if (video.id == null) {
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.song-request-error"));
+                return;
+            }
+                        
+            $.say($.lang.get("net.phantombot.musicplayer.song-requested-success", video.name, sender));
+            //playlist add and parse code here:
+            $.writeToFile("https://www.youtube.com/watch?v=" + video.id,"./addons/youtubePlayer/playlist.txt", true);
+            reloadPlaylist();
+        }
+    }
+
+    
     if (command.equalsIgnoreCase("defaultdelsong")) {
         if (!musicPlayerConnected) {
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.error-songrequest-off2"));
@@ -918,7 +950,8 @@ chatRegister = function() {setTimeout(function(){
         $.registerChatCommand("./addonscripts/youtubePlayer.js", "nextsong");
         $.registerChatCommand("./addonscripts/youtubePlayer.js", "stealsong", "admin");
         $.registerChatCommand("./addonscripts/youtubePlayer.js", "delsong", "mod");
-        $.registerChatCommand("./addonscripts/youtubePlayer.js", "defaultdelsong", "mod");
+        $.registerChatCommand("./addonscripts/youtubePlayer.js", "defaultaddsong", "admin");
+        $.registerChatCommand("./addonscripts/youtubePlayer.js", "defaultdelsong", "admin");
         $.registerChatCommand("./addonscripts/youtubePlayer.js", "volume", "mod");
         $.registerChatCommand("./addonscripts/youtubePlayer.js", "musicplayer", "mod");
 
