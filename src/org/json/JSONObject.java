@@ -99,9 +99,9 @@ public class JSONObject
      * undefined.
      */
     @SuppressWarnings(
-    {
-        "EqualsAndHashcode", "overrides"
-    })
+            {
+                "EqualsAndHashcode", "overrides"
+            })
     private static final class Null
     {
 

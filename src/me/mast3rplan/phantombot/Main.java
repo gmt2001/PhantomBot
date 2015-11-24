@@ -25,6 +25,7 @@ import java.io.IOException;
  */
 public class Main
 {
+
     public static void main(String[] args) throws IOException
     {
         for (String arg : args)
@@ -36,14 +37,14 @@ public class Main
                     ControlPanel.main(args);
                     return;
                 }
-                
+
                 if (arg.substring(5).equalsIgnoreCase("exit"))
                 {
                     return;
                 }
             }
         }
-        
+
         PhantomBot.main(args);
     }
 }
