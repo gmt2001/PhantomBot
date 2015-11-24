@@ -1,18 +1,14 @@
 $.on('command', function (event) {
     var sender = event.getSender();
     var command = event.getCommand();
-    var num2 = $.users.length;
-    var rnd = $.rand(num2);
-    var randomPerson = $.users[rnd][0];
     var argsString = event.getArguments().trim();
     var argsString2 = argsString.substring(argsString.indexOf(" ") + 1, argsString.length());
     var args = event.getArgs();
     var num_randoms = parseInt($.inidb.get("random_num", "num_randoms"));
-    var randomNum = $.randRange(1, 100);
     var num;
 
     if (command.equalsIgnoreCase("random")) {
-        if (!$.isMod(sender)) {
+        if (!$.isModv3(sender, event.getTags())) {
             num = $.rand(num_randoms);
         } else {
             if (argsString.length() > 0) {
@@ -36,7 +32,7 @@ $.on('command', function (event) {
     }
 
     if (command.equalsIgnoreCase("addrandom")) {
-        if (!$.isMod(sender)) {
+        if (!$.isModv3(sender, event.getTags())) {
             $.say($.getWhisperString(sender) + $.modmsg);
             return;
         }
@@ -59,7 +55,7 @@ $.on('command', function (event) {
     }
 
     if (command.equalsIgnoreCase("editrandom")) {
-        if (!$.isMod(sender)) {
+        if (!$.isModv3(sender, event.getTags())) {
             $.say($.getWhisperString(sender) + $.modmsg);
             return;
         }
@@ -85,7 +81,7 @@ $.on('command', function (event) {
     }
 
     if (command.equalsIgnoreCase("delrandom")) {
-        if (!$.isMod(sender)) {
+        if (!$.isModv3(sender, event.getTags())) {
             $.say($.getWhisperString(sender) + $.modmsg);
             return;
         }
@@ -122,20 +118,26 @@ $.on('command', function (event) {
         for (var i = 0; i < args.length; i++) {
             messageCommand = $.replaceAll(messageCommand, '(' + (i + 1) + ')', args[i]);
         }
-
-        messageCommand = $.replaceAll(messageCommand, '(sender)', $.username.resolve(sender));
-
-        messageCommand = $.replaceAll(messageCommand, '(user)', $.username.resolve(sender));
-
-        messageCommand = $.replaceAll(messageCommand, '(count)', commandCount);
-
-        messageCommand = $.replaceAll(messageCommand, '(random)', $.username.resolve(randomPerson));
-
-        messageCommand = $.replaceAll(messageCommand, '(#)', randomNum);
+        if (messageCommand.contains('(sender)')) {
+            messageCommand = $.replaceAll(messageCommand, '(sender)', sender);
+        } 
+        if (messageCommand.contains('(points)')) {
+            messageCommand = $.replaceAll(messageCommand, '(points)', $.getPointsString(parseInt($.inidb.get("points", sender))));
+        } 
+        if (messageCommand.contains('(touser)') >= 0 && args.length > 0) {
+            messageCommand = $.replaceAll(messageCommand, '(touser)', $.username.resolve(args[0]));
+        } 
+        if (messageCommand.contains('(random)')) {
+            messageCommand = $.replaceAll(messageCommand, '(random)', $.users[$.rand($.users.length)][0]);
+        }
+        if (messageCommand.contains('(#)')) {
+            messageCommand = $.replaceAll(messageCommand, '(#)', $.randRange(1, 100));
+        } 
 
         $.say(messageCommand);
     }
 });
+
 var ar = new Array(0);
 ar.push("(sender) was thrown into a large pit of PJSalt");
 ar.push("Oh my, (sender) you make me just want to *SLURP SLURP SLURP*");
@@ -279,76 +281,6 @@ ar.push("So I met this gangster who pulls up the back of people's pants, it was 
 ar.push("Went to the corner shop - bought 4 corners.            ");
 ar.push("A seal walks into a club...    ");
 ar.push("I went to the Doctors the other day, and he said, 'Go to Bournemouth, it's great for flu'. So I went  -  and I got it.");
-ar.push("Fun at Walmart #1. Take shopping carts for the express purpose of filling them and stranding them at strategic locations. ");
-ar.push("Fun at Walmart #2. Ride those little electronic cars at the front of the store. ");
-ar.push("Fun at Walmart #3. Set all the alarm clocks to go off at ten-minute intervals throughout the day ");
-ar.push("Fun at Walmart #4. Start playing Calvinball; see how many people you can get to join");
-ar.push("Fun at Walmart #5. Contaminate the entire auto department by sampling all the spray air fresheners. ");
-ar.push("Fun at Walmart #6. Challenge other customers to duels with tubes of gift-wrap. ");
-ar.push("Fun at Walmart #7. Leave cryptic messages on the typewriters.");
-ar.push("Fun at Walmart #8. Re-dress the mannequins as you see fit.");
-ar.push("Fun at Walmart #9. When there are people behind you, walk really slowly, especially in thin aisles. ");
-ar.push("Fun at Walmart #10. Walk up to an employee and tell him in an official tone, \"I think we've got a code 3 in housewares,\" and see what happens. ");
-ar.push("Fun at Walmart #11. Turn all the radios to polka stations; then turn them off and turn the volume up to full blast. ");
-ar.push("Fun at Walmart #12. Play with the automatic doors. ");
-ar.push("Fun at Walmart #13. Walk up to complete strangers and say, \"Hi. I haven't seen you in so long.\" etc. See if they play along. ");
-ar.push("Fun at Walmart #14. While walking through the clothing department, ask yourself loud enough for all to hear, \"Who buys this crap anyway?!\" ");
-ar.push("Fun at Walmart #15. Repeat #14 in the jewelry department. ");
-ar.push("Fun at Walmart #16. Ride a display bicycle through the store; claim you are taking it for a test drive. ");
-ar.push("Fun at Walmart #17. Follow people through the aisles, staying about 5 feet behind them. Do this until they leave the store. ");
-ar.push("Fun at Walmart #18. Play soccer with a group of friends, using the entire store as your playing field. ");
-ar.push("Fun at Walmart #19. As the cashier runs your purchase over the scanner, look mesmerized and say, \"Wow, magic!\" ");
-ar.push("Fun at Walmart #20. Put M&M's on layaway. ");
-ar.push("Fun at Walmart #21. Move \"Caution : Wet Floor\" signs to carpeted areas. ");
-ar.push("Fun at Walmart #22. Set up a tent in the camping department; tell others you will only invite them in if they bring pillows from Bed and Bath. ");
-ar.push("Fun at Walmart #23. Test the fishing rods and see what you can catch from other aisles. ");
-ar.push("Fun at Walmart #24. Ask other customers if they have any Grey Poupon. ");
-ar.push("Fun at Walmart #25. Drape a blanket around your shoulders and run around saying, \"I'm Batman. Come Robin, to the Batcave.\" ");
-ar.push("Fun at Walmart #26. TP as much of the store as possible. ");
-ar.push("Fun at Walmart #27. Randomly throw things over into neighboring aisles.");
-ar.push("Fun at Walmart #28. Play with the calculators so that they all spell \"hello\" upside down. ");
-ar.push("Fun at Walmart #29. When someone asks you if you need help, begin to cry and say, \"Why won't you people just leave me alone?\" ");
-ar.push("Fun at Walmart #30. When 2 or 3 people are walking ahead of you, run between them yelling \"Red Rover.\" ");
-ar.push("Fun at Walmart #31. Make up nonsense products and ask employees if there are any in stock. (i.e.: Shnerples) ");
-ar.push("Fun at Walmart #32. Take up an entire aisle in toys by setting up a full-scale battle with G.I. Joe vs. X-men. ");
-ar.push("Fun at Walmart #33. Take bets on the battle from above. ");
-ar.push("Fun at Walmart #34. Test the brushes and combs in cosmetics. ");
-ar.push("Fun at Walmart #35. While handling guns in the hunting department, suddenly ask the clerk where the anti-depressants are. Act as spastic as possible. ");
-ar.push("Fun at Walmart #36. Hold indoor shopping cart races.");
-ar.push("Fun at Walmart #37. Dart around suspiciously while humming the theme from Mission Impossible. ");
-ar.push("Fun at Walmart #38. Attempt to fit into very large gym bags. ");
-ar.push("Fun at Walmart #39. Attempt to fit others into very large gym bags. ");
-ar.push("Fun at Walmart #40. Say things like, \"Would you be so kind as to direct me to your Twinkies.\" ");
-ar.push("Fun at Walmart #41. Set up a \"Valet Parking\" sign in front of the store.");
-ar.push("Fun at Walmart #42. Two words: Marco Polo");
-ar.push("Fun at Walmart #43. Leave Cheerios in lawn and garden, pillows in the pet section, etc.");
-ar.push("Fun at Walmart #44. \"Re-alphabetize\" the CD's. ");
-ar.push("Fun at Walmart #45. In the auto department, practice your Madonna look with various funnels. ");
-ar.push("Fun at Walmart #46. When someone steps away from his or her cart to look at something, quickly make off with it without saying a word. ");
-ar.push("Fun at Walmart #47. Relax in the patio furniture until you get kicked out. ");
-ar.push("Fun at Walmart #48. When an announcement comes over the loudspeaker, drop to your knees and scream, \"No, no, its those voices again.\" ");
-ar.push("Fun at Walmart #49. Pay off layaways 50 cents at a time. ");
-ar.push("Fun at Walmart #50. Drag a lounge chair over to the magazines and relax. Go to the food court, buy a drink, and explain that you don't get out much and ask if they can put a little umbrella in it. ");
-ar.push("Fun at a Drive thru #1. Drive through the drive thru in reverse and let your passenger order.");
-ar.push("Fun at a Drive thru #2. Ask prices of everything on the menu then order something that you did not ask the price for.");
-ar.push("Fun at a Drive thru #3. Pretend like your window is broken. Tell the employee this. Order with your door open, pay with your door open. Roll down window and take food through the window.");
-ar.push("Fun at a Drive thru #4. Go to McDonalds and demand a big breakfast at 11:30 at night. Put up a fight.");
-ar.push("Fun at a Drive thru #5. Pay for a large order in pennies and nickels unwrapped.");
-ar.push("Fun at a Drive thru #6. Order in another language. Be careful what neighborhood you are in.");
-ar.push("Fun at a Drive thru #7. When asked if they can take your order, tell them you are just window shopping and drive on.");
-ar.push("Fun at a Drive thru #8. Laugh sadistically when asked if you would like ketchup.");
-ar.push("Fun at a Drive thru #9. Ask how they fit into that little box.");
-ar.push("Fun at a Drive thru #10. If they make you wait, make them wait when they come back on.");
-ar.push("Fun at a Drive thru #11. Demand to speak to the manager. When he comes on, complain that you did not like the way the employee said \"May I take your order?\"");
-ar.push("Fun at a Drive thru #12. When asked if they can take your order say \"No, why can I take yours?\"");
-ar.push("Fun at a Drive thru #13. If they ask you to wait, order anyway and keep doing it till they yell at you.");
-ar.push("Fun at a Drive thru #14. Pretend like your car broke down. Ask for assistance in moving it. When they come out, drive away.");
-ar.push("Fun at a Drive thru #15. Tell them you have to use the bathroom.");
-ar.push("Fun at a Drive thru #16. Order a cup of water and two napkins. That's it.");
-ar.push("Fun at a Drive thru #17. Don't order when they come on. Just sit there. If a line forms behind you, get out of the car and cause a scene.");
-ar.push("Fun at a Drive thru #18. When they hand you your food, hand them a bag back with all the trash from your car in it.");
-ar.push("Fun at a Drive thru #19. Just stare at them when you pay and get your food. Don't break your stare.");
-ar.push("Fun at a Drive thru #20. Honk your horn the whole way through the line.");
 ar.push("If a pig loses its voice, is it disgruntled?");
 ar.push("Why do women wear evening gowns to nightclubs? Shouldn't they be wearing night gowns?");
 ar.push("If love is blind, why is lingerie so popular?");
