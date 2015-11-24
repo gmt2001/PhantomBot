@@ -124,31 +124,26 @@ if ($.betTooLarge == null) {
 $.chances50 = $.inidb.get("bankheist_chances", "chances50");
 if ($.chances50 == null) {
     $.chances50 = $.randInterval(33, 36);
-    $.inidb.set("bankheist_chances", "chances50", $.chances50);
 }
 
 $.chances40 = $.inidb.get("bankheist_chances", "chances40");
 if ($.chances40 == null) {
     $.chances40 = $.randInterval(39, 44);
-    $.inidb.set("bankheist_chances", "chances40", $.chances40);
 }
 
 $.chances30 = $.inidb.get("bankheist_chances", "chances30");
 if ($.chances30 == null) {
     $.chances30 = $.randInterval(43, 50);
-    $.inidb.set("bankheist_chances", "chances30", $.chances30);
 }
 
 $.chances20 = $.inidb.get("bankheist_chances", "chances20");
 if ($.chances20 == null) {
     $.chances20 = $.randInterval(48, 58);
-    $.inidb.set("bankheist_chances", "chances20", $.chances20);
 }
 
 $.chances10 = $.inidb.get("bankheist_chances", "chances10");
 if ($.chances10 == null) {
     $.chances10 = $.randInterval(55, 65);
-    $.inidb.set("bankheist_chances", "chances10", $.chances10);
 }
 
 $.ratio50 = $.inidb.get("bankheist_ratios", "ratio50");
@@ -197,21 +192,21 @@ function processBankheist() {
         var winningsRatio = 1;
 
         if (people >= 40) {
-            chances = parseInt($.chances50);
-            winningsRatio = parseInt($.ratio50);
+            chances = parseFloat($.chances50);
+            winningsRatio = parseFloat($.ratio50);
         } else if (people <= 39 && people >= 30) {
-            chances = parseInt($.chances40);
-            winningsRatio = parseInt($.ratio40);
+            chances = parseFloat($.chances40);
+            winningsRatio = parseFloat($.ratio40);
         } else if (people <= 29 && people >= 20) {
-            chances = parseInt($.chances30);
-            winningsRatio = parseInt($.ratio30);
+            chances = parseFloat($.chances30);
+            winningsRatio = parseFloat($.ratio30);
         } else {
             if (people < 20 && people >= 10) {
-                chances = parseInt($.chances20);
-                winningsRatio = parseInt($.ratio20);
+                chances = parseFloat($.chances20);
+                winningsRatio = parseFloat($.ratio20);
             } else if (people < 10) {
-                chances = parseInt($.chances10);
-                winningsRatio = parseInt($.ratio10);
+                chances = parseFloat($.chances10);
+                winningsRatio = parseFloat($.ratio10);
             }
         }
         var winnersList = $.stringPayouts;
@@ -227,7 +222,7 @@ function processBankheist() {
             if (randomNum <= chances) {
                 var betWin = parseInt(Math.round(winningsRatio * bet));
                 $.winningPot += betWin;
-                $.inidb.incr("points", name, betWin + bet);
+                $.inidb.incr("points", name, betWin);
                 winnersList += username;
                 winnersList += " ";
                 winnersList += "(+" + betWin.toString() + ")";
@@ -684,7 +679,7 @@ $.on('command', function (event) {
                     return;
                 }
                 $.ratio50 = modValue;
-                $.inidb.set("bankheist_ratios", "ratio50", modValue);
+                $.inidb.set("bankheist_ratios", "ratio50", parseFloat(modValue));
                 $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bankheistsystem.new-value-for-ratio50", modValue));
                 return;
             }
@@ -695,7 +690,7 @@ $.on('command', function (event) {
                     return;
                 }
                 $.ratio40 = modValue;
-                $.inidb.set("bankheist_ratios", "ratio40", modValue);
+                $.inidb.set("bankheist_ratios", "ratio40", parseFloat(modValue));
                 $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bankheistsystem.new-value-for-ratio40", modValue));
                 return;
             }
@@ -706,7 +701,7 @@ $.on('command', function (event) {
                     return;
                 }
                 $.ratio30 = modValue;
-                $.inidb.set("bankheist_ratios", "ratio30", modValue);
+                $.inidb.set("bankheist_ratios", "ratio30", parseFloat(modValue));
                 $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bankheistsystem.new-value-for-ratio30", modValue));
                 return;
             }
@@ -717,7 +712,7 @@ $.on('command', function (event) {
                     return;
                 }
                 $.ratio20 = modValue;
-                $.inidb.set("bankheist_ratios", "ratio20", modValue);
+                $.inidb.set("bankheist_ratios", "ratio20", parseFloat(modValue));
                 $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bankheistsystem.new-value-for-ratio20", modValue));
                 return;
             }
@@ -728,7 +723,7 @@ $.on('command', function (event) {
                     return;
                 }
                 $.ratio10 = modValue;
-                $.inidb.set("bankheist_ratios", "ratio10", modValue);
+                $.inidb.set("bankheist_ratios", "ratio10", parseFloat(modValue));
                 $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bankheistsystem.new-value-for-ratio10", modValue));
                 return;
             }
