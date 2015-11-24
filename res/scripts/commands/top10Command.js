@@ -113,7 +113,7 @@ $.on('command', function(event) {
         var topTenString = "";
 
         for (var i = keys.length - 1; i >= 0; i--) {
-            if (keys[i] != $.botowner && keys[i] != $.botname && keys[i] != "moobot"  && keys[i] != "wizebot" && keys[i] != "nightbot") {
+            if (keys[i] != $.botowner && keys[i] != $.botname && keys[i] != "moobot"  && keys[i] != "wizebot" && keys[i] != "nightbot" && keys[i] != "xanbot") {
                 topComplete.push([keys[i], $.inidb.get("time", keys[i])]);
             }
         };
@@ -154,4 +154,4 @@ setTimeout(function(){
         $.registerChatCommand("./commands/top10Command.js", "top10");
         $.registerChatCommand("./commands/top10Command.js", "top10time");
     }
-},10*1000);
+},10 * 1000);

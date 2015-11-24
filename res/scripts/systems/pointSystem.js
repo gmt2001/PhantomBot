@@ -596,15 +596,15 @@ $.on('command', function (event) {
             return;
         }
 
-        if (args[0] > $.inidb.get('points', sender)) {
+        if (parseInt(args[0]) > $.inidb.get('points', sender)) {
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.makeitrain-error-notenough", $.getPointsString(args[0])));
             return;
         }
 
-        if (args[0] < 0) {
+        if (parseInt(args[0]) < 0) {
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.makeitrain-error-negative", $.pointNameMultiple));
             return;
-        } else if ($.users.length < 5 || args[0] < $.users.length + 1) {
+        } else if ($.users.length < 5 || parseInt(args[0]) < $.users.length + 1) {
             // In order to prevent point duplication, require a minimum of coins based on amount of users, and add 1 to that.
             // Also, to prevent possible weird calculations, limit makeitrains to $.users.length > 5.
             // If this is not used, it is possible for users to do "!makeitrain 1" to boost another user.
@@ -613,17 +613,18 @@ $.on('command', function (event) {
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.makeitrain-error-invalid", $.getPointsString(args[0])));
             return;
         } else {
-            $.inidb.decr('points', sender, args[0]);
+            $.inidb.decr('points', sender, parseInt(args[0]));
             var name;
             var i;
-            var reward = args[0] / ($.users.length);
+            var reward = parseInt(args[0]) / ($.users.length - 1);
 
             for (i = 0; i < $.users.length; i++) {
                 name = $.users[i][0];
-                $.inidb.incr('points', name.toLowerCase(), reward.toFixed(0));
+                if (!name.equalsIgnoreCase(sender)) {
+                   $.inidb.incr('points', name.toLowerCase(), reward.toFixed(0));
+                }
             }
 
-            $.inidb.decr('points', sender, reward.toFixed(0));
             $.say($.lang.get("net.phantombot.pointsystem.makeitrain-success", username, $.getPointsString(args[0]), $.getPointsString(reward.toFixed(0))));
             return;
         }
