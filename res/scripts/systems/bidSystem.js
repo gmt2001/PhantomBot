@@ -28,7 +28,7 @@ $.on('command', function(event) {
 
             if (action.equalsIgnoreCase("start")) {
                 if (!$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
 
@@ -57,7 +57,7 @@ $.on('command', function(event) {
                 }
             } else if (action.equalsIgnoreCase("warn") || action.equalsIgnoreCase("warning")) {
                 if (!$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
 
@@ -75,7 +75,7 @@ $.on('command', function(event) {
                 }
             } else if (action.equalsIgnoreCase("end") || action.equalsIgnoreCase("close")) {
                 if (!$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
 

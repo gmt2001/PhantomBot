@@ -151,7 +151,7 @@ $.on('command', function(event) {
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.streamcommand.current-game", $.getGame($.channelName)));
             return;
         } else if (!$.isAdmin(sender)) {
-            $.say($.getWhisperString(sender) + $.adminmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
             return;	
         }
         
@@ -181,7 +181,7 @@ $.on('command', function(event) {
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.streamcommand.current-title", $.getStatus($.channelName)));
             return;
         } else if (!$.isAdmin(sender)) {
-            $.say($.getWhisperString(sender) + $.adminmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
             return;	
         }
         
@@ -205,14 +205,14 @@ $.on('command', function(event) {
     
     if (command.equalsIgnoreCase("commercial")) {
         if (!$.isAdmin(sender)) {
-            $.say($.getWhisperString(sender) + $.adminmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
             return;
         }
         
         if (args.length > 0) {
             if (args[0].equalsIgnoreCase("disablecommand")) {
                 if (!$.isAdmin(sender)) {
-                    $.say($.getWhisperString(sender) + $.adminmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
                     return;
                 }
                 
@@ -226,7 +226,7 @@ $.on('command', function(event) {
         
             if (args[0].equalsIgnoreCase("enablecommand")) {
                 if (!$.isAdmin(sender)) {
-                    $.say($.getWhisperString(sender) + $.adminmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
                     return;
                 }
             
@@ -240,7 +240,7 @@ $.on('command', function(event) {
         
             if (args[0].equalsIgnoreCase("autotimer")) {
                 if (!$.isAdmin(sender)) {
-                    $.say($.getWhisperString(sender) + $.adminmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
                     return;
                 }
                 

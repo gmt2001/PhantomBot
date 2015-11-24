@@ -130,7 +130,7 @@ $.moduleEnabled = function (scriptFile, channel) {
 
 $.setDefaultModuleEnabled = function (scriptFile, enabled) {
     var i = $.getModuleIndex(scriptFile);
-    
+
     if (i >= 0) {
         modules[i][1] = enabled;
     }
@@ -257,17 +257,18 @@ $.timer.hasTimer = function (scriptFile, name, isInterval) {
     return $.timer.getTimerIndex(scriptFile, name, isInterval) != -1;
 }
 
-$.timer.addTimer = function (scriptFile, name, isInterval, handler, interval) {
+$.timer.addTimer = function (scriptFile, name, isInterval, handler, interval, param) {
     var i = $.timer.getTimerIndex(scriptFile, name, isInterval);
 
     if (i == -1) {
-        timers.push(new Array(scriptFile, name, isInterval, null, null, null));
+        timers.push(new Array(scriptFile, name, isInterval, null, null, null, null));
         i = $.timer.getTimerIndex(scriptFile, name, isInterval);
     }
 
     timers[i][3] = 0;
     timers[i][4] = handler;
     timers[i][5] = interval;
+    timers[i][6] = param;
 }
 
 $.timer.clearTimer = function (scriptFile, name, isInterval) {
@@ -294,7 +295,7 @@ $api.setInterval($script, function () {
                 timers[i][3] = 0;
 
                 try {
-                    timers[i][4]();
+                    timers[i][4](timers[i][6]);
                 } catch (e) {
                     $.logError("init.js", 279, null, "(timer.interval.exec, " + timers[i][1] + ", " + timers[i][0] + ") " + e);
                 }
@@ -669,10 +670,10 @@ $api.on(initscript, 'command', function (event) {
         $.logEvent("init.js", 469, channel, username + " requested a reconnect");
 
         $.connmgr.reconnectSession($.hostname);
-        
+
         var channels = $.phantombot.getChannels();
         for (var i = 0; i < channels.size(); i++) {
-           $.say($.lang.get("net.phantombot.init.reconn", channels.get(i)), channels.get(i));
+            $.say($.lang.get("net.phantombot.init.reconn", channels.get(i)), channels.get(i));
         }
     }
 

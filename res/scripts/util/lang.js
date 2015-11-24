@@ -58,7 +58,7 @@ $.on('command', function(event) {
     
     if (command.equalsIgnoreCase("lang")) {
         if (!$.isAdmin(sender)) {
-            $.say($.getWhisperString(sender) + $.adminmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
             return;                
         }
         

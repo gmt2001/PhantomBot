@@ -34,7 +34,7 @@ $.on('command', function(event) {
     if (command.equalsIgnoreCase("raid")) {
         if (args.length >= 1) {
             if (!$.isModv3(sender, event.getTags())) {
-                $.say($.getWhisperString(sender) + $.modmsg);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                 return;
             }
             
@@ -72,7 +72,7 @@ $.on('command', function(event) {
     if (command.equalsIgnoreCase("raider")) {
         if (args.length >= 1) {
             if (!$.isModv3(sender, event.getTags())) {
-                $.say($.getWhisperString(sender) + $.modmsg);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                 return;
             }
 

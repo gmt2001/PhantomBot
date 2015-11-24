@@ -18,7 +18,7 @@ $.on('command', function (event) {
 		
     if (command.equalsIgnoreCase("highlight")) {
         if (!$.isModv3(sender, event.getTags())) {
-            $.say($.getWhisperString(sender) + $.modmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
         } else if (argsString.isEmpty()) { 
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.highlightcommand.usage"));
         } else if (!$.isOnline($.channelName)) {
@@ -33,7 +33,7 @@ $.on('command', function (event) {
 	
     if (command.equalsIgnoreCase("clearhighlights")) {
         if (!$.isModv3(sender, event.getTags())) {
-            $.say($.getWhisperString(sender) + $.modmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
             return;
         }
 		

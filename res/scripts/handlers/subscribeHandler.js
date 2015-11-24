@@ -103,7 +103,7 @@ $.on('command', function(event) {
     
     if (command.equalsIgnoreCase("subsilentmode")) {
         if (!$.isAdmin(sender)) {
-            $.say($.getWhisperString(sender) + $.adminmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
             return;
         }
         
@@ -122,7 +122,7 @@ $.on('command', function(event) {
     
     if (command.equalsIgnoreCase("subscribereward")) {
         if (!$.isAdmin(sender)) {
-            $.say($.getWhisperString(sender) + $.adminmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
             return;
         }
 
@@ -158,7 +158,7 @@ $.on('command', function(event) {
         var keys = $.inidb.GetKeyList("subscribed", "");
         var count = 0;
         if(!$.isAdmin(sender)) {
-            $.say($.getWhisperString(sender) + $.adminmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
             return;
         }
         
@@ -173,7 +173,7 @@ $.on('command', function(event) {
     
     if (command.equalsIgnoreCase("subscribemessage")) {		
         if (!$.isAdmin(sender)) {		
-            $.say($.getWhisperString(sender) + $.adminmsg);		
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));		
             return;		
         }		
         		
@@ -204,7 +204,7 @@ $.on('command', function(event) {
     
     if (command.equalsIgnoreCase("subscribemode")) {
         if (!$.isAdmin(sender)) {
-            $.say($.getWhisperString(sender) + $.adminmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
             return;
         }
         

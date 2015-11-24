@@ -9,7 +9,7 @@ $.on('command', function (event) {
 
     if (command.equalsIgnoreCase("addcom")) {
         if (!$.isModv3(sender, event.getTags())) {
-            $.say($.getWhisperString(sender) + $.modmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
             return;
         }
         
@@ -46,7 +46,7 @@ $.on('command', function (event) {
 
     if (command.equalsIgnoreCase("delalias")) {
         if (!$.isModv3(sender, event.getTags())) {
-            $.say($.getWhisperString(sender) + $.modmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
             return;
         }
 
@@ -96,7 +96,7 @@ $.on('command', function (event) {
 
     if (command.equalsIgnoreCase("aliascom")) {
         if (!$.isModv3(sender, event.getTags())) {
-            $.say($.getWhisperString(sender) + $.modmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
             return;
         }
 
@@ -137,7 +137,7 @@ $.on('command', function (event) {
     if (command.equalsIgnoreCase("delcom")) {
         if (args.length >= 1) {
             if (!$.isModv3(sender, event.getTags())) {
-                $.say($.getWhisperString(sender) + $.modmsg);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                 return;
             }
 
@@ -177,7 +177,7 @@ $.on('command', function (event) {
     if (command.equalsIgnoreCase("editcom")) {
         if (args.length >= 1) {
             if (!$.isModv3(sender, event.getTags())) {
-                $.say($.getWhisperString(sender) + $.modmsg);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                 return;
             }
 
@@ -212,7 +212,7 @@ $.on('command', function (event) {
 
     if (command.equalsIgnoreCase("permcom")) {
         if (!isAdmin(sender)) {
-            $.say($.getWhisperString(sender) + $.adminmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
             return;
         }
 
@@ -359,22 +359,22 @@ $.on('command', function (event) {
 
     if (command.equalsIgnoreCase("pricecommod")) {
         if (!$.isAdmin(sender)) {
-            $.say($.getWhisperString(sender) + $.adminmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
             return;
         }
         
-        if (!$.inidb.exists("settings", "pricecommod") || !$.inidb.get("settings", "pricecommod").equalsIgnoreCase("true")) {
-            $.inidb.set("settings", "pricecommod", "true");
+        if (!$.inidb.exists("settings", "pricecommod") || !$.inidb.get("settings", "pricecommod").equalsIgnoreCase("1")) {
+            $.inidb.set("settings", "pricecommod", "1");
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.pricecommod-enable"));
         } else {
-            $.inidb.set("settings", "pricecommod", "false");
+            $.inidb.set("settings", "pricecommod", "0");
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.pricecommod-disable"));
         }
     }
 
     if (command.equalsIgnoreCase("pricecom")) {
         if (!$.isAdmin(sender) && args.length != 1) {
-            $.say($.getWhisperString(sender) + $.adminmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
             return;
         }
 

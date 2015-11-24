@@ -364,7 +364,7 @@ $.on('command', function (event) {
         if (args.length >= 2) {
             if (action.equalsIgnoreCase("bonus") && !argsString.isEmpty()) {
                 if (!$.isMod(sender)) {
-                    $.say($.modmsg);
+                    $.say($.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
 
@@ -375,7 +375,7 @@ $.on('command', function (event) {
 
             if (action.equalsIgnoreCase("time") && !argsString.isEmpty()) {
                 if (!$.isMod(sender)) {
-                    $.say($.modmsg);
+                    $.say($.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
 
@@ -387,7 +387,7 @@ $.on('command', function (event) {
 
             if (action.equalsIgnoreCase("emote") && !argsString.isEmpty()) {
                 if (!$.isMod(sender)) {
-                    $.say($.modmsg);
+                    $.say($.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
                 if (args[1].equalsIgnoreCase("1") && args[2] != null) {
@@ -426,7 +426,7 @@ $.on('command', function (event) {
 
             if (action.equalsIgnoreCase("reward") && !argsString.isEmpty()) {
                 if (!$.isMod(sender)) {
-                    $.say($.modmsg);
+                    $.say($.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
                 if (args[1].equalsIgnoreCase("1") && args[2] != null) {
@@ -465,7 +465,7 @@ $.on('command', function (event) {
 
             if ((action.equalsIgnoreCase("halfReward") && !argsString.isEmpty())||(action.equalsIgnoreCase("halfRewards") && !argsString.isEmpty())) {
                 if (!$.isMod(sender)) {
-                    $.say($.modmsg);
+                    $.say($.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
                 if (args[1].equalsIgnoreCase("off")) {
@@ -517,7 +517,7 @@ $.on('command', function (event) {
 
             if (action.equalsIgnoreCase("seeReward") && !argsString.isEmpty()) {
                 if (!$.isMod(sender)) {
-                    $.say($.modmsg);
+                    $.say($.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
                 if (args[1] != null) {
@@ -532,7 +532,7 @@ $.on('command', function (event) {
 
             if (action.equalsIgnoreCase("jackpot") && !argsString.isEmpty()) {
                 if (!$.isMod(sender)) {
-                    $.say($.modmsg);
+                    $.say($.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
                 if (args[1] != null) {

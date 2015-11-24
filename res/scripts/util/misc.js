@@ -1,32 +1,32 @@
 //Function takes the amount of user and the name of points/currency and converts accordingly
 //then calls next function with information that was processed
-$.econNameFormat = function(amt, name){
-	regex = /.$\w[^aeiou]+y/i;
-	if(name === undefined){
-		name = "";
-	}
-	if (amt >= 1) {
-		if (regex.test(name)){
-			name = " " + name+"ies";
-		} else {
-			name = " " + name+"s";
-		}
-	}
-	return $.formatNumbers(amt, name);
+$.econNameFormat = function (amt, name) {
+    regex = /.$\w[^aeiou]+y/i;
+    if (name === undefined) {
+        name = "";
+    }
+    if (amt >= 1) {
+        if (regex.test(name)) {
+            name = " " + name + "ies";
+        } else {
+            name = " " + name + "s";
+        }
+    }
+    return $.formatNumbers(amt, name);
 }
 //Converts int based numbers (not string based) to normal currency values. Ex: 1000 -> 1,000
 // can also take the name of points or currency when returning.
-$.formatNumbers = function(n, econ) {
-	if (econ === undefined) {
-		econ = "";
-	}
-	return n.toFixed().replace(/./g, function(c, i, a) {
-			return i && c !== "." && ((a.length - i) % 3 === 0) ? ',' + c : c;
-		}
-	)+econ;
+$.formatNumbers = function (n, econ) {
+    if (econ === undefined) {
+        econ = "";
+    }
+    return n.toFixed().replace(/./g, function (c, i, a) {
+        return i && c !== "." && ((a.length - i) % 3 === 0) ? ',' + c : c;
+    }
+    ) + econ;
 }
 
-$.say = function (s) {
+$.say = function (s, channel) {
     var str = String(s);
     var i = str.indexOf("<");
 
@@ -56,10 +56,10 @@ $.say = function (s) {
     if ($.connected) {
         $.logChat($.botname, str);
 
-        if (!$.inidb.exists("settings", "response_@all") || $.inidb.get("settings", "response_@all").equalsIgnoreCase("1")
-                || str.equals($.lang.get("net.phantombot.misc.response-disable")) == true || str.indexOf(".timeout ") != -1 || str.indexOf(".ban ") != -1
-                || str.indexOf(".unban ") != -1 || str.equalsIgnoreCase(".clear") || str.equalsIgnoreCase(".mods")) {
-            $.channel.say(str);
+        if ($.inidb.GetBoolean("settings", channel.getName(), "response_@all") || str.equals($.lang.get("net.phantombot.misc.response-disable", channel))
+                || str.indexOf(".timeout ") != -1 || str.indexOf(".ban ") != -1 || str.indexOf(".unban ") != -1 || str.equalsIgnoreCase(".clear")
+                || str.equalsIgnoreCase(".mods")) {
+            channel.say(str);
         }
     }
 }
@@ -120,32 +120,19 @@ $.array.contains = function (arr, itm) {
     return false;
 }
 
-$.logChat = function (sender, message) {
-    if (!$.moduleEnabled("./util/fileSystem.js") || !$.logEnable || (sender.equalsIgnoreCase($.botname) && message.equalsIgnoreCase(".mods"))) {
-        return;
-    }
-    if (!$.logChatEnable) {
+$.logChat = function (sender, channel, message) {
+    if (!$.moduleEnabled("./util/fileSystem.js", channel) || (sender.equalsIgnoreCase($.botname) && message.equalsIgnoreCase(".mods"))) {
         return;
     }
 
-    var datefmt = new java.text.SimpleDateFormat("yyyy-MM-dd");
-    datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.timezone));
+    var channelname = "";
+    if (channel != null) {
+        channelname = "_" + channel.getName();
 
-    var date = datefmt.format(new java.util.Date());
-
-    datefmt = new java.text.SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss Z");
-    datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.timezone));
-
-    var timestamp = datefmt.format(new java.util.Date());
-
-    var str = timestamp + " [" + sender + "] " + message;
-
-    $.writeToFile(str, "./logs/chatlog_" + date + ".txt", true);
-}
-
-$.logLink = function (sender, message) {
-    if (!$.moduleEnabled("./util/fileSystem.js") || !$.logEnable) {
-        return;
+        if (!$.inidb.GetBoolean('settings', channel.getName(), 'logenable')
+                || !$.inidb.GetBoolean('settings', channel.getName(), 'logchat')) {
+            return;
+        }
     }
 
     var datefmt = new java.text.SimpleDateFormat("yyyy-MM-dd");
@@ -160,12 +147,50 @@ $.logLink = function (sender, message) {
 
     var str = timestamp + " [" + sender + "] " + message;
 
-    $.writeToFile(str, "./logs/linklog_" + date + ".txt", true);
+    $.writeToFile(str, "./logs/chatlog" + channelname + "_" + date + ".txt", true);
 }
 
-$.logEvent = function (file, line, message) {
-    if (!$.moduleEnabled("./util/fileSystem.js") || !$.logEnable) {
+$.logLink = function (sender, channel, message) {
+    if (!$.moduleEnabled("./util/fileSystem.js", channel)) {
         return;
+    }
+
+    var channelname = "";
+    if (channel != null) {
+        channelname = "_" + channel.getName();
+
+        if (!$.inidb.GetBoolean('settings', channel.getName(), 'logenable')) {
+            return;
+        }
+    }
+
+    var datefmt = new java.text.SimpleDateFormat("yyyy-MM-dd");
+    datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.timezone));
+
+    var date = datefmt.format(new java.util.Date());
+
+    datefmt = new java.text.SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss Z");
+    datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.timezone));
+
+    var timestamp = datefmt.format(new java.util.Date());
+
+    var str = timestamp + " [" + sender + "] " + message;
+
+    $.writeToFile(str, "./logs/linklog" + channelname + "_" + date + ".txt", true);
+}
+
+$.logEvent = function (file, line, channel, message) {
+    if (!$.moduleEnabled("./util/fileSystem.js", channel)) {
+        return;
+    }
+
+    var channelname = "";
+    if (channel != null) {
+        channelname = "_" + channel.getName();
+
+        if (!$.inidb.GetBoolean('settings', channel.getName(), 'logenable')) {
+            return;
+        }
     }
 
     var datefmt = new java.text.SimpleDateFormat("yyyy-MM-dd");
@@ -180,12 +205,21 @@ $.logEvent = function (file, line, message) {
 
     var str = timestamp + " [" + file + "#" + line + "] " + message;
 
-    $.writeToFile(str, "./logs/eventlog_" + date + ".txt", true);
+    $.writeToFile(str, "./logs/eventlog" + channelname + "_" + date + ".txt", true);
 }
 
-$.logError = function (file, line, message) {
-    if (!$.moduleEnabled("./util/fileSystem.js") || !$.logEnable) {
+$.logError = function (file, line, channel, message) {
+    if (!$.moduleEnabled("./util/fileSystem.js", channel)) {
         return;
+    }
+
+    var channelname = "";
+    if (channel != null) {
+        channelname = "_" + channel.getName();
+
+        if (!$.inidb.GetBoolean('settings', channel.getName(), 'logenable')) {
+            return;
+        }
     }
 
     var datefmt = new java.text.SimpleDateFormat("yyyy-MM-dd");
@@ -200,10 +234,10 @@ $.logError = function (file, line, message) {
 
     var str = timestamp + " [" + file + "#" + line + "] " + message;
 
-    $.writeToFile(str, "./logs/errorlog_" + date + ".txt", true);
+    $.writeToFile(str, "./logs/errorlog" + channelname + "_" + date + ".txt", true);
 }
 
-$.logRotate = function () {
+$.logRotate = function (channel) {
     var cal = java.util.Calendar.getInstance(java.util.TimeZone.getTimeZone($.timezone));
     var now = cal.getTimeInMillis();
 
@@ -215,24 +249,35 @@ $.logRotate = function () {
 
     var tomorrow = cal.getTimeInMillis();
 
-    $.timer.addTimer("./util/misc.js", "logrotate", false, function () {
-        $.logRotate();
-    }, tomorrow - now + (60 * 1000));
+    $.timer.addTimer("./util/misc.js", "logrotate", false, function (channel) {
+        $.logRotate(channel);
+    }, tomorrow - now + (60 * 1000), channel);
 
-    var chatlogs = $.findFiles(".", "chatlog_");
-    var linklogs = $.findFiles(".", "linklog_");
-    var eventlogs = $.findFiles(".", "eventlog_");
-    var errorlogs = $.findFiles(".", "errorlog_");
+    var channelname = "";
+    if (channel != null) {
+        channelname = "_" + channel.getName();
+    }
+
+    var chatlogs = $.findFiles(".", "chatlog" + channelname + "_");
+    var linklogs = $.findFiles(".", "linklog" + channelname + "_");
+    var eventlogs = $.findFiles(".", "eventlog" + channelname + "_");
+    var errorlogs = $.findFiles(".", "errorlog" + channelname + "_");
     var datefmt = new java.text.SimpleDateFormat("yyyy-MM-dd");
     var date;
     var i;
+
+    var logRotateDays = 7;
+
+    if (channel != null) {
+        logRotateDays = $.inidb.GetInteger('settings', channel.getName(), 'logrotatedays');
+    }
 
     datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.timezone));
 
     for (i = 0; i < chatlogs.length; i++) {
         date = datefmt.parse(chatlogs[i].substring(8, 18));
         cal.setTime(date);
-        cal.add(java.util.Calendar.DAY_OF_MONTH, $.logRotateDays);
+        cal.add(java.util.Calendar.DAY_OF_MONTH, logRotateDays);
 
         if (cal.getTimeInMillis() <= now) {
             $.deleteFile(chatlogs[i], true);
@@ -242,7 +287,7 @@ $.logRotate = function () {
     for (i = 0; i < linklogs.length; i++) {
         date = datefmt.parse(linklogs[i].substring(8, 18));
         cal.setTime(date);
-        cal.add(java.util.Calendar.DAY_OF_MONTH, $.logRotateDays);
+        cal.add(java.util.Calendar.DAY_OF_MONTH, logRotateDays);
 
         if (cal.getTimeInMillis() <= now) {
             $.deleteFile(linklogs[i], true);
@@ -252,7 +297,7 @@ $.logRotate = function () {
     for (i = 0; i < eventlogs.length; i++) {
         date = datefmt.parse(eventlogs[i].substring(9, 19));
         cal.setTime(date);
-        cal.add(java.util.Calendar.DAY_OF_MONTH, $.logRotateDays);
+        cal.add(java.util.Calendar.DAY_OF_MONTH, logRotateDays);
 
         if (cal.getTimeInMillis() <= now) {
             $.deleteFile(eventlogs[i], true);
@@ -262,7 +307,7 @@ $.logRotate = function () {
     for (i = 0; i < errorlogs.length; i++) {
         date = datefmt.parse(errorlogs[i].substring(9, 19));
         cal.setTime(date);
-        cal.add(java.util.Calendar.DAY_OF_MONTH, $.logRotateDays);
+        cal.add(java.util.Calendar.DAY_OF_MONTH, logRotateDays);
 
         if (cal.getTimeInMillis() <= now) {
             $.deleteFile(errorlogs[i], true);
@@ -276,11 +321,12 @@ $.on('command', function (event) {
     var username = $.username.resolve(sender, event.getTags());
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
+    var channel = event.getChannel();
     var args = event.getArgs();
 
     if (command.equalsIgnoreCase("log")) {
-        if (!$.isAdmin(sender)) {
-            $.say($.getWhisperString(sender) + $.adminmsg);
+        if (!$.isAdmin(sender, channel)) {
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.cmd.adminonly", channel), channel);
 
             return;
         }
@@ -288,112 +334,99 @@ $.on('command', function (event) {
         if (args.length == 0) {
             var msg;
 
-            if ($.logEnable) {
-                msg = $.lang.get("net.phantombot.common.enabled");
+            if ($.inidb.GetBoolean('settings', channel.getName(), 'logenable')) {
+                msg = $.lang.get("net.phantombot.common.enabled", channel);
             } else {
-                msg = $.lang.get("net.phantombot.common.disabled");
+                msg = $.lang.get("net.phantombot.common.disabled", channel);
             }
 
-            msg = $.lang.get("net.phantombot.misc.log-status", msg, $.logRotateDays);
+            msg = $.lang.get("net.phantombot.misc.log-status", channel, msg, $.inidb.GetInteger('settings', channel.getName(), 'logrotatedays'));
 
-            $.say($.getWhisperString(sender) + msg);
+            $.say($.getWhisperString(sender, channel) + msg, channel);
 
             return;
         }
 
         if (args[0].equalsIgnoreCase("enable")) {
-            $.logEnable = true;
+            $.logEvent("misc.js", 259, channel, username + " enabled logging");
 
-            $.logEvent("misc.js", 259, username + " enabled logging");
+            $.inidb.SetBoolean('settings', channel.getName(), 'logenable', true);
 
-            $.inidb.set('settings', 'logenable', '1');
-
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.misc.log-enable"));
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.misc.log-enable", channel), channel);
         }
 
         if (args[0].equalsIgnoreCase("disable")) {
-            $.logEvent("misc.js", 267, username + " disabled logging");
+            $.logEvent("misc.js", 267, channel, username + " disabled logging");
 
-            $.logEnable = false;
+            $.inidb.SetBoolean('settings', channel.getName(), 'logenable', false);
 
-            $.inidb.set('settings', 'logenable', '0');
-
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.misc.log-disable"));
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.misc.log-disable", channel), channel);
         }
 
         if (args[0].equalsIgnoreCase("days")) {
             if (args.length == 1 || isNaN(args[1]) || parseInt(args[1]) < 1) {
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.misc.log-err-bad-days"));
+                $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.misc.log-err-bad-days", channel), channel);
 
                 return;
             }
 
-            $.logEvent("misc.js", 283, username + " changed the number of days logs are kept to " + args[1]);
+            $.logEvent("misc.js", 283, channel, username + " changed the number of days logs are kept to " + args[1]);
 
-            $.logRotateDays = parseInt(args[1]);
+            $.inidb.SetInteger('settings', channel.getName(), 'logrotatedays', args[1]);
 
-            $.inidb.set('settings', 'logrotatedays', args[1]);
-
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.misc.log-days", args[1]));
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.misc.log-days", channel, args[1]), channel);
         }
     }
 
     if (command.equalsIgnoreCase("logchat")) {
-        if (!$.isAdmin(sender)) {
-            $.say($.getWhisperString(sender) + $.adminmsg);
+        if (!$.isAdmin(sender, channel)) {
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.cmd.adminonly", channel), channel);
 
             return;
         }
         if (args[0].equalsIgnoreCase("enable")) {
-            $.logChatEnable = true;
+            $.logEvent("misc.js", 259, channel, username + " enabled chat logging");
 
-            $.logEvent("misc.js", 259, username + " enabled chat logging");
+            $.inidb.SetBoolean('settings', channel.getName(), 'logchat', true);
 
-            $.inidb.set('settings', 'logchat', '1');
-
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.misc.logchat-enable"));
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.misc.logchat-enable", channel), channel);
         }
 
         if (args[0].equalsIgnoreCase("disable")) {
-            $.logEvent("misc.js", 267, username + " disabled chat logging");
+            $.logEvent("misc.js", 267, channel, username + " disabled chat logging");
 
-            $.logChatEnable = false;
+            $.inidb.SetBoolean('settings', channel.getName(), 'logchat', false);
 
-            $.inidb.set('settings', 'logchat', '0');
-
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.misc.logchat-disable"));
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.misc.logchat-disable", channel), channel);
         }
     }
 
     if (command.equalsIgnoreCase("response")) {
-        if (!$.isAdmin(sender)) {
-            $.say($.getWhisperString(sender) + $.adminmsg);
+        if (!$.isAdmin(sender, channel)) {
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.cmd.adminonly", channel), channel);
 
             return;
         }
 
         if (args.length == 0) {
-            if ($.inidb.exists("settings", "response_@all")
-                    && $.inidb.get("settings", "response_@all").equalsIgnoreCase("0")) {
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.misc.response-disabled"));
+            if (!$.inidb.GetBoolean("settings", channel.getName(), "response_@all")) {
+                $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.misc.response-disabled", channel), channel);
             } else {
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.misc.response-enabled"));
+                $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.misc.response-enabled", channel), channel);
             }
         } else {
             if (args[0].equalsIgnoreCase("enable")) {
-                if ($.inidb.exists("settings", "response_@all")) {
-                    $.inidb.del("settings", "response_@all");
-                }
+                $.inidb.RemoveKey("settings", channel.getName(), "response_@all");
 
-                $.logEvent("misc.js", 313, username + " enabled bot responses");
+                $.logEvent("misc.js", 313, channel, username + " enabled bot responses");
 
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.misc.response-enable"));
+                $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.misc.response-enable", channel), channel);
             } else if (args[0].equalsIgnoreCase("disable")) {
-                $.inidb.set("settings", "response_@all", "0");
+                $.inidb.SetBoolean("settings", channel.getName(), "response_@all", false);
 
-                $.logEvent("misc.js", 319, username + " disabled bot responses");
+                $.logEvent("misc.js", 319, channel, username + " disabled bot responses");
 
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.misc.response-disable"));
+                $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.misc.response-disable", channel), channel);
             }
         }
     }
@@ -402,45 +435,46 @@ $.on('command', function (event) {
 $.on('ircPrivateMessage', function (event) {
     var sender = event.getSender().toLowerCase();
     var message = event.getMessage().toLowerCase();
+    var channel = event.getChannel();
 
     if (sender.equalsIgnoreCase("jtv")) {
         if (message.equalsIgnoreCase("clearchat")) {
-            $.logEvent("misc.js", 333, "Received a clear chat notification from jtv");
+            $.logEvent("misc.js", 333, channel, "Received a clear chat notification from jtv");
         } else if (message.indexOf("clearchat") != -1) {
-            $.logEvent("misc.js", 335, "Received a purge/timeout/ban notification on user " + message.substring(10) + " from jtv");
+            $.logEvent("misc.js", 335, channel, "Received a purge/timeout/ban notification on user " + message.substring(10) + " from jtv");
         }
 
         if (message.indexOf("now in slow mode") != -1) {
-            $.logEvent("misc.js", 339, "Received a start slow mode (" + message.substring(message.indexOf("every") + 6) + ") notification from jtv");
+            $.logEvent("misc.js", 339, channel, "Received a start slow mode (" + message.substring(message.indexOf("every") + 6) + ") notification from jtv");
         }
 
         if (message.indexOf("no longer in slow mode") != -1) {
-            $.logEvent("misc.js", 343, "Received an end slow mode notification from jtv");
+            $.logEvent("misc.js", 343, channel, "Received an end slow mode notification from jtv");
         }
 
         if (message.indexOf("now in subscribers-only") != -1) {
-            $.logEvent("misc.js", 347, "Received a start subscribers-only mode notification from jtv");
+            $.logEvent("misc.js", 347, channel, "Received a start subscribers-only mode notification from jtv");
         }
 
         if (message.indexOf("no longer in subscribers-only") != -1) {
-            $.logEvent("misc.js", 351, "Received an end subscribers-only mode notification from jtv");
+            $.logEvent("misc.js", 351, channel, "Received an end subscribers-only mode notification from jtv");
         }
 
         if (message.indexOf("now in r9k") != -1) {
-            $.logEvent("misc.js", 355, "Received a start r9k mode notification from jtv");
+            $.logEvent("misc.js", 355, channel, "Received a start r9k mode notification from jtv");
         }
 
         if (message.indexOf("no longer in r9k") != -1) {
-            $.logEvent("misc.js", 359, "Received an end r9k mode notification from jtv");
+            $.logEvent("misc.js", 359, channel, "Received an end r9k mode notification from jtv");
         }
 
         if (message.indexOf("hosttarget") != -1) {
             var target = message.substring(11, message.indexOf(" ", 12));
 
             if (target.equalsIgnoreCase("-")) {
-                $.logEvent("misc.js", 366, "Received an end host mode notification from jtv");
+                $.logEvent("misc.js", 366, channel, "Received an end host mode notification from jtv");
             } else {
-                $.logEvent("misc.js", 368, "Received a start host mode notification on user " + target + " from jtv");
+                $.logEvent("misc.js", 368, channel, "Received a start host mode notification on user " + target + " from jtv");
             }
         }
     }
@@ -449,8 +483,9 @@ $.on('ircPrivateMessage', function (event) {
 $.on('ircChannelMessage', function (event) {
     var sender = event.getSender();
     var message = event.getMessage();
+    var channel = event.getChannel();
 
-    $.logChat(sender, message);
+    $.logChat(sender, channel, message);
 });
 
 $.timer.addTimer("./util/misc.js", "registercommand", false, function () {
@@ -459,31 +494,13 @@ $.timer.addTimer("./util/misc.js", "registercommand", false, function () {
     $.registerChatCommand("./util/misc.js", "response", "admin");
 }, 5000);
 
-var logEnable = $.inidb.get('settings', 'logenable');
-var logChatEnable = $.inidb.get('settings', 'logchat');
-
-if (logEnable == null || logEnable == undefined) {
-    $.logEnable = false;
-} else {
-    $.logEnable = logEnable.equalsIgnoreCase("1");
-}
-
-if (logChatEnable == null || logChat == undefined) {
-    $.logChatEnable = false;
-} else {
-    $.logChatEnable = logChatEnable.equalsIgnoreCase("1");
-}
-
-var logRotateDays = $.inidb.get('settings', 'logrotatedays');
-
-if (logRotateDays == null || logRotateDays == undefined || isNaN(logRotateDays)) {
-    $.logRotateDays = 7;
-} else {
-    $.logRotateDays = parseInt(logRotateDays);
-}
-
 $.timer.addTimer("./util/misc.js", "logrotateinit", false, function () {
     $.logRotate();
+
+    var channels = $.phantombot.getChannels();
+    for (var i = 0; i < channels.size(); i++) {
+        $.logRotate(channels.get(i));
+    }
 }, 60 * 1000);
 
 $.strlen = function (str) {
@@ -548,7 +565,7 @@ $.trueRandRange = function (min, max) {
 
         var r = HttpRequest.getData(HttpRequest.RequestType.GET, "https://api.random.org/json-rpc/1/invoke", j.toString(), h);
 
-        if (r.success) {
+        if (r.success && r.httpCode == 200) {
             var d = new JSONObject(r.content);
             var result = d.getJSONObject("result");
             var random = result.getJSONObject("random");
@@ -559,13 +576,13 @@ $.trueRandRange = function (min, max) {
             }
         } else {
             if (r.httpCode == 0) {
-                $.logError("misc.js", 478, "Failed to use random.org: " + r.exception);
+                $.logError("misc.js", 478, null, "Failed to use random.org: " + r.exception);
             } else {
-                $.logError("misc.js", 480, "Failed to use random.org: HTTP" + r.httpCode + " " + r.content);
+                $.logError("misc.js", 480, null, "Failed to use random.org: HTTP" + r.httpCode + " " + r.content);
             }
         }
     } catch (e) {
-        $.logError("misc.js", 484, "Failed to use random.org: " + e);
+        $.logError("misc.js", 484, null, "Failed to use random.org: " + e);
     }
 
     return $.randRange(min, max);

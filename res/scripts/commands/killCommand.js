@@ -72,7 +72,7 @@ $.on('command', function (event) {
 
     if (command.equalsIgnoreCase("addkill")) {
         if (!$.isModv3(sender, event.getTags())) {
-            $.say($.getWhisperString(sender) + $.modmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
             return;
         }
 
@@ -103,7 +103,7 @@ $.on('command', function (event) {
 
     if (command.equalsIgnoreCase("editkill")) {
         if (!$.isModv3(sender, event.getTags())) {
-            $.say($.getWhisperString(sender) + $.modmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
             return;
         }
 
@@ -127,7 +127,7 @@ $.on('command', function (event) {
 
     if (command.equalsIgnoreCase("delkill")) {
         if (!$.isModv3(sender, event.getTags())) {
-            $.say($.getWhisperString(sender) + $.modmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
             return;
         }
 

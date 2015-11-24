@@ -97,14 +97,14 @@ $.on('command', function (event) {
             if (action.equalsIgnoreCase("start") || action.equalsIgnoreCase("new") || action.equalsIgnoreCase("run")) {
                 if ($.moduleEnabled("./systems/pointSystem.js") && $.inidb.get("settings", "permTogglePoints") == "true") {
                     if (!$.isModv3(sender, event.getTags())) {
-                        $.say($.getWhisperString(sender) + $.modmsg);
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                         return;
                     }
                 } else {
                     // This is the default. If points permtoggle allows mods, allow mods here as well.
                     // If the points module is inactive, use isAdmin for safety reasons.
                     if (!$.isAdmin(sender)) {
-                        $.say($.getWhisperString(sender) + $.adminmsg);
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
                         return;
                     }
                 }
@@ -201,7 +201,7 @@ $.on('command', function (event) {
                 }
             } else if (action.equalsIgnoreCase("close") || action.equalsIgnoreCase("stop") || action.equalsIgnoreCase("end") || action.equalsIgnoreCase("draw")) {
                 if (!$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
 
@@ -269,7 +269,7 @@ $.on('command', function (event) {
                 }
             } else if (action.equalsIgnoreCase("repick") || action.equalsIgnoreCase("redraw")) {
                 if (!$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
 
@@ -333,7 +333,7 @@ $.on('command', function (event) {
                 $.inidb.set('raffles', 'date', $.raffleDateString);
             } else if (action.equalsIgnoreCase("results")) {
                 if (!$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
 
@@ -368,7 +368,7 @@ $.on('command', function (event) {
                 }
             } else if (action.equalsIgnoreCase("entries") || action.equalsIgnoreCase("entrants")) {
                 if (!$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
 
@@ -420,7 +420,7 @@ $.on('command', function (event) {
                 }
             } else if (action.equalsIgnoreCase("toggle")) {
                 if (!$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
                 if ($.raffleToggle == "false") {

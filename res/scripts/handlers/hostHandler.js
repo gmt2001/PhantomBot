@@ -83,7 +83,7 @@ $.on('command', function (event) {
 
     if (command.equalsIgnoreCase("hostreward")) {
         if (!$.isAdmin(sender)) {
-            $.say($.getWhisperString(sender) + $.adminmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
             return;
         }
 
@@ -112,7 +112,7 @@ $.on('command', function (event) {
     
     if (command.equalsIgnoreCase("hostmessage")) {		
         if (!$.isAdmin(sender)) {		
-            $.say($.getWhisperString(sender) + $.adminmsg);		
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));		
             return;		
         }		
 				
@@ -146,7 +146,7 @@ $.on('command', function (event) {
             return;
         } else if (args.length >= 1) {
             if (!$.isAdmin(sender)) {
-                $.say($.getWhisperString(sender) + $.adminmsg);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
                 return;
             }
             if (parseInt(args[0]) < 30) {

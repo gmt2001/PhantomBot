@@ -145,7 +145,7 @@ $.on('command', function (event) {
 
             if (action.equalsIgnoreCase("toggle")) {
                 if (!$.isAdmin(sender)) {
-                    $.say($.getWhisperString(sender) + $.adminmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
                     return;
                 }
 
@@ -196,7 +196,7 @@ $.on('command', function (event) {
         if (args.length >= 2) {
             if (action.equalsIgnoreCase("open")) {
                 if (!$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
                 length = 0;
@@ -270,7 +270,7 @@ $.on('command', function (event) {
 
             if (!$.isModv3(sender, event.getTags())) {
                 if ($var.pollMaster != sender) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
             }

@@ -231,13 +231,13 @@ $.on('command', function (event) {
             var groupname = $.getGroupNameById(groupid);
 
             if (!$.isModv3(sender, event.getTags())) {
-                $.say($.getWhisperString(sender) + $.modmsg);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                 return;
             }
 
             if (action.equalsIgnoreCase("remove") || action.equalsIgnoreCase("delete")) {
                 if (!$.isAdmin(sender)) {
-                    $.say($.getWhisperString(sender) + $.adminmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
                     return;
                 }
                 var keys = $.inidb.GetKeyList("group", "");
@@ -266,7 +266,7 @@ $.on('command', function (event) {
             }
             if (action.equalsIgnoreCase("create")) {
                 if (!$.isAdmin(sender)) {
-                    $.say($.getWhisperString(sender) + $.adminmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
                     return;
                 }
                 $.inidb.set("groups", $.usergroups.length.toString(), args[1].toString());
@@ -350,7 +350,7 @@ $.on('command', function (event) {
 
     if (command.equalsIgnoreCase("group") && !argsString.isEmpty()) {
         if (!$.isAdmin(sender)) {
-            $.say($.getWhisperString(sender) + $.adminmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
             return;
 
 
@@ -460,7 +460,7 @@ $.on('command', function (event) {
 
     if (command.equalsIgnoreCase("users")) {
         if (!$.isModv3(sender, event.getTags())) {
-            $.say($.getWhisperString(sender) + $.modmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
             return;
         }
         s = $.lang.get("net.phantombot.permissions.users");

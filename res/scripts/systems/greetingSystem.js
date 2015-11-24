@@ -161,7 +161,7 @@ $.on("command", function (event) {
                 }
             } else if (action.equalsIgnoreCase("max") || action.equalsIgnoreCase("setmax") || action.equalsIgnoreCase("maxchars")) {
                 if (!$.isAdmin(sender)) {
-                    $.say($.getWhisperString(sender) + $.adminmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
                     return;
                 }
 

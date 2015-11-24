@@ -33,7 +33,7 @@ $.on('command', function (event) {
 
     if (command.equalsIgnoreCase("addrandom")) {
         if (!$.isModv3(sender, event.getTags())) {
-            $.say($.getWhisperString(sender) + $.modmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
             return;
         }
 
@@ -56,7 +56,7 @@ $.on('command', function (event) {
 
     if (command.equalsIgnoreCase("editrandom")) {
         if (!$.isModv3(sender, event.getTags())) {
-            $.say($.getWhisperString(sender) + $.modmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
             return;
         }
 
@@ -82,7 +82,7 @@ $.on('command', function (event) {
 
     if (command.equalsIgnoreCase("delrandom")) {
         if (!$.isModv3(sender, event.getTags())) {
-            $.say($.getWhisperString(sender) + $.modmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
             return;
         }
 

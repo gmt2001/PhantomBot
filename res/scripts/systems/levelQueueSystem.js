@@ -76,7 +76,7 @@ $.on('command', function (event) {
     if (command.equalsIgnoreCase("requests")) {
         if (args[0] != null) {
             if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())){
-                $.say($.getWhisperString(sender) + $.adminmsg);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
                 return;
             }
             
@@ -122,7 +122,7 @@ $.on('command', function (event) {
     
     if (command.equalsIgnoreCase("nextlevel")) {
         if (!$.isModv3(sender, event.getTags())){
-            $.say($.getWhisperString(sender) + $.modmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
             return;
         }
 

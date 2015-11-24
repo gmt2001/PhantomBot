@@ -124,7 +124,7 @@ $.on('command', function(event) {
             }
         } else if (args.length == 2 && !isNaN(parseInt(args[1]))) {
             if (!$.isModv3(sender, event.getTags())) {
-                $.say($.getWhisperString(sender) + $.modmsg);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                 return;
             }
 

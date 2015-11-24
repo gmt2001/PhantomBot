@@ -153,7 +153,7 @@ $.on('command', function (event) {
     if (command.equalsIgnoreCase("followed")) {
         if (args.length > 0) {
             if (!$.isModv3(sender)) {
-                $.say($.getWhisperString(sender) + $.modmsg);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                 return;
             }
             if ($.inidb.get("followed", args[0].toLowerCase()) == 1) {
@@ -171,7 +171,7 @@ $.on('command', function (event) {
 
     if (command.equalsIgnoreCase("follow") || command.equalsIgnoreCase("shoutout") || command.equalsIgnoreCase("caster")) {
         if (!$.isModv3(sender)) {
-            $.say($.getWhisperString(sender) + $.modmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
             return;
         }
 
@@ -192,7 +192,7 @@ $.on('command', function (event) {
 
     if (command.equalsIgnoreCase("followannounce")) {
         if (!$.isModv3(sender)) {
-            $.say($.getWhisperString(sender) + $.modmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
             return;
         }
 
@@ -211,7 +211,7 @@ $.on('command', function (event) {
     
     if (command.equalsIgnoreCase("followmessage")) {		
         if (!$.isAdmin(sender)) {		
-            $.say($.getWhisperString(sender) + $.adminmsg);		
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));		
             return;		
         }		
 		
@@ -238,7 +238,7 @@ $.on('command', function (event) {
 
     if (command.equalsIgnoreCase("followreward")) {
         if (!$.isAdmin(sender)) {
-            $.say($.getWhisperString(sender) + $.adminmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
             return;
         }
 

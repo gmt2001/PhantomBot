@@ -310,7 +310,7 @@ $.on('command', function (event) {
 
         if (args[0] == "toggle") {
             if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                $.say($.getWhisperString(sender) + $.modmsg);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                 return;
             }
 
@@ -342,7 +342,7 @@ $.on('command', function (event) {
             }
         } else if (args[0].equalsIgnoreCase("start")) {
             if (!$.isModv3(sender, event.getTags())) {
-                $.say($.getWhisperString(sender) + $.modmsg);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                 return;
             }
 
@@ -436,7 +436,7 @@ $.on('command', function (event) {
 
             if (args[0].equalsIgnoreCase("signupMinutes")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
                 $.signupMinutes = modValue;
@@ -447,7 +447,7 @@ $.on('command', function (event) {
 
             if (args[0].equalsIgnoreCase("heistMinutes")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
                 $.heistMinutes = modValue;
@@ -458,7 +458,7 @@ $.on('command', function (event) {
 
             if (args[0].equalsIgnoreCase("heistCancelled")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
                 $.heistCancelled = modValue;
@@ -469,7 +469,7 @@ $.on('command', function (event) {
 
             if (args[0].equalsIgnoreCase("banksOpen")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
                 $.banksOpen = modValue;
@@ -480,7 +480,7 @@ $.on('command', function (event) {
 
             if (args[0].equalsIgnoreCase("startedHeist")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
                 $.startedHeist = modValue;
@@ -491,7 +491,7 @@ $.on('command', function (event) {
 
             if (args[0].equalsIgnoreCase("stringStarting")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
                 $.stringStarting = modValue;
@@ -502,7 +502,7 @@ $.on('command', function (event) {
 
             if (args[0].equalsIgnoreCase("stringNoJoin")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
                 $.stringNoJoin = modValue;
@@ -513,7 +513,7 @@ $.on('command', function (event) {
 
             if (args[0].equalsIgnoreCase("banksClosed")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
                 $.banksClosed = modValue;
@@ -524,7 +524,7 @@ $.on('command', function (event) {
 
             if (args[0].equalsIgnoreCase("stringAllDead")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
                 $.stringAllDead = modValue;
@@ -535,7 +535,7 @@ $.on('command', function (event) {
 
             if (args[0].equalsIgnoreCase("affordBet")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
                 $.affordBet = modValue;
@@ -546,7 +546,7 @@ $.on('command', function (event) {
 
             if (args[0].equalsIgnoreCase("alreadyBet")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
                 $.alreadyBet = modValue;
@@ -557,7 +557,7 @@ $.on('command', function (event) {
 
             if (args[0].equalsIgnoreCase("joinedHeist")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
                 $.joinedHeist = modValue;
@@ -568,7 +568,7 @@ $.on('command', function (event) {
 
             if (args[0].equalsIgnoreCase("enterABet")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
                 $.enterABet = modValue;
@@ -579,7 +579,7 @@ $.on('command', function (event) {
 
             if (args[0].equalsIgnoreCase("stringPayouts")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
                 $.stringPayouts = modValue;
@@ -589,7 +589,7 @@ $.on('command', function (event) {
             }
             if (args[0].equalsIgnoreCase("stringFlawless")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
                 $.stringFlawless = modValue;
@@ -599,7 +599,7 @@ $.on('command', function (event) {
             }
             if (args[0].equalsIgnoreCase("stringCasualties")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
                 $.stringCasualties = modValue;
@@ -609,7 +609,7 @@ $.on('command', function (event) {
             }
             if (args[0].equalsIgnoreCase("betTooLarge")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
                 $.betTooLarge = modValue;
@@ -620,7 +620,7 @@ $.on('command', function (event) {
 
             if (args[0].equalsIgnoreCase("chances50")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
                 $.chances50 = modValue;
@@ -631,7 +631,7 @@ $.on('command', function (event) {
 
             if (args[0].equalsIgnoreCase("chances40")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
                 $.chances40 = modValue;
@@ -642,7 +642,7 @@ $.on('command', function (event) {
 
             if (args[0].equalsIgnoreCase("chances30")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
                 $.chances30 = modValue;
@@ -653,7 +653,7 @@ $.on('command', function (event) {
 
             if (args[0].equalsIgnoreCase("chances20")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
                 $.chances20 = modValue;
@@ -664,7 +664,7 @@ $.on('command', function (event) {
 
             if (args[0].equalsIgnoreCase("chances10")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
                 $.chances10 = modValue;
@@ -675,7 +675,7 @@ $.on('command', function (event) {
 
             if (args[0].equalsIgnoreCase("ratio50")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
                 $.ratio50 = modValue;
@@ -686,7 +686,7 @@ $.on('command', function (event) {
 
             if (args[0].equalsIgnoreCase("ratio40")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
                 $.ratio40 = modValue;
@@ -697,7 +697,7 @@ $.on('command', function (event) {
 
             if (args[0].equalsIgnoreCase("ratio30")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
                 $.ratio30 = modValue;
@@ -708,7 +708,7 @@ $.on('command', function (event) {
 
             if (args[0].equalsIgnoreCase("ratio20")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
                 $.ratio20 = modValue;
@@ -719,7 +719,7 @@ $.on('command', function (event) {
 
             if (args[0].equalsIgnoreCase("ratio10")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
                 $.ratio10 = modValue;
@@ -730,7 +730,7 @@ $.on('command', function (event) {
 
             if (args[0].equalsIgnoreCase("maxbet")) {
                 if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
                 $.bankheistMaxBet = modValue;

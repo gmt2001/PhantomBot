@@ -31,7 +31,7 @@ $.on('command', function(event) {
     
     if (command.equalsIgnoreCase("addquote")) {
         if (!$.isModv3(sender, event.getTags())) {
-            $.say($.getWhisperString(sender) + $.modmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
             return;
         }
         
@@ -53,7 +53,7 @@ $.on('command', function(event) {
 
     if (command.equalsIgnoreCase("editquote")) {
         if (!$.isModv3(sender, event.getTags())) {
-            $.say($.getWhisperString(sender) + $.modmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
             return;
         }
         
@@ -77,7 +77,7 @@ $.on('command', function(event) {
     
     if (command.equalsIgnoreCase("delquote")) {
         if (!$.isModv3(sender, event.getTags())) {
-            $.say($.getWhisperString(sender) + $.modmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
             return;
         }
 

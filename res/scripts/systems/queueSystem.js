@@ -89,7 +89,7 @@ $.on('command', function (event) {
     if (command.equalsIgnoreCase("waitinglist")) {
         if (args[0] != null) {
             if (!$.isAdmin(sender) || !$.isModv3(sender, event.getTags())) {
-                $.say($.getWhisperString(sender) + $.modmsg);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                 return;
             }
             
@@ -144,7 +144,7 @@ $.on('command', function (event) {
     
     if (command.equalsIgnoreCase("nextround")) {
         if (!$.isModv3(sender, event.getTags())) {
-            $.say($.getWhisperString(sender) + $.modmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
             return;
         }
 

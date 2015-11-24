@@ -140,7 +140,7 @@ $.on('command', function(event) {
 			}
 		} else if (args[0].equalsIgnoreCase("wait")) {
 			if (!$.isMod(username)) {
-				$.say($.getWhisperString(username) + $.modmsg);
+				$.say($.getWhisperString(username) + $.lang.get("net.phantombot.cmd.modonly"));
 				return;
 			} else if (args.length == 1) {
 				objRoll.wait = !objRoll.wait;
@@ -158,7 +158,7 @@ $.on('command', function(event) {
 			$.inidb.set("roll", "roll_wait", objRoll.wait);
 		} else if (args[0].equalsIgnoreCase("bonus")) {
 			if (!$.isMod(username)) {
-				$.say($.getWhisperString(username) + $.modmsg);
+				$.say($.getWhisperString(username) + $.lang.get("net.phantombot.cmd.modonly"));
 			} else if (args.length == 1) {
 				$.say($.getWhisperString(username) + username + ", the roll bonus is " +
 					objRoll.bonus + ".");
@@ -177,7 +177,7 @@ $.on('command', function(event) {
 			}
 		} else if (args[0].equalsIgnoreCase("time")) {
 			if (!$.isMod(username)) {
-				$.say($.getWhisperString(username) + $.modmsg);
+				$.say($.getWhisperString(username) + $.lang.get("net.phantombot.cmd.modonly"));
 			} else if (args.length == 1) {
 				$.say($.getWhisperString(username) + username + ", the roll wait time is " +
 					((objRoll.wait) ? "on" : "off") + " and set to " +
@@ -198,7 +198,7 @@ $.on('command', function(event) {
 			}
 		} else if (args[0].equalsIgnoreCase("stream")) {
 			if (!$.isMod(username)) {
-				$.say($.getWhisperString(username) + $.modmsg);
+				$.say($.getWhisperString(username) + $.lang.get("net.phantombot.cmd.modonly"));
 				return;
 			} else if (args.length == 1) {
 				objRoll.stream = !objRoll.stream;
@@ -216,7 +216,7 @@ $.on('command', function(event) {
 			$.inidb.set("roll", "roll_stream", objRoll.stream);
 		} else if (args[0].equalsIgnoreCase("config")) {
 			if (!$.isMod(username)) {
-				$.say($.getWhisperString(username) + $.modmsg);
+				$.say($.getWhisperString(username) + $.lang.get("net.phantombot.cmd.modonly"));
 			} else {
 				$.say("/me \u208Droll\u208E \u2039stream: " +
 					((objRoll.stream) ? "enabled" : "disabled") +

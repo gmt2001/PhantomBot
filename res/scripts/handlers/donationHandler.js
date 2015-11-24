@@ -22,7 +22,7 @@ $.on('command', function (event) {
     
     if (command.equalsIgnoreCase("donationalert")) {
         if (!$.isAdmin(sender)) { // added this check so people can't spam the usage.
-            $.say($.getWhisperString(sender) + $.adminmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
             return;
         } 
 
@@ -35,7 +35,7 @@ $.on('command', function (event) {
         
         if (action.equalsIgnoreCase("filepath")) {
             if (!$.isAdmin(sender)) {
-                $.say($.getWhisperString(sender) + $.adminmsg);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
                 return;
             }
             

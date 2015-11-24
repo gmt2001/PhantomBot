@@ -72,7 +72,7 @@ $.on('command', function(event) {
 
     if (command.equalsIgnoreCase("roulettetimeouttime")) {
         if (!$.isAdmin(sender)) {
-            $.say($.adminmsg);
+            $.say($.lang.get("net.phantombot.cmd.adminonly"));
             return;
         }
 

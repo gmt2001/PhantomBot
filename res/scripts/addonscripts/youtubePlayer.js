@@ -401,7 +401,7 @@ $.on('command', function (event) {
         action = args[0];
         if (action.equalsIgnoreCase("toggle")) {
             if (!$.isAdmin(sender)) {
-                $.say($.getWhisperString(sender) + $.adminmsg);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
                 return;
             }
 
@@ -420,7 +420,7 @@ $.on('command', function (event) {
         
         if (action.equalsIgnoreCase("deny")) {
             if (!$.isAdmin(sender)) {
-                $.say($.getWhisperString(sender) + $.adminmsg);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
                 return;
             }
             $.inidb.set('blacklist', args[1].toLowerCase(), "true");
@@ -430,7 +430,7 @@ $.on('command', function (event) {
             
         if (action.equalsIgnoreCase("allow")) {
             if (!$.isAdmin(sender)) {
-                $.say($.getWhisperString(sender) + $.adminmsg);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
                 return;
             }
             $.inidb.del('blacklist', args[1].toLowerCase());
@@ -440,7 +440,7 @@ $.on('command', function (event) {
 
         if (action.equalsIgnoreCase("limit")) {
             if (!$.isAdmin(sender)) {
-                $.say($.getWhisperString(sender) + $.adminmsg);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
                 return;
             }
 
@@ -457,7 +457,7 @@ $.on('command', function (event) {
 
         if (action.equalsIgnoreCase("storing")) {
             if (!$.isAdmin(sender)) {
-                $.say($.getWhisperString(sender) + $.adminmsg);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
                 return;
             }
 
@@ -477,7 +477,7 @@ $.on('command', function (event) {
         
         if (action.equalsIgnoreCase("shuffle")) {
             if (!$.isAdmin(sender)) {
-                $.say($.getWhisperString(sender) + $.adminmsg);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
                 return;
             }
 
@@ -496,7 +496,7 @@ $.on('command', function (event) {
         
         if (action.equalsIgnoreCase("storepath")) {
             if (!$.isAdmin(sender)) {
-                $.say($.getWhisperString(sender) + $.adminmsg);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
                 return;
             }
             
@@ -521,7 +521,7 @@ $.on('command', function (event) {
         
         if (action.equalsIgnoreCase("titles")) {
             if (!$.isAdmin(sender)) {
-                $.say($.getWhisperString(sender) + $.adminmsg);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
                 return;
             }
 
@@ -544,7 +544,7 @@ $.on('command', function (event) {
         
         if (action.equalsIgnoreCase("reloadplaylist")) {
             if (!$.isAdmin(sender)) {
-                $.say($.getWhisperString(sender) + $.adminmsg);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
                 return;
             }
 
@@ -571,7 +571,7 @@ $.on('command', function (event) {
 
         if (action.equalsIgnoreCase("steal")) {
             if (!$.isAdmin(sender)) {
-                $.say($.getWhisperString(sender) + $.adminmsg);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
                 return;
             }
             if ($var.currSong != null) {
@@ -667,7 +667,7 @@ $.on('command', function (event) {
                     $.parseSongQueue();
                     return;
                 } else {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
             }
@@ -678,7 +678,7 @@ $.on('command', function (event) {
     
     if (command.equalsIgnoreCase("defaultaddsong")) {
         if (!$.isAdmin(sender)) {
-                $.say($.getWhisperString(sender) + $.adminmsg);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
                 return;
         }
 
@@ -739,7 +739,7 @@ $.on('command', function (event) {
                     reloadPlaylist();
                     return;
                 } else {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
             }
@@ -751,7 +751,7 @@ $.on('command', function (event) {
     if (command.equalsIgnoreCase("volume")) {
         if (!$.isModv3(sender, event.getTags())) {
 
-            $.say($.getWhisperString(sender) + $.modmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
             return;
         }
 
@@ -842,7 +842,7 @@ $.on('command', function (event) {
 
     if (command.equalsIgnoreCase("stealsong")) {
         if (!$.isAdmin(sender)) {
-            $.say($.getWhisperString(sender) + $.adminmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
             return;
         }
 
@@ -858,7 +858,7 @@ $.on('command', function (event) {
 
     if (command.equalsIgnoreCase("gettitle")) {
         if (!$.isAdmin(sender)) {
-            $.say($.getWhisperString(sender) + $.adminmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
             return;
         }
 
@@ -875,7 +875,7 @@ $.on('command', function (event) {
 
     if (command.equalsIgnoreCase("playsong")) {
         if (!$.isModv3(sender)) {
-            $.say($.getWhisperString(sender) + $.modmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
             return;
         }
 

@@ -124,6 +124,8 @@ public class PhantomBot implements Listener
         com.gmt2001.Console.out.println();
 
         interactive = System.getProperty("interactive") != null;
+        
+        channel = channel.toLowerCase();
 
         this.username = username;
         this.oauth = oauth;
@@ -231,9 +233,9 @@ public class PhantomBot implements Listener
         channels = new HashMap<>();
         channeloauths = new HashMap<>();
 
-        if (channelName.toLowerCase().contains(","))
+        if (channelName.contains(","))
         {
-            String[] c = channelName.toLowerCase().split(",");
+            String[] c = channelName.split(",");
 
             if (apioauth.contains(","))
             {
@@ -245,25 +247,6 @@ public class PhantomBot implements Listener
                     channeloauths.put("#" + c[i], a[i]);
                 }
             }
-
-            FollowersCache.instance(c[0].toLowerCase());
-            ChannelHostCache.instance(c[0].toLowerCase());
-            SubscribersCache.instance(c[0].toLowerCase());
-            //ChannelUsersCache.instance(c[0].toLowerCase());
-
-            for (String ch : c)
-            {
-                FollowersCache.instance(ch.toLowerCase());
-                ChannelHostCache.instance(ch.toLowerCase());
-                SubscribersCache.instance(ch.toLowerCase());
-                //ChannelUsersCache.instance(ch.toLowerCase());
-            }
-        } else
-        {
-            FollowersCache.instance(channelName.toLowerCase());
-            ChannelHostCache.instance(channelName.toLowerCase());
-            SubscribersCache.instance(channelName.toLowerCase());
-            //ChannelUsersCache.instance(channelName.toLowerCase());
         }
 
         this.session = connectionManager.requestConnection(this.hostname, this.port, oauth);
@@ -380,6 +363,7 @@ public class PhantomBot implements Listener
         Script.global.defineProperty("pollVoters", voters, 0);
         Script.global.defineProperty("connmgr", connectionManager, 0);
         Script.global.defineProperty("hostname", hostname, 0);
+        Script.global.defineProperty("phantombot", PhantomBot.instance(), 0);
 
         t = new Thread(new Runnable()
         {
@@ -507,6 +491,11 @@ public class PhantomBot implements Listener
         {
             channel = cchannel;
         }
+
+        FollowersCache.instance(cchannel.getName());
+        ChannelHostCache.instance(cchannel.getName());
+        SubscribersCache.instance(cchannel.getName());
+        //ChannelUsersCache.instance(cchannel.getName());
     }
 
     @Subscribe

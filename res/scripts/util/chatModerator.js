@@ -210,7 +210,7 @@ $.on('command', function(event) {
 	
     if (command.equalsIgnoreCase("whitelist")) {
         if (!$.isModv3(sender, event.getTags())) {
-            $.say ($.getWhisperString(sender) + $.modmsg);
+            $.say ($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
             return;
         }
 			
@@ -236,7 +236,7 @@ $.on('command', function(event) {
                 $.say ($.lang.get("net.phantombot.common.err-user"));
             }
         } else {
-            $.say ($.getWhisperString(sender) + $.modmsg);
+            $.say ($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
         }		
     } else if (command.equalsIgnoreCase("forgive")) {
         if ($.isAdmin(sender)) {
@@ -272,7 +272,7 @@ $.on('command', function(event) {
                 $.say ($.getWhisperString(sender) + $.lang.get("net.phantombot.common.err-user"));
             }
         } else {
-            $.say ($.getWhisperString(sender) + $.adminmsg);
+            $.say ($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
         }
     } else if (command.equalsIgnoreCase("increase")) {
         if ($.isAdmin(sender)) {
@@ -313,7 +313,7 @@ $.on('command', function(event) {
                 $.say ($.getWhisperString(sender) + $.lang.get("net.phantombot.common.err-user"));
             }
         } else {
-            $.say ($.getWhisperString(sender) + $.adminmsg);
+            $.say ($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
         }
     } else if (command.equalsIgnoreCase("timeout")) {
         if ($.isModv3(sender, event.getTags())) {
@@ -329,7 +329,7 @@ $.on('command', function(event) {
                 $.say ($.getWhisperString(sender) + $.lang.get("net.phantombot.common.err-user"));
             }
         } else {
-            $.say ($.getWhisperString(sender) + $.adminmsg);
+            $.say ($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
         }
     } else if (command.equalsIgnoreCase("permit")) {
         if ($.isModv3(sender, event.getTags())) {
@@ -341,7 +341,7 @@ $.on('command', function(event) {
                 $.say ($.lang.get("net.phantombot.chatmoderator.permit", $.username.resolve(argsString), permittime));
             }
         } else {
-            $.say ($.getWhisperString(sender) + $.modmsg);
+            $.say ($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
         }	
     } else if (command.equalsIgnoreCase("ban")) {
         if ($.isModv3(sender, event.getTags())) {
@@ -365,7 +365,7 @@ $.on('command', function(event) {
                 $.say ($.lang.get("net.phantombot.chatmoderator.ban-indef", $.username.resolve(args[0])));
             }
         } else {
-            $.say ($.getWhisperString(sender) + $.modmsg);
+            $.say ($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
         }
     } else if (command.equalsIgnoreCase("unban")) {
         if ($.isModv3(sender, event.getTags())) {
@@ -375,7 +375,7 @@ $.on('command', function(event) {
             
             $.say ($.lang.get("net.phantombot.chatmoderator.unban", $.username.resolve(args[0])));
         } else {
-            $.say ($.getWhisperString(sender) + $.modmsg);
+            $.say ($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
         }
     } else if (command.equalsIgnoreCase("clear")) {
         if ($.isModv3(sender, event.getTags())) {
@@ -387,7 +387,7 @@ $.on('command', function(event) {
                 $.say($.lang.get("net.phantombot.chatmoderator.clearchat", username));
             }, 1000);
         } else {
-            $.say ($.getWhisperString(sender) + $.modmsg);
+            $.say ($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
         }	
     } else if (command.equalsIgnoreCase("autoban")) {
         if ($.isModv3(sender, event.getTags())) {
@@ -408,7 +408,7 @@ $.on('command', function(event) {
                 $.say($.lang.get("net.phantombot.chatmoderator.autoban"));
             }
         } else {
-            $.say ($.getWhisperString(sender) + $.modmsg);
+            $.say ($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
         }	
     } else if (command.equalsIgnoreCase("autopurge")) {
         if ($.isModv3(sender, event.getTags())) {
@@ -429,7 +429,7 @@ $.on('command', function(event) {
                 $.say($.lang.get("net.phantombot.chatmoderator.autopurge"));
             }
         } else {
-            $.say ($.getWhisperString(sender) + $.modmsg);
+            $.say ($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
         }	
     } else if (command.equalsIgnoreCase("chatmod")) {
         if ($.isModv3(sender, event.getTags())) {
@@ -1123,7 +1123,7 @@ $.on('command', function(event) {
                 }
             }
         } else {
-            $.say ($.getWhisperString(sender) + $.modmsg);
+            $.say ($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
         }	
     }
 });

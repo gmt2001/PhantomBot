@@ -35,7 +35,7 @@ $.on('command', function (event) {
 
     if (command.equalsIgnoreCase("notice")) {
         if (!$.isAdmin(sender)) {
-            $.say($.getWhisperString(sender) + $.adminmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
             return;
         }
 
@@ -124,7 +124,7 @@ $.on('command', function (event) {
 
         if (action.equalsIgnoreCase("toggle")) {
             if (!$.isAdmin(sender)) {
-                $.say($.getWhisperString(sender) + $.adminmsg);
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
                 return;
             }
 
@@ -164,7 +164,7 @@ $.on('command', function (event) {
 
     if (command.equalsIgnoreCase("addnotice")) {
         if (!$.isAdmin(sender)) {
-            $.say($.getWhisperString(sender) + $.adminmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
             return;
         }
 
@@ -186,7 +186,7 @@ $.on('command', function (event) {
 
     if (command.equalsIgnoreCase("delnotice")) {
         if (!$.isAdmin(sender)) {
-            $.say($.getWhisperString(sender) + $.adminmsg);
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
             return;
         }
         

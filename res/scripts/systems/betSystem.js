@@ -41,7 +41,7 @@ $.on('command', function (event) {
 
             if (action.equalsIgnoreCase("open") || action.equalsIgnoreCase("start")) {
                 if (!$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
 
@@ -98,7 +98,7 @@ $.on('command', function (event) {
                 }
             } else if (action.equalsIgnoreCase("close") || action.equalsIgnoreCase("end") || action.equalsIgnoreCase("stop") || action.equalsIgnoreCase("win")) {
                 if (!$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
 
@@ -199,7 +199,7 @@ $.on('command', function (event) {
                 betWinners = "";
             } else if (action.equalsIgnoreCase("min") || action.equalsIgnoreCase("minimum")) {
                 if (!$.isAdmin(sender)) {
-                    $.say($.getWhisperString(sender) + $.adminmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
                     return;
                 }
 
@@ -220,7 +220,7 @@ $.on('command', function (event) {
                 }
             } else if (action.equalsIgnoreCase("max") || action.equalsIgnoreCase("maximum")) {
                 if (!$.isAdmin(sender)) {
-                    $.say($.getWhisperString(sender) + $.adminmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
                     return;
                 }
 
@@ -241,7 +241,7 @@ $.on('command', function (event) {
                 }
             } else if (action.equalsIgnoreCase("time") || action.equalsIgnoreCase("length")) {
                 if (!$.isAdmin(sender)) {
-                    $.say($.getWhisperString(sender) + $.adminmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
                     return;
                 }
 
@@ -262,7 +262,7 @@ $.on('command', function (event) {
                 }
             } else if (action.equalsIgnoreCase("results")) {
                 if (!$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
 
@@ -302,7 +302,7 @@ $.on('command', function (event) {
                 }
             } else if (action.equalsIgnoreCase("entries") || action.equalsIgnoreCase("entrants")) {
                 if (!$.isModv3(sender, event.getTags())) {
-                    $.say($.getWhisperString(sender) + $.modmsg);
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
 
