@@ -90,14 +90,14 @@ public class HttpRequest
                     IOUtils.write(post, new BufferedOutputStream(h.getOutputStream()));
                 }
 
-                if (h.getResponseCode() == 200)
+                if (h.getResponseCode() < 400)
                 {
                     r.content = IOUtils.toString(new BufferedInputStream(h.getInputStream()), h.getContentEncoding());
                     r.httpCode = h.getResponseCode();
                     r.success = true;
                 } else
                 {
-                    r.content = IOUtils.toString(new BufferedInputStream(h.getInputStream()), h.getContentEncoding());
+                    r.content = IOUtils.toString(new BufferedInputStream(h.getErrorStream()), h.getContentEncoding());
                     r.httpCode = h.getResponseCode();
                     r.success = false;
                 }
@@ -129,14 +129,14 @@ public class HttpRequest
                     IOUtils.write(post, new BufferedOutputStream(h.getOutputStream()));
                 }
 
-                if (h.getResponseCode() == 200)
+                if (h.getResponseCode() < 400)
                 {
                     r.content = IOUtils.toString(new BufferedInputStream(h.getInputStream()), h.getContentEncoding());
                     r.httpCode = h.getResponseCode();
                     r.success = true;
                 } else
                 {
-                    r.content = IOUtils.toString(new BufferedInputStream(h.getInputStream()), h.getContentEncoding());
+                    r.content = IOUtils.toString(new BufferedInputStream(h.getErrorStream()), h.getContentEncoding());
                     r.httpCode = h.getResponseCode();
                     r.success = false;
                 }
