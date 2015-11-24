@@ -34,7 +34,7 @@ public class UsernameCache
     {
         return instance;
     }
-    
+
     private final Map<String, String> cache = Maps.newHashMap();
     private Date timeoutExpire = new Date();
     private Date lastFail = new Date();

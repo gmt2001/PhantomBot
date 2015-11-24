@@ -199,7 +199,7 @@ public class IniStore extends DataStore implements ActionListener
         {
             new File("./" + inifolder + "/").mkdirs();
         }
-        
+
         IniFile f = new IniFile();
         f.data.put("", new HashMap<String, String>());
 

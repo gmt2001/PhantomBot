@@ -66,30 +66,30 @@ public class ControlPanel extends Thread implements ActionListener
         b.setColors(new CharColor(CharColor.BLUE, CharColor.WHITE, CharColor.NORMAL));
         b.setFocusedButtonColors(new CharColor(CharColor.MAGENTA, CharColor.WHITE, CharColor.BOLD));
         menuBarmgr.addWidget(b, 0, 0, 8, 1, WidgetsConstants.ALIGNMENT_CENTER, WidgetsConstants.ALIGNMENT_LEFT);
-        
+
         b = new Button("Test 2");
         b.setColors(new CharColor(CharColor.BLUE, CharColor.WHITE, CharColor.NORMAL));
         b.setFocusedButtonColors(new CharColor(CharColor.MAGENTA, CharColor.WHITE, CharColor.BOLD));
         menuBarmgr.addWidget(b, 8, 0, 10, 1, WidgetsConstants.ALIGNMENT_CENTER, WidgetsConstants.ALIGNMENT_LEFT);
 
         menuBar.setVisible(true);
-        
+
         Panel inputBar = new Panel(80, 1);
         DefaultLayoutManager inputBarmgr = new DefaultLayoutManager();
         inputBarmgr.bindToContainer(inputBar);
-        
+
         TextField inputText = new TextField(79);
         inputText.setColors(new CharColor(CharColor.WHITE, CharColor.BLACK, CharColor.NORMAL));
         inputText.setTextComponentColors(new CharColor(CharColor.MAGENTA, CharColor.WHITE, CharColor.BOLD));
         inputBarmgr.addWidget(inputText, 0, 0, 79, 1, WidgetsConstants.ALIGNMENT_CENTER, WidgetsConstants.ALIGNMENT_LEFT);
-        
+
         inputBar.setVisible(true);
 
         mgr.addWidget(menuBar, 0, 0, 80, 1, WidgetsConstants.ALIGNMENT_TOP, WidgetsConstants.ALIGNMENT_CENTER);
         mgr.addWidget(inputBar, 0, 22, 80, 1, WidgetsConstants.ALIGNMENT_TOP, WidgetsConstants.ALIGNMENT_CENTER);
-        
+
         w.show();
-        
+
         t = new Thread(new Runnable()
         {
             @Override
