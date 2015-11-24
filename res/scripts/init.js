@@ -44,32 +44,48 @@ for (var name in $api) {
     }
 }
 
-$.connected = false;
-$.modeo = false;
 
 $api.on($script, 'ircJoinComplete', function (event) {
-    $.connected = true;
-    $.channel = event.getChannel();
+    $.tempdb.SetBoolean('t_state', event.getChannel().getName(), 'connected', true);
+    $.firstrun = false;
+
+    if ($.inidb.GetBoolean("init", event.getChannel().getName(), "initialsettings") == false) {
+        $.firstrun = true;
+        $.logEvent("init.js", 420, event.getChannel(), "Loading initial settings ...");
+        $.loadScript('./util/initialsettings.js');
+        $.initialsettings(event.getChannel());
+    }
+
+    if ($.firstrun) {
+        $.inidb.SetInteger("init", event.getChannel().getName(), "version", parseInt($.upgrade_version));
+        $.inidb.SaveAll(true);
+    }
+
+    if ($.inidb.GetInteger("init", event.getChannel().getName(), "version") < $.upgrade_version) {
+        $.logEvent("init.js", 426, event.getChannel(), "Running upgrade from v" + $.inidb.GetInteger("init", event.getChannel().getName(), "version") + " to v" + $.upgrade_version + "...");
+        $.loadScript('./util/upgrade.js');
+        $.upgrade(event.getChannel());
+    }
 });
 
 $api.on($script, 'ircChannelUserMode', function (event) {
-    if ($.connected) {
-        if (event.getChannel().getName().equalsIgnoreCase($.channel.getName())) {
+    if ($.tempdb.GetBoolean('t_state', event.getChannel().getName(), 'connected')) {
+        if ($.phantombot.getChannel(event.getChannel().getName()) != null) {
             if (event.getUser().equalsIgnoreCase($.botname) && event.getMode().equalsIgnoreCase("o")) {
                 if (event.getAdd() == true) {
-                    if (!$.modeo) {
-                        var connectedMessage = $.inidb.get('settings', 'connectedMessage');
+                    if (!$.tempdb.GetBoolean('t_state', event.getChannel().getName(), 'modeo')) {
+                        var connectedMessage = $.inidb.GetString('settings', event.getChannel().getName(), 'connectedMessage');
 
                         if (connectedMessage != null && !connectedMessage.isEmpty()) {
-                            $.say(connectedMessage);
+                            $.say(connectedMessage, event.getChannel());
                         } else {
-                            println("ready");
+                            println("[" + event.getChannel().getName() + "] ready");
                         }
                     }
 
-                    $.modeo = true;
+                    $.tempdb.SetBoolean('t_state', event.getChannel().getName(), 'modeo', true);
                 } else {
-                    $.modeo = false;
+                    $.tempdb.SetBoolean('t_state', event.getChannel().getName(), 'modeo', false);
                 }
             }
         }
@@ -98,14 +114,26 @@ $.isModuleLoaded = function (scriptFile) {
     return $.getModuleIndex(scriptFile) != -1;
 }
 
-$.moduleEnabled = function (scriptFile) {
+$.moduleEnabled = function (scriptFile, channel) {
     var i = $.getModuleIndex(scriptFile);
 
     if (i == -1) {
         return false;
     }
 
+    if (channel != null && $.inidb.Exists('modules', channel.getName(), scriptFile + '_enabled')) {
+        return $.inidb.GetBoolean('modules', channel.getName(), scriptFile + '_enabled');
+    }
+
     return modules[i][1];
+}
+
+$.setDefaultModuleEnabled = function (scriptFile, enabled) {
+    var i = $.getModuleIndex(scriptFile);
+    
+    if (i >= 0) {
+        modules[i][1] = enabled;
+    }
 }
 
 $.getModule = function (scriptFile) {
@@ -121,17 +149,12 @@ $.getModule = function (scriptFile) {
 $.loadScriptForce = function (scriptFile) {
     try {
         var script = $api.loadScriptR($script, scriptFile);
-        var senabled = $.inidb.get('modules', scriptFile + '_enabled');
         var enabled = true;
-
-        if (senabled) {
-            enabled = senabled.equalsIgnoreCase("1");
-        }
 
         modules.push(new Array(scriptFile, enabled, script));
     } catch (e) {
         if ($.isModuleLoaded("./util/misc.js")) {
-            $.logError("init.js", 132, "(loadScriptForce, " + scriptFile + ") " + e);
+            $.logError("init.js", 132, null, "(loadScriptForce, " + scriptFile + ") " + e);
         }
     }
 }
@@ -140,17 +163,12 @@ $.loadScript = function (scriptFile) {
     if (!$.isModuleLoaded(scriptFile)) {
         try {
             var script = $api.loadScriptR($script, scriptFile);
-            var senabled = $.inidb.get('modules', scriptFile + '_enabled');
             var enabled = true;
-
-            if (senabled) {
-                enabled = senabled.equalsIgnoreCase("1");
-            }
 
             modules.push(new Array(scriptFile, enabled, script));
         } catch (e) {
             if ($.isModuleLoaded("./util/misc.js")) {
-                $.logError("init.js", 132, "(loadScript, " + scriptFile + ") " + e);
+                $.logError("init.js", 132, null, "(loadScript, " + scriptFile + ") " + e);
             }
         }
     }
@@ -223,14 +241,6 @@ $.hook.remove = function (hook) {
     }
 }
 
-$.hook.call = function (hook, arg) {
-    for (var i = 0; i < hooks.length; i++) {
-        if (hooks[i][1].equalsIgnoreCase(hook) && $.moduleEnabled(hooks[i][0])) {
-            hooks[i][2](arg);
-        }
-    }
-}
-
 $.timer = new Array();
 
 $.timer.getTimerIndex = function (scriptFile, name, isInterval) {
@@ -286,7 +296,7 @@ $api.setInterval($script, function () {
                 try {
                     timers[i][4]();
                 } catch (e) {
-                    $.logError("init.js", 279, "(timer.interval.exec, " + timers[i][1] + ", " + timers[i][0] + ") " + e);
+                    $.logError("init.js", 279, null, "(timer.interval.exec, " + timers[i][1] + ", " + timers[i][0] + ") " + e);
                 }
 
                 try {
@@ -295,13 +305,13 @@ $api.setInterval($script, function () {
                     }
                 } catch (e) {
                     if (e.indexOf("TypeError: Cannot read property \"2\" from undefined") == -1) {
-                        $.logError("init.js", 288, "(timer.interval.markremove) " + e);
+                        $.logError("init.js", 288, null, "(timer.interval.markremove) " + e);
                     }
                 }
             }
         }
     } catch (e) {
-        $.logError("init.js", 294, "(timer.interval.loop) " + e);
+        $.logError("init.js", 294, null, "(timer.interval.loop) " + e);
     }
 
     try {
@@ -309,31 +319,31 @@ $api.setInterval($script, function () {
             $.timer.clearTimer(toremove[b][0], toremove[b][1], toremove[b][2]);
         }
     } catch (e) {
-        $.logError("init.js", 302, "(timer.interval.remove) " + e);
+        $.logError("init.js", 302, null, "(timer.interval.remove) " + e);
     }
 }, 1000);
 
 
-$.hook.call = function (hook, arg, alwaysrun) {
+$.hook.call = function (hook, event, alwaysrun) {
     for (var i = 0; i < hooks.length; i++) {
-        if (hooks[i][1].equalsIgnoreCase(hook) && ($.moduleEnabled(hooks[i][0]) || alwaysrun)) {
+        if (hooks[i][1].equalsIgnoreCase(hook) && ($.moduleEnabled(hooks[i][0], event.getChannel()) || alwaysrun)) {
             try {
-                hooks[i][2](arg);
+                hooks[i][2](event);
             } catch (e) {
-                $.logError("init.js", 211, "(hook.call, " + hook + ", " + hooks[i][0] + ") " + e);
+                $.logError("init.js", 211, event.getChannel(), "(hook.call, " + hook + ", " + hooks[i][0] + ") " + e);
             }
         }
     }
 }
 
-$.permCom = function (user, command) {
+$.permCom = function (user, command, channel) {
     command = command.toLowerCase();
-    var keys = $.inidb.GetKeyList("permcom", "");
+    var keys = $.inidb.GetKeyList("permcom", channel.getName());
     var permGroupName = "";
-    var userGroup = $.getUserGroupName(user.toLowerCase());
-    var noPermission = $.lang.get("net.phantombot.cmd.noperm", userGroup, command);
+    var userGroup = $.getUserGroupName(user.toLowerCase(), channel);
+    var noPermission = $.lang.get("net.phantombot.cmd.noperm", event.getChannel(), userGroup, command);
 
-    if ($.isAdmin(user)) {
+    if ($.isAdmin(user, channel)) {
         return true;
     }
 
@@ -343,8 +353,8 @@ $.permCom = function (user, command) {
 
     for (var i = 0; i < keys.length; i++) {
         if (keys[i].contains(command + "_recursive")) {
-            permGroupName = $.inidb.get("permcom", keys[i]);
-            if (($.getGroupIdByName(userGroup.toLowerCase()) <= $.getGroupIdByName(permGroupName))) {
+            permGroupName = $.inidb.GetString("permcom", channel.getName(), keys[i]);
+            if (($.getGroupIdByName(userGroup.toLowerCase(), channel) <= $.getGroupIdByName(permGroupName, channel))) {
                 return true;
             }
         }
@@ -352,7 +362,7 @@ $.permCom = function (user, command) {
 
     for (var i = 0; i < keys.length; i++) {
         if (keys[i].equalsIgnoreCase(command)) {
-            permGroupName = $.inidb.get("permcom", keys[i]);
+            permGroupName = $.inidb.GetString("permcom", channel.getName(), keys[i]);
             if (permGroupName.contains(userGroup.toLowerCase())) {
                 return true;
             }
@@ -361,7 +371,7 @@ $.permCom = function (user, command) {
 
     for (var i = 0; i < keys.length; i++) {
         if (keys[i].contains(command)) {
-            $.say($.getWhisperString(user) + noPermission);
+            $.say($.getWhisperString(user, channel) + noPermission, channel);
             return false;
         }
         if (!keys[i].contains(command) && (i == keys.length - 1)) {
@@ -370,12 +380,10 @@ $.permCom = function (user, command) {
     }
 
 
-    $.say($.getWhisperString(user) + noPermission);
+    $.say($.getWhisperString(user, channel) + noPermission, channel);
     return false;
 
 };
-
-var coolcom = new Array();
 
 $api.on($script, 'command', function (event) {
     var sender = event.getSender().toLowerCase();
@@ -385,79 +393,63 @@ $api.on($script, 'command', function (event) {
         return;
     }
 
-    if ($.inidb.exists('aliases', event.getCommand().toLowerCase())) {
-        event.setCommand($.inidb.get('aliases', event.getCommand().toLowerCase()));
+    if ($.inidb.Exists('aliases', event.getChannel().getName(), event.getCommand().toLowerCase())) {
+        event.setCommand($.inidb.GetString('aliases', event.getChannel().getName(), event.getCommand().toLowerCase()));
     }
 
     var command = event.getCommand();
-    if ($.permCom(sender, command) == false) {
+    if ($.permCom(sender, command, event.getChannel()) == false) {
         return;
     }
 
-    var idx = -1;
-    if ($.inidb.exists("settings", "coolcomuser") && $.inidb.get("settings", "coolcomuser").equalsIgnoreCase("true")) {
-        if ((!isNaN($.inidb.get("settings", "coolcom")) && parseInt($.inidb.get("settings", "coolcom")) > 0)
-                || ($.inidb.exists("coolcom", command) && !isNaN($.inidb.get("coolcom", command)) && parseInt($.inidb.get("coolcom", command)) > 0)) {
-            for (var i = 0; i < coolcom.length; i++) {
-                if (coolcom[i][0].equalsIgnoreCase(sender)) {
-                    idx = i;
-                    if (coolcom[i][1] >= System.currentTimeMillis() && !$.isModv3(sender, event.getTags())) {
-                        $.println($.lang.get("net.phantombot.init.coolcom-cooldown", origcommand, sender));
-                        return;
-                    }
-                    break;
-                }
-            }
+    if ($.inidb.GetInteger("settings", event.getChannel().getName(), "coolcom") > 0
+            || ($.inidb.Exists("coolcom", event.getChannel().getName(), command)
+                    && $.inidb.GetInteger("coolcom", event.getChannel().getName(), command) > 0)) {
+        var tgt = command;
+
+        if ($.inidb.GetBoolean("settings", event.getChannel().getName(), "coolcomuser")) {
+            tgt = sender;
         }
-    } else {
-        if ((!isNaN($.inidb.get("settings", "coolcom")) && parseInt($.inidb.get("settings", "coolcom")) > 0)
-                || ($.inidb.exists("coolcom", command) && !isNaN($.inidb.get("coolcom", command)) && parseInt($.inidb.get("coolcom", command)) > 0)) {
-            for (var i = 0; i < coolcom.length; i++) {
-                if (coolcom[i][0].equalsIgnoreCase(command)) {
-                    idx = i;
-                    if (coolcom[i][1] >= System.currentTimeMillis() && !$.isModv3(sender, event.getTags())) {
-                        $.println($.lang.get("net.phantombot.init.coolcom-cooldown", origcommand, sender));
-                        return;
-                    }
-                    break;
-                }
+
+        if ($.tempdb.Exists('t_coolcom', event.getChannel().getName(), tgt)) {
+            if ($.tempdb.GetInteger('t_coolcom', event.getChannel().getName(), tgt) >= System.currentTimeMillis() && !$.isMod(sender, event.getTags(), event.getChannel())) {
+                $.println($.lang.get("net.phantombot.init.coolcom-cooldown", event.getChannel(), origcommand, sender));
+                return;
             }
         }
     }
 
-    if ($.moduleEnabled("./systems/pointSystem.js") && $.inidb.exists("pricecom", command.toLowerCase())) {
-        if (!$.isModv3(sender, event.getTags()) || ($.inidb.exists("settings", "pricecommod") && $.inidb.get("settings", "pricecommod").equalsIgnoreCase("true"))) {
-            if (parseInt($.inidb.get("points", sender)) < parseInt($.inidb.get("pricecom", command.toLowerCase()))) {
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.needpoints", $.getPointsString(parseInt($.inidb.get("pricecom", command.toLowerCase())))));
+    if ($.moduleEnabled("./systems/pointSystem.js", event.getChannel()) && $.inidb.Exists("pricecom", event.getChannel().getName(), command.toLowerCase())) {
+        if (!$.isMod(sender, event.getTags(), event.getChannel()) || $.inidb.GetBoolean("settings", event.getChannel().getName(), "pricecommod")) {
+            if ($.inidb.GetInteger("points", event.getChannel().getName(), sender) < $.inidb.GetInteger("pricecom", event.getChannel().getName(), command.toLowerCase())) {
+                $.say($.getWhisperString(sender, event.getChannel()) + $.lang.get("net.phantombot.cmd.needpoints", event.getChannel(), $.getPointsString($.inidb.GetInteger("pricecom", event.getChannel().getName(), command.toLowerCase()), event.getChannel())), event.getChannel());
                 return;
             } else {
-                if (parseInt($.inidb.get("pricecom", command.toLowerCase())) > 0)
+                if ($.inidb.GetInteget("pricecom", event.getChannel().getName(), command.toLowerCase()) > 0)
                 {
-                    $.inidb.decr("points", sender, parseInt($.inidb.get("pricecom", command.toLowerCase())));
-                    $.println($.lang.get("net.phantombot.cmd.paid", sender, $.getPointsString(parseInt($.inidb.get("pricecom", command.toLowerCase())))));
+                    $.inidb.SetInteger("points", event.getChannel().getName(), sender, $.inidb.GetInteger("points", event.getChannel().getName(), sender) - $.inidb.GetInteger("pricecom", event.getChannel().getName(), command.toLowerCase()));
+                    $.println($.lang.get("net.phantombot.cmd.paid", event.getChannel(), sender, $.getPointsString($.inidb.GetInteger("pricecom", event.getChannel().getName(), command.toLowerCase()))));
                 }
             }
         }
     }
 
-    if ($.inidb.exists("coolcom", command) && !isNaN($.inidb.get("coolcom", command))) {
-        if (parseInt($.inidb.get("coolcom", command)) > 0) {
-            if (idx >= 0) {
-                coolcom[idx][1] = System.currentTimeMillis() + (parseInt($.inidb.get("coolcom", command)) * 1000);
-            } else if ($.inidb.exists("settings", "coolcomuser") && $.inidb.get("settings", "coolcomuser").equalsIgnoreCase("true")) {
-                coolcom.push(new Array(sender, System.currentTimeMillis() + (parseInt($.inidb.get("coolcom", command)) * 1000)));
-            } else {
-                coolcom.push(new Array(command, System.currentTimeMillis() + (parseInt($.inidb.get("coolcom", command)) * 1000)));
-            }
+
+    var cd = $.inidb.GetInteger("settings", event.getChannel().getName(), "coolcom");
+    if ($.inidb.Exists("coolcom", event.getChannel().getName(), command)) {
+        if ($.inidb.GetInteger("coolcom", event.getChannel().getName(), command) > 0) {
+            cd = $.inidb.GetInteger("coolcom", event.getChannel().getName(), command);
         }
-    } else if (!isNaN($.inidb.get("settings", "coolcom")) && parseInt($.inidb.get("settings", "coolcom")) > 0) {
-        if (idx >= 0) {
-            coolcom[idx][1] = System.currentTimeMillis() + (parseInt($.inidb.get("settings", "coolcom")) * 1000);
-        } else if ($.inidb.exists("settings", "coolcomuser") && $.inidb.get("settings", "coolcomuser").equalsIgnoreCase("true")) {
-            coolcom.push(new Array(sender, System.currentTimeMillis() + (parseInt($.inidb.get("settings", "coolcom")) * 1000)));
-        } else {
-            coolcom.push(new Array(command, System.currentTimeMillis() + (parseInt($.inidb.get("settings", "coolcom")) * 1000)));
+    }
+
+    if (cd > 0) {
+        var tgt = command;
+
+        if ($.inidb.GetBoolean("settings", event.getChannel().getName(), "coolcomuser")) {
+            tgt = sender;
         }
+
+        $.tempdb.SetInteger('t_coolcom', event.getChannel().getName(), tgt, System.currentTimeMillis() + (cd * 1000));
     }
 
     $.hook.call('command', event, false);
@@ -555,53 +547,15 @@ $api.on($script, 'musicPlayerState', function (event) {
     $.hook.call('musicPlayerState', event, false);
 });
 
-$.botname = $.botName;
-$.botowner = $.ownerName;
-
-$.castermsg = "Only a Caster has access to that command!";
-$.adminmsg = "Only an Administrator has access to that command!";
-$.modmsg = "Only a Moderator has access to that command!";
-
-
-if ($.inidb.FileExists("timezone") && $.inidb.get("timezone", "timezone") != undefined
-        && $.inidb.get("timezone", "timezone") != null) {
-    $.timezone = $.inidb.get("timezone", "timezone");
-} else {
-    $.inidb.set("timezone", "timezone", "America/New_York");
-    $.timezone = $.inidb.get("timezone", "timezone");
-}
-
 $.loadScript('./util/misc.js');
 $.loadScript('./util/commandList.js');
 $.loadScript('./util/patternDetector.js');
 $.loadScript('./util/fileSystem.js');
 $.loadScript('./util/lang.js');
 
-$.castermsg = $.lang.get("net.phantombot.cmd.casteronly");
-$.adminmsg = $.lang.get("net.phantombot.cmd.adminonly");
-$.modmsg = $.lang.get("net.phantombot.cmd.modonly");
-
-$.logEvent("init.js", 410, "Initializing...");
-
-$.firstrun = false;
-
-if ($.inidb.GetBoolean("init", "initialsettings", "loaded") == false) {
-    $.firstrun = true;
-    $.logEvent("init.js", 420, "Loading initial settings...");
-    $.loadScript('./util/initialsettings.js');
-}
+$.logEvent("init.js", 410, null, "Initializing...");
 
 $.upgrade_version = 17;
-
-if ($.firstrun) {
-    $.inidb.SetInteger("init", "upgrade", "version", parseInt($.upgrade_version));
-    $.inidb.SaveAll(true);
-}
-
-if ($.inidb.GetInteger("init", "upgrade", "version") < $.upgrade_version) {
-    $.logEvent("init.js", 426, "Running upgrade from v" + $.inidb.GetInteger("init", "upgrade", "version") + " to v" + $.upgrade_version + "...");
-    $.loadScript('./util/upgrade.js');
-}
 
 $.loadScript('./util/whisperSystem.js');
 $.loadScript('./util/permissions.js');
@@ -614,7 +568,7 @@ $api.on(initscript, 'ircChannelMessage', function (event) {
     var username = $.username.resolve(sender, event.getTags());
     var message = event.getMessage();
 
-    println(username + ": " + message);
+    println("[" + event.getChannel().getName() + "] " + username + ": " + message);
 });
 
 $api.on(initscript, 'command', function (event) {
@@ -623,131 +577,116 @@ $api.on(initscript, 'command', function (event) {
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
     var args = event.getArgs();
+    var channel = event.getChannel();
     var index;
 
     if (command.equalsIgnoreCase("setconnectedmessage")) {
-        if (!$.isAdmin(sender)) {
-            $.say($.getWhisperString(sender) + $.adminmsg);
+        if (!$.isAdmin(sender, channel)) {
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.cmd.adminonly", channel), channel);
             return;
         }
 
-        $.logEvent("init.js", 457, username + " changed the connected message to: " + argsString);
+        $.logEvent("init.js", 457, channel, username + " changed the connected message to: " + argsString);
 
-        $.inidb.set('settings', 'connectedMessage', argsString);
-        $.say($.lang.get("net.phantombot.init.cmsgset"));
+        $.inidb.SetString('settings', channel.getName(), 'connectedMessage', argsString);
+        $.say($.lang.get("net.phantombot.init.cmsgset", channel), channel);
     }
 
     if (command.equalsIgnoreCase("helpcoolcom")) {
-        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.coolcom-help"));
+        $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.init.coolcom-help", channel), channel);
     }
-    
+
     if (command.equalsIgnoreCase("coolcomuser")) {
-        if (!$.isAdmin(sender)) {
-            $.say($.getWhisperString(sender) + $.adminmsg);
+        if (!$.isAdmin(sender, channel)) {
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.cmd.adminonly", channel), channel);
             return;
         }
-        if ($.inidb.exists("settings", "coolcomuser") && $.inidb.get("settings", "coolcomuser").equalsIgnoreCase("true")) {
-            $.inidb.set("settings", "coolcomuser", "false");
-            $.say("cooldown will no longer be only on users, it will be on everyone.");
+        if ($.inidb.GetBoolean("settings", channel.getName(), "coolcomuser")) {
+            $.inidb.SetBoolean("settings", channel.getName(), "coolcomuser", false);
+            $.say($.lang.get("net.phantombot.init.coolcom-usermode-disable", channel), channel);
         } else {
-            $.inidb.set("settings", "coolcomuser", "true");
-            $.say("cooldown will now be on users, and not everyone.");
+            $.inidb.SetBoolean("settings", channel.getName(), "coolcomuser", true);
+            $.say($.lang.get("net.phantombot.init.coolcom-usermode-enable", channel), channel);
         }
     }
 
     if (command.equalsIgnoreCase("coolcom")) {
         if (args.length == 0) {
-            var coolcomtime = 0;
-
-            if ($.inidb.exists("settings", "coolcom") && !isNaN($.inidb.get("settings", "coolcom"))) {
-                coolcomtime = $.inidb.get("settings", "coolcom");
-            }
-
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.coolcom", coolcomtime));
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.init.coolcom", channel, $.inidb.GetInteger("settings", channel.getName(), "coolcom")), channel);
         } else if (args.length > 1 && args[1].equalsIgnoreCase("get")) {
-            if (!$.isModv3(sender, event.getTags())) {
-                $.say($.getWhisperString(sender) + $.modmsg);
+            if (!$.isMod(sender, event.getTags(), channel)) {
+                $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.cmd.modonly", channel), channel);
                 return;
             }
 
-            var coolcomtime = 0;
-
-            if ($.inidb.exists("settings", "coolcom") && !isNaN($.inidb.get("settings", "coolcom"))) {
-                coolcomtime = $.inidb.get("settings", "coolcom");
-            }
-
-            if ($.inidb.exists("coolcom", args[0].toLowerCase()) && !isNaN("coolcom", args[0].toLowerCase())) {
-                coolcomtime = $.inidb.get("coolcom", args[0].toLowerCase());
-
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.coolcom-individual", args[0], coolcomtime));
+            if ($.inidb.Exists("coolcom", channel.getName(), args[0].toLowerCase())) {
+                $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.init.coolcom-individual", channel, args[0], $.inidb.GetInteger("coolcom", channel.getName(), args[0].toLowerCase())), channel);
             } else {
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.coolcom-individual-notset", args[0], coolcomtime));
+                $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.init.coolcom-individual-notset", channel, args[0], $.inidb.GetInteger("settings", channel.getName(), "coolcom")), channel);
             }
         } else if (args.length > 1 && !isNaN(args[1]) && parseInt(args[1]) >= -1) {
-            if (!$.isModv3(sender, event.getTags())) {
-                $.say($.getWhisperString(sender) + $.modmsg);
+            if (!$.isMod(sender, event.getTags(), channel)) {
+                $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.cmd.modonly", channel), channel);
                 return;
             }
 
-            if (!$.commandExists(args[0].toLowerCase())) {
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.common.command-not-exists", args[0]));
+            if (!$.commandExists(args[0].toLowerCase(), channel)) {
+                $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.common.command-not-exists", channel, args[0]), channel);
                 return;
             }
 
             if (parseInt(args[1]) == -1) {
-                $.logEvent("init.js", 454, username + " set the command cooldown for " + args[0] + " to use the global value");
+                $.logEvent("init.js", 454, channel, username + " set the command cooldown for " + args[0] + " to use the global value");
 
-                $.inidb.del("coolcom", args[0].toLowerCase());
+                $.inidb.RemoveKey("coolcom", channel.getName(), args[0].toLowerCase());
 
-                var coolcomtime = 0;
-
-                if ($.inidb.exists("settings", "coolcom") && !isNaN($.inidb.get("settings", "coolcom"))) {
-                    coolcomtime = $.inidb.get("settings", "coolcom");
-                }
-
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.coolcom-del-individual", args[0], coolcomtime));
+                $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.init.coolcom-del-individual", channel, args[0], $.inidb.GetInteger("settings", channel.getName(), "coolcom")), channel);
             } else {
-                $.logEvent("init.js", 455, username + " changed the command cooldown for " + args[0] + " to " + args[1] + " seconds");
+                $.logEvent("init.js", 455, channel, username + " changed the command cooldown for " + args[0] + " to " + args[1] + " seconds");
 
-                $.inidb.set("coolcom", args[0].toLowerCase(), args[1]);
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.coolcom-set-individual", args[0], args[1]));
+                $.inidb.SetInteger("coolcom", channel.getName(), args[0].toLowerCase(), args[1]);
+                $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.init.coolcom-set-individual", channel, args[0], args[1]), channel);
             }
         } else if (!isNaN(args[0]) && parseInt(args[0]) >= 0) {
-            if (!$.isModv3(sender, event.getTags())) {
-                $.say($.getWhisperString(sender) + $.modmsg);
+            if (!$.isMod(sender, event.getTags(), channel)) {
+                $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.cmd.modonly", channel), channel);
                 return;
             }
 
-            $.logEvent("init.js", 460, username + " changed the global command cooldown to " + args[0] + " seconds");
+            $.logEvent("init.js", 460, channel, username + " changed the global command cooldown to " + args[0] + " seconds");
 
-            $.inidb.set("settings", "coolcom", args[0]);
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.coolcom-set", args[0]));
+            $.inidb.SetInteger("settings", channel.getName(), "coolcom", args[0]);
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.init.coolcom-set", channel, args[0]), channel);
         }
     }
 
     if (command.equalsIgnoreCase("reconnect")) {
-        if (!$.isModv3(sender, event.getTags())) {
-            $.say($.getWhisperString(sender) + $.modmsg);
+        if (!$.isCaster(sender, event.getTags(), channel)) {
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.cmd.casteronly", channel), channel);
             return;
         }
 
-        $.logEvent("init.js", 469, username + " requested a reconnect");
+        $.logEvent("init.js", 469, channel, username + " requested a reconnect");
 
         $.connmgr.reconnectSession($.hostname);
-        $.say($.lang.get("net.phantombot.init.reconn"));
+        
+        var channels = $.phantombot.getChannels();
+        for (var i = 0; i < channels.size(); i++) {
+           $.say($.lang.get("net.phantombot.init.reconn", channels.get(i)), channels.get(i));
+        }
     }
 
     if (command.equalsIgnoreCase("module")) {
-        if (!$.isAdmin(sender)) {
-            $.say($.getWhisperString(sender) + $.adminmsg);
+        if (!$.isAdmin(sender, channel)) {
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.cmd.adminonly", channel), channel);
             return;
         }
 
         if (args.length == 0) {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.module-usage"));
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.init.module-usage", channel), channel);
         } else {
             if (args[0].equalsIgnoreCase("list")) {
-                var lstr = $.lang.get("net.phantombot.init.module-list");
+                var lstr = $.lang.get("net.phantombot.init.module-list", channel);
                 var first = true;
                 var utils = 0;
 
@@ -780,17 +719,17 @@ $api.on(initscript, 'command', function (event) {
 
                         lstr += modules[i][0] + " (";
 
-                        if (modules[i][1]) {
-                            lstr += $.lang.get("net.phantombot.common.enabled");
+                        if ($.moduleEnabled(modules[i][0], channel)) {
+                            lstr += $.lang.get("net.phantombot.common.enabled", channel);
                         } else {
-                            lstr += $.lang.get("net.phantombot.common.disabled");
+                            lstr += $.lang.get("net.phantombot.common.disabled", channel);
                         }
 
                         lstr += ")";
                         first = false;
                     }
 
-                    $.say($.getWhisperString(sender) + lstr);
+                    $.say($.getWhisperString(sender, channel) + lstr, channel);
 
                     lstr = "> ";
                     first = true;
@@ -805,15 +744,13 @@ $api.on(initscript, 'command', function (event) {
                 index = $.getModuleIndex(args[1]);
 
                 if (index == -1) {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.module-not-exists"));
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.init.module-not-exists", channel), channel);
                 } else {
-                    $.logEvent("init.js", 545, username + " enabled module " + args[1]);
+                    $.logEvent("init.js", 545, channel, username + " enabled module " + args[1]);
 
-                    modules[index][1] = true;
+                    $.inidb.SetBoolean('modules', channel.getName(), modules[index][0] + '_enabled', true);
 
-                    $.inidb.set('modules', modules[index][0] + '_enabled', "1");
-
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.module-enable"));
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.init.module-enable", channel), channel);
                 }
             }
 
@@ -825,15 +762,13 @@ $api.on(initscript, 'command', function (event) {
                 index = $.getModuleIndex(args[1]);
 
                 if (index == -1) {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.module-not-exists"));
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.init.module-not-exists", channel), channel);
                 } else {
-                    $.logEvent("init.js", 565, username + " disabled module " + args[1]);
+                    $.logEvent("init.js", 565, channel, username + " disabled module " + args[1]);
 
-                    modules[index][1] = false;
+                    $.inidb.SetBoolean('modules', channel.getName(), modules[index][0] + '_enabled', false);
 
-                    $.inidb.set('modules', modules[index][0] + '_enabled', "0");
-
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.module-disable"));
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.init.module-disable", channel), channel);
                 }
             }
 
@@ -845,12 +780,12 @@ $api.on(initscript, 'command', function (event) {
                 index = $.getModuleIndex(args[1]);
 
                 if (index == -1) {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.module-not-exists"));
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.init.module-not-exists", channel), channel);
                 } else {
-                    if (modules[index][1]) {
-                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.module-enabled", modules[index][0]));
+                    if ($.moduleEnabled(modules[index][0], channel)) {
+                        $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.init.module-enabled", channel, modules[index][0]), channel);
                     } else {
-                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.module-disabled", modules[index][0]));
+                        $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.init.module-disabled", channel, modules[index][0]), channel);
                     }
                 }
             }
@@ -858,10 +793,10 @@ $api.on(initscript, 'command', function (event) {
     }
 });
 
-$.logEvent("init.js", 596, "Bot Online");
+$.logEvent("init.js", 596, null, "Bot Online");
 
 $.registerChatCommand('./init.js', 'setconnectedmessage', 'admin');
-$.registerChatCommand('./init.js', 'reconnect', 'mod');
+$.registerChatCommand('./init.js', 'reconnect', 'caster');
 $.registerChatCommand('./init.js', 'module', 'admin');
 $.registerChatCommand('./init.js', 'coolcom', 'mod');
 $.registerChatCommand('./init.js', 'helpcoolcom', 'mod');
