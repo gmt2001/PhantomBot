@@ -5,6 +5,7 @@ var permitList = new Array();
 var sinbin = new Array();
 var warningcountresettime = parseInt($.inidb.get("settings", "warningcountresettime")) * 1000;
 var autopurgemessage = $.inidb.get("settings", "autopurgemessage");
+var autobanmessage = $.inidb.get("settings", "autobanmessage");
 var capsallowed = $.inidb.get("settings", "capsallowed").equalsIgnoreCase("1");
 var capstriggerratio = parseFloat($.inidb.get("settings", "capstriggerratio"));
 var capstriggerlength = parseInt($.inidb.get("settings", "capstriggerlength"));
@@ -434,10 +435,10 @@ $.on('command', function(event) {
         if ($.isModv3(sender, event.getTags())) {
             if (args.length < 1 || args[0].equalsIgnoreCase("help")) {
                 $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.chatmoderator.chatmod-help-1"));
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.chatmoderator.chatmod-help-2") + "warningcountresettime, autopurgemessage, capsallowed, capstriggerratio, capstriggerlength, "
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.chatmoderator.chatmod-help-2") + "warningcountresettime, autopurgemessage, autobanmessage, capsallowed, capstriggerratio, capstriggerlength, "
                     + "capsmessage, linksallowed, permittime, youtubeallowed, subsallowed, regsallowed, linksmessage, spamallowed, spamlimit, spammessage");
                 $.say($.getWhisperString(sender) + ">>symbolsallowed, symbolslimit, symbolsrepeatlimit, symbolsmessage, repeatallowed, repeatlimit, repeatmessage, graphemeallowed, "
-                    + "graphemelimit, graphememessage, warning1type, warning2type, warning3type, warning1message, warning2message, warning3message");
+                    + "graphemelimit, graphememessage, warning1type, warning2type, warning3type, warning1message, warning2message, warning3message, disable, enable");
             } else {
                 var val;
                 
@@ -479,6 +480,19 @@ $.on('command', function(event) {
                         autopurgemessage = val;
                         
                         $.say($.getWhisperString(sender) + "Changed manual autopurge message to '" + val + "'!");
+                    }
+                } else if (args[0].equalsIgnoreCase("autobanmessage")) {
+                    val = argsString;
+                    
+                    if (args.length == 1) {
+                        $.say($.getWhisperString(sender) + "The current manual autoban message is '" + autobanmessage + "'. To change it use: !chatmod autobanmessage <any text>");
+                    } else {
+                        
+                        $.inidb.set("settings", "autobanmessage", val);
+                        
+                        autobanmessage = val;
+                        
+                        $.say($.getWhisperString(sender) + "Changed manual autoban message to '" + val + "'!");
                     }
                 } else if (args[0].equalsIgnoreCase("capsallowed")) {
                     val = argsString;
@@ -1054,6 +1068,32 @@ $.on('command', function(event) {
                         
                         $.say($.getWhisperString(sender) + "Changed first warning message to '" + val + "'!");
                     }
+                } else if (args[0].equalsIgnoreCase("disable")) {
+                        val = '1';
+                        $.inidb.set('settings', 'linksallowed', val);
+                        $.println(">Link filter disabled.");
+                        $.inidb.set('settings', 'capsallowed', val);
+                        $.println(">Caps filter disabled.");
+                        $.inidb.set('settings', 'symbolsallowed', val);
+                        $.println(">Symbol filter disabled.");
+                        $.inidb.set('settings', 'graphemeallowed', val);
+                        $.println(">Grapheme filter disabled.");
+                        $.inidb.set('settings', 'repeatallowed', val);
+                        $.println(">Repeat filter disabled.");
+                        $.say("Chat Moderator has been disabled.");
+                    } else if (args[0].equalsIgnoreCase("enable")) {
+                        val = '0';
+                        $.inidb.set('settings', 'linksallowed', val);
+                        $.println(">Link filter enabled.");
+                        $.inidb.set('settings', 'capsallowed', val);
+                        $.println(">Caps filter enabled.");
+                        $.inidb.set('settings', 'symbolsallowed', val);
+                        $.println(">Symbol filter enabled.");
+                        $.inidb.set('settings', 'graphemeallowed', val);
+                        $.println(">Grapheme filter enabled.");
+                        $.inidb.set('settings', 'repeatallowed', val);
+                        $.println(">Repeat filter enabled.");
+                        $.say("Chat Moderator has been enabled.");
                 } else if (args[0].equalsIgnoreCase("warning2message")) {
                     val = argsString;
                     
@@ -1122,13 +1162,12 @@ $.on('ircChannelMessage', function(event) {
             && !$.isModv3(sender, event.getTags()) && phlen > 0) {
             $.logEvent("chatModerator.js", 1123, "Autoban triggered by " + username + ". Message: " + omessage);
             
-            banUser(username);
-            
-            $.say (username + " auto-banned indefinitely for using banned phrase #" + i);
+            banUser(username); 
+            $.say($.getWhisperString(sender) + autobanmessage + i); 
             return;
         }
     }
-	
+    
     for (i = 0; i < autoPurgePhrases.length; i++) {
         phlen = $.strlen(autoPurgePhrases[i]);
 
@@ -1136,7 +1175,7 @@ $.on('ircChannelMessage', function(event) {
             && !$.isModv3(sender, event.getTags()) && phlen > 0) {
             $.logEvent("chatModerator.js", 1123, "Autopurge triggered by " + username + ". Message: " + omessage);
             
-            autoPurgeUser(username, " auto-purged for using banned phrase #" + i);            
+            autoPurgeUser(username, autopurgemessage + i);            
             return;
         }
     }
