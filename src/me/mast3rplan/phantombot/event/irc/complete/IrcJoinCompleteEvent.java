@@ -22,16 +22,8 @@ import me.mast3rplan.phantombot.jerklib.Session;
 public class IrcJoinCompleteEvent extends IrcCompleteEvent
 {
 
-    private final Channel channel;
-
     public IrcJoinCompleteEvent(Session session, Channel channel)
     {
-        super(session);
-        this.channel = channel;
-    }
-
-    public Channel getChannel()
-    {
-        return channel;
+        super(session, channel);
     }
 }

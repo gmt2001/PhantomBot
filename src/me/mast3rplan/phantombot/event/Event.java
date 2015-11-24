@@ -16,6 +16,19 @@
  */
 package me.mast3rplan.phantombot.event;
 
+import me.mast3rplan.phantombot.jerklib.Channel;
+
 public class Event
 {
+    private final Channel channel;
+    
+    public Event(Channel channel)
+    {
+        this.channel = channel;
+    }
+    
+    public Channel getChannel()
+    {
+        return channel;
+    }
 }

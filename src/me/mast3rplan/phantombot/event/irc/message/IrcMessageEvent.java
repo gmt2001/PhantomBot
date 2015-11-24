@@ -29,23 +29,20 @@ public abstract class IrcMessageEvent extends IrcEvent
     private final String sender;
     private final String message;
     private final Map<String, String> tags;
-    private final Channel channel;
 
     protected IrcMessageEvent(Session session, String sender, String message)
     {
-        super(session);
+        super(session, null);
         this.sender = sender;
         this.message = message;
         this.tags = new HashMap<>();
-        this.channel = null;
     }
 
     protected IrcMessageEvent(Session session, String sender, String message, Map<String, String> tags)
     {
-        super(session);
+        super(session, null);
         this.sender = sender;
         this.message = message;
-        this.channel = null;
 
         if (tags == null)
         {
@@ -58,10 +55,9 @@ public abstract class IrcMessageEvent extends IrcEvent
 
     protected IrcMessageEvent(Session session, String sender, String message, Map<String, String> tags, Channel channel)
     {
-        super(session);
+        super(session, channel);
         this.sender = sender;
         this.message = message;
-        this.channel = channel;
 
         if (tags == null)
         {
@@ -98,10 +94,5 @@ public abstract class IrcMessageEvent extends IrcEvent
             }
         }
         return count;
-    }
-
-    public Channel getChannel()
-    {
-        return channel;
     }
 }

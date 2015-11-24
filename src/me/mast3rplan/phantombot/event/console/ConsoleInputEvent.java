@@ -23,6 +23,8 @@ public class ConsoleInputEvent extends ConsoleEvent
 
     public ConsoleInputEvent(String msg)
     {
+        super();
+        
         this.msg = msg;
     }
 

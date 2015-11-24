@@ -31,7 +31,6 @@ public class CommandEvent extends Event
     private final String arguments;
     private String[] args;
     private final Map<String, String> tags;
-    private final Channel channel;
 
     /**
      * 
@@ -43,21 +42,23 @@ public class CommandEvent extends Event
      */
     @Deprecated public CommandEvent(String sender, String command, String arguments)
     {
+        super(null);
+        
         this.sender = sender;
         this.command = command;
         this.arguments = arguments;
         this.tags = new HashMap<>();
-        this.channel = null;
         parse();
     }
 
     public CommandEvent(String sender, String command, String arguments, Channel channel)
     {
+        super(channel);
+        
         this.sender = sender;
         this.command = command;
         this.arguments = arguments;
         this.tags = new HashMap<>();
-        this.channel = channel;
         parse();
     }
 
@@ -72,21 +73,23 @@ public class CommandEvent extends Event
      */
     @Deprecated public CommandEvent(String sender, String command, String arguments, Map<String, String> tags)
     {
+        super(null);
+        
         this.sender = sender;
         this.command = command;
         this.arguments = arguments;
         this.tags = tags;
-        this.channel = null;
         parse();
     }
 
     public CommandEvent(String sender, String command, String arguments, Map<String, String> tags, Channel channel)
     {
+        super(channel);
+        
         this.sender = sender;
         this.command = command;
         this.arguments = arguments;
         this.tags = tags;
-        this.channel = channel;
         parse();
     }
 
@@ -153,10 +156,5 @@ public class CommandEvent extends Event
     public Map<String, String> getTags()
     {
         return tags;
-    }
-
-    public Channel getChannel()
-    {
-        return channel;
     }
 }

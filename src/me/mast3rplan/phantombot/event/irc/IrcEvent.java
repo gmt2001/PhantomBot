@@ -17,6 +17,7 @@
 package me.mast3rplan.phantombot.event.irc;
 
 import me.mast3rplan.phantombot.event.Event;
+import me.mast3rplan.phantombot.jerklib.Channel;
 import me.mast3rplan.phantombot.jerklib.Session;
 
 public abstract class IrcEvent extends Event
@@ -24,8 +25,10 @@ public abstract class IrcEvent extends Event
 
     private final Session session;
 
-    protected IrcEvent(Session session)
+    protected IrcEvent(Session session, Channel channel)
     {
+        super(channel);
+        
         this.session = session;
     }
 

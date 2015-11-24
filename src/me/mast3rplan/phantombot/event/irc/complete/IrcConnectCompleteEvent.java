@@ -23,6 +23,6 @@ public class IrcConnectCompleteEvent extends IrcCompleteEvent
 
     public IrcConnectCompleteEvent(Session session)
     {
-        super(session);
+        super(session, null);
     }
 }

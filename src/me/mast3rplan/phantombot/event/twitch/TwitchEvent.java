@@ -22,23 +22,16 @@ import me.mast3rplan.phantombot.jerklib.Channel;
 public class TwitchEvent extends Event
 {
 
-    private final Channel channel;
-
     /**
      * @deprecated Use a version which accepts the channel argument instead
      */
     @Deprecated public TwitchEvent()
     {
-        this.channel = null;
+        super(null);
     }
 
     public TwitchEvent(Channel channel)
     {
-        this.channel = channel;
-    }
-
-    public Channel getChannel()
-    {
-        return this.channel;
+        super(channel);
     }
 }

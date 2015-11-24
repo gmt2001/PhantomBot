@@ -20,4 +20,8 @@ import me.mast3rplan.phantombot.event.Event;
 
 public class ConsoleEvent extends Event
 {
+    public ConsoleEvent()
+    {
+        super(null);
+    }
 }
