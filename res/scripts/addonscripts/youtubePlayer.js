@@ -320,7 +320,12 @@ function next() {
     }
 
     if ($var.currSong == null) {
-        $.say($.lang.get("net.phantombot.musicplayer.queue-is-empty"));
+        if ($.song_toggle == 1) {
+            $.say($.lang.get("net.phantombot.musicplayer.queue-is-empty", name, user));
+
+        } else if ($.song_toggle == 2) {
+            $.println($.lang.get("net.phantombot.musicplayer.queue-is-empty", name, user));
+        }
         nextDefault();
         return;
     }
@@ -329,7 +334,7 @@ function next() {
         $.say($.lang.get("net.phantombot.musicplayer.now-playing", name, user));
 
     } else if ($.song_toggle == 2) {
-        $.say($.lang.get("net.phantombot.musicplayer.now-playing", name, user));
+        $.println($.lang.get("net.phantombot.musicplayer.now-playing", name, user));
     }
     
     var nextMsg = $.lang.get("net.phantombot.musicplayer.queue-is-empty");
