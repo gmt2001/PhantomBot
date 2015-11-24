@@ -3,48 +3,34 @@ if ($.commandList == null || $.commandList == undefined) {
     $.commandList = new Array();
 }
 
-if ($.customCommandList == null || $.customCommandList == undefined) {
-    $.customCommandList = new Array();
-}
-
 $.commandsPerPage = 20;
 
-$.registerChatCommand = function(script, command, group) {
+$.registerChatCommand = function (script, command, group) {
     var scriptFile = script.replace("\\", "/").replace("./scripts/", "");
     var i;
-    
+
     if (group == null || group == undefined) {
         group = "";
     }
-    
+
     if (command == null || command == undefined) {
         return;
     }
-    
+
     for (i = 0; i < $.commandList.length; i++) {
         if ($.commandList[i][1].equalsIgnoreCase(command)) {
             if (!$.commandList[i][0].equalsIgnoreCase(scriptFile)) {
-                $.logError("commandList.js", 26, "Command already registered (" + command + ", " + $.commandList[i][0] + ", " + scriptFile + ")");
+                $.logError("commandList.js", 26, null, "Command already registered (" + command + ", " + $.commandList[i][0] + ", " + scriptFile + ")");
             }
-            
+
             return;
         }
     }
-    
-    for (i = 0; i < $.customCommandList.length; i++) {
-        if ($.customCommandList[i][1].equalsIgnoreCase(command)) {
-            if (!$.customCommandList[i][0].equalsIgnoreCase(scriptFile)) {
-                $.logError("commandList.js", 36, "Command already registered (" + command + ", " + $.customCommandList[i][0] + ", " + scriptFile + ")");
-            }
-            
-            return;
-        }
-    }
-        
+
     $.commandList.push(new Array(scriptFile, command, group));
 }
 
-$.unregisterChatCommand = function(command) {
+$.unregisterChatCommand = function (command) {
     for (var i = 0; i < $.commandList.length; i++) {
         if ($.commandList[i][1].equalsIgnoreCase(command)) {
             commandList.splice(i, 1);
@@ -53,116 +39,90 @@ $.unregisterChatCommand = function(command) {
     }
 }
 
-$.registerCustomChatCommand = function(script, command) {
+$.registerCustomChatCommand = function (script, channel, command) {
     var scriptFile = script.replace("\\", "/").replace("./scripts/", "");
     var i;
-    
+
     if (command == null || command == undefined) {
         return;
     }
-    
+
     for (i = 0; i < $.commandList.length; i++) {
         if ($.commandList[i][1].equalsIgnoreCase(command)) {
             if (!$.commandList[i][0].equalsIgnoreCase(scriptFile)) {
-                $.logError("commandList.js", 66, "Command already registered (" + command + ", " + $.commandList[i][0] + ", " + scriptFile + ")");
+                $.logError("commandList.js", 66, channel, "Command already registered (" + command + ", " + $.commandList[i][0] + ", " + scriptFile + ")");
             }
-            
+
             return;
         }
     }
-    
-    for (i = 0; i < $.customCommandList.length; i++) {
-        if ($.customCommandList[i][1].equalsIgnoreCase(command)) {
-            if (!$.customCommandList[i][0].equalsIgnoreCase(scriptFile)) {
-                $.logError("commandList.js", 76, "Command already registered (" + command + ", " + $.customCommandList[i][0] + ", " + scriptFile + ")");
-            }
-            
-            return;
-        }
+
+    if ($.tempdb.Exists("t_customcommandlist", channel.getName(), command)
+            && !$.tempdb.GetString("t_customcommandlist_script", channel.getName(), command).equalsIgnoreCase(scriptFile)) {
+        $.logError("commandList.js", 76, "Command already registered (" + command + ", " + $.customCommandList[i][0] + ", " + scriptFile + ")");
+        return;
     }
-        
-    $.customCommandList.push(new Array(scriptFile, command, ""));
+
+    $.tempdb.SetString("t_customcommandlist_script", channel.getName(), command, scriptFile);
+    $.tempdb.SetString("t_customcommandlist", channel.getName(), command, "");
 }
 
-$.setCustomChatCommandGroup = function(command, group) {
-    for (i = 0; i < $.customCommandList.length; i++)
-    {
-        if ($.customCommandList[i][1].equalsIgnoreCase(command)) {
-            $.customCommandList[i][2] = group;
-            
-            return;
-        }
+$.setCustomChatCommandGroup = function (command, channel, group) {
+    if ($.tempdb.Exists("t_customcommandlist", channel.getName(), command)) {
+        $.tempdb.SetString("t_customcommandlist", channel.getName(), command, group);
     }
 }
 
-$.unregisterCustomChatCommand = function(command) {
-    for (var i = 0; i < $.customCommandList.length; i++) {
-        if ($.customCommandList[i][1].equalsIgnoreCase(command)) {
-            customCommandList.splice(i, 1);
-            break;
-        }
-    }
+$.unregisterCustomChatCommand = function (command, channel) {
+    $.tempdb.RemoveKey("t_customcommandlist_script", channel.getName(), command);
+    $.tempdb.RemoveKey("t_customcommandlist", channel.getName(), command);
 }
 
-$.commandExists = function(command) {
+$.commandExists = function (command, channel) {
     var i;
-    
+
     for (i = 0; i < $.commandList.length; i++)
     {
         if ($.commandList[i][1].equalsIgnoreCase(command)) {
             return true;
         }
     }
-    
-    for (i = 0; i < $.customCommandList.length; i++)
-    {
-        if ($.customCommandList[i][1].equalsIgnoreCase(command)) {
-            return true;
-        }
+
+    if (channel == null) {
+        return false;
     }
-    
-    return false;
+
+    return $.tempdb.Exists("t_customcommandlist", channel.getName(), command);
 }
 
-$.isCustomCommand = function(command) {
-    var i;
-    
-    for (i = 0; i < $.customCommandList.length; i++)
-    {
-        if ($.customCommandList[i][1].equalsIgnoreCase(command)) {
-            return true;
-        }
-    }
-    
-    return false;
+$.isCustomCommand = function (command, channel) {
+    return $.tempdb.Exists("t_customcommandlist", channel.getName(), command);
 }
 
-$.getCommandGroup = function(command) {
+$.getCommandGroup = function (command, channel) {
     var i;
-    
+
     for (i = 0; i < $.commandList.length; i++)
     {
         if ($.commandList[i][1].equalsIgnoreCase(command)) {
             return $.commandList[i][2];
         }
     }
-    
-    for (i = 0; i < $.customCommandList.length; i++)
-    {
-        if ($.customCommandList[i][1].equalsIgnoreCase(command)) {
-            return $.customCommandList[i][2];
-        }
+
+    if (channel == null) {
+        return "";
     }
-    
-    return "";
+
+    return $.tempdb.GetString("t_customcommandlist", channel.getName(), command);
 }
 
-$.on('command', function(event) {
+$.on('command', function (event) {
     var sender = event.getSender().toLowerCase();
     var username = $.username.resolve(sender, event.getTags());
     var command = event.getCommand();
     var args = event.getArgs();
-    
+    var channel = event.getChannel();
+
     if (command.equalsIgnoreCase("botcommands")) { // !botcommands for bot commands and !commands for custom commands.
         var cmdList = "";
         var length = 0;
@@ -171,133 +131,182 @@ $.on('command', function(event) {
         var page = "";
         var numPages = 1;
         var more = ""
-        var commandsPerPage = $.commandsPerPage;
-        var i;        
-        for (i = 0; i < $.commandList.length + $.customCommandList.length; i++) {
-            if (i < $.commandList.length) {
-                if ($.moduleEnabled($.commandList[i][0]) && (($.commandList[i][2].equalsIgnoreCase("admin") && $.isAdmin(sender))
-                    || ($.commandList[i][2].equalsIgnoreCase("mod") && $.isModv3(sender, event.getTags()))
-                    || ($.commandList[i][2].equalsIgnoreCase("caster") && $.isAdmin(sender)) || $.commandList[i][2].equalsIgnoreCase(""))) {
-                    length++;
-                }
-            } else {
-                if ($.moduleEnabled($.customCommandList[i - $.commandList.length][0])
-                    && (($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("admin") && $.isAdmin(sender))
-                        || ($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("mod") && $.isModv3(sender, event.getTags()))
-                        || ($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("caster") && $.isAdmin(sender))
-                        || $.customCommandList[i - $.commandList.length][2].equalsIgnoreCase(""))) {
-                    length++;
-                }
-            }
-        }
-        
-        if (commandsPerPage == null) {
+        var commandsPerPage = $.inidb.GetInteger("commands", channel.getName(), "_commandsPerPage");
+        var i;
+
+        if (commandsPerPage < 10) {
             commandsPerPage = 20;
         }
-        
+
+        for (i = 0; i < $.commandList.length; i++) {
+            if ($.moduleEnabled($.commandList[i][0], channel) && (($.commandList[i][2].equalsIgnoreCase("admin") && $.isAdmin(sender, channel))
+                    || ($.commandList[i][2].equalsIgnoreCase("mod") && $.isMod(sender, event.getTags(), channel))
+                    || ($.commandList[i][2].equalsIgnoreCase("caster") && $.isCaster(sender, channel)) || $.commandList[i][2].equalsIgnoreCase(""))) {
+                length++;
+            }
+        }
+
         if (length > commandsPerPage) {
             numPages = Math.ceil(length / commandsPerPage);
             num = 1
             var i;
-            
+
             if (args.length > 0 && !isNaN(parseInt(args[0]))) {
                 start = commandsPerPage * (parseInt(args[0]) - 1);
-                
-                page = $.lang.get("net.phantombot.commandlist.page", args[0], numPages);
+
+                page = $.lang.get("net.phantombot.commandlist.page", channel, args[0], numPages);
             } else {
-                page = $.lang.get("net.phantombot.commandlist.page", 1, numPages);
+                page = $.lang.get("net.phantombot.commandlist.page", channel, 1, numPages);
             }
-            
+
             num = Math.min(commandsPerPage, length - start);
-            more = $.lang.get("net.phantombot.commandlist.more");
+            more = $.lang.get("net.phantombot.commandlist.more", channel);
         } else {
             num = length;
         }
-        
+
         if (parseInt(args[0]) > numPages) {
             return;
         }
-        
-        for (i = 0; i < $.commandList.length + $.customCommandList.length; i++) {
+
+        for (i = 0; i < $.commandList.length; i++) {
             if (i > start) {
                 break;
             }
-            
-            if (i < $.commandList.length) {
-                if (!$.moduleEnabled($.commandList[i][0]) || !(($.commandList[i][2].equalsIgnoreCase("admin") && $.isAdmin(sender))
-                    || ($.commandList[i][2].equalsIgnoreCase("mod") && $.isModv3(sender, event.getTags()))
-                    || ($.commandList[i][2].equalsIgnoreCase("caster") && $.isAdmin(sender)) || $.commandList[i][2].equalsIgnoreCase(""))) {
-                    start++;
-                }
-            } else {
-                if (!$.moduleEnabled($.customCommandList[i - $.commandList.length][0])
-                    || !(($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("admin") && $.isAdmin(sender))
-                        || ($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("mod") && $.isModv3(sender, event.getTags()))
-                        || ($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("caster") && $.isAdmin(sender))
-                        || $.customCommandList[i - $.commandList.length][2].equalsIgnoreCase(""))) {
-                    start++;
-                }
+
+            if (!$.moduleEnabled($.commandList[i][0], channel) || !(($.commandList[i][2].equalsIgnoreCase("admin") && $.isAdmin(sender, channel))
+                    || ($.commandList[i][2].equalsIgnoreCase("mod") && $.isMod(sender, event.getTags(), channel))
+                    || ($.commandList[i][2].equalsIgnoreCase("caster") && $.isAdmin(sender, channel)) || $.commandList[i][2].equalsIgnoreCase(""))) {
+                start++;
             }
         }
-        
+
         for (i = start; num > 0; i++) {
-            if (i < $.commandList.length) {
-                if (!$.moduleEnabled($.commandList[i][0]) || !(($.commandList[i][2].equalsIgnoreCase("admin") && $.isAdmin(sender))
-                    || ($.commandList[i][2].equalsIgnoreCase("mod") && $.isModv3(sender, event.getTags()))
-                    || ($.commandList[i][2].equalsIgnoreCase("caster") && $.isAdmin(sender)) || $.commandList[i][2].equalsIgnoreCase(""))) {
-                    continue;
-                }
-            } else {
-                if (!$.moduleEnabled($.customCommandList[i - $.commandList.length][0])
-                    || !(($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("admin") && $.isAdmin(sender))
-                        || ($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("mod") && $.isModv3(sender, event.getTags()))
-                        || ($.customCommandList[i - $.commandList.length][2].equalsIgnoreCase("caster") && $.isAdmin(sender))
-                        || $.customCommandList[i - $.commandList.length][2].equalsIgnoreCase(""))) {
-                    continue;
-                }
+            if (!$.moduleEnabled($.commandList[i][0], channel) || !(($.commandList[i][2].equalsIgnoreCase("admin") && $.isAdmin(sender, channel))
+                    || ($.commandList[i][2].equalsIgnoreCase("mod") && $.isMod(sender, event.getTags(), channel))
+                    || ($.commandList[i][2].equalsIgnoreCase("caster") && $.isAdmin(sender, channel)) || $.commandList[i][2].equalsIgnoreCase(""))) {
+                continue;
             }
-            
+
             if (cmdList.length > 0) {
                 cmdList = cmdList + " - ";
             }
-            
-            if (i < $.commandList.length) {
-                cmdList = cmdList + "!" + $.commandList[i][1];
-            } else {
-                cmdList = cmdList + "!" + $.customCommandList[i - $.commandList.length][1];
-            }
-            
+
+            cmdList = cmdList + "!" + $.commandList[i][1];
+
             num--;
         }
-        
+
         if (length == 0) {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.commandlist.nocommands"));
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.commandlist.nocommands", channel), channel);
         } else {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.commandlist.commands") + page + ": " + cmdList + more);
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.commandlist.commands", channel) + page + ": " + cmdList + more, channel);
         }
     }
     
-    if (command.equalsIgnoreCase("commandsperpage")) {
-        if (args.length > 0 && !isNaN(parseInt(args[0])) && parseInt(args[0]) >= 10 && $.isAdmin(sender)) {
-            $.logEvent("commandList.js", 259, username + " changed the commands per page to " + args[0]);
-            
-            $.commandsPerPage = parseInt(args[0]);
-            $.inidb.set("commands", "_commandsPerPage", args[0]);
-            
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.commandlist.commands-per-page", args[0]));
-        } else if (!$.isAdmin(sender)) {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
+    if (command.equalsIgnoreCase("commands")) { // !botcommands for bot commands and !commands for custom commands.
+        var cmdList = "";
+        var length = 0;
+        var start = 0;
+        var num = length;
+        var page = "";
+        var numPages = 1;
+        var more = ""
+        var commandsPerPage = $.inidb.GetInteger("commands", channel.getName(), "_commandsPerPage");
+        var i;
+        var commandList = new Array();
+
+        if (commandsPerPage < 10) {
+            commandsPerPage = 20;
+        }
+        
+        var keys = $.tempdb.GetKeyList("t_customcommandlist", channel.getName());
+        
+        for (i = 0; i < keys.length; i++) {
+            commandList.push(new Array($.tempdb.GetString("t_customcommandlist_script", channel.getName(), keys[i]), keys[i], $.tempdb.GetString("t_customcommandlist", channel.getName(), keys[i])));
+        }
+
+        for (i = 0; i < commandList.length; i++) {
+            if ($.moduleEnabled(commandList[i][0], channel) && ((commandList[i][2].equalsIgnoreCase("admin") && $.isAdmin(sender, channel))
+                    || (commandList[i][2].equalsIgnoreCase("mod") && $.isMod(sender, event.getTags(), channel))
+                    || (commandList[i][2].equalsIgnoreCase("caster") && $.isCaster(sender, channel)) || commandList[i][2].equalsIgnoreCase(""))) {
+                length++;
+            }
+        }
+
+        if (length > commandsPerPage) {
+            numPages = Math.ceil(length / commandsPerPage);
+            num = 1
+            var i;
+
+            if (args.length > 0 && !isNaN(parseInt(args[0]))) {
+                start = commandsPerPage * (parseInt(args[0]) - 1);
+
+                page = $.lang.get("net.phantombot.commandlist.page", channel, args[0], numPages);
+            } else {
+                page = $.lang.get("net.phantombot.commandlist.page", channel, 1, numPages);
+            }
+
+            num = Math.min(commandsPerPage, length - start);
+            more = $.lang.get("net.phantombot.commandlist.more", channel);
         } else {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.commandlist.commands-per-page-usage"));
+            num = length;
+        }
+
+        if (parseInt(args[0]) > numPages) {
+            return;
+        }
+
+        for (i = 0; i < commandList.length; i++) {
+            if (i > start) {
+                break;
+            }
+
+            if (!$.moduleEnabled(commandList[i][0], channel) || !((commandList[i][2].equalsIgnoreCase("admin") && $.isAdmin(sender, channel))
+                    || (commandList[i][2].equalsIgnoreCase("mod") && $.isMod(sender, event.getTags(), channel))
+                    || (commandList[i][2].equalsIgnoreCase("caster") && $.isAdmin(sender, channel)) || commandList[i][2].equalsIgnoreCase(""))) {
+                start++;
+            }
+        }
+
+        for (i = start; num > 0; i++) {
+            if (!$.moduleEnabled(commandList[i][0], channel) || !((commandList[i][2].equalsIgnoreCase("admin") && $.isAdmin(sender, channel))
+                    || (commandList[i][2].equalsIgnoreCase("mod") && $.isMod(sender, event.getTags(), channel))
+                    || (commandList[i][2].equalsIgnoreCase("caster") && $.isAdmin(sender, channel)) || commandList[i][2].equalsIgnoreCase(""))) {
+                continue;
+            }
+
+            if (cmdList.length > 0) {
+                cmdList = cmdList + " - ";
+            }
+
+            cmdList = cmdList + "!" + commandList[i][1];
+
+            num--;
+        }
+
+        if (length == 0) {
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.commandlist.nocommands", channel), channel);
+        } else {
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.commandlist.commands", channel) + page + ": " + cmdList + more, channel);
+        }
+    }
+
+    if (command.equalsIgnoreCase("commandsperpage")) {
+        if (args.length > 0 && !isNaN(parseInt(args[0])) && parseInt(args[0]) >= 10 && $.isAdmin(sender, channel)) {
+            $.logEvent("commandList.js", 259, channel, username + " changed the commands per page to " + args[0]);
+
+            $.inidb.SetInteger("commands", channel.getName(), "_commandsPerPage", args[0]);
+
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.commandlist.commands-per-page", channel, args[0]), channel);
+        } else if (!$.isAdmin(sender, channel)) {
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.cmd.adminonly", channel), channel);
+        } else {
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.commandlist.commands-per-page-usage", channel), channel);
         }
     }
 });
 
 $.registerChatCommand("./util/commandList.js", "commandsperpage", "admin");
 $.registerChatCommand("./util/commandList.js", "botcommands", "mod");
-
-var commandsPerPage = $.inidb.get("command", "_commandsPerPage");
-
-if (commandsPerPage != null && !isNaN(parseInt(commandsPerPage)) && parseInt(commandsPerPage) >= 10) {
-    $.commandsPerPage = commandsPerPage;
-}
+$.registerChatCommand("./util/commandList.js", "commands", "");
