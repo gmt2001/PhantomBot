@@ -52,7 +52,7 @@ notSearchable = function(songid,songname, user, tags) {
                     if ($.inidb.exists("pricecom", "addsong") && parseInt($.inidb.get("pricecom", "addsong"))> 0 ){
                         if(!$.isModv3(user, tags)){
                             var cost = $.inidb.get("pricecom", "addsong");
-                            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.musicplayer.command-cost", $.getPointsString(cost), $.username.resolve(sender, event.getTags()), songid));
+                            $.say($.getWhisperString(user) + $.lang.get("net.phantombot.musicplayer.command-cost", $.getPointsString(cost), $.username.resolve(user, tags), songid));
                             $.inidb.incr("points", user.toLowerCase(), cost);
                             $.inidb.SaveAll();
                         }
@@ -879,7 +879,7 @@ $.on('command', function (event) {
             return;
         }
 
-        if (parseInt(argsString) <= $var.defaultplaylist.length) {
+        if (parseInt(argsString) <= $var.defaultplaylist.length && args.length < 2) {
             $var.defaultplaylistpos = parseInt(argsString);
             $var.playChoice = true;
             next();
