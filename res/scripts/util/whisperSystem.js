@@ -1,11 +1,5 @@
-$.whispermode = $.inidb.get("settings", "whisper_mode");
-
-if ($.whispermode == undefined || $.whispermode == null) {
-    $.whispermode = "false";
-}
-
-$.getWhisperString = function (sender) {
-    if ($.whispermode == "true") {
+$.getWhisperString = function (sender, channel) {
+    if ($.inidb.GetBoolean("settings", channel.getName(), "whisper_mode")) {
         return "/w " + sender + " ";
     } else {
         return $.username.resolve(sender) + ": ";
@@ -22,23 +16,24 @@ $.on('command', function (event) {
     var username = $.username.resolve(sender, event.getTags());
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
+    var channel = event.getChannel();
     var args = event.getArgs();
 
     if (command.equalsIgnoreCase("whispermode")) { // enable / disable whisper mode
-        if (!$.isAdmin(sender)) {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
+        if (!$.isAdmin(sender, channel)) {
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.cmd.adminonly", channel), channel);
             return;
         }
 
-        if ($.whispermode == "true") {
-            $.inidb.set('settings', 'whisper_mode', "false");
-            $.whispermode = "false";
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.common.whisper-disabled"));
+        if ($.inidb.GetBoolean("settings", channel.getName(), "whisper_mode")) {
+            $.inidb.SetBoolean("settings", channel.getName(), "whisper_mode", false);
+            
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.common.whisper-disabled", channel), channel);
             return;
         } else {
-            $.inidb.set('settings', 'whisper_mode', "true");
-            $.whispermode = "true";
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.common.whisper-enabled"));
+            $.inidb.SetBoolean("settings", channel.getName(), "whisper_mode", true);
+            
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.common.whisper-enabled", channel), channel);
             return;
         }
     }
