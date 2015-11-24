@@ -50,13 +50,17 @@ $.getPoints = function (user) {
 
 $.getPointsString = function (points) {
     points = parseInt(points);
+	//format = $.formatNumbers(points);
+	
     var pointsString = "";
-
-    if (points == 1) {
-        pointsString += points.toString() + " " + $.pointNameSingle;
+	
+	pointsString += $.econNameFormat(points, $.pointNameSingle);
+	//Old way of sending point/currency information
+	/*if (points == 1) {
+		pointsString += points.toString() + " " + $.pointNameSingle;
     } else {
-        pointsString += points.toString() + " " + $.pointNameMultiple;
-    }
+		pointsString += points.toString() + " " + $.pointNameMultiple;
+    }*/
 
     return pointsString;
 }
@@ -625,7 +629,7 @@ $.on('command', function (event) {
         }
     }
 
-    if (command.equalsIgnoreCase("gift") || command.equalsIgnoreCase("transfer")) {
+    if (command.equalsIgnoreCase("gift")) {
         if (args[0] == null || args[1] == null || isNaN(parseInt(args[1]))) {
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.pointsystem.gift-usage"));
             return;
@@ -713,5 +717,6 @@ setTimeout(function () {
     if ($.moduleEnabled('./systems/pointSystem.js')) {
         $.registerChatCommand("./systems/pointSystem.js", "points");
         $.registerChatCommand("./systems/pointSystem.js", "makeitrain");
+        $.registerChatCommand("./systems/pointSystem.js", "gift");
     }
 }, 10 * 1000); // 11-7-15 modified to have user settable point gain amounts -Kojitsari

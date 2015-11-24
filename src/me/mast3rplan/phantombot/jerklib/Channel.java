@@ -17,8 +17,6 @@
 package me.mast3rplan.phantombot.jerklib;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import me.mast3rplan.phantombot.PhantomBot;
 import me.mast3rplan.phantombot.jerklib.ModeAdjustment.Action;
 import me.mast3rplan.phantombot.jerklib.events.TopicEvent;
 
@@ -47,60 +45,7 @@ public class Channel
     private final Map<String, List<ModeAdjustment>> userMap;
     private List<ModeAdjustment> channelModes = new ArrayList<>();
     private TopicEvent topicEvent;
-    private ConcurrentLinkedQueue<String> messages = new ConcurrentLinkedQueue<>();
-    private ConcurrentLinkedQueue<String> prioritymessages = new ConcurrentLinkedQueue<>();
-    private Timer sayTimer = new Timer();
     private Boolean allowSendMessages = false;
-    private long msginterval = 1600;
-
-    class MessageTask extends TimerTask
-    {
-
-        Channel chan;
-        long lastMessage = 0;
-
-        public MessageTask(Channel c)
-        {
-            super();
-            chan = c;
-
-            Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
-        }
-
-        @Override
-        public void run()
-        {
-            if (PhantomBot.instance().isExiting())
-            {
-                return;
-            }
-
-            long now = System.currentTimeMillis();
-            if (now - lastMessage >= msginterval)
-            {
-                String pmsg = chan.prioritymessages.poll();
-                if (pmsg != null)
-                {
-                    chan.session.sayChannel(chan, pmsg);
-
-                    lastMessage = now;
-                } else
-                {
-                    String msg = chan.messages.poll();
-                    if (msg != null)
-                    {
-                        if (allowSendMessages || msg.startsWith(".timeout ") || msg.startsWith(".ban ")
-                                || msg.startsWith(".unban ") || msg.equals(".clear") || msg.equals(".mods"))
-                        {
-                            chan.session.sayChannel(chan, msg);
-                        }
-
-                        lastMessage = now;
-                    }
-                }
-            }
-        }
-    }
 
     /**
      * This should only be used internally and for testing
@@ -155,13 +100,16 @@ public class Channel
         this.session = session;
 
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
-
-        sayTimer.schedule(new MessageTask(this), 300, 100);
     }
 
     public void setAllowSendMessages(Boolean allow)
     {
         allowSendMessages = allow;
+    }
+
+    public Boolean getAllowSendMessages()
+    {
+        return allowSendMessages;
     }
 
     /**
@@ -403,60 +351,7 @@ public class Channel
      */
     public void say(String message)
     {
-        if (message.startsWith(".timeout ") || message.startsWith(".ban ")
-                || message.startsWith(".unban ") || message.equals(".clear") || message.equals(".mods"))
-        {
-            if (message.length() + 14 + name.length() < 512)
-            {
-                prioritymessages.add(message);
-            } else
-            {
-                int maxlen = 512 - 14 - name.length();
-                int pos = 0;
-
-                for (int i = 0; pos < message.length(); i++)
-                {
-                    if (pos + maxlen >= message.length())
-                    {
-                        prioritymessages.add(message.substring(pos));
-                    } else
-                    {
-                        prioritymessages.add(message.substring(pos, pos + maxlen));
-                    }
-
-                    pos += maxlen;
-                }
-            }
-        } else
-        {
-            if (message.startsWith("/w "))
-            {
-                message = message.replace("/w ", "PRIVMSG #jtv :/w ");
-                me.mast3rplan.phantombot.PhantomBot.tgcSession.sayRaw(message);
-                return;
-            }
-            if (message.length() + 14 + name.length() < 512)
-            {
-                messages.add(message);
-            } else
-            {
-                int maxlen = 512 - 14 - name.length();
-                int pos = 0;
-
-                for (int i = 0; pos < message.length(); i++)
-                {
-                    if (pos + maxlen >= message.length())
-                    {
-                        messages.add(message.substring(pos));
-                    } else
-                    {
-                        messages.add(message.substring(pos, pos + maxlen));
-                    }
-
-                    pos += maxlen;
-                }
-            }
-        }
+        session.sayChannel(this, message);
     }
 
     /**
@@ -701,10 +596,5 @@ public class Channel
     public String toString()
     {
         return "[Channel: name=" + name + "]";
-    }
-
-    public void setMsgInterval(long msginterval)
-    {
-        this.msginterval = msginterval;
     }
 }

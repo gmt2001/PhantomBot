@@ -36,7 +36,6 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import me.mast3rplan.phantombot.cache.BannedCache;
 import me.mast3rplan.phantombot.cache.ChannelHostCache;
 import me.mast3rplan.phantombot.cache.ChannelUsersCache;
 import me.mast3rplan.phantombot.cache.FollowersCache;
@@ -62,6 +61,7 @@ import me.mast3rplan.phantombot.script.ScriptApi;
 import me.mast3rplan.phantombot.script.ScriptEventManager;
 import me.mast3rplan.phantombot.script.ScriptManager;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.SystemUtils;
 
 public class PhantomBot implements Listener
 {
@@ -83,7 +83,6 @@ public class PhantomBot implements Listener
     private String musicenable;
     private DataStore dataStoreObj;
     private SecureRandom rng;
-    private BannedCache bancache;
     private TreeMap<String, Integer> pollResults;
     private TreeSet<String> voters;
     private Profile profile;
@@ -148,7 +147,6 @@ public class PhantomBot implements Listener
         this.connectionManager = new ConnectionManager(profile);
 
         rng = new SecureRandom();
-        bancache = new BannedCache();
         pollResults = new TreeMap<>();
         voters = new TreeSet<>();
 
@@ -188,9 +186,10 @@ public class PhantomBot implements Listener
 
         this.init();
 
-        String osname = System.getProperty("os.name");
-
-        if (osname.toLowerCase().contains("linux") && !interactive)
+        /*
+         * try { Thread.sleep(3000); } catch (InterruptedException ex) { }
+         */
+        if (SystemUtils.IS_OS_LINUX && !interactive)
         {
             try
             {
@@ -317,6 +316,11 @@ public class PhantomBot implements Listener
         return channel;
     }
 
+    public long getMessageInterval()
+    {
+        return (long) ((30.0 / this.msglimit30) * 1000);
+    }
+
     public Channel getChannel(String channelName)
     {
         return channels.get(channelName);
@@ -363,7 +367,6 @@ public class PhantomBot implements Listener
 
         Script.global.defineProperty("inidb", dataStoreObj, 0);
         Script.global.defineProperty("tempdb", TempStore.instance(), 0);
-        Script.global.defineProperty("bancache", bancache, 0);
         Script.global.defineProperty("username", UsernameCache.instance(), 0);
         Script.global.defineProperty("twitch", TwitchAPIv3.instance(), 0);
         Script.global.defineProperty("botName", username, 0);
@@ -494,7 +497,6 @@ public class PhantomBot implements Listener
     public void onIRCJoinComplete(IrcJoinCompleteEvent event)
     {
         Channel cchannel = event.getChannel();
-        cchannel.setMsgInterval((long) ((30.0 / this.msglimit30) * 1000));
 
         this.channels.put(cchannel.getName(), cchannel);
 

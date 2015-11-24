@@ -31,7 +31,6 @@ import me.mast3rplan.phantombot.jerklib.listeners.WriteRequestListener;
 import me.mast3rplan.phantombot.jerklib.parsers.DefaultInternalEventParser;
 import me.mast3rplan.phantombot.jerklib.parsers.InternalEventParser;
 import me.mast3rplan.phantombot.jerklib.tasks.Task;
-import me.mast3rplan.phantombot.jerklib.util.IdentServer;
 
 /**
  * This class is used to control/store Sessions/Connections. Request new
@@ -224,8 +223,6 @@ public final class ConnectionManager
         session.setInternalParser(internalEventParser);
         sessionMap.put(hostName, session);
 
-        IdentServer.instance().setLogin(defaultProfile.getName());
-
         return session;
     }
 
@@ -237,8 +234,6 @@ public final class ConnectionManager
         Session session = new Session(rCon, this);
         session.setInternalParser(internalEventParser);
         sessionMap.put(hostName, session);
-
-        IdentServer.instance().setLogin(defaultProfile.getName());
 
         return session;
     }

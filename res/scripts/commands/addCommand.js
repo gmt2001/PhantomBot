@@ -4,10 +4,6 @@ $.on('command', function (event) {
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
     var args = event.getArgs();
-    var num2 = $.users.length;
-    var rnd = $.rand(num2);
-    var randomPerson = $.users[rnd][0];
-    var randomNum = $.randRange(1, 100);
     var commandString;
     var message;
 
@@ -117,6 +113,7 @@ $.on('command', function (event) {
             if (message.substring(0, 1) == '!') {
                 message = message.substring(1);
             }
+            
             if (!$.commandExists(commandString)) {
                 $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.aliascom-error-no-command"));
                 return;
@@ -318,42 +315,44 @@ $.on('command', function (event) {
     }
 
     if ($.inidb.exists('command', command.toLowerCase())) {
-
         var messageCommand = $.inidb.get('command', command.toLowerCase());
 
         for (var i = 0; i < args.length; i++) {
             messageCommand = $.replaceAll(messageCommand, '(' + (i + 1) + ')', args[i]);
         }
-
-        messageCommand = $.replaceAll(messageCommand, '(sender)', sender);
-
+        if (messageCommand.contains('(sender)')) {
+            messageCommand = $.replaceAll(messageCommand, '(sender)', sender);
+        } 
         if (messageCommand.contains('(count)')) {
             $.inidb.incr('commandcount', command.toLowerCase(), 1);
-        }
-
-        if (messageCommand.indexOf('(touser)') >= 0 && args.length > 0) {
+            messageCommand = $.replaceAll(messageCommand, '(count)', $.inidb.get('commandcount', command.toLowerCase()));
+        } 
+        if (messageCommand.contains('(points)')) {
+            messageCommand = $.replaceAll(messageCommand, '(points)', $.getPointsString(parseInt($.inidb.get("points", sender))));
+        } 
+        if (messageCommand.contains('(touser)') >= 0 && args.length > 0) {
             messageCommand = $.replaceAll(messageCommand, '(touser)', $.username.resolve(args[0]));
+        } 
+        if (messageCommand.contains('(random)')) {
+            messageCommand = $.replaceAll(messageCommand, '(random)', $.users[$.rand($.users.length)][0]);
         }
-
-        messageCommand = $.replaceAll(messageCommand, '(count)', $.inidb.get('commandcount', command.toLowerCase()));
-
-        messageCommand = $.replaceAll(messageCommand, '(z_stroke)', java.lang.Character.toString(java.lang.Character.toChars(0x01B6)[0]));
-
-        messageCommand = $.replaceAll(messageCommand, '(random)', randomPerson);
-
-        messageCommand = $.replaceAll(messageCommand, '(#)', randomNum);
-
-        messageCommand = $.replaceAll(messageCommand, '(points)', $.pointNameMultiple);
-
+        if (messageCommand.contains('(#)')) {
+            messageCommand = $.replaceAll(messageCommand, '(#)', $.randRange(1, 100));
+        } 
+        if (messageCommand.contains('(count)')) {
+            messageCommand = $.replaceAll(messageCommand, '(count)', $.inidb.get('commandcount', command.toLowerCase()));
+        } 
+        if (messageCommand.contains('(z_stroke)')) {
+            messageCommand = $.replaceAll(messageCommand, '(z_stroke)', java.lang.Character.toString(java.lang.Character.toChars(0x01B6)[0]));
+        } 
         if (messageCommand.contains('(code)')) {
             var text = "";
             var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             for (var i = 0; i < 8; i++) {
                 text += possible.charAt(Math.floor(Math.random() * possible.length));
             }
+            messageCommand = $.replaceAll(messageCommand, '(code)', text);
         }
-
-        messageCommand = $.replaceAll(messageCommand, '(code)', text);
 
         $.say(messageCommand);
     }

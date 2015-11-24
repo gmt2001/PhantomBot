@@ -157,27 +157,35 @@ $.on('command', function (event) {
         return;
     }
 
-    var commandCount = $.inidb.get('counter', 'kill');
     var messageCommand = $.inidb.get('kills', 'kill_' + num);
 
     if (messageCommand) {
         for (var i = 0; i < args.length; i++) {
-            messageCommand = $.replaceAll(messageCommand, '(' + (i + 1) + ')', $.username.resolve(args[i]));
+            messageCommand = $.replaceAll(messageCommand, '(' + (i + 1) + ')', args[i]);
         }
-
-        messageCommand = $.replaceAll(messageCommand, '(sender)', $.username.resolve(sender, event.getTags()));
-
-        messageCommand = $.replaceAll(messageCommand, '(user)', $.username.resolve(sender, event.getTags()));
-
-        messageCommand = $.replaceAll(messageCommand, '(count)', commandCount);
-
-        messageCommand = $.replaceAll(messageCommand, '(kill)', $.username.resolve(killPerson));
-
-        messageCommand = $.replaceAll(messageCommand, '(#)', killNum);
+        if (messageCommand.contains('(sender)')) {
+            messageCommand = $.replaceAll(messageCommand, '(sender)', sender);
+        }
+        if (messageCommand.contains('(count)')) {
+            $.inidb.incr('commandcount', command.toLowerCase(), 1);
+        } 
+        if (messageCommand.contains('(touser)') >= 0 && args.length > 0) {
+            messageCommand = $.replaceAll(messageCommand, '(touser)', $.username.resolve(args[0]));
+        }
+        if (messageCommand.contains('(random)')) {
+            messageCommand = $.replaceAll(messageCommand, '(random)', $.users[$.rand($.users.length)][0]);
+        }
+        if (messageCommand.contains('(#)')) {
+            messageCommand = $.replaceAll(messageCommand, '(#)', $.randRange(1, 100));
+        } 
+        if (messageCommand.contains('(count)')) {
+            messageCommand = $.replaceAll(messageCommand, '(count)', $.inidb.get('commandcount', command.toLowerCase()));
+        }
 
         $.say(messageCommand);
     }
 });
+
 var ar = new Array(0);
 ar.push($.lang.get("net.phantombot.killcommand.kill-1"));
 ar.push($.lang.get("net.phantombot.killcommand.kill-2"));

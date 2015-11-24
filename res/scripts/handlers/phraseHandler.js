@@ -36,13 +36,10 @@ $.on('command', function (event) {
             return;
         }
 
-        if (args[0] == null) { // added if trigger or responce is null to say usage.
+        if (args.length < 2) {
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.phrasehandler.trigger-error-add-usage"));
             return;
-        } else if (args[1] == null) {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.phrasehandler.trigger-error-add-usage"));
-            return;
-        }
+        } 
 
         triggerphrase = args[0].toLowerCase();
         triggerphrase = new String(triggerphrase);
@@ -61,21 +58,19 @@ $.on('command', function (event) {
             return;
         }
 
-        triggerphrase = args[0].toLowerCase();
-
-        if (triggerphrase == null) { // added if the trigger is null to say usage.
+        if (args.length == 0) { 
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.phrasehandler.trigger-remove-usage"));
-            return;
-        } else if ($.inidb.get('phrases', args[0].toLowerCase()) == null) { // added if trigger does not exist to say error.
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.phrasehandler.trigger-not-found"));
             return;
         }
 
+        triggerphrase = args[0].toLowerCase();
+        
         $.inidb.del('phrases', triggerphrase);
         $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.phrasehandler.trigger-remove-success", triggerphrase));
         return;
     }
 });
+
 setTimeout(function(){ 
     if ($.moduleEnabled('./handlers/phraseHandler.js')) {
         $.registerChatCommand("./handlers/phraseHandler.js", "addphrase", "mod");
