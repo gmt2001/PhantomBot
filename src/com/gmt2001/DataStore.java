@@ -152,7 +152,24 @@ public class DataStore
 
     public Boolean GetBoolean(String fName, String section, String key)
     {
-        int ival = GetInteger(fName, section, key);
+        String sval = GetString(fName, section, key);
+        int ival;
+
+        try
+        {
+            ival = Integer.parseInt(sval);
+        } catch (Exception ex)
+        {
+            if (sval.equalsIgnoreCase("true"))
+            {
+                ival = 1;
+            } else
+            {
+                ival = 0;
+            }
+            
+            SetBoolean(fName, section, key, ival == 1);
+        }
 
         return ival == 1;
     }
@@ -196,65 +213,75 @@ public class DataStore
     }
 
     /**
-     * 
+     *
      * @param fName
      * @param key
-     * @return 
-     * 
-     * @deprecated This is a legacy method, use the full API with section support instead
+     * @return
+     *
+     * @deprecated This is a legacy method, use the full API with section
+     * support instead
      */
-    @Deprecated public boolean exists(String fName, String key)
+    @Deprecated
+    public boolean exists(String fName, String key)
     {
         return HasKey(fName, "", key);
     }
 
     /**
-     * 
+     *
      * @param fName
      * @param key
-     * @return 
-     * 
-     * @deprecated This is a legacy method, use the full API with section support instead
+     * @return
+     *
+     * @deprecated This is a legacy method, use the full API with section
+     * support instead
      */
-    @Deprecated public String get(String fName, String key)
+    @Deprecated
+    public String get(String fName, String key)
     {
         return GetString(fName, "", key);
     }
 
     /**
-     * 
+     *
      * @param fName
      * @param key
-     * @param value 
-     * 
-     * @deprecated This is a legacy method, use the full API with section support instead
+     * @param value
+     *
+     * @deprecated This is a legacy method, use the full API with section
+     * support instead
      */
-    @Deprecated public void set(String fName, String key, String value)
+    @Deprecated
+    public void set(String fName, String key, String value)
     {
         SetString(fName, "", key, value);
     }
 
     /**
-     * 
+     *
      * @param fName
-     * @param key 
-     * 
-     * @deprecated This is a legacy method, use the full API with section support instead
+     * @param key
+     *
+     * @deprecated This is a legacy method, use the full API with section
+     * support instead
      */
-    @Deprecated public void del(String fName, String key)
+    @Deprecated
+    public void del(String fName, String key)
     {
         RemoveKey(fName, "", key);
     }
 
     /**
-     * 
+     *
      * @param fName
      * @param key
-     * @param amount 
-     * 
-     * @deprecated This is a legacy method, use the full API with section support instead
+     * @param amount
+     *
+     * @deprecated This is a legacy method, use the full API with section
+     * support instead
      */
-    @Deprecated public void incr(String fName, String key, int amount)
+    @Deprecated
+    public void incr(String fName, String key, int amount)
     {
         int ival = GetInteger(fName, "", key);
 
@@ -264,14 +291,16 @@ public class DataStore
     }
 
     /**
-     * 
+     *
      * @param fName
      * @param key
-     * @param amount 
-     * 
-     * @deprecated This is a legacy method, use the full API with section support instead
+     * @param amount
+     *
+     * @deprecated This is a legacy method, use the full API with section
+     * support instead
      */
-    @Deprecated public void decr(String fName, String key, int amount)
+    @Deprecated
+    public void decr(String fName, String key, int amount)
     {
         int ival = GetInteger(fName, "", key);
 
