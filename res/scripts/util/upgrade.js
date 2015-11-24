@@ -97,11 +97,7 @@ if ($.inidb.GetInteger("init", "upgrade", "version") < 2) {
     }
     
     if (!$.inidb.exists("settings", "autopurgemessage")) {
-        $.inidb.set("settings", "autopurgemessage", "auto-purged for using banned phrase #");
-    }
-    
-    if (!$.inidb.exists("settings", "autobanmessage")) {
-        $.inidb.set("settings", "autobanmessage", "auto-banned for using banned phrase #");
+        $.inidb.set("settings", "autopurgemessage", "follow the rules!");
     }
     
     if (!$.inidb.exists("settings", "capsallowed")) {
