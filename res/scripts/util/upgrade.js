@@ -702,6 +702,20 @@ if ($.inidb.GetInteger("init", "upgrade", "version") < 16) {
     println("   End version 16 upgrades...");
 }
 
+if ($.inidb.GetInteger("init", "upgrade", "version") < 17) {
+    println("   Starting version 17 upgrades...");
+    
+    if (!$.inidb.exists("settings", "autopurgemessage") || $.inidb.get("settings", "autopurgemessage").equalsIgnoreCase("follow the rules!")) {
+        $.inidb.set("settings", "autopurgemessage", "auto-purged for using banned phrase #");
+    }
+    
+    if (!$.inidb.exists("settings", "autobanmessage")) {
+        $.inidb.set("settings", "autobanmessage", "auto-banned for using banned phrase #");
+    }
+    
+    println("   End version 17 upgrades...");
+}
+
 println("   Saving...");
 
 $.inidb.SetInteger("init", "upgrade", "version", parseInt($.upgrade_version));

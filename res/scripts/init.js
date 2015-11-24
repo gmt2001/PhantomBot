@@ -587,16 +587,11 @@ $.firstrun = false;
 
 if ($.inidb.GetBoolean("init", "initialsettings", "loaded") == false) {
     $.firstrun = true;
-}
-
-$.initialsettings_update = 1;
-if ($.inidb.GetBoolean("init", "initialsettings", "loaded") == false
-        || $.inidb.GetInteger("init", "initialsettings", "update") < $.initialsettings_update) {
     $.logEvent("init.js", 420, "Loading initial settings...");
     $.loadScript('./util/initialsettings.js');
 }
 
-$.upgrade_version = 16;
+$.upgrade_version = 17;
 
 if ($.firstrun) {
     $.inidb.SetInteger("init", "upgrade", "version", parseInt($.upgrade_version));
