@@ -2,26 +2,6 @@ var usergonetime = 10 * 60 * 1000;
 var usercheckinterval = 3 * 60 * 1000;
 var modcheckinterval = 10 * 60 * 1000;
 
-if ($.modeOUsers == null || $.modeOUsers == undefined) {
-    $.modeOUsers = new Array();
-}
-
-if ($.subUsers == null || $.subUsers == undefined) {
-    $.subUsers = new Array();
-}
-
-if ($.modListUsers == null || $.modListUsers == undefined) {
-    $.modListUsers = new Array();
-}
-
-if ($.users == null || $.users == undefined) {
-    $.users = new Array();
-}
-
-if ($.lastjoinpart == null || $.lastjoinpart == undefined) {
-    $.lastjoinpart = System.currentTimeMillis();
-}
-
 $.isBot = function (user) {
     return user.equalsIgnoreCase($.botname);
 }
@@ -30,162 +10,129 @@ $.isOwner = function (user) {
     return user.equalsIgnoreCase($.botowner);
 }
 
-$.isCaster = function (user) {
-    return $.getUserGroupId(user) == 0 || $.isOwner(user) || $.isBot(user);
+$.isCaster = function (user, channel) {
+    return user.equalsIgnoreCase(channel.getName()) || $.isOwner(user) || $.isBot(user);
 }
 
-$.isAdmin = function (user) {
-    return $.getUserGroupId(user) <= 1 || $.isCaster(user);
+$.isAdmin = function (user, channel) {
+    return $.getUserGroupId(user, channel) <= 1 || $.isCaster(user, channel);
 }
 
-$.isMod = function (user) {
-    return $.getUserGroupId(user) <= 2 || $.hasModeO(user) || $.hasModList(user) || $.isAdmin(user);
+$.isMod = function (user, tags, channel) {
+    return $.getUserGroupId(user, channel) <= 2 || (tags != null && tags != "{}" && tags.get("user-type").equalsIgnoreCase("mod"))
+            || $.hasModeO(user, channel) || $.hasModList(user, channel) || $.isAdmin(user, channel);
 }
 
-$.isModv3 = function (user, tags) {
-    return $.isAdmin(user) || (tags != null && tags != "{}" && tags.get("user-type").equalsIgnoreCase("mod")) || $.isMod(user);
-}
-
-$.isSub = function (user) {
-    for (var i = 0; i < $.subUsers.length; i++) {
-        if ($.subUsers[i][0].equalsIgnoreCase(user)) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-$.isSubv3 = function (user, tags) {
-    return (tags != null && tags != "{}" && tags.get("subscriber").equalsIgnoreCase("1")) || $.isSub(user);
+$.isSub = function (user, tags, channel) {
+    return $.getUserGroupId(user, channel) <= 3 || (tags != null && tags != "{}" && tags.get("subscriber").equalsIgnoreCase("1"))
+            || $.tempdb.GetBoolean("t_subs", channel.getName(), user);
 }
 
 $.isTurbo = function (user, tags) {
     return (tags != null && tags != "{}" && tags.get("turbo").equalsIgnoreCase("1")) || false;
 }
 
-$.isDonator = function (user) {
-    return $.getUserGroupId(user) == 4;
+$.isDonator = function (user, channel) {
+    return $.getUserGroupId(user, channel) == 4;
 }
 
-$.isHoster = function (user) {
-    return $.getUserGroupId(user) == 5 || $.isHostUser(user);
+$.isHoster = function (user, channel) {
+    return $.getUserGroupId(user, channel) == 5 || $.isHostUser(user, channel);
 }
 
-$.isReg = function (user) {
-    return $.getUserGroupId(user) <= 6 || $.isOwner(user) || $.isBot(user);
+$.isReg = function (user, channel) {
+    return $.getUserGroupId(user, channel) <= 6 || $.isMod(user, null, channel);
 }
 
-$.hasModeO = function (user) {
-    return $.array.contains($.modeOUsers, user.toLowerCase());
+$.hasModeO = function (user, channel) {
+    return $.tempdb.GetBoolean("t_modeo", channel.getName(), user);
 }
 
-$.hasModList = function (user) {
-    return $.array.contains($.modListUsers, user.toLowerCase());
+$.hasModList = function (user, channel) {
+    return $.tempdb.GetBoolean("t_modlist", channel.getName(), user);
 }
 
-$.hasGroupById = function (user, id) {
-    return $.getUserGroupId(user) >= id;
+$.hasGroupById = function (user, channel, id) {
+    return $.getUserGroupId(user, channel) >= id;
 }
 
-$.hasGroupByName = function (user, name) {
-    return $.hasGroupById(user, $.getGroupIdByName(name));
+$.hasGroupByName = function (user, channel, name) {
+    return $.hasGroupById(user, channel, $.getGroupIdByName(name, channel));
 }
 
-$.getUserGroupId = function (user) {
-    user = $.username.resolve(user);
-    var group = $.inidb.get('group', user.toLowerCase());
-    if (group == null)
-        group = 7;
-    else
-        group = parseInt(group);
-    return group;
-}
-
-$.getUserGroupName = function (user) {
-    return $.getGroupNameById($.getUserGroupId(user));
-}
-
-$.setUserGroupById = function (user, id) {
-    id = id.toString();
-    user = $.username.resolve(user);
-    $.inidb.set('group', user.toLowerCase(), id);
-}
-
-$.setUserGroupByName = function (user, name) {
-    $.setUserGroupById(user, $.getGroupIdByName(name));
-}
-
-$.usergroups = new Array();
-var keys = $.inidb.GetKeyList("groups", "");
-
-for (var i = 0; i < keys.length; i++) {
-    $.usergroups[parseInt(keys[i])] = $.inidb.get("groups", keys[i]);
-}
-
-if ($.usergroups[0] == undefined || $.usergroups[0] == null || $.usergroups[0] != "Caster") {
-    $.usergroups[0] = "Caster";
-    $.inidb.set("grouppoints", "Caster", "0");
-    $.inidb.set("groups", "0", "Caster");
-}
-
-if ($.usergroups[1] == undefined || $.usergroups[1] == null || $.usergroups[1] != "Administrator") {
-    $.usergroups[1] = "Administrator";
-    $.inidb.set("grouppoints", "Administrator", "0");
-    $.inidb.set("groups", "1", "Administrator");
-}
-
-if ($.usergroups[2] == undefined || $.usergroups[2] == null || $.usergroups[2] != "Moderator") {
-    $.usergroups[2] = "Moderator";
-    $.inidb.set("grouppoints", "Moderator", "0");
-    $.inidb.set("groups", "2", "Moderator");
-}
-
-if ($.usergroups[3] == undefined || $.usergroups[3] == null || $.usergroups[3] != "Subscriber") {
-    $.usergroups[3] = "Subscriber";
-    $.inidb.set("grouppoints", "Subscriber", "0");
-    $.inidb.set("groups", "3", "Subscriber");
-}
-
-if ($.usergroups[4] == undefined || $.usergroups[4] == null || $.usergroups[4] != "Donator") {
-    $.usergroups[4] = "Donator";
-    $.inidb.set("grouppoints", "Donator", "0");
-    $.inidb.set("groups", "4", "Donator");
-}
-
-if ($.usergroups[5] == undefined || $.usergroups[5] == null || $.usergroups[5] != "Hoster") {
-    $.usergroups[5] = "Hoster";
-    $.inidb.set("grouppoints", "Hoster", "0");
-    $.inidb.set("groups", "5", "Hoster");
-}
-
-if ($.usergroups[6] == undefined || $.usergroups[6] == null || $.usergroups[6] != "Regular") {
-    $.usergroups[6] = "Regular";
-    $.inidb.set("grouppoints", "Regular", "0");
-    $.inidb.set("groups", "6", "Regular");
-}
-
-if ($.usergroups[7] == undefined || $.usergroups[7] == null || $.usergroups[7] != "Viewer") {
-    $.usergroups[7] = "Viewer";
-    $.inidb.set("grouppoints", "Viewer", "0");
-    $.inidb.set("groups", "7", "Viewer");
-}
-
-
-$.getGroupNameById = function (id) {
-    id = parseInt(id);
-    var id2str = id.toString();
-
-    if ($.inidb.get('groups', id2str) != null && $.inidb.get('groups', id2str) != "") {
-        return $.inidb.get('groups', id2str);
+$.getUserGroupId = function (user, channel) {
+    if (!$.inidb.Exists('group', channel.getName(), user.toLowerCase())) {
+        return 7;
     }
-    return $.usergroups[7];
+
+    return $.inidb.GetInteger('group', channel.getName(), user.toLowerCase());
 }
 
-$.getGroupIdByName = function (name) {
+$.getUserGroupName = function (user, channel) {
+    return $.getGroupNameById($.getUserGroupId(user, channel), channel);
+}
 
-    for (var i = 0; i < $.usergroups.length; i++) {
-        if ($.usergroups[i].equalsIgnoreCase(name)) {
+$.setUserGroupById = function (user, channel, id) {
+    $.inidb.SetInteger('group', channel.getName(), user.toLowerCase(), id);
+}
+
+$.setUserGroupByName = function (user, channel, name) {
+    $.setUserGroupById(user, channel, $.getGroupIdByName(name, channel));
+}
+
+$.on('ircJoinComplete', function (event) {
+    var channel = event.getChannel();
+
+    if (!$.inidb.Exists("groups", channel.getName(), "0")) {
+        $.inidb.SetInteger("grouppoints", channel.getName(), "Caster", "0");
+        $.inidb.SetString("groups", channel.getName(), "0", "Caster");
+    }
+
+    if (!$.inidb.Exists("groups", channel.getName(), "1")) {
+        $.inidb.SetInteger("grouppoints", channel.getName(), "Administrator", "0");
+        $.inidb.SetString("groups", channel.getName(), "1", "Administrator");
+    }
+
+    if (!$.inidb.Exists("groups", channel.getName(), "2")) {
+        $.inidb.SetInteger("grouppoints", channel.getName(), "Moderator", "0");
+        $.inidb.SetString("groups", channel.getName(), "0", "Moderator");
+    }
+
+    if (!$.inidb.Exists("groups", channel.getName(), "3")) {
+        $.inidb.SetInteger("grouppoints", channel.getName(), "Subscriber", "0");
+        $.inidb.SetString("groups", channel.getName(), "3", "Subscriber");
+    }
+
+    if (!$.inidb.Exists("groups", channel.getName(), "4")) {
+        $.inidb.SetInteger("grouppoints", channel.getName(), "Donator", "0");
+        $.inidb.SetString("groups", channel.getName(), "4", "Donator");
+    }
+
+    if (!$.inidb.Exists("groups", channel.getName(), "5")) {
+        $.inidb.SetInteger("grouppoints", channel.getName(), "Hoster", "0");
+        $.inidb.SetString("groups", channel.getName(), "5", "Hoster");
+    }
+
+    if (!$.inidb.Exists("groups", channel.getName(), "6")) {
+        $.inidb.SetInteger("grouppoints", channel.getName(), "Regular", "0");
+        $.inidb.SetString("groups", channel.getName(), "6", "Regular");
+    }
+
+    if (!$.inidb.Exists("groups", channel.getName(), "7")) {
+        $.inidb.SetInteger("grouppoints", channel.getName(), "Viewer", "0");
+        $.inidb.SetString("groups", channel.getName(), "7", "Viewer");
+    }
+});
+
+$.getGroupNameById = function (id, channel) {
+    return $.inidb.GetString('groups', channel.getName(), id);
+}
+
+$.getGroupIdByName = function (name, channel) {
+    var keys = $.inidb.GetKeyList("groups", channel.getName());
+
+    for (var i = 0; i < keys.length; i++) {
+        if ($.inidb.GetString("groups", channel.getName(), keys[i]).equalsIgnoreCase(name)) {
             return i;
         }
     }
@@ -193,16 +140,8 @@ $.getGroupIdByName = function (name) {
     return 7;
 }
 
-$.reloadGroups = function () {
-    $.usergroups = new Array();
-    keys = $.inidb.GetKeyList("groups", "");
-    for (var i = 0; i < keys.length; i++) {
-        $.usergroups[parseInt(keys[i])] = $.inidb.get("groups", keys[i]);
-    }
-}
-
-$.getGroupPointMultiplier = function (playername) {
-    return parseInt($.inidb.get("grouppoints", $.getUserGroupName(playername)));
+$.getGroupPointMultiplier = function (playername, channel) {
+    return $.inidb.GetInteger("grouppoints", channel.getName(), $.getUserGroupName(playername, channel));
 }
 
 $.on('command', function (event) {
@@ -210,6 +149,7 @@ $.on('command', function (event) {
     var username = $.username.resolve(sender, event.getTags());
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
+    var channel = event.getChannel();
 
     var args = event.getArgs();
     var name;
@@ -222,108 +162,104 @@ $.on('command', function (event) {
         args = argsString.split(" ");
     }
 
-
     if (args.length >= 2) {
         if (command.equalsIgnoreCase("group")) {
             var action = args[0];
             name = args[2];
-            var groupid = $.getGroupIdByName(name);
-            var groupname = $.getGroupNameById(groupid);
+            var groupid = $.getGroupIdByName(name, channel);
+            var groupname = $.getGroupNameById(groupid, channel);
 
-            if (!$.isModv3(sender, event.getTags())) {
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
+            if (!$.isMod(sender, channel, event.getTags())) {
+                $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.cmd.modonly", channel), channel);
                 return;
             }
 
             if (action.equalsIgnoreCase("remove") || action.equalsIgnoreCase("delete")) {
-                if (!$.isAdmin(sender)) {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
+                if (!$.isAdmin(sender, channel)) {
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.cmd.adminonly", channel), channel);
                     return;
                 }
-                var keys = $.inidb.GetKeyList("group", "");
+
+                var keys = $.inidb.GetKeyList("group", channel.getName());
                 for (var i = 0; i < keys.length; i++) {
-                    if ($.inidb.get("group", keys[i]) == $.getGroupIdByName(args[1].toLowerCase())) {
-                        $.inidb.set("group", keys[i], "7");
+                    if ($.inidb.GetString("group", channel.getName(), keys[i]) == $.getGroupIdByName(args[1].toLowerCase(), channel)) {
+                        $.inidb.SetInteger("group", channel.getName(), keys[i], 7);
                     }
                 }
 
-                var keys2 = $.inidb.GetKeyList("grouppoints", "");
+                var keys2 = $.inidb.GetKeyList("grouppoints", channel.getName());
                 for (var i = 0; i < keys2.length; i++) {
-                    if (keys2[i].equalsIgnoreCase((args[1]))) {
-                        $.inidb.del("grouppoints", keys2[i]);
+                    if (keys2[i].equalsIgnoreCase(args[1])) {
+                        $.inidb.RemoveKey("grouppoints", channel.getName(), keys2[i]);
                     }
                 }
 
-                if ($.getGroupIdByName(args[1].toLowerCase() != null)) {
-                    $.inidb.del("groups", $.getGroupIdByName(args[1].toLowerCase()));
+                if ($.getGroupIdByName(args[1].toLowerCase(), channel) != null) {
+                    $.inidb.RemoveKey("groups", channel.getName(), $.getGroupIdByName(args[1].toLowerCase(), channel));
                 }
 
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.permissions.group-remove", args[1]));
-                //$.setUserGroupById(args[1], $.getGroupIdByName("Viewers"));
-                //$.say("Group for " + $.username.resolve(args[1]) + " reset to " + $.getUserGroupName($.username.resolve(args[1])) + "!");
-                //$.logEvent("permissions.js", 183, username + " reset " + args[1] + "'s group to " + $.getUserGroupName($.username.resolve(args[1])));
+                $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.permissions.group-remove", channel, args[1]), channel);
                 return;
             }
+
             if (action.equalsIgnoreCase("create")) {
-                if (!$.isAdmin(sender)) {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
+                if (!$.isAdmin(sender, channel)) {
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.cmd.adminonly", channel), channel);
                     return;
                 }
-                $.inidb.set("groups", $.usergroups.length.toString(), args[1].toString());
-                $.inidb.set("grouppoints", args[1].toString(), "0");
-                $.reloadGroups();
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.permissions.group-create", args[1].toString()));
+                $.inidb.SetString("groups", channel.getName(), $.inidb.GetKeyList("groups", channel.getName()).length, args[1].toString());
+                $.inidb.SetInteger("grouppoints", channel.getName(), args[1].toString(), 0);
+                $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.permissions.group-create", channel, args[1].toString()), channel);
                 return;
             }
 
             if (action.equalsIgnoreCase("set") || action.equalsIgnoreCase("add") || action.equalsIgnoreCase("change")) {
-                if (name.toLowerCase() != groupname.toLowerCase()) {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.permissions.group-not-exists"));
+                if (!name.equalsIgnoreCase(groupname)) {
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.permissions.group-not-exists", channel), channel);
                 }
                 else {
-                    if ((parseInt($.getUserGroupId(sender)) < $.parseInt($.getUserGroupId($.username.resolve(args[1])))) || sender.equalsIgnoreCase(args[1]))
+                    if (($.getUserGroupId(sender, channel) < $.getUserGroupId(args[1], channel)) || sender.equalsIgnoreCase(args[1]))
                     {
-                        if ((parseInt($.getUserGroupId(sender)) < parseInt($.getGroupIdByName(name))) || sender.equalsIgnoreCase(args[1]))
+                        if (($.getUserGroupId(sender, channel) < $.getGroupIdByName(name, channel)) || sender.equalsIgnoreCase(args[1]))
                         {
-                            $.setUserGroupByName(args[1], name);
-                            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.permissions.group-set", $.username.resolve(args[1]), $.getUserGroupName($.username.resolve(args[1]))));
-                            $.logEvent("permissions.js", 200, username + " changed " + args[1] + "'s group to " + $.getUserGroupName($.username.resolve(args[1])));
+                            $.setUserGroupByName(args[1], channel, name);
+                            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.permissions.group-set", channel, $.username.resolve(args[1]), $.getUserGroupName(args[1], channel)), channel);
+                            $.logEvent("permissions.js", 200, channel, username + " changed " + args[1] + "'s group to " + $.getUserGroupName(args[1], channel));
                             return;
                         } else {
-                            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.permissions.group-set-err-same"));
+                            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.permissions.group-set-err-same", channel), channel);
                             return;
                         }
-                    }
-                    else {
-                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.permissions.group-set-err-above"));
+                    } else {
+                        $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.permissions.group-set-err-above", channel), channel);
                         return;
                     }
                 }
             }
             if (action.equalsIgnoreCase("points")) {
-                name = args[1].toString();
-                groupid = $.getGroupIdByName(name);
-                groupname = $.getGroupNameById(groupid);
+                name = args[1];
+                groupid = $.getGroupIdByName(name, channel);
+                groupname = $.getGroupNameById(groupid, channel);
 
-                if (name.toLowerCase() != groupname.toLowerCase()) {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.permissions.group-not-exists"));
+                if (!name.equalsIgnoreCase(groupname)) {
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.permissions.group-not-exists", channel), channel);
                     return;
                 }
-                if (parseInt(args[2] <= -1)) { // modified to accept !group points <group> 0 to default to !points gain <amount> - Kojitsari
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.permissions.group-points-err-less-than-zero"));
+                if (parseInt(args[2]) <= -1) { // modified to accept !group points <group> 0 to default to !points gain <amount> - Kojitsari
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.permissions.group-points-err-less-than-zero", channel), channel);
                     return;
                 } else {
-                    $.inidb.set("grouppoints", groupname, args[2].toString());
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.permissions.group-points-set", groupname, args[2].toString()));
+                    $.inidb.SetInteger("grouppoints", channel.getName(), groupname, args[2]);
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.permissions.group-points-set", channel, groupname, args[2]), channel);
                 }
             } else if (action.equalsIgnoreCase("qset")) {
-                if (name.toLowerCase() != groupname.toLowerCase()) {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.permissions.group-not-exists"));
+                if (!name.equalsIgnoreCase(groupname)) {
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.permissions.group-not-exists", channel), channel);
                     return;
                 }
                 else {
-                    $.setUserGroupByName(args[1], name);
-                    $.logEvent("permissions.js", 200, username + " silently changed " + args[1] + "'s group to " + $.getUserGroupName($.username.resolve(args[1])));
+                    $.setUserGroupByName(args[1], channel, name);
+                    $.logEvent("permissions.js", 200, channel, username + " silently changed " + args[1] + "'s group to " + $.getUserGroupName(args[1], channel));
                     return;
                 }
             }
@@ -331,142 +267,130 @@ $.on('command', function (event) {
     }
 
     if (command.equalsIgnoreCase("group")) {
-        var action = args[0];
-        if (args.length >= 1) {
+        if (args.length == 1) {
             username = args[0];
 
-            if (!argsString.isEmpty() && action.equalsIgnoreCase("list") || args.length >= 2) {
-
-            } else {
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.permissions.group-current-other", $.username.resolve(username), $.getUserGroupName(username)));
-                return;
-            }
-
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.permissions.group-current-other", channel, $.username.resolve(username), $.getUserGroupName(username, channel)), channel);
+            return;
         } else {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.permissions.group-current-self", $.username.resolve(sender, event.getTags()), $.getUserGroupName(username)));
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.permissions.group-current-self", channel, $.username.resolve(sender, event.getTags()), $.getUserGroupName(username, channel)), channel);
             return;
         }
     }
 
     if (command.equalsIgnoreCase("group") && !argsString.isEmpty()) {
-        if (!$.isAdmin(sender)) {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
+        if (!$.isAdmin(sender, channel)) {
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.cmd.adminonly", channel), channel);
             return;
-
-
         }
 
         if (args.length < 2) {
             if (args.length == 1 && args[0].equalsIgnoreCase("list")) {
                 var ranks = "";
 
-                for (i = 0; i < $.usergroups.length; i++) {
+                for (i = 0; i < $.inidb.GetKeyList("groups", channel.getName()).length; i++) {
                     if (ranks.length > 0) {
                         ranks = ranks + " - ";
                     }
-                    ranks = ranks + i + " = " + $.getGroupNameById(i);
+                    ranks = ranks + i + " = " + $.getGroupNameById(i, channel);
                 }
 
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.permissions.group-list", ranks));
+                $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.permissions.group-list", channel, ranks), channel);
             } else {
                 if (!argsString.isEmpty() && action.equalsIgnoreCase("list")) {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.permissions.group-usage"));
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.permissions.group-usage", channel), channel);
                 }
             }
         }
         if (args.length >= 2 && action.equalsIgnoreCase("name")) {
-            if (parseInt(args[1]) >= $.usergroups.length || parseInt(args[1]) < 0) {
-                args[1] = $.usergroups.length - 1;
+            if (parseInt(args[1]) >= $.inidb.GetKeyList("groups", channel.getName()).length || parseInt(args[1]) < 0) {
+                args[1] = $.inidb.GetKeyList("groups", channel.getName()).length - 1;
             }
 
-            if ($.getGroupNameById(parseInt(args[1])).equals("Administrator")) {
+            if ($.getGroupNameById(parseInt(args[1]), channel).equals("Administrator")) {
                 allowed = false;
 
-                for (i = 0; i < $.usergroups.length; i++) {
-                    if ($.usergroups[i].equals("Administrator") && i != parseInt(args[1])) {
+                for (i = 0; i < $.inidb.GetKeyList("groups", channel.getName()).length; i++) {
+                    if ($.inidb.GetString("groups", channel.getName(), i).equals("Administrator") && i != parseInt(args[1])) {
                         allowed = true;
                     }
                 }
 
                 if (!allowed) {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.permissions.group-name-err-default"));
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.permissions.group-name-err-default", channel), channel);
                     return;
                 }
             }
 
-            if ($.getGroupNameById(parseInt(args[1])).equals("Moderator")) {
+            if ($.getGroupNameById(parseInt(args[1]), channel).equals("Moderator")) {
                 allowed = false;
 
-                for (i = 0; i < $.usergroups.length; i++) {
-                    if ($.usergroups[i].equals("Moderator") && i != parseInt(args[1])) {
+                for (i = 0; i < $.inidb.GetKeyList("groups", channel.getName()).length; i++) {
+                    if ($.inidb.GetString("groups", channel.getName(), i).equals("Moderator") && i != parseInt(args[1])) {
                         allowed = true;
                     }
                 }
 
                 if (!allowed) {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.permissions.group-name-err-default"));
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.permissions.group-name-err-default", channel), channel);
                     return;
                 }
             }
 
-            if ($.getGroupNameById(parseInt(args[1])).equals("Caster")) {
+            if ($.getGroupNameById(parseInt(args[1]), channel).equals("Caster")) {
                 allowed = false;
 
-                for (i = 0; i < $.usergroups.length; i++) {
-                    if ($.usergroups[i].equals("Caster") && i != parseInt(args[1])) {
+                for (i = 0; i < $.inidb.GetKeyList("groups", channel.getName()).length; i++) {
+                    if ($.inidb.GetString("groups", channel.getName(), i).equals("Caster") && i != parseInt(args[1])) {
                         allowed = true;
                     }
                 }
 
                 if (!allowed) {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.permissions.group-name-err-default"));
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.permissions.group-name-err-default", channel), channel);
                     return;
                 }
             }
 
             if (parseInt(args[1]) <= 7) {
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.permissions.group-name-err-default"));
+                $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.permissions.group-name-err-default", channel), channel);
                 return;
             }
 
 
             var groupid;
-            for (var i = 0; i < $.usergroups.length; i++) {
-                if (args[1].equalsIgnoreCase($.getGroupNameById(args[i]))) {
-                    groupid = $.getGroupIdByName(args[1]).toString();
+            for (var i = 0; i < $.inidb.GetKeyList("groups", channel.getName()).length; i++) {
+                if (args[1].equalsIgnoreCase($.getGroupNameById(args[i], channel))) {
+                    groupid = $.getGroupIdByName(args[1], channel);
                 } else {
                     groupid = args[1];
                 }
             }
 
-
             name = args[2];
 
             if ($.strlen(name) > 0 && allowed) {
+                var oldname = $.inidb.GetString("groups", channel.getName(), groupid);
+                $.inidb.SetString("groups", channel.getName(), groupid, name);
 
-                $.inidb.set("groups", groupid, name);
+                $.logEvent("permissions.js", 282, channel, username + " changed the name of the " + oldname + " group to " + name);
 
-                var oldname = $.usergroups[parseInt(groupid)];
-                $.usergroups[parseInt(groupid)] = name;
-
-                $.logEvent("permissions.js", 282, username + " changed the name of the " + oldname + " group to " + name);
-
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.permissions.group-name", oldname, name));
+                $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.permissions.group-name", channel, oldname, name), channel);
                 return;
-
             }
         }
     }
 
     if (command.equalsIgnoreCase("users")) {
-        if (!$.isModv3(sender, event.getTags())) {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
+        if (!$.isMod(sender, channel, event.getTags())) {
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.cmd.modonly", channel), channel);
             return;
         }
-        s = $.lang.get("net.phantombot.permissions.users");
+        s = $.lang.get("net.phantombot.permissions.users", channel);
 
-        for (i = 0; i < $.users.length; i++) {
-            name = $.users[i][0];
+        var keys = $.tempdb.GetKeyList("t_users", channel.getName());
+        for (i = 0; i < keys.length; i++) {
+            name = keys[i];
 
             if (s.length > 18) {
                 s += ", ";
@@ -475,16 +399,17 @@ $.on('command', function (event) {
             s += name.toLowerCase();
         }
 
-        $.say($.getWhisperString(sender) + s);
+        $.say($.getWhisperString(sender, channel) + s, channel);
     }
 
     if (command.equalsIgnoreCase("mods")) {
-        s = $.lang.get("net.phantombot.permissions.mods");
+        s = $.lang.get("net.phantombot.permissions.mods", channel);
 
-        for (i = 0; i < $.users.length; i++) {
-            name = users[i][0];
+        var keys = $.tempdb.GetKeyList("t_users", channel.getName());
+        for (i = 0; i < keys.length; i++) {
+            name = keys[i];
 
-            if ($.isMod(name.toLowerCase())) {
+            if ($.isMod(name.toLowerCase(), null, channel)) {
                 if (s.length > 17) {
                     s += ", ";
                 }
@@ -493,16 +418,17 @@ $.on('command', function (event) {
             }
         }
 
-        $.say(s);
+        $.say($.getWhisperString(sender, channel) + s, channel);
     }
 
     if (command.equalsIgnoreCase("admins")) {
-        s = $.lang.get("net.phantombot.permissions.admins");
+        s = $.lang.get("net.phantombot.permissions.admins", channel);
 
-        for (i = 0; i < $.users.length; i++) {
-            name = users[i][0];
+        var keys = $.tempdb.GetKeyList("t_users", channel.getName());
+        for (i = 0; i < keys.length; i++) {
+            name = keys[i];
 
-            if ($.isAdmin(name.toLowerCase())) {
+            if ($.isAdmin(name.toLowerCase(), channel)) {
                 if (s.length > 19) {
                     s += ", ";
                 }
@@ -511,27 +437,17 @@ $.on('command', function (event) {
             }
         }
 
-        $.say($.getWhisperString(sender) + s);
+        $.say($.getWhisperString(sender, channel) + s, channel);
     }
 });
 
 $.on('ircChannelMessage', function (event) {
     var sender = event.getSender().toLowerCase();
-    var found = false;
+    var channel = event.getChannel();
 
-    for (var i = 0; i < $.users.length; i++) {
-        if ($.users[i][0].equalsIgnoreCase(sender)) {
-            $.users[i][1] = System.currentTimeMillis();
-            found = true;
-            if ($.isSubv3(event.getSender(), event.getTags()) == true) {
-                $.inidb.set("subscribed", sender, "1");
-            }
-            break;
-        }
-    }
-
-    if (!found) {
-        $.users.push(new Array(sender, System.currentTimeMillis()));
+    $.tempdb.SetInteger("t_users", channel.getName(), sender, System.currentTimeMillis());
+    if ($.isSub(event.getSender(), event.getTags(), channel)) {
+        $.tempdb.SetInteger("t_subs", channel.getName(), sender, System.currentTimeMillis() + 10000);
     }
 });
 
@@ -539,88 +455,40 @@ $.on('ircJoinComplete', function (event) {
     var channel = event.getChannel();
     var it = channel.getNicks().iterator();
     var name;
-    var found = false;
 
-    $.lastjoinpart = System.currentTimeMillis();
-
-    while (it.hasNext() == true) {
+    while (it.hasNext()) {
         name = it.next();
 
-        for (var i = 0; i < $.users.length; i++) {
-            if ($.users[i][0].equalsIgnoreCase(name)) {
-                found = true;
-                break;
-            }
-        }
-
-        if (!found) {
-            $.users.push(new Array(name, System.currentTimeMillis()));
-        }
+        $.tempdb.SetInteger("t_users", channel.getName(), name, System.currentTimeMillis());
     }
 });
 
 $.on('ircChannelJoin', function (event) {
     var username = event.getUser().toLowerCase();
-    var found = false;
+    var channel = event.getChannel();
 
-    $.lastjoinpart = System.currentTimeMillis();
-
-    for (var i = 0; i < $.users.length; i++) {
-        if ($.users[i][0].equalsIgnoreCase(username)) {
-            found = true;
-            break;
-        }
-    }
-
-    if (!found) {
-        $.users.push(new Array(username, System.currentTimeMillis()));
-    }
-
+    $.tempdb.SetInteger("t_users", channel.getName(), username, System.currentTimeMillis());
 });
 
 $.on('ircChannelLeave', function (event) {
     var username = event.getUser().toLowerCase();
-    var i;
-    var found = false;
+    var channel = event.getChannel();
 
-    $.lastjoinpart = System.currentTimeMillis();
-
-    for (i = 0; i < $.users.length; i++) {
-        if ($.users[i][0].equalsIgnoreCase(username)) {
-            $.users.splice(i, 1);
-            break;
-        }
-    }
-
-    for (i = 0; i < $.modeOUsers.length; i++) {
-        if ($.modeOUsers[i].equalsIgnoreCase(event.getUser().toLowerCase())) {
-            $.modeOUsers.splice(i, 1);
-            if ($.isAdmin(username) == false && $.isBot(username) == false) {
-                println("-Moderator: " + username);
-            }
-        }
-    }
+    $.tempdb.RemoveKey("t_users", channel.getName(), username);
+    $.tempdb.RemoveKey("t_modeo", channel.getName(), username);
 });
 
 $.on('ircChannelUserMode', function (event) {
     var username = event.getUser().toLowerCase();
-    $.inidb.set('visited', username, "visited");
-    
+    var channel = event.getChannel();
+
+    $.inidb.SetString('visited', channel, username, "visited");
+
     if (event.getMode().equalsIgnoreCase("o")) {
         if (event.getAdd() == true) {
-            if ($.array.contains($.modeOUsers, username) == false) {
-                $.modeOUsers.push(username);
-            }
+            $.tempdb.SetBoolean("t_modeo", channel.getName(), username, true);
         } else {
-            for (i = 0; i < $.modeOUsers.length; i++) {
-
-                if ($.modeOUsers[i].equalsIgnoreCase(username)) {
-                    $.modeOUsers.splice(i, 1);
-                    if ($.isAdmin(username) == false && $.isBot(username) == false) {
-                        println("-Moderator: " + username);
-                    }
-                }
-            }
+            $.tempdb.RemoveKey("t_modeo", channel.getName(), username);
         }
     }
 });
@@ -628,16 +496,20 @@ $.on('ircChannelUserMode', function (event) {
 $.on('ircPrivateMessage', function (event) {
     if (event.getSender().equalsIgnoreCase("jtv")) {
         var message = event.getMessage().toLowerCase();
+        var channel = event.getChannel();
         var spl;
-        var i;
+
+        if (channel == null) {
+            return;
+        }
 
         if (message.startsWith("the moderators of this channel are: ")) {
             spl = message.substring(33).split(", ");
 
-            $.modListUsers.splice(0, $.modListUsers.length);
+            $.tempdb.RemoveSection("t_modlist", channel.getName());
 
             for (i = 0; i < spl.length; i++) {
-                $.modListUsers.push(spl[i].toLowerCase());
+                $.tempdb.SetBoolean("t_modlist", channel.getName(), spl[i].toLowerCase(), true);
             }
 
             $.saveArray(spl, "mods.txt", false);
@@ -645,39 +517,29 @@ $.on('ircPrivateMessage', function (event) {
             spl = message.split(" ");
 
             if (spl[2].equalsIgnoreCase("subscriber")) {
-                for (i = 0; i < $.subUsers.length; i++) {
-                    if ($.subUsers[i][0].equalsIgnoreCase(spl[1])) {
-                        $.subUsers[i][1] = System.currentTimeMillis() + 10000;
-                        return;
-                    }
-                }
-                
-                $.subUsers.push(new Array(spl[1], System.currentTimeMillis() + 10000));
+                $.tempdb.SetInteger("t_subs", channel.getName(), spl[1].toLowerCase(), System.currentTimeMillis() + 10000);
             }
         }
     }
 });
 
 $.timer.addTimer("./util/permissions.js", "modcheck", true, function () {
-    $.say(".mods");
+    var channels = $.phantombot.getChannels();
+    for (var i = 0; i < channels.size(); i++) {
+        $.say(".mods", channels.get(i));
+    }
 }, modcheckinterval);
 
 $.timer.addTimer("./util/permissions.js", "usercheck", true, function () {
     var curtime = System.currentTimeMillis();
 
-    /*if ($.lastjoinpart + usergonetime < curtime) {
-     for (var i = 0; i < $.users.length; i++) {
-     if ($.users[i][1] + usergonetime < curtime) {
-     $.users.splice(i, 1);
-     i--;
-     }
-     }
-     }*/
-
-    for (var b = 0; b < $.subUsers.length; b++) {
-        if ($.subUsers[b][1] < curtime) {
-            $.subUsers.splice(b, 1);
-            b--;
+    var channels = $.phantombot.getChannels();
+    for (var i = 0; i < channels.size(); i++) {
+        var keys = $.tempdb.GetKeyList("t_subs", channels.get(i).getName());
+        for (var b = 0; b < keys.length; b++) {
+            if ($.tempdb.GetInteger("t_subs", channels.get(i).getName(), keys[i]) < curtime) {
+                $.tempdb.RemoveKey("t_subs", channels.get(i).getName(), keys[i]);
+            }
         }
     }
 }, usercheckinterval);
