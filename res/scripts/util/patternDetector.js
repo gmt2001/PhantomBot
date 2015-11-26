@@ -41,7 +41,6 @@ var otherPattern = "(magnet:|mailto:|ed2k://|irc://|ircs://|skype:|ymsgr:|xfire:
 var specialTldPattern = "((h|\\|-\\|)(t|7){2}p(s|5|$)?://|(m|\\|\\\\/\\|)(a|@|/-\\\\)(i|1)(l|1)(t|7)(o|0|\\(\\)):)?([\\w\\-]+\\.)+";
 specialTldPattern += "(\\.|\\,)(\\s)*((c|\\()(o|0|\\(\\))(m|\\|\\\\/\\|)|(n|\\|/\\||\\|\\\\\\|)(e|3)(t|7)|(o|0|\\(\\))rg|(i|1)(n|\\|/\\||\\|\\\\\\|)f";
 specialTldPattern += "(o|0|\\(\\))|r(u|\\|_\\|))";
-var lastlink = "";
 
 $.hasLinks = function(event, aggressive) {
     var message = event.getMessage();
@@ -62,7 +61,7 @@ $.hasLinks = function(event, aggressive) {
     if (m1.find() == true) {
         s = m1.group();
             
-        lastlink = s;
+        $.tempdb.SetString("t_state", event.getChannel().getName(), "lastlink", s);
 
         println(">>>>Matched link on linkPattern from " + event.getSender() + ": " + s);
         $.logLink(event.getSender(), event.getChannel(), "Matched link on linkPattern: " + s)
@@ -73,7 +72,7 @@ $.hasLinks = function(event, aggressive) {
     if (m2.find() == true) {
         s = m2.group();
             
-        lastlink = s;
+        $.tempdb.SetString("t_state", event.getChannel().getName(), "lastlink", s);
             
         println(">>>>Matched link on emailPattern from " + event.getSender() + ": " + s);
         $.logLink(event.getSender(), event.getChannel(), "Matched link on emailPattern: " + s)
@@ -84,7 +83,7 @@ $.hasLinks = function(event, aggressive) {
     if (m3.find() == true) {
         s = m3.group();
             
-        lastlink = s;
+        $.tempdb.SetString("t_state", event.getChannel().getName(), "lastlink", s);
             
         println(">>>>Matched link on otherPattern from " + event.getSender() + ": " + s);
         $.logLink(event.getSender(), event.getChannel(), "Matched link on otherPattern: " + s)
@@ -95,8 +94,8 @@ $.hasLinks = function(event, aggressive) {
     return false;
 }
 
-$.getLastLink = function() {
-    return lastlink;
+$.getLastLink = function(channel) {
+    return $.tempdb.GetString("t_state", channel.getName(), "lastlink");
 }
 
 $.deobfuscateLinks = function(message, aggressive) {

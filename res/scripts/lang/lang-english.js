@@ -100,11 +100,7 @@ $.lang.data["net.phantombot.chatmoderator.banned"] = " [Banned]";
 $.lang.data["net.phantombot.chatmoderator.timedout"] = " [Timed Out ($1)]";
 $.lang.data["net.phantombot.chatmoderator.whitelist-add"] = "The URL $1 has been added to the whitelist!";
 $.lang.data["net.phantombot.chatmoderator.whitelist-usage"] = "Usage: !whitelist <link>";
-$.lang.data["net.phantombot.chatmoderator.forgive"] = "Reduced $1 to $2 strike(s)!";
-$.lang.data["net.phantombot.chatmoderator.increase"] = "Increased $1 to $2 strike(s)!";
 $.lang.data["net.phantombot.chatmoderator.permit"] = "$1 is permitted to post a link during the next $2 seconds!";
-$.lang.data["net.phantombot.chatmoderator.ban-err-time"] = "$1 is not a valid amount of time";
-$.lang.data["net.phantombot.chatmoderator.ban"] = "$1 banned for $2 hour(s)";
 $.lang.data["net.phantombot.chatmoderator.ban-indef"] = "$1 banned indefinitely";
 $.lang.data["net.phantombot.chatmoderator.unban"] = "$1 is no longer banned";
 $.lang.data["net.phantombot.chatmoderator.clearchat"] = "$1 cleared chat!";
@@ -112,9 +108,6 @@ $.lang.data["net.phantombot.chatmoderator.autoban"] = "Added a phrase to the aut
 $.lang.data["net.phantombot.chatmoderator.autopurge"] = "Added a phrase to the autopurge list! This can only be undone manually!";
 $.lang.data["net.phantombot.chatmoderator.chatmod-help-1"] = "Usage: !chatmod <option> [new value]";
 $.lang.data["net.phantombot.chatmoderator.chatmod-help-2"] = "-Options: ";
-$.lang.data["net.phantombot.chatmoderator.chatmod-warn-reset-time"] = "The current amount of time, in seconds, after which a users link/caps warning count is reset is $1 seconds. To change it use: !chatmod warningcountresettime <-1 for never, time>";
-$.lang.data["net.phantombot.chatmoderator.chatmod-warn-reset-time-never"] = "Changed warning count reset time to never!";
-$.lang.data["net.phantombot.chatmoderator.chatmod-warn-reset-time-set"] = "Changed warning count reset time to $1 seconds!";
 
 //pointSystem.js
 $.lang.data["net.phantombot.pointsystem.config"] = "[Point Settings] - [Name (single): $1] - [Name (multiple): $2] - [Gain: $3] - [Gain (offline): $4] - [Interval: $5 minute(s)] - [Interval (offline): $6 minute(s)] - [Bonus: $7 per group level] - [Gifting Minimum: $8]";
