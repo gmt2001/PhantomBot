@@ -363,7 +363,7 @@ $.on('command', function (event) {
     if (command.equalsIgnoreCase("slot") && !argsString.isEmpty()) {
         if (args.length >= 2) {
             if (action.equalsIgnoreCase("bonus") && !argsString.isEmpty()) {
-                if (!$.isMod(sender)) {
+                if (!$.isMod(sender, event.getTags(), event.getChannel())) { 
                     $.say($.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
@@ -374,7 +374,7 @@ $.on('command', function (event) {
             }
 
             if (action.equalsIgnoreCase("time") && !argsString.isEmpty()) {
-                if (!$.isMod(sender)) {
+                if (!$.isMod(sender, event.getTags(), event.getChannel())) { 
                     $.say($.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
@@ -386,7 +386,7 @@ $.on('command', function (event) {
             }
 
             if (action.equalsIgnoreCase("emote") && !argsString.isEmpty()) {
-                if (!$.isMod(sender)) {
+                if (!$.isMod(sender, event.getTags(), event.getChannel())) { 
                     $.say($.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
@@ -425,7 +425,7 @@ $.on('command', function (event) {
             }
 
             if (action.equalsIgnoreCase("reward") && !argsString.isEmpty()) {
-                if (!$.isMod(sender)) {
+                if (!$.isMod(sender, event.getTags(), event.getChannel())) { 
                     $.say($.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
@@ -464,7 +464,7 @@ $.on('command', function (event) {
             }
 
             if ((action.equalsIgnoreCase("halfReward") && !argsString.isEmpty())||(action.equalsIgnoreCase("halfRewards") && !argsString.isEmpty())) {
-                if (!$.isMod(sender)) {
+                if (!$.isMod(sender, event.getTags(), event.getChannel())) { 
                     $.say($.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
@@ -516,7 +516,7 @@ $.on('command', function (event) {
             }
 
             if (action.equalsIgnoreCase("seeReward") && !argsString.isEmpty()) {
-                if (!$.isMod(sender)) {
+                if (!$.isMod(sender, event.getTags(), event.getChannel())) { 
                     $.say($.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
@@ -531,7 +531,7 @@ $.on('command', function (event) {
             }
 
             if (action.equalsIgnoreCase("jackpot") && !argsString.isEmpty()) {
-                if (!$.isMod(sender)) {
+                if (!$.isMod(sender, event.getTags(), event.getChannel())) { 
                     $.say($.lang.get("net.phantombot.cmd.modonly"));
                     return;
                 }
