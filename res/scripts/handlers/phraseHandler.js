@@ -31,7 +31,7 @@ $.on('command', function (event) {
     var response = "";
 	
     if (command.equalsIgnoreCase("addphrase")) {
-        if (!$.isModv3(sender, event.getTags())) {
+        if (!$.isMod(sender, event.getTags(), event.getChannel())) { 
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
             return;
         }
@@ -53,7 +53,7 @@ $.on('command', function (event) {
     }
     
     if (command.equalsIgnoreCase("delphrase")) {
-        if (!$.isModv3(sender, event.getTags())) {
+        if (!$.isMod(sender, event.getTags(), event.getChannel())) { 
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
             return;
         }
