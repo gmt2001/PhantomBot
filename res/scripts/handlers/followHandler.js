@@ -1,17 +1,22 @@
 $.announceFollows = false;
 $.announceFollowsAllowed = false;
 $.followMessage = $.inidb.get('settings', 'followmessage');
+$.followReward = parseInt($.inidb.get('settings', 'followreward'));
 
 if ($.followMessage == null || $.followMessage == undefined || $.strlen($.followMessage) == 0 || $.followMessage == "") {
     if ($.moduleEnabled("./systems/pointSystem.js")) {
-        if ($.hostreward < 1) {
+        if ($.followReward < 1) {
             $.followMessage = $.lang.get("net.phantombot.followHandler.new-follow-message-no-reward");
-        } else if ($.hostreward > 0 && $.moduleEnabled('./systems/pointSystem.js')) {
+        } else if ($.followReward > 0 && $.moduleEnabled('./systems/pointSystem.js')) {
             $.followMessage = $.lang.get("net.phantombot.followHandler.new-follow-message-and-reward");
         }
     } else {
         $.followMessage = $.lang.get("net.phantombot.followHandler.new-follow-message-no-reward");
     }
+}
+
+if ($.followReward == null || $.followReward == undefined || $.followReward == "" || isNaN($.followReward) || $.followReward.isEmpty()) {
+    $.followReward = 100;
 }
 
 $.getFollowAge = function (user, channel) {
@@ -70,11 +75,7 @@ $.on('twitchFollow', function (event) {
 
     if (followed == null || followed == undefined || followed.isEmpty()) {
         $.inidb.set('followed', follower, 1);
-        var p = parseInt($.inidb.get('settings', 'followreward'));
-
-        if (isNaN(p)) {
-            p = 100;
-        }
+        var p = $.followReward;
 
         if ($.announceFollows == true && $.announceFollowsAllowed == true && $.moduleEnabled("./handlers/followHandler.js")) {
             var s = $.followMessage;
@@ -102,7 +103,7 @@ $.on('twitchFollow', function (event) {
         if ($.moduleEnabled("./systems/pointSystem.js") && p > 0) {
             $.inidb.incr('points', follower, p);
         }
-    } else if (followed==0) {
+    } else if (followed == 0) {
         $.inidb.set('followed', follower, 1);
     }
 });
@@ -117,7 +118,7 @@ $.on('twitchUnfollow', function (event) {
         return;
     }
 
-    if (followed==1) {
+    if (followed == 1) {
         $.inidb.set('followed', follower, 0);
     }
 });
@@ -257,6 +258,7 @@ $.on('command', function (event) {
             $.logEvent("followHandler.js", 134, username + " changed the new follower points reward to: " + argsString);
 
             $.inidb.set('settings', 'followreward', argsString);
+            $.followReward = parseInt(argsString);
 
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.followHandler.follow-reward-set"));
         }
@@ -275,7 +277,6 @@ $.on('command', function (event) {
         }
     }
 });
-
 
 $.checkFollowTrain = function () {
     if (System.currentTimeMillis() - $.lastfollow > 65 * 1000) {

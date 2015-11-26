@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.util.Map.Entry;
-import javax.net.ssl.HttpsURLConnection;
 import org.apache.commons.io.IOUtils;
 
 /**
@@ -51,7 +50,6 @@ public class HttpRequest
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
         HttpResponse r = new HttpResponse();
-        boolean isHttps = url.startsWith("https");
 
         r.type = type;
         r.url = url;
@@ -62,84 +60,43 @@ public class HttpRequest
         {
             URL u = new URL(url);
 
-            if (isHttps)
+            HttpURLConnection h = (HttpURLConnection) u.openConnection();
+            
+            for (Entry<String, String> e : headers.entrySet())
             {
-                HttpsURLConnection h = ((HttpsURLConnection) u.openConnection());
+                h.addRequestProperty(e.getKey(), e.getValue());
+            }
 
-                for (Entry<String, String> e : headers.entrySet())
-                {
-                    h.addRequestProperty(e.getKey(), e.getValue());
-                }
+            h.setRequestMethod(type.name());
+            h.setUseCaches(false);
+            h.setDefaultUseCaches(false);
+            h.setConnectTimeout(timeout);
+            h.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.52 Safari/537.36 PhantomBotJ/2015");
+            if (!post.isEmpty())
+            {
+                h.setDoOutput(true);
+            }
 
-                h.setRequestMethod(type.name());
-                h.setUseCaches(false);
-                h.setDefaultUseCaches(false);
-                h.setConnectTimeout(timeout);
-                h.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.52 Safari/537.36 PhantomBotJ/2015");
-                h.setRequestProperty("Content-length", "0");
-                if (!post.isEmpty())
-                {
-                    h.setRequestProperty("Content-length", "" + post.length());
-                    h.setDoOutput(true);
-                }
+            h.connect();
 
-                h.connect();
+            if (!post.isEmpty())
+            {
+                BufferedOutputStream stream = new BufferedOutputStream(h.getOutputStream());
+                stream.write(post.getBytes());
+                stream.flush();
+                stream.close();
+            }
 
-                if (!post.isEmpty())
-                {
-                    IOUtils.write(post, new BufferedOutputStream(h.getOutputStream()));
-                }
-
-                if (h.getResponseCode() < 400)
-                {
-                    r.content = IOUtils.toString(new BufferedInputStream(h.getInputStream()), h.getContentEncoding());
-                    r.httpCode = h.getResponseCode();
-                    r.success = true;
-                } else
-                {
-                    r.content = IOUtils.toString(new BufferedInputStream(h.getErrorStream()), h.getContentEncoding());
-                    r.httpCode = h.getResponseCode();
-                    r.success = false;
-                }
+            if (h.getResponseCode() < 400)
+            {
+                r.content = IOUtils.toString(new BufferedInputStream(h.getInputStream()), h.getContentEncoding());
+                r.httpCode = h.getResponseCode();
+                r.success = true;
             } else
             {
-                HttpURLConnection h = ((HttpURLConnection) u.openConnection());
-
-                for (Entry<String, String> e : headers.entrySet())
-                {
-                    h.addRequestProperty(e.getKey(), e.getValue());
-                }
-
-                h.setRequestMethod(type.name());
-                h.setUseCaches(false);
-                h.setDefaultUseCaches(false);
-                h.setConnectTimeout(timeout);
-                h.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.52 Safari/537.36 PhantomBotJ/2015");
-                h.setRequestProperty("Content-length", "0");
-                if (!post.isEmpty())
-                {
-                    h.setRequestProperty("Content-length", "" + post.length());
-                    h.setDoOutput(true);
-                }
-
-                h.connect();
-
-                if (!post.isEmpty())
-                {
-                    IOUtils.write(post, new BufferedOutputStream(h.getOutputStream()));
-                }
-
-                if (h.getResponseCode() < 400)
-                {
-                    r.content = IOUtils.toString(new BufferedInputStream(h.getInputStream()), h.getContentEncoding());
-                    r.httpCode = h.getResponseCode();
-                    r.success = true;
-                } else
-                {
-                    r.content = IOUtils.toString(new BufferedInputStream(h.getErrorStream()), h.getContentEncoding());
-                    r.httpCode = h.getResponseCode();
-                    r.success = false;
-                }
+                r.content = IOUtils.toString(new BufferedInputStream(h.getErrorStream()), h.getContentEncoding());
+                r.httpCode = h.getResponseCode();
+                r.success = false;
             }
         } catch (IOException ex)
         {
