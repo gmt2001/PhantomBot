@@ -8,7 +8,7 @@ $.on('command', function (event) {
     var num;
 
     if (command.equalsIgnoreCase("random")) {
-        if (!$.isModv3(sender, event.getTags())) {
+        if (!$.isMod(sender, event.getTags(), event.getChannel())) { 
             num = $.rand(num_randoms);
         } else {
             if (argsString.length() > 0) {
@@ -32,7 +32,7 @@ $.on('command', function (event) {
     }
 
     if (command.equalsIgnoreCase("addrandom")) {
-        if (!$.isModv3(sender, event.getTags())) {
+        if (!$.isMod(sender, event.getTags(), event.getChannel())) { 
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
             return;
         }
@@ -55,7 +55,7 @@ $.on('command', function (event) {
     }
 
     if (command.equalsIgnoreCase("editrandom")) {
-        if (!$.isModv3(sender, event.getTags())) {
+        if (!$.isMod(sender, event.getTags(), event.getChannel())) { 
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
             return;
         }
@@ -81,7 +81,7 @@ $.on('command', function (event) {
     }
 
     if (command.equalsIgnoreCase("delrandom")) {
-        if (!$.isModv3(sender, event.getTags())) {
+        if (!$.isMod(sender, event.getTags(), event.getChannel())) { 
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
             return;
         }
