@@ -56,7 +56,7 @@ $.on('command', function(event) {
     	 		do {
     	 			var s = $.randElement(lost);  
     	 		} while (s.equalsIgnoreCase($.lastRandomlost) && lost.length > 1);
-                if (!$.isModv3(sender, event.getTags())) {
+                if (!$.isModv3(sender, event.getTags(), event.getChannel())) {
                     $.say(s);
                     setTimeout(function() {$.say(".timeout "+ username +" "+ roulettetimeout);},2000);
                     setTimeout(function() {$.say(".timeout "+ username +" "+ roulettetimeout);},2000);
@@ -71,7 +71,7 @@ $.on('command', function(event) {
     }
 
     if (command.equalsIgnoreCase("roulettetimeouttime")) {
-        if (!$.isAdmin(sender)) {
+        if (!$.isAdmin(sender, event.getChannel())) {
             $.say($.lang.get("net.phantombot.cmd.adminonly"));
             return;
         }
