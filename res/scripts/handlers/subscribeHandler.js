@@ -14,9 +14,9 @@ if ($.sub_silentmode == null || $.sub_silentmode == undefined) {
 
 if ($.subscribeMessage == null || $.subscribeMessage == undefined || $.strlen($.subscribeMessage) == 0 || $.subscribeMessage == "") {
     if ($.moduleEnabled("./systems/pointSystem.js")) {
-        if ($.hostreward < 1) {
-            $.subscribeMessage = $.lang.get("net.phantombot.hosthandler.default-host-welcome-message");
-        } else if ($.hostreward > 0 && $.moduleEnabled('./systems/pointSystem.js')) {
+        if ($.subscribereward < 1) {
+            $.subscribeMessage = $.lang.get("net.phantombot.subscribeHandler.default-sub-message-with-points");
+        } else if ($.subscribereward > 0 && $.moduleEnabled('./systems/pointSystem.js')) {
             $.subscribeMessage = $.lang.get("net.phantombot.subscribeHandler.default-sub-message-with-points");
         }
     } else {
@@ -38,7 +38,7 @@ $.on('twitchSubscribe', function(event) {
         $.inidb.set('subscribed', subscriber, 1);      
     } 
     
-    if($.isAdmin(subscriber) == false || $.isModv3(subscriber, event.getTags()) == false) {
+    if ($.isAdmin(subscriber, event.getChannel()) == false || !$.isMod(subscriber, event.getTags(), event.getChannel()) == false) {
         $.inidb.set("tempsubgroup", subscriber, $.inidb.get("group",subscriber));
         $.inidb.set("group", subscriber, 3);
     }
@@ -84,7 +84,7 @@ $.on('twitchUnsubscribe', function(event) {
         $.inidb.set('subscribed', subscriber, 0);
     }
 
-    if ($.isAdmin(subscriber)==false || $.isModv3(subscriber, event.getTags()) == false) {
+    if ($.isAdmin(subscriber, event.getChannel()) == false || !$.isMod(subscriber, event.getTags(), event.getChannel()) == false) {
         $.inidb.set("group", subscriber, $.inidb.get("tempsubgroup", subscriber));
     }
 });
@@ -102,7 +102,7 @@ $.on('command', function(event) {
     var argsString = event.getArguments().trim();
     
     if (command.equalsIgnoreCase("subsilentmode")) {
-        if (!$.isAdmin(sender)) {
+        if (!$.isAdmin(sender, event.getChannel())) {
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
             return;
         }
@@ -121,7 +121,7 @@ $.on('command', function(event) {
     }
     
     if (command.equalsIgnoreCase("subscribereward")) {
-        if (!$.isAdmin(sender)) {
+        if (!$.isAdmin(sender, event.getChannel())) {
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
             return;
         }
@@ -157,7 +157,7 @@ $.on('command', function(event) {
     if (command.equalsIgnoreCase("subscribecount")) {
         var keys = $.inidb.GetKeyList("subscribed", "");
         var count = 0;
-        if(!$.isAdmin(sender)) {
+        if (!$.isAdmin(sender, event.getChannel())) {   
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
             return;
         }
@@ -172,7 +172,7 @@ $.on('command', function(event) {
     }
     
     if (command.equalsIgnoreCase("subscribemessage")) {		
-        if (!$.isAdmin(sender)) {		
+        if (!$.isAdmin(sender, event.getChannel())) {		
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));		
             return;		
         }		
@@ -203,7 +203,7 @@ $.on('command', function(event) {
     }
     
     if (command.equalsIgnoreCase("subscribemode")) {
-        if (!$.isAdmin(sender)) {
+        if (!$.isAdmin(sender, event.getChannel())) {
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
             return;
         }
