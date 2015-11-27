@@ -8,7 +8,7 @@ $.on('command', function (event) {
     var message;
 
     if (command.equalsIgnoreCase("addcom")) {
-        if (!$.isModv3(sender, event.getTags())) {
+        if (!$.isMod(sender, event.getTags(), event.getChannel())) { 
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
             return;
         }
@@ -45,7 +45,7 @@ $.on('command', function (event) {
     }
 
     if (command.equalsIgnoreCase("delalias")) {
-        if (!$.isModv3(sender, event.getTags())) {
+        if (!$.isMod(sender, event.getTags(), event.getChannel())) { 
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
             return;
         }
@@ -95,7 +95,7 @@ $.on('command', function (event) {
     }
 
     if (command.equalsIgnoreCase("aliascom")) {
-        if (!$.isModv3(sender, event.getTags())) {
+        if (!$.isMod(sender, event.getTags(), event.getChannel())) { 
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
             return;
         }
@@ -136,7 +136,7 @@ $.on('command', function (event) {
 
     if (command.equalsIgnoreCase("delcom")) {
         if (args.length >= 1) {
-            if (!$.isModv3(sender, event.getTags())) {
+            if (!$.isMod(sender, event.getTags(), event.getChannel())) { 
                 $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                 return;
             }
@@ -176,7 +176,7 @@ $.on('command', function (event) {
 
     if (command.equalsIgnoreCase("editcom")) {
         if (args.length >= 1) {
-            if (!$.isModv3(sender, event.getTags())) {
+            if (!$.isMod(sender, event.getTags(), event.getChannel())) { 
                 $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                 return;
             }
@@ -358,7 +358,7 @@ $.on('command', function (event) {
     }
 
     if (command.equalsIgnoreCase("pricecommod")) {
-        if (!$.isAdmin(sender)) {
+        if (!$.isAdmin(sender, event.getChannel)) {
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
             return;
         }
