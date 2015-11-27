@@ -136,6 +136,11 @@ $.upgrade = function (channel) {
             $.inidb.SetString("settings", channel.getName(), "autobanmessage", "auto-banned for using banned phrase #");
         }
 
+        $.inidb.SetString("aliases", channel.getName(), "caster", "shoutout");
+        $.inidb.SetString("aliases", channel.getName(), "follow", "shoutout");
+        $.inidb.SetString("aliases", channel.getName(), "followtime", "followage");
+        $.inidb.SetString("aliases", channel.getName(), "following", "followage");
+
         println("   End version 17 upgrades...");
     }
 

@@ -64,6 +64,10 @@ $.initialsettings = function (channel) {
     $.inidb.SetString("aliases", channel.getName(), "settitle", "title");
     $.inidb.SetString("aliases", channel.getName(), "topic", "title");
     $.inidb.SetString("aliases", channel.getName(), "setgame", "game");
+    $.inidb.SetString("aliases", channel.getName(), "caster", "shoutout");
+    $.inidb.SetString("aliases", channel.getName(), "follow", "shoutout");
+    $.inidb.SetString("aliases", channel.getName(), "followtime", "followage");
+    $.inidb.SetString("aliases", channel.getName(), "following", "followage");
 
     println("     Creating logs folder");
     $.mkDir("logs");
