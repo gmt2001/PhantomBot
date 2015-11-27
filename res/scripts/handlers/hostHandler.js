@@ -1,77 +1,58 @@
-$.hostreward = parseInt($.inidb.get('settings', 'hostreward'));
-$.hosttimeout = parseInt($.inidb.get('settings', 'hosttimeout'));
-$.hostMessage = $.inidb.get('settings', 'hostmessage');
-
-if ($.hostlist == null || $.hostlist == undefined) {
-    $.hostlist = new Array();
-}
-
-if ($.hosttimeout == null || $.hosttimeout == undefined || isNaN($.hosttimeout)) {
-    $.hosttimeout = 60 * 60 * 1000;
-} else {
-    $.hosttimeout = $.hosttimeout * 60 * 1000;
-}
-
-if ($.hostreward == null || $.hostreward == undefined || isNaN($.hostreward)) {
-    $.hostreward = 0;
-}
-
-if ($.hostMessage == null || $.hostMessage == undefined || $.strlen($.hostMessage) == 0 || $.hostMessage == "") {
-    if ($.moduleEnabled("./systems/pointSystem.js")) {
-        if ($.hostreward < 1) {
-            $.hostMessage = $.lang.get("net.phantombot.hosthandler.default-host-welcome-message");
-        } else if ($.hostreward > 0 && $.moduleEnabled('./systems/pointSystem.js')) {
-            $.hostMessage = $.lang.get("net.phantombot.hosthandler.default-host-welcome-message-and-reward", $.getPointsString($.hostreward));
-        }
-    } else {
-        $.hostMessage = $.lang.get("net.phantombot.hosthandler.default-host-welcome-message");
+$.on('ircJoinComplete', function (event) {
+    var channel = event.getChannel();
+    
+    if (!$.inidb.Exists('settings', channel.getName(), 'hosttimeout')) {
+        $.inidb.SetInteger('settings', channel.getName(), 'hosttimeout', 60);
     }
-}
 
-$.isHostUser = function (user) {
-    return $.array.contains($.hostlist, user.toLowerCase());
+    if (!$.inidb.Exists('settings', channel.getName(), 'hostmessage')) {
+        if ($.moduleEnabled("./systems/pointSystem.js", channel) && $.inidb.GetInteger('settings', channel.getName(), 'hostreward') > 0) {
+            $.inidb.SetString('settings', channel.getName(), 'hostmessage', $.lang.get("net.phantombot.hosthandler.default-host-welcome-message-and-reward", channel, $.getPointsString($.inidb.GetInteger('settings', channel.getName(), 'hostreward'), channel)));
+        } else {
+            $.inidb.SetString('settings', channel.getName(), 'hostmessage', $.lang.get("net.phantombot.hosthandler.default-host-welcome-message", channel));
+        }
+    }
+});
+
+$.isHostUser = function (user, channel) {
+    return $.tempdb.GetBoolean("t_hostlist", channel.getName(), user.toLowerCase());
 }
 
 $.on('twitchHosted', function (event) {
-    var username = $.username.resolve(event.getHoster());
-    var group = $.inidb.get('group', username.toLowerCase());
-    var s = $.hostMessage;
+    var hoster = event.getHoster().toLowerCase();
+    var username = $.username.resolve(hoster);
+    var channel = event.getChannel();
 
-    if (group == null) {
-        group = 'Viewer';
-    }
-
-    if ($.announceHosts && $.moduleEnabled("./handlers/hostHandler.js") && ($.hostlist[username.toLowerCase()] == null || $.hostlist[username.toLowerCase()] == undefined || $.hostlist[username.toLowerCase()] < System.currentTimeMillis())) {
-        if ($.hostreward > 0) {
-            $.inidb.incr('points', username.toLowerCase(), $.hostreward);
-        }
+    if ($.tempdb.GetBoolean("t_state", channel.getName(), "announceHosts") && $.moduleEnabled("./handlers/hostHandler.js", channel)
+            && ($.tempdb.GetInteger("t_hostlist", channel.getName(), hoster) < System.currentTimeMillis())) {
+        var s = $.inidb.GetString('settings', channel.getName(), 'hostmessage');
         
+        if ($.moduleEnabled("./systems/pointSystem.js", channel) && $.inidb.GetInteger('settings', channel.getName(), 'hostreward') > 0) {
+            $.inidb.SetInteger("points", event.getChannel().getName(), hoster, $.inidb.GetInteger("points", event.getChannel().getName(), hoster) + $.inidb.GetInteger('settings', channel.getName(), 'hostreward'));
+        }
+
         s = $.replaceAll(s, '(name)', username);
-        $.say(s);
+        
+        $.say(s, channel);
     }
 
-    $.hostlist[username.toLowerCase()] = System.currentTimeMillis() + $.hosttimeout;
-
-    $.hostlist.push(username.toLowerCase());
+    $.tempdb.SetBoolean("t_hostlist", channel.getName(), hoster, true);
+    $.tempdb.SetInteger("t_hosttimeout", channel.getName(), hoster, System.currentTimeMillis() + ($.inidb.GetInteger('settings', channel.getName(), 'hosttimeout') * 60 * 1000));
 });
 
 $.on('twitchUnhosted', function (event) {
-    var username = $.username.resolve(event.getHoster());
-
-    $.hostlist[event.getHoster()] = System.currentTimeMillis() + $.hosttimeout;
-
-    for (var i = 0; i < $.hostlist.length; i++) {
-        if ($.hostlist[i].equalsIgnoreCase(username)) {
-            $.hostlist.splice(i, 1);
-            break;
-        }
-    }
+    var hoster = event.getHoster().toLowerCase();
+    var channel = event.getChannel();
+    
+    $.tempdb.RemoveKey("t_hostlist", channel.getName(), hoster);
+    $.tempdb.SetInteger("t_hosttimeout", channel.getName(), hoster, System.currentTimeMillis() + ($.inidb.GetInteger('settings', channel.getName(), 'hosttimeout') * 60 * 1000));
 });
 
 $.on('twitchHostsInitialized', function (event) {
-    println(">>Enabling new hoster announcements");
+    var channel = event.getChannel();
+    println(">> [" + channel.getName() + "] Enabling new hoster announcements");
 
-    $.announceHosts = true;
+    $.tempdb.SetBoolean("t_state", channel.getName(), "announceHosts", true);
 });
 
 $.on('command', function (event) {
@@ -80,82 +61,73 @@ $.on('command', function (event) {
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
     var args = event.getArgs();
+    var channel = event.getChannel();
 
     if (command.equalsIgnoreCase("hostreward")) {
-        if (!$.isAdmin(sender, event.getChannel())) {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
+        if (!$.isAdmin(sender, channel)) {
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.cmd.adminonly", channel), channel);
+            return;
+        }
+
+        if (args.length == 0) {
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.hosthandler.host-reward-current-and-usage", channel, $.getPointsString($.inidb.GetInteger('settings', channel.getName(), 'hostreward'), channel)), channel);
+                return;
+        } else {
+            if (parseInt(args[0]) < 0) {
+                $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.hosthandler.host-reward-error", channel), channel);
+                return;
+            }
+
+            $.logEvent("hostHandler.js", 134, channel, username + " changed the host points reward to: " + args[0]);
+
+            $.inidb.SetInteger('settings', channel.getName(), 'hostreward', args[0]);
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.hosthandler.host-reward-set-success", channel), channel);
+            return;
+        }
+    }
+
+    if (command.equalsIgnoreCase("hostmessage")) {
+        if (!$.isAdmin(sender, channel)) {
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.cmd.adminonly", channel), channel);
             return;
         }
 
         if ($.strlen(argsString) == 0) {
-            if ($.inidb.exists('settings', 'hostreward')) {
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.hosthandler.host-reward-current-and-usage", $.getPointsString($.hostreward)));
-                return;
-            } else {
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.hosthandler.host-reward-current-and-usage", $.getPointsString($.hostreward)));
-                return;
-            }
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.hosthandler.current-host-message", channel, $.inidb.GetString('settings', channel.getName(), 'hostmessage')), channel);
+
+            var s = $.lang.get("net.phantombot.hosthandler.host-message-usage", channel);
+
+            $.say($.getWhisperString(sender, channel) + s, channel);
+            return;
         } else {
-            if (!parseInt(argsString) < 0) {
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.hosthandler.host-reward-error"));
-                return;
-            }
+            $.logEvent("hostHandler.js", 73, channel, username + " changed the new hoster message to: " + argsString);
 
-            $.logEvent("hostHandler.js", 134, username + " changed the host points reward to: " + argsString);
-
-            $.inidb.set('settings', 'hostreward', argsString);
-            $.hostreward = parseInt(argsString);
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.hosthandler.host-reward-set-success"));
+            $.inidb.SetString('settings', channel.getName(), 'hostmessage', argsString);
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.hosthandler.host-message-set-success", channel), channel);
             return;
         }
     }
-    
-    if (command.equalsIgnoreCase("hostmessage")) {		
-        if (!$.isAdmin(sender, event.getChannel())) {		
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));		
-            return;		
-        }		
-				
-        if ($.strlen(argsString) == 0) {		
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.hosthandler.current-host-message", $.hostMessage));		
-		
-            var s = $.lang.get("net.phantombot.hosthandler.host-message-usage");		
-		
-            $.say($.getWhisperString(sender) + s);		
-            return;
-            
-        } else {		
-            $.logEvent("hostHandler.js", 73, username + " changed the new hoster message to: " + argsString);		
-		
-            $.inidb.set('settings', 'hostmessage', argsString);
-            $.hostMessage = $.inidb.get('settings', 'hostmessage');
-		
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.hosthandler.host-message-set-success"));		
-            return;		
-        }		
-    }
 
     if (command.equalsIgnoreCase("hostcount")) {
-        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.hosthandler.host-count", $.hostlist.length));
+        $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.hosthandler.host-count", channel, $.tempdb.GetKeyList("t_hostlist", channel.getName()).length), channel);
         return;
     }
 
     if (command.equalsIgnoreCase("hosttime")) {
         if (args.length < 1) {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.hosthandler.host-timeout-time", $.hosttimeout));
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.hosthandler.host-timeout-time", channel, $.inidb.GetInteger('settings', channel.getName(), 'hosttimeout')), channel);
             return;
         } else if (args.length >= 1) {
-            if (!$.isAdmin(sender, event.getChannel())) {
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
+            if (!$.isAdmin(sender, channel)) {
+                $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.cmd.adminonly", channel), channel);
                 return;
             }
             if (parseInt(args[0]) < 30) {
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.hosthandler.host-timeout-time-error"));
+                $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.hosthandler.host-timeout-time-error", channel), channel);
                 return;
             } else {
-                $.inidb.set('settings', 'hosttimeout', parseInt(args[0]));
-                $.hosttimeout = parseInt(args[0]);
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.hosthandler.host-timeout-time-set", parseInt(args[0])));
+                $.inidb.SetInteger('settings', channel.getName(), 'hosttimeout', parseInt(args[0]));
+                $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.hosthandler.host-timeout-time-set", channel, parseInt(args[0])), channel);
                 return;
             }
         }
@@ -163,39 +135,37 @@ $.on('command', function (event) {
 
     if (command.equalsIgnoreCase("hostlist")) {
         var m = "";
-
-        for (var b = 0; b < Math.ceil($.hostlist.length / 30); b++) {
+        var keys = $.tempdb.GetKeyList("t_hostlist", channel.getName());
+        
+        for (var b = 0; b < Math.ceil(keys.length / 30); b++) {
             m = "";
 
-            for (var i = (b * 30); i < Math.min($.hostlist.length, ((b + 1) * 30)); i++) {
+            for (var i = (b * 30); i < Math.min(keys.length, ((b + 1) * 30)); i++) {
                 if ($.strlen(m) > 0) {
                     m += ", ";
                 }
 
-                m += $.hostlist[i];
+                m += keys[i];
             }
 
             if (b == 0) {
-                $.say($.lang.get("net.phantombot.hosthandler.host-list", $.hostlist.length, m));
+                $.say($.lang.get("net.phantombot.hosthandler.host-list", channel, keys.length, m), channel);
                 return;
             } else {
-                $.say(">>" + m);
+                $.say(">>" + m, channel);
                 return;
             }
         }
 
-        if ($.hostlist.length == 0) {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.hosthandler.host-list-error"));
+        if (keys.length == 0) {
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.hosthandler.host-list-error", channel), channel);
             return;
         }
     }
 });
-setTimeout(function () {
-    if ($.moduleEnabled('./handlers/hostHandler.js')) {
-        $.registerChatCommand("./handlers/hostHandler.js", "hostmessage", "admin");
-        $.registerChatCommand("./handlers/hostHandler.js", "hostreward");
-        $.registerChatCommand("./handlers/hostHandler.js", "hosttime");
-        $.registerChatCommand("./handlers/hostHandler.js", "hostcount");
-        $.registerChatCommand("./handlers/hostHandler.js", "hostlist");
-    }
-}, 10 * 1000);
+
+$.registerChatCommand("./handlers/hostHandler.js", "hostmessage", "admin");
+$.registerChatCommand("./handlers/hostHandler.js", "hostreward");
+$.registerChatCommand("./handlers/hostHandler.js", "hosttime");
+$.registerChatCommand("./handlers/hostHandler.js", "hostcount");
+$.registerChatCommand("./handlers/hostHandler.js", "hostlist");
