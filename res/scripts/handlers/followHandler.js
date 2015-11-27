@@ -114,8 +114,8 @@ $.on('twitchUnfollow', function (event) {
 });
 
 $.on('twitchFollowsInitialized', function (event) {
-    println(">>Enabling new follower announcements");
     var channel = event.getChannel();
+    println(">> [" + channel.getName() + "] Enabling new follower announcements");
 
     $.tempdb.SetBoolean("t_state", channel.getName(), "announceFollowsAllowed", true);
 
