@@ -139,7 +139,7 @@ $.on('command', function(event) {
 					"\u0002 & \u0002" + d2 + "\u0002!");
 			}
 		} else if (args[0].equalsIgnoreCase("wait")) {
-			if (!$.isMod(username)) {
+			if (!$.isMod(sender, event.getTags(), event.getChannel())) { 
 				$.say($.getWhisperString(username) + $.lang.get("net.phantombot.cmd.modonly"));
 				return;
 			} else if (args.length == 1) {
@@ -157,7 +157,7 @@ $.on('command', function(event) {
 				" the wait timer.");
 			$.inidb.set("roll", "roll_wait", objRoll.wait);
 		} else if (args[0].equalsIgnoreCase("bonus")) {
-			if (!$.isMod(username)) {
+			if (!$.isMod(sender, event.getTags(), event.getChannel())) { 
 				$.say($.getWhisperString(username) + $.lang.get("net.phantombot.cmd.modonly"));
 			} else if (args.length == 1) {
 				$.say($.getWhisperString(username) + username + ", the roll bonus is " +
@@ -176,7 +176,7 @@ $.on('command', function(event) {
 				}
 			}
 		} else if (args[0].equalsIgnoreCase("time")) {
-			if (!$.isMod(username)) {
+			if (!$.isMod(sender, event.getTags(), event.getChannel())) { 
 				$.say($.getWhisperString(username) + $.lang.get("net.phantombot.cmd.modonly"));
 			} else if (args.length == 1) {
 				$.say($.getWhisperString(username) + username + ", the roll wait time is " +
@@ -197,7 +197,7 @@ $.on('command', function(event) {
 				}
 			}
 		} else if (args[0].equalsIgnoreCase("stream")) {
-			if (!$.isMod(username)) {
+			if (!$.isMod(sender, event.getTags(), event.getChannel())) { 
 				$.say($.getWhisperString(username) + $.lang.get("net.phantombot.cmd.modonly"));
 				return;
 			} else if (args.length == 1) {
@@ -215,7 +215,7 @@ $.on('command', function(event) {
 				" stream only rolling.");
 			$.inidb.set("roll", "roll_stream", objRoll.stream);
 		} else if (args[0].equalsIgnoreCase("config")) {
-			if (!$.isMod(username)) {
+			if (!$.isMod(sender, event.getTags(), event.getChannel())) { 
 				$.say($.getWhisperString(username) + $.lang.get("net.phantombot.cmd.modonly"));
 			} else {
 				$.say("/me \u208Droll\u208E \u2039stream: " +
