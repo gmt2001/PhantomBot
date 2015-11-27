@@ -138,7 +138,7 @@ $.on('command', function(event) {
             } 
             announceSchedule();
         } else {
-            if (!$.isModv3(sender, event.getTags())) {
+            if (!$.isMod(sender, event.getTags(), event.getChannel())) { 
                 $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
                 return;
             }
