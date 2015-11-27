@@ -389,6 +389,7 @@ $.permCom = function (user, command, channel) {
 $api.on($script, 'command', function (event) {
     var sender = event.getSender().toLowerCase();
     var origcommand = event.getCommand();
+    var channel = event.getChannel();
 
     if ($.strlen(origcommand) == 0) {
         return;
@@ -413,7 +414,7 @@ $api.on($script, 'command', function (event) {
         }
 
         if ($.tempdb.Exists('t_coolcom', event.getChannel().getName(), tgt)) {
-            if ($.tempdb.GetInteger('t_coolcom', event.getChannel().getName(), tgt) >= System.currentTimeMillis() && !$.isMod(sender, event.getTags(), event.getChannel())) {
+            if ($.tempdb.GetInteger('t_coolcom', event.getChannel().getName(), tgt) >= System.currentTimeMillis() && !$.isMod(sender, event.getTags(), channel)) {
                 $.println($.lang.get("net.phantombot.init.coolcom-cooldown", event.getChannel(), origcommand, sender));
                 return;
             }
@@ -421,7 +422,7 @@ $api.on($script, 'command', function (event) {
     }
 
     if ($.moduleEnabled("./systems/pointSystem.js", event.getChannel()) && $.inidb.Exists("pricecom", event.getChannel().getName(), command.toLowerCase())) {
-        if (!$.isMod(sender, event.getTags(), event.getChannel()) || $.inidb.GetBoolean("settings", event.getChannel().getName(), "pricecommod")) {
+        if (!$.isMod(sender, event.getTags(), channel) || $.inidb.GetBoolean("settings", event.getChannel().getName(), "pricecommod")) {
             if ($.inidb.GetInteger("points", event.getChannel().getName(), sender) < $.inidb.GetInteger("pricecom", event.getChannel().getName(), command.toLowerCase())) {
                 $.say($.getWhisperString(sender, event.getChannel()) + $.lang.get("net.phantombot.cmd.needpoints", event.getChannel(), $.getPointsString($.inidb.GetInteger("pricecom", event.getChannel().getName(), command.toLowerCase()), event.getChannel())), event.getChannel());
                 return;
