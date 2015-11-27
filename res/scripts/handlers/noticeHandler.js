@@ -1,299 +1,260 @@
-$.noticeinterval = parseInt($.inidb.get('notice', 'interval'));
-$.noticemessages = parseInt($.inidb.get('notice', 'reqmessages'));
-$.notices_toggle = $.inidb.get('notice', 'notices_toggle');
+$.on('ircJoinComplete', function (event) {
+    var channel = event.getChannel();
 
-if ($.noticeinterval == undefined || $.noticeinterval == null || isNaN($.noticeinterval) || $.noticeinterval < 2) {
-    $.noticeinterval = 10;
-}
+    if (!$.inidb.Exists('notice', channel.getName(), 'interval')) {
+        $.inidb.SetInteger('notice', channel.getName(), 'interval', 10);
+    }
 
-if ($.noticemessages == undefined || $.noticemessages == null || isNaN($.noticemessages)) {
-    $.noticemessages = 25;
-}
+    if (!$.inidb.Exists('notice', channel.getName(), 'reqmessages')) {
+        $.inidb.SetInteger('notice', channel.getName(), 'reqmessages', 25);
+    }
 
-if ($.notices_toggle == undefined || $.notices_toggle == null) {
-    $.notices_toggle = true;
-}
-
-$.messageCount = 0;
+    if (!$.inidb.Exists('notice', channel.getName(), 'notices_toggle')) {
+        $.inidb.SetBoolean('notice', channel.getName(), 'notices_toggle', true);
+    }
+});
 
 $.on('ircChannelMessage', function (event) {
-    $.messageCount++;
+    var channel = event.getChannel();
+
+    $.tempdb.SetInteger("t_state", channel.getName(), "messageCount", $.tempdb.GetInteger("t_state", channel.getName(), "messageCount") + 1);
 });
 
 $.on('command', function (event) {
     var sender = event.getSender();
     var command = event.getCommand();
-    var num_messages = $.inidb.get('notice', 'num_messages');
     var argsString = event.getArguments().trim();
     var args = event.getArgs();
-    var action;
-    var message;
-
-    if (num_messages == null) {
-        num_messages = 0;
-    }
+    var channel = event.getChannel();
 
     if (command.equalsIgnoreCase("notice")) {
-        if (!$.isAdmin(sender, event.getChannel())) {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
+        if (!$.isAdmin(sender, channel)) {
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.cmd.adminonly", channel), channel);
             return;
         }
 
-        action = args[0];
-        message = args[1];
-
-        if (action == null) {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.noticehandler.notice-usage"));
+        if (args.length == 0) {
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.noticehandler.notice-usage", channel), channel);
             return;
         }
+
+        var action = args[0];
+        var message;
+        var num_messages = $.inidb.GetInteger("notice", channel.getName(), "num_messages");
 
         if (args.length >= 2) {
-            message = argsString.substring(argsString.indexOf(action) + action.length() + 1)
+            message = argsString.substring(argsString.indexOf(action) + $.strlen(action.length) + 1)
         }
 
         if (action.equalsIgnoreCase("get")) {
             if (args.length < 2) {
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.noticehandler.notice-get-usage", num_messages, (num_messages)));
+                $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.noticehandler.notice-get-usage", channel, num_messages, (num_messages - 1)), channel);
                 return;
-            } else if ($.inidb.get('notices', 'message_' + message) == null) {
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.noticehandler.notice-get-error", num_messages, (num_messages), args[1]));
+            } else if (!$.inidb.Exists('notices', channel.getName(), 'message_' + message)) {
+                $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.noticehandler.notice-get-error", channel, num_messages, (num_messages - 1), args[1]), channel);
                 return;
             } else {
-                $.say($.inidb.get('notices', 'message_' + message)); // no need for lang here because who set's the notice will have it in his lang.
+                $.say($.inidb.GetString('notices', channel.getName(), 'message_' + message), channel);
                 return;
             }
-        }
+        } else if (action.equalsIgnoreCase("insert")) {
+            var id = args[1];
 
-        if (action.equalsIgnoreCase("insert")) {
-            if (args.length < 3) {
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.noticehandler.notice-insert-usage"));
+            if (args.length < 3 || isNaN(id) || parseInt(id) > num_messages) {
+                $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.noticehandler.notice-insert-usage", channel), channel);
                 return;
             } else {
-                var id = args[1];
-                message = argsString.substring(argsString.indexOf(id) + id.length() + action.length() + 2);
+                message = argsString.substring(argsString.indexOf(id) + $.strlen(id) + $.strlen(action) + 2);
 
                 if (id < num_messages) {
                     for (var i = (num_messages - 1); i >= 0; i--) {
                         if (i > parseInt(id)) {
-                            $.inidb.set('notices', 'message_' + (i + 1), $.inidb.get('notices', 'message_' + i));
+                            $.inidb.SetString('notices', channel.getName(), 'message_' + (i + 1), $.inidb.GetString('notices', channel.getName(), 'message_' + i));
                         }
                     }
-                $.inidb.set('notices', 'message_' + parseInt(id), message);
-            } else {
-                $.inidb.set('notices', 'message_' + num_messages, message);
-            }
-                $.inidb.incr('notice', 'num_messages', 1);
-                num_messages = $.inidb.get('notice', 'num_messages');
 
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.noticehandler.notice-added-success", message, num_messages));
-                return;
-            }
-        }
-
-        if (action.equalsIgnoreCase("timer") || action.equalsIgnoreCase("interval")) {
-            if (args.length < 2) {
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.noticehandler.notice-current-interval", $.noticeinterval));
-                return;
-            } else {
-                if (!isNaN(message) && parseInt(message) >= 2) {
-                    $.inidb.set('notice', 'interval', message);
-                    $.noticeinterval = parseInt(message);
-
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.noticehandler.notice-interval-set-success", $.noticeinterval));
-                    return;
+                    $.inidb.SetString('notices', channel.getName(), 'message_' + parseInt(id), message);
+                } else {
+                    $.inidb.SetString('notices', channel.getName(), 'message_' + num_messages, message);
                 }
-            }
-        }
-        
-        if ($.inidb.get('notice', 'notices_toggle') == "true") {
-            $.notices_toggle = true;
-        } else if ($.inidb.get('notice', 'notices_toggle') == "false") {
-            $.notices_toggle = false;
-        }
 
-        if (action.equalsIgnoreCase("config")) {
-            if ($.notices_toggle == true) {
-                var notices = $.lang.get("net.phantombot.noticehandler.notice-enabled");
+                $.inidb.SetInteger('notice', channel.getName(), 'num_messages', num_messages + 1);
+
+                $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.noticehandler.notice-added-success", channel, message, num_messages + 1), channel);
+                return;
+            }
+        } else if (action.equalsIgnoreCase("timer") || action.equalsIgnoreCase("interval")) {
+            if (args.length < 2 || isNaN(message) || parseInt(message) < 2) {
+                $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.noticehandler.notice-current-interval", channel, $.inidb.GetInteger('notice', channel.getName(), 'interval')), channel);
+                return;
             } else {
-                notices = $.lang.get("net.phantombot.noticehandler.notice-disabled");
+                $.inidb.SetInteger('notice', channel.getName(), 'interval', message);
+
+                $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.noticehandler.notice-interval-set-success", channel, message), channel);
+                return;
+            }
+        } else if (action.equalsIgnoreCase("config")) {
+            var notices;
+
+            if ($.inidb.GetBoolean('notice', channel.getName(), 'notices_toggle')) {
+                notices = $.lang.get("net.phantombot.noticehandler.notice-enabled", channel);
+            } else {
+                notices = $.lang.get("net.phantombot.noticehandler.notice-disabled", channel);
             }
 
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.noticehandler.notice-config", notices, $.noticeinterval, $.noticemessages, num_messages));
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.noticehandler.notice-config", channel, notices, $.inidb.GetInteger('notice', channel.getName(), 'interval'), $.inidb.GetInteger('notice', channel.getName(), 'reqmessages'), num_messages), channel);
             return;
-        }
-
-        if (action.equalsIgnoreCase("toggle")) {
-            if (!$.isAdmin(sender, event.getChannel())) {
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
+        } else if (action.equalsIgnoreCase("toggle")) {
+            if (!$.isAdmin(sender, channel)) {
+                $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.cmd.adminonly", channel), channel);
                 return;
             }
 
-            if ($.notices_toggle == false) {
-                $.notices_toggle = true;
-                $.inidb.set('notice', 'notices_toggle', "true");
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.noticehandler.notice-toggle-on"));
-                return;
-                } else if ($.notices_toggle == true) {
-                $.notices_toggle = false;
-                $.inidb.set('notice', 'notices_toggle', "false");
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.noticehandler.notice-toggle-off"));
-                return;
-            }
-        }
-
-        if (action.equalsIgnoreCase("req")) {
-            if (args.length < 2) {
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.noticehandler.notice-req-message-usage", $.noticemessages));
+            if (!$.inidb.GetBoolean('notice', channel.getName(), 'notices_toggle')) {
+                $.inidb.SetBoolean('notice', channel.getName(), 'notices_toggle', true);
+                $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.noticehandler.notice-toggle-on", channel), channel);
                 return;
             } else {
-                if (!isNaN(message) && parseInt(message) >= 0) {
-                    $.inidb.set('notice', 'reqmessages', message);
-                    $.noticemessages = parseInt(message);
-
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.noticehandler.norice-req-message-set-success", $.noticemessages));
-                    return;
-                }
-            }
-        } else {  
-            if (!args[0] == ("timer") || !args[0] == ("interval") || !args[0] == ("insert") || !args[0] == ("get") || !args[0] == ("toggle") || argsString.isEmpty()) {
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.noticehandler.notice-usage"));
+                $.inidb.SetBoolean('notice', channel.getName(), 'notices_toggle', false);
+                $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.noticehandler.notice-toggle-off", channel), channel);
                 return;
             }
+        } else if (action.equalsIgnoreCase("req")) {
+            if (args.length < 2 || isNaN(message) || parseInt(message) < 0) {
+                $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.noticehandler.notice-req-message-usage", channel, $.inidb.GetInteger('notice', channel.getName(), 'reqmessages')), channel);
+                return;
+            } else {
+                $.inidb.SetInteger('notice', channel.getName(), 'reqmessages', message);
+
+                $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.noticehandler.norice-req-message-set-success", channel, message), channel);
+                return;
+            }
+        } else {
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.noticehandler.notice-usage", channel), channel);
+            return;
         }
     }
 
     if (command.equalsIgnoreCase("addnotice")) {
-        if (!$.isAdmin(sender, event.getChannel())) {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
+        if (!$.isAdmin(sender, channel)) {
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.cmd.adminonly", channel), channel);
             return;
         }
 
-        message = argsString;
-
         if (args.length == 0) {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.noticehandler.notice-add-usage"));
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.noticehandler.notice-add-usage", channel), channel);
             return;
-        } 
+        }
 
-        $.inidb.incr('notice', 'num_messages', 1);
-
-        num_messages = $.inidb.get('notice', 'num_messages');
-
-        $.inidb.set('notices', 'message_' + (num_messages - 1), message);
-        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.noticehandler.notice-added-success", message, num_messages));
+        $.inidb.SetString('notices', channel.getName(), 'message_' + $.inidb.GetInteger("notice", channel.getName(), "num_messages"), argsString);
+        $.inidb.SetInteger('notice', channel.getName(), 'num_messages', $.inidb.GetInteger("notice", channel.getName(), "num_messages") + 1);
+        $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.noticehandler.notice-added-success", channel, argsString, $.inidb.GetInteger("notice", channel.getName(), "num_messages")), channel);
         return;
     }
 
     if (command.equalsIgnoreCase("delnotice")) {
-        if (!$.isAdmin(sender, event.getChannel())) {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
-            return;
-        }
-        
-        num_messages = $.inidb.get('notice', 'num_messages');
-
-        if (args[0] == null) { // added check for if notice id is empty or it will delete a random notice.
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.noticehandler.notice-remove-usage"));
-            return;
-        } else if ($.inidb.get('notices', 'message_' + args[0]) == null) { // added check for if notice id is wrong or does not exist.
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.noticehandler.notice-remove-error2"));
-            return;
-        } else if (num_messages == null) {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.noticehandler.notice-remove-error"));
+        if (!$.isAdmin(sender, channel)) {
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.cmd.adminonly", channel), channel);
             return;
         }
 
-        if (num_messages > 1) {
-            for (i = 0; i < num_messages; i++) {
-                if (i > parseInt(message)) {
-                    $.inidb.set('notices', 'message_' + (i - 1), $.inidb.get('notices', 'message_' + i));
+        if (args.length == 0 || isNaN(args[0])) {
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.noticehandler.notice-remove-usage", channel), channel);
+            return;
+        } else if (!$.inidb.Exists('notices', channel.getName(), 'message_' + args[0])) {
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.noticehandler.notice-remove-error2", channel), channel);
+            return;
+        } else if ($.inidb.GetInteger("notice", channel.getName(), "num_messages") == 0) {
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.noticehandler.notice-remove-error", channel), channel);
+            return;
+        }
+
+        if ($.inidb.GetInteger("notice", channel.getName(), "num_messages") > 1) {
+            for (i = 0; i < $.inidb.GetInteger("notice", channel.getName(), "num_messages"); i++) {
+                if (i > parseInt(args[0])) {
+                    $.inidb.SetString('notices', channel.getName(), 'message_' + (i - 1), $.inidb.GetString('notices', channel.getName(), 'message_' + i));
                 }
             }
         }
 
-        $.inidb.del('notices', 'message_' + args[0]);
-        $.inidb.decr('notice', 'num_messages', 1);
+        $.inidb.RemoveKey('notices', channel.getName(), 'message_' + args[0]);
+        $.inidb.SetInteger('notice', channel.getName(), 'num_messages', $.inidb.GetInteger("notice", channel.getName(), "num_messages") - 1);
 
-        num_messages = $.inidb.get('notice', 'num_messages');
-
-        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.noticehandler.notice-remove-success", num_messages));
+        $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.noticehandler.notice-remove-success", channel, $.inidb.GetInteger("notice", channel.getName(), "num_messages")), channel);
         return;
     }
 });
 
-setTimeout(function(){ 
-    if ($.moduleEnabled('./handlers/noticeHandler.js')) {
-        $.registerChatCommand("./handlers/noticeHandler.js", "notice");
-        $.registerChatCommand("./handlers/noticeHandler.js", "delnotice");
-        $.registerChatCommand("./handlers/noticeHandler.js", "addnotice");
-    }
-},10 * 1000);
+$.registerChatCommand("./handlers/noticeHandler.js", "notice");
+$.registerChatCommand("./handlers/noticeHandler.js", "delnotice");
+$.registerChatCommand("./handlers/noticeHandler.js", "addnotice");
 
 $.messageTime = 0;
 $.messageIndex = 0;
 
-function sendMessage() {
-
-    var num_messages = $.inidb.get('notice', 'num_messages');
-
-    if (isNaN(parseInt(num_messages)) || parseInt(num_messages) == 0) {
-        return;
-    }
-	
-    if ($.inidb.get('notices', 'message_' + $.messageIndex) == null || $.inidb.get('notices', 'message_' + $.messageIndex) == " ") {
+function sendMessage(channel) {
+    if ($.inidb.GetInteger("notice", channel.getName(), "num_messages") == 0) {
         return;
     }
 
-    var message = $.inidb.get('notices', 'message_' + $.messageIndex);
+    if (!$.inidb.Exists('notices', channel.getName(), 'message_' + $.tempdb.GetInteger("t_state", channel.getName(), "messageIndex"))) {
+        $.tempdb.SetInteger("t_state", channel.getName(), "messageIndex", 0);
+        return;
+    }
+
+    var message = $.inidb.GetString('notices', channel.getName(), 'message_' + $.tempdb.GetInteger("t_state", channel.getName(), "messageIndex"));
     var cmds = "";
-    
+
     if (message.toLowerCase().startsWith("(runcommand:") && message.indexOf(")") > 12) {
         message = message.substring(12);
         cmds = message.substring(0, message.indexOf(")"));
         message = message.substring(message.indexOf(")") + 1);
     }
 
-    $.messageIndex++;
+    $.tempdb.SetInteger("t_state", channel.getName(), "messageIndex", $.tempdb.GetInteger("t_state", channel.getName(), "messageIndex") + 1);
 
-    if ($.messageIndex >= num_messages) {
-        $.messageIndex = 0;
+    if ($.tempdb.GetInteger("t_state", channel.getName(), "messageIndex") >= $.inidb.GetInteger("notice", channel.getName(), "num_messages")) {
+        $.tempdb.SetInteger("t_state", channel.getName(), "messageIndex", 0);
     }
-    
+
     if ($.strlen(cmds) > 0) {
-       var cmd = cmds;
-       var prm = "";
-       
-       if (cmd.indexOf(" ") > 0) {
-           cmd = cmd.substring(0, cmd.indexOf(" "));
-           prm = cmd.substring(cmd.indexOf(" "));
-       }
-       
-       var EventBus = Packages.me.mast3rplan.phantombot.event.EventBus;
-       var CommandEvent = Packages.me.mast3rplan.phantombot.event.command.CommandEvent;
-       
-       EventBus.instance().post(new CommandEvent($.botname, cmd, prm));
+        var cmd = cmds;
+        var prm = "";
+
+        if (cmd.indexOf(" ") > 0) {
+            cmd = cmd.substring(0, cmd.indexOf(" "));
+            prm = cmd.substring(cmd.indexOf(" "));
+        }
+
+        var EventBus = Packages.me.mast3rplan.phantombot.event.EventBus;
+        var CommandEvent = Packages.me.mast3rplan.phantombot.event.command.CommandEvent;
+
+        EventBus.instance().post(new CommandEvent($.botname, cmd, prm, channel));
     }
-    
+
     if ($.strlen(message) > 0) {
-       $.say(message);
-       return;
+        $.say(message, channel);
+        return;
     }
 }
 
-$.timer.addTimer("./handlers/noticeHandler.js", "notices", true, function() {
-    if (!$.moduleEnabled("./handlers/noticeHandler.js")) {
-        return;
-    }
-        
-    if (($.messageTime + ($.noticeinterval * 60 * 1000)) < System.currentTimeMillis()) {
-        if (($.messageCount >= $.noticemessages)) {
+$.timer.addTimer("./handlers/noticeHandler.js", "notices", true, function () {
+    var channels = $.phantombot.getChannels();
 
-            if ($.notices_toggle == true) {
-                sendMessage();
-                $.messageCount = 0;
+    for (var i = 0; i < channels.size(); i++) {
+        var channel = channels.get(i);
+
+        if (!$.moduleEnabled("./handlers/noticeHandler.js", channel) || !$.inidb.GetBoolean('notice', channel.getName(), 'notices_toggle')) {
+            return;
+        }
+
+        if (($.tempdb.GetInteger("t_state", channel.getName(), "messageTime") + ($.inidb.GetInteger('notice', channel.getName(), 'interval') * 60 * 1000)) < System.currentTimeMillis()) {
+            if ($.tempdb.GetInteger("t_state", channel.getName(), "messageCount") >= $.inidb.GetInteger('notice', channel.getName(), 'reqmessages')) {
+                sendMessage(channel);
+                $.tempdb.SetInteger("t_state", channel.getName(), "messageCount", 0);
+
+                $.tempdb.SetInteger("t_state", channel.getName(), "messageTime", System.currentTimeMillis());
             }
-
-            $.messageTime = System.currentTimeMillis();   
-        }  
+        }
     }
-}, 10000);
+}, 10 * 1000);
