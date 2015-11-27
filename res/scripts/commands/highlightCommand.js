@@ -17,7 +17,7 @@ $.on('command', function (event) {
     var argsString = event.getArguments().trim();
 		
     if (command.equalsIgnoreCase("highlight")) {
-        if (!$.isModv3(sender, event.getTags())) {
+        if (!$.isMod(sender, event.getTags(), event.getChannel())) { 
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
         } else if (argsString.isEmpty()) { 
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.highlightcommand.usage"));
@@ -32,7 +32,7 @@ $.on('command', function (event) {
     }
 	
     if (command.equalsIgnoreCase("clearhighlights")) {
-        if (!$.isModv3(sender, event.getTags())) {
+        if (!$.isMod(sender, event.getTags(), event.getChannel())) { 
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
             return;
         }
