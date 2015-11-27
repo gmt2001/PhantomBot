@@ -663,7 +663,7 @@ $api.on(initscript, 'command', function (event) {
     }
 
     if (command.equalsIgnoreCase("reconnect")) {
-        if (!$.isCaster(sender, event.getTags(), channel)) {
+        if (!$.isCaster(sender, channel)) {
             $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.cmd.casteronly", channel), channel);
             return;
         }
