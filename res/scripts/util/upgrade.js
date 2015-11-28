@@ -108,10 +108,10 @@ $.upgrade = function (channel) {
             $.inidb.RemoveKey("settings", channel.getName(), "timepromotehours");
         }
 
-        if ($.inidb.Exists("settings", channel.getName(), "timezone")) {
-            $.inidb.SetString("settings", channel.getName(), "timeZone", $.inidb.GetString("settings", channel.getName(), "timezone"));
+        if ($.inidb.Exists("settings", channel.getName(), "timeZone")) {
+            $.inidb.SetString("settings", channel.getName(), "timezone", $.inidb.GetString("settings", channel.getName(), "timeZone"));
 
-            $.inidb.RemoveKey("settings", channel.getName(), "timezone");
+            $.inidb.RemoveKey("settings", channel.getName(), "timeZone");
         }
 
         if ($.inidb.Exists("settings", channel.getName(), "raffle_toggle")) {
