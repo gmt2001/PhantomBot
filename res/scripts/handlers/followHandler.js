@@ -33,8 +33,8 @@ $.getFollowAge = function (user, channel) {
 
     var datefmt = new java.text.SimpleDateFormat("MMMM d, YYYY");
     var gtf = new java.text.SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
-    datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.timezone));
-    var now = java.util.Calendar.getInstance(java.util.TimeZone.getTimeZone($.timezone)).getTime();
+    datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.inidb.GetString("timezone", channel.getName(), "timezone")));
+    var now = java.util.Calendar.getInstance(java.util.TimeZone.getTimeZone($.inidb.GetString("timezone", channel.getName(), "timezone"))).getTime();
 
     var FollowTime = new java.util.Date(gtf.format(date.parse(Followed_At)));
     var TotalFollowTime = new java.util.Date(gtf.format(now));

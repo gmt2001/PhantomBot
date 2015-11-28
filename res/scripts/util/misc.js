@@ -136,12 +136,12 @@ $.logChat = function (sender, channel, message) {
     }
 
     var datefmt = new java.text.SimpleDateFormat("yyyy-MM-dd");
-    datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.timezone));
+    datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.inidb.GetString("timezone", channel.getName(), "timezone")));
 
     var date = datefmt.format(new java.util.Date());
 
     datefmt = new java.text.SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss Z");
-    datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.timezone));
+    datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.inidb.GetString("timezone", channel.getName(), "timezone")));
 
     var timestamp = datefmt.format(new java.util.Date());
 
@@ -165,12 +165,12 @@ $.logLink = function (sender, channel, message) {
     }
 
     var datefmt = new java.text.SimpleDateFormat("yyyy-MM-dd");
-    datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.timezone));
+    datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.inidb.GetString("timezone", channel.getName(), "timezone")));
 
     var date = datefmt.format(new java.util.Date());
 
     datefmt = new java.text.SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss Z");
-    datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.timezone));
+    datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.inidb.GetString("timezone", channel.getName(), "timezone")));
 
     var timestamp = datefmt.format(new java.util.Date());
 
@@ -194,12 +194,12 @@ $.logEvent = function (file, line, channel, message) {
     }
 
     var datefmt = new java.text.SimpleDateFormat("yyyy-MM-dd");
-    datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.timezone));
+    datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.inidb.GetString("timezone", channel.getName(), "timezone")));
 
     var date = datefmt.format(new java.util.Date());
 
     datefmt = new java.text.SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss Z");
-    datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.timezone));
+    datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.inidb.GetString("timezone", channel.getName(), "timezone")));
 
     var timestamp = datefmt.format(new java.util.Date());
 
@@ -223,12 +223,12 @@ $.logError = function (file, line, channel, message) {
     }
 
     var datefmt = new java.text.SimpleDateFormat("yyyy-MM-dd");
-    datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.timezone));
+    datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.inidb.GetString("timezone", channel.getName(), "timezone")));
 
     var date = datefmt.format(new java.util.Date());
 
     datefmt = new java.text.SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss Z");
-    datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.timezone));
+    datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.inidb.GetString("timezone", channel.getName(), "timezone")));
 
     var timestamp = datefmt.format(new java.util.Date());
 
@@ -238,7 +238,7 @@ $.logError = function (file, line, channel, message) {
 }
 
 $.logRotate = function (channel) {
-    var cal = java.util.Calendar.getInstance(java.util.TimeZone.getTimeZone($.timezone));
+    var cal = java.util.Calendar.getInstance(java.util.TimeZone.getTimeZone($.inidb.GetString("timezone", channel.getName(), "timezone")));
     var now = cal.getTimeInMillis();
 
     cal.set(java.util.Calendar.HOUR, 0);
@@ -272,7 +272,7 @@ $.logRotate = function (channel) {
         logRotateDays = $.inidb.GetInteger('settings', channel.getName(), 'logrotatedays');
     }
 
-    datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.timezone));
+    datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.inidb.GetString("timezone", channel.getName(), "timezone")));
 
     for (i = 0; i < chatlogs.length; i++) {
         date = datefmt.parse(chatlogs[i].substring(8, 18));
