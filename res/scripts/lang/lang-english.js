@@ -415,8 +415,8 @@ $.lang.data["net.phantombot.followHandler.ultra-follow-train"] = "Ultra follow t
 $.lang.data["net.phantombot.followHandler.massive-follow-train"] = "MASSIVE FOLLOW TRAAAAIIIN!! ($1)";
 $.lang.data["net.phantombot.followHandler.followed-command-usage"] = "Usage: !follow (username), !followed (username), !followmessage (message), !followreward (reward)";
 $.lang.data["net.phantombot.followHandler.current-follow-message"] = "The current new follower message is: $1";		
-$.lang.data["net.phantombot.followHandler.follow-message-usage"] = "To change it use '!followmessage <message>'. You can also add the string '(name)' to put the followers name and '(pointname) for the reward.";		
-$.lang.data["net.phantombot.followHandler.follow-message-usage-points"] = ", '(reward)' to put the number of points received for following.";		
+$.lang.data["net.phantombot.followHandler.follow-message-usage"] = "To change it use '!followmessage <message>'. You can also add the string '(name)' to put the followers name";		
+$.lang.data["net.phantombot.followHandler.follow-message-usage-points"] = ", '(pointname)' for the reward including the name of the points, and '(reward)' to put the number of points but not the name of the points";		
 $.lang.data["net.phantombot.followHandler.follow-message-set"] = "New follower message set!";
 
 
@@ -451,7 +451,7 @@ $.lang.data["net.phantombot.phrasehandler.trigger-not-found"] = "That phrase tri
 //hostHandler.js 
 $.lang.data["net.phantombot.hosthandler.default-host-welcome-message"] = "Thanks for the host (name)!";
 $.lang.data["net.phantombot.hosthandler.default-host-welcome-message-and-reward"] = "Thanks for the host (name)! you're rewarded $1!";
-$.lang.data["net.phantombot.hosthandler.host-reward-current-and-usage"] = "The current host reward is $1! To change it use '!hostreward <amount>";
+$.lang.data["net.phantombot.hosthandler.host-reward-current-and-usage"] = "The current host reward is $1! To change it use '!hostreward <amount>'";
 $.lang.data["net.phantombot.hosthandler.host-reward-error"] = "Please put a valid reward greater than or equal to 0!";
 $.lang.data["net.phantombot.hosthandler.host-reward-set-success"] = "New hoster reward set!";
 $.lang.data["net.phantombot.hosthandler.host-count"] = "This channel is currently being hosted by $1 channels!";
@@ -476,16 +476,18 @@ $.lang.data["net.phantombot.donationhandler.donationalert-usage"] = "!donational
 $.lang.data["net.phantombot.subscribeHandler.default-sub-message-with-points"] = "Thanks for the subscription (name)! +(pointname)!";
 $.lang.data["net.phantombot.subscribeHandler.default-sub-message"] = "Thanks for the subscription (name)!";
 $.lang.data["net.phantombot.subscribeHandler.sub-silent-mode-on"] = "Subscribe handler now set to silent mode";
-$.lang.data["net.phantombot.subscribeHandler.sub-silent-mode-off"] = "Subscribe handler now set to verbose mode";
+$.lang.data["net.phantombot.subscribeHandler.sub-silent-mode-off"] = "Subscribe handler no longer in silent mode";
 $.lang.data["net.phantombot.subscribeHandler.current.sub-message"] = "The current subscriber message is: $1";
 $.lang.data["net.phantombot.subscribeHandler.new-sub-message-set"] = "New subscriber message set!";
-$.lang.data["net.phantombot.subscribeHandler.new-sub-current-reward"] = "The current new subscriber reward is $1 points! To change it use '!subscribereward <reward>";
+$.lang.data["net.phantombot.subscribeHandler.new-sub-current-reward"] = "The current new subscriber reward is $1 points! To change it use '!subscribereward <reward>'";
 $.lang.data["net.phantombot.subscribeHandler.sub-reward-error"] = "Please put a valid reward greater than or equal to 0!";
-$.lang.data["net.phantombot.subscribeHandler.new-sub-reward-set"] = "New subscriber reward set to $1 $2";
+$.lang.data["net.phantombot.subscribeHandler.new-sub-reward-set"] = "New subscriber reward set to $1";
 $.lang.data["net.phantombot.subscribeHandler.current-subs"] = "There are currently $1 subscribers!";
-$.lang.data["net.phantombot.subscribeHandler.current-sub-mode"] = "Currently using $1 subscription detection. twitchnotify mode does not save to the database. To change it use '!subscribemode <auto or twitchnotify>";
+$.lang.data["net.phantombot.subscribeHandler.current-sub-mode"] = "Currently using $1 subscription detection. twitchnotify mode relies solely on chat notifications. To change it use '!subscribemode <auto or twitchnotify>'";
 $.lang.data["net.phantombot.subscribeHandler.changed-sub-mode-twitchnotify"] = "Switched to twitchnotify subscription detection!";
 $.lang.data["net.phantombot.subscribeHandler.changed-sub-mode-auto"] = "Switched to auto subscription detection!";
+$.lang.data["net.phantombot.subscribeHandler.sub-message-usage"] = "To change it use '!subscribemessage <message>'. You can also add the string '(name)' to put the subscribers name.";		
+$.lang.data["net.phantombot.subscribeHandler.sub-message-usage-points"] = ", '(pointname)' for the reward including the name of the points, and '(reward)' to put the number of points but not the name of the points.";		
 
 //8ballCommand.js
 $.lang.data["net.phantombot.8ballCommand.proper-usage"] = "ask the magic-8ball a question with !8ball";
