@@ -20,6 +20,8 @@ public class RepoVersion
 {
 
     private static final String repoVersion = "@repository.version@";
+    private static final String buildVersion = "@build.version@";
+    private static final String buildDate = "@build.date@";
 
     private RepoVersion()
     {
@@ -28,5 +30,15 @@ public class RepoVersion
     public static String getRepoVersion()
     {
         return repoVersion;
+    }
+
+    public static String getBuildVersion()
+    {
+        return buildVersion;
+    }
+
+    public static String getBuildDate()
+    {
+        return buildDate;
     }
 }

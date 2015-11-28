@@ -80,12 +80,26 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
         </condition>
         <echo>Building revision ${repository.version}</echo>
     </target>
+    
+    <target name="today">
+        <tstamp>
+            <format property="TODAY" pattern="MM/dd/yyyy" locale="en,US"/>
+        </tstamp>
+    </target>
 
-    <target depends="init,git.revision" name="pre.compile">
+    <target depends="init,git.revision,today" name="pre.compile">
         <replace
             file="${src}/me/mast3rplan/phantombot/RepoVersion.java"
             token="@repository.version@"
             value="${repository.version}" />
+        <replace
+            file="${src}/me/mast3rplan/phantombot/RepoVersion.java"
+            token="@build.version@"
+            value="${version}" />
+        <replace
+            file="${src}/me/mast3rplan/phantombot/RepoVersion.java"
+            token="@build.date@"
+            value="${TODAY}" />
     </target>
 
     <target depends="pre.compile" name="compile.src">
@@ -110,11 +124,20 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
         </javac>
     </target>
     
-    <target name="post.compile">
+    <target name="post.compile" depends="git.revision,today">
         <replace
             file="${src}/me/mast3rplan/phantombot/RepoVersion.java"
             token="${repository.version}"
             value="@repository.version@" />
+        
+        <replace
+            file="${src}/me/mast3rplan/phantombot/RepoVersion.java"
+            token="${version}"
+            value="@build.version@" />
+        <replace
+            file="${src}/me/mast3rplan/phantombot/RepoVersion.java"
+            token="${TODAY}"
+            value="@build.date@" />
     </target>
 
     <target depends="compile.src,post.compile" name="jar">
