@@ -1,49 +1,35 @@
-var regularsGroupID = 6;
+$.on('ircJoinComplete', function (event) {
+    var channel = event.getChannel();
 
-$.timeLevel = $.inidb.get('settings', 'timeLevel');
-$.timePromoteHours = $.inidb.get('settings', 'timePromoteHours');
-$.timeZone = $.inidb.get("timezone", "timezone");
-$.timeOffline = $.inidb.get("timezone", "timeOffline");
-$.permToggleTime = $.inidb.get("settings", "permToggleTime");
+    if (!$.inidb.Exists("settings", channel.getName(), "timePromoteHours")) {
+        $.inidb.SetInteger("settings", channel.getName(), "timePromoteHours", 36);
+    }
 
-if ($.timeLevel == undefined || $.timeLevel == null || $.timeLevel.isEmpty()) {
-    $.timeLevel = "false";
+    if (!$.inidb.Exists("timezone", channel.getName(), "timezone")) {
+        $.inidb.SetString("timezone", channel.getName(), "timezone", "America/New_York");
+    }
+
+    if (!$.inidb.Exists("timezone", channel.getName(), "timeOffline")) {
+        $.inidb.SetBoolean("timezone", channel.getName(), "timeOffline", true);
+    }
+
+    if ($.tempdb.GetBoolean('t_state', channel.getName(), 'firstrun')) {
+        $.say("", channel);
+        $.say("The current time zone for is '" + $.inidb.GetString("timezone", channel.getName(), "timezone") + "'.", channel);
+        $.say("To change it use '!timezone (timezone)'.", channel);
+        $.say("A list of time zones can be found here: ", channel);
+        $.say("http://en.wikipedia.org/wiki/List_of_tz_database_time_zones.", channel);
+        $.say("", channel);
+    }
+
+    $.tempdb.SetInteger("t_state", channel.getName(), "bot_up", System.currentTimeMillis());
+});
+
+$.getUserTime = function (user, channel) {
+    return $.inidb.GetInteger('time', channel.getName(), user.toLowerCase());
 }
 
-if ($.timePromoteHours == undefined || $.timePromoteHours == null || isNaN($.timePromoteHours) || $.timePromoteHours < 0) {
-    $.timePromoteHours = 36;
-}
-
-if ($.timeZone == undefined || $.timeZone == null || $.timeZone.isEmpty()) {
-    $.timeZone = "America/New_York";
-}
-
-if ($.timeOffline == undefined || $.timeOffline == null || $.timeOffline.isEmpty()) {
-    $.timeOffline = "true";
-}
-
-if ($.permToggleTime == undefined || $.permToggleTime == null) {
-    $.permToggleTime = "false";
-}
-
-if($.firstrun) {
-    $.say("");
-    $.say("The current time zone is '" + $.timeZone + "'.");
-    $.say("To change it use '!timezone (timezone)'.");
-    $.say("A list of time zones can be found here: ");
-    $.say("http://en.wikipedia.org/wiki/List_of_tz_database_time_zones.");
-    $.say("");
-}
-
-$.getUserTime = function (user) {
-    // "getUserTime" instead of "getTime" to prevent issues with the "real" function.
-    var time = $.inidb.get('time', user.toLowerCase());
-    if (time == null) time = 0;
-
-    return time;
-}
-
-$.getTimeString = function (time) {
+$.getTimeString = function (time, channel) {
     var minutes = parseInt((time / 60) % 60);
     var hours = parseInt((time / 3600) % 24);
     var days = parseInt((time / 86400) % 7);
@@ -51,16 +37,16 @@ $.getTimeString = function (time) {
 
     var timeString = "";
 
-    var p = $.lang.get("net.phantombot.common.time-prefixes");
-    var s = $.lang.get("net.phantombot.common.time-suffixes");
+    var p = $.lang.get("net.phantombot.common.time-prefixes", channel);
+    var s = $.lang.get("net.phantombot.common.time-suffixes", channel);
 
     if (p.length != 4) {
-        $.logError("./systems/timeSystem.js", 54, "The time prefixes did not contain all numbers. String: net.phantombot.common.time-prefixes");
-        println("[raidSystem.js] The time prefixes did not contain all numbers. String: net.phantombot.common.time-prefixes");
+        $.logError("./systems/timeSystem.js", 54, channel, "The time prefixes did not contain all numbers. String: net.phantombot.common.time-prefixes");
+        println("[timeSystem.js] The time prefixes did not contain all numbers. String: net.phantombot.common.time-prefixes");
         return minutes;
     } else if (s.length != 4) {
-        $.logError("./systems/timeSystem.js", 55, "The time suffixes did not contain all numbers. String: net.phantombot.common.time-suffixes");
-        println("[raidSystem.js] The time suffixes did not contain all numbers. String: net.phantombot.common.time-suffixes");
+        $.logError("./systems/timeSystem.js", 55, channel, "The time suffixes did not contain all numbers. String: net.phantombot.common.time-suffixes");
+        println("[timeSystem.js] The time suffixes did not contain all numbers. String: net.phantombot.common.time-suffixes");
         return minutes;
     }
 
@@ -85,14 +71,14 @@ $.getTimeString = function (time) {
     }
 
     timeString = timeString.trim();
+
     return timeString;
 }
 
 $.validateTimezone = function (timezone) {
     var validIDs = java.util.TimeZone.getAvailableIDs();
 
-    for (i in validIDs)
-    {
+    for (i in validIDs) {
         if (validIDs[i] != null && validIDs[i].toLowerCase() == timezone.toLowerCase()) {
             return true;
         }
@@ -101,339 +87,292 @@ $.validateTimezone = function (timezone) {
     return false;
 }
 
-$.setTimezone = function (timezone) { 
-    if (validateTimezone(timezone)) {
-        $.inidb.set("timezone", "timezone", timezone);
-        $.timeZone = $.inidb.get('timezone', 'timezone');
-
-        return true;
-    } else {
-        return false;
-    }
-}
-
-$.on('command', function(event) {
+$.on('command', function (event) {
     var sender = event.getSender().toLowerCase();
-    var username = $.username.resolve(sender, event.getTags()).toLowerCase();
+    var username = $.username.resolve(sender, event.getTags());
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
-    var args;
-    var action;
-    var time;
-    var timeZone;
-    
-    if(argsString.isEmpty()) {
-        args = [];
-    } else {
-        args = argsString.split(" ");
-    }
+    var args = event.getArgs();
+    var channel = event.getChannel();
 
-    if(command.equalsIgnoreCase("time")) {
+    if (command.equalsIgnoreCase("time")) {
         if (args.length >= 1) {
             var action = args[0];
 
             if (action.equalsIgnoreCase("give") || action.equalsIgnoreCase("send") || action.equalsIgnoreCase("add")) {
-                if ($.permToggleTime == "true") {
-                    if (!$.isModv3(sender, event.getTags())) {
-                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
+                if ($.inidb.GetBoolean("settings", channel.getName(), "permToggleTime")) {
+                    if (!$.isMod(sender, event.getTags(), channel)) {
+                        $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.cmd.modonly", channel), channel);
                         return;
                     }
                 } else {
-                    if (!$.isAdmin(sender)) {
-                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
+                    if (!$.isAdmin(sender, channel)) {
+                        $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.cmd.adminonly", channel), channel);
                         return;
                     }
                 }
 
-                if (args[1] == null || args[2] == null || isNaN(parseInt(args[2]))) {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.give-usage"));
+                if (args.length < 3 || isNaN(args[2])) {
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.timesystem.give-usage", channel), channel);
                     return;
                 }
-            
-                username = args[1].toLowerCase();
-                time = parseInt(args[2]);
-            
-                if (time < 0) {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.give-error-negative"));
+
+                if (!$.inidb.GetBoolean("visited", channel.getName(), args[1].toLowerCase())) {
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.common.user-404", channel, args[1]), channel);
+                    return;
+                }
+
+                if (parseInt(args[2]) < 0) {
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.timesystem.give-error-negative", channel), channel);
                     return;
                 } else {
-                    if ($.inidb.get("visited", username.toLowerCase()) == "visited") {
-                        $.inidb.incr('time', username.toLowerCase(), time);
+                    $.inidb.SetInteger('time', channel.getName(), args[1].toLowerCase(), $.inidb.GetInteger('time', channel.getName(), args[1].toLowerCase()) + args[2]);
 
-                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.give-success", $.getTimeString(time), $.username.resolve(username), $.getTimeString($.inidb.get('time', username.toLowerCase()))));
-                        return;
-                    } else {
-                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.common.user-404", $.username.resolve(username)));
-                        return;
-                    }
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.timesystem.give-success", channel, $.getTimeString(args[2], channel), $.username.resolve(args[1]), $.getTimeString($.inidb.GetInteger('time', channel.getName(), args[1].toLowerCase()), channel)), channel);
+                    return;
                 }
             } else if (action.equalsIgnoreCase("take") || action.equalsIgnoreCase("withdraw")) {
-                if ($.permToggleTime == "true") {
-                    if (!$.isModv3(sender, event.getTags())) {
-                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
+                if ($.inidb.GetBoolean("settings", channel.getName(), "permToggleTime")) {
+                    if (!$.isMod(sender, event.getTags(), channel)) {
+                        $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.cmd.modonly", channel), channel);
                         return;
                     }
                 } else {
-                    if (!$.isAdmin(sender)) {
-                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
+                    if (!$.isAdmin(sender, channel)) {
+                        $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.cmd.adminonly", channel), channel);
                         return;
                     }
                 }
 
-                if (args[1] == null || args[2] == null || isNaN(parseInt(args[2]))) {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.take-usage"));
+                if (args.length < 3 || isNaN(args[2])) {
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.timesystem.take-usage", channel), channel);
                     return;
                 }
 
-                username = args[1].toLowerCase();
-                time = parseInt(args[2]);
+                if (!$.inidb.GetBoolean("visited", channel.getName(), args[1].toLowerCase())) {
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.common.user-404", channel, args[1]), channel);
+                    return;
+                }
 
-                if (time > $.inidb.get('time', username.toLowerCase())) {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.take-error-toomuch", $.username.resolve(username)));       
+                if (parseInt(args[2]) > $.inidb.GetInteger('time', channel.getName(), args[1].toLowerCase())) {
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.timesystem.take-error-toomuch", channel, $.username.resolve(args[1])), channel);
                     return;
                 } else {
-                    if ($.inidb.get("visited", username.toLowerCase()) == "visited")  {
-                        $.inidb.decr('time', username.toLowerCase(), time);
+                    $.inidb.SetInteger('time', channel.getName(), args[1].toLowerCase(), $.inidb.GetInteger('time', channel.getName(), args[1].toLowerCase()) - args[2]);
 
-                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.take-success", $.getTimeString(time), $.username.resolve(username), $.getTimeString($.inidb.get('time', username.toLowerCase()))))
-                        return;
-                    } else {
-                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.common.user-404", $.username.resolve(username)));
-                        return;
-                    }
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.timesystem.take-success", channel, $.getTimeString(args[2], channel), $.username.resolve(args[1]), $.getTimeString($.inidb.GetInteger('time', channel.getName(), args[1].toLowerCase()), channel)), channel);
+                    return;
                 }
             } else if (action.equalsIgnoreCase("set")) {
-                if ($.permToggleTime == "true") {
-                    if (!$.isModv3(sender, event.getTags())) {
-                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.modonly"));
+                if ($.inidb.GetBoolean("settings", channel.getName(), "permToggleTime")) {
+                    if (!$.isMod(sender, event.getTags(), channel)) {
+                        $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.cmd.modonly", channel), channel);
                         return;
                     }
                 } else {
-                    if (!$.isAdmin(sender)) {
-                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
+                    if (!$.isAdmin(sender, channel)) {
+                        $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.cmd.adminonly", channel), channel);
                         return;
                     }
                 }
 
-                if (args[1] == null || args[2] == null || isNaN(parseInt(args[2]))) {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.set-usage"));
+                if (args.length < 3 || isNaN(args[2])) {
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.timesystem.set-usage", channel), channel);
                     return;
                 }
-            
-                username = args[1].toLowerCase();
-                time = parseInt(args[2]);
-            
-                if (time < 0) {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.set-error-negative"));  
+
+                if (!$.inidb.GetBoolean("visited", channel.getName(), args[1].toLowerCase())) {
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.common.user-404", channel, args[1]), channel);
+                    return;
+                }
+
+                if (parseInt(args[2]) < 0) {
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.timesystem.set-error-negative", channel), channel);
                     return;
                 } else {
-                    if ($.inidb.get("visited", username.toLowerCase()) == "visited")  {
-                        $.inidb.set('time', username.toLowerCase(), time);
+                    $.inidb.SetInteger('time', channel.getName(), args[1].toLowerCase(), args[2]);
 
-                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.set-success", $.username.resolve(username), $.getTimeString($.inidb.get('time', username.toLowerCase()))));
-                        return;
-                    } else {
-                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.common.user-404", $.username.resolve(username)));
-                        return;
-                    }
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.timesystem.set-success", channel, $.username.resolve(args[1]), $.getTimeString($.inidb.GetInteger('time', channel.getName(), args[1].toLowerCase()), channel)), channel);
+                    return;
                 }
             } else if (action.equalsIgnoreCase("reset")) {
-                if (!$.isAdmin(sender)) {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
+                if (!$.isAdmin(sender, channel)) {
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.cmd.adminonly", channel), channel);
                     return;
                 }
 
-                $.inidb.RemoveFile("time");
-                $.inidb.ReloadFile("time");
+                $.inidb.RemoveSection("time", channel.getName());
 
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.reset-success", $.getTimeString(0)));
+                $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.timesystem.reset-success", channel, $.getTimeString(0, channel)), channel);
             } else if (action.equalsIgnoreCase("promotehours")) {
-                if (!$.isAdmin(sender)) {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
+                if (!$.isAdmin(sender, channel)) {
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.cmd.adminonly", channel), channel);
                     return;
                 }
 
-                if (args[1] == null || isNaN(parseInt(args[1]))) {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.promotehours-usage"));
+                if (args.length == 0 || isNaN(args[1])) {
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.timesystem.promotehours-usage", channel), channel);
                     return;
                 }
 
-                if (args[1] < 0) {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.promotehours-error-negative", $.getGroupNameById(regularsGroupID).toLowerCase()));
+                if (parseInt(args[1]) < 0) {
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.timesystem.promotehours-error-negative", channel, $.getGroupNameById(6)), channel);
                     return;
                 } else {
-                    $.inidb.set('settings', 'timePromoteHours', args[1]);
-                    $.timePromoteHours = parseInt($.inidb.get('settings', 'timePromoteHours'));
+                    $.inidb.SetInteger('settings', channel.getName(), 'timePromoteHours', args[1]);
 
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.promotehours-success", $.getGroupNameById(regularsGroupID).toLowerCase(), $.timePromoteHours));
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.timesystem.promotehours-success", channel, $.getGroupNameById(6), args[1]), channel);
                     return;
                 }
             } else if (action.equalsIgnoreCase("autolevel")) {
-                if (!$.isAdmin(sender)) {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
+                if (!$.isAdmin(sender, channel)) {
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.cmd.adminonly", channel), channel);
                     return;
                 }
 
-                if ($.timeLevel.toString() == "false") {
-                    $.inidb.set('settings', 'timeLevel', "true");
-                    $.timeLevel = $.inidb.get('settings', 'timeLevel');
+                if ($.inidb.GetBoolean('settings', channel.getName(), 'timeLevel')) {
+                    $.inidb.SetBoolean('settings', channel.getName(), 'timeLevel', true);
 
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.autolevel-enabled", $.getGroupNameById(regularsGroupID).toLowerCase(), $.timePromoteHours));
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.timesystem.autolevel-enabled", channel, $.getGroupNameById(6), $.inidb.GetInteger('settings', channel.getName(), 'timePromoteHours')), channel);
                     return;
                 } else {
-                    $.inidb.set('settings', 'timeLevel', "false");
-                    $.timeLevel = $.inidb.get('settings', 'timeLevel');
+                    $.inidb.SetBoolean('settings', channel.getName(), 'timeLevel', false);
 
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.autolevel-disabled", $.getGroupNameById(regularsGroupID).toLowerCase(), $.timePromoteHours));
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.timesystem.autolevel-disabled", channel, $.getGroupNameById(6), $.inidb.GetInteger('settings', channel.getName(), 'timePromoteHours')), channel);
                     return;
                 }
             } else if (action.equalsIgnoreCase("offline") || action.equalsIgnoreCase("offlinetime")) {
-                if (!$.isAdmin(sender)) {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
+                if (!$.isAdmin(sender, channel)) {
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.cmd.adminonly", channel), channel);
                     return;
                 }
 
-                if ($.timeOffline.toString() == "false") {
-                    $.inidb.set('settings', 'timeOffline', "true");
-                    $.timeOffline = $.inidb.get('settings', 'timeOffline');
+                if (!$.inidb.GetBoolean('settings', channel.getName(), 'timeOffline')) {
+                    $.inidb.SetBoolean('settings', channel.getName(), 'timeOffline', true);
 
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.offlinetime-enabled"));
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.timesystem.offlinetime-enabled", true), true);
                     return;
                 } else {
-                    $.inidb.set('settings', 'timeOffline', "false");
-                    $.timeOffline = $.inidb.get('settings', 'timeOffline');
+                    $.inidb.SetBoolean('settings', channel.getName(), 'timeOffline', false);
 
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.offlinetime-disabled"));
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.timesystem.offlinetime-disabled", true), true);
                     return;
                 }
             } else if (action.equalsIgnoreCase("toggle")) {
-                if (!$.isAdmin(sender)) {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
+                if (!$.isAdmin(sender, channel)) {
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.cmd.adminonly", channel), channel);
                     return;
                 }
 
-                if ($.permToggleTime == "false") {
-                    $.inidb.set('settings', 'permToggleTime', "true");
-                    $.permToggleTime = $.inidb.get('settings', 'permToggleTime');
+                if (!$.inidb.GetBoolean("settings", channel.getName(), "permToggleTime")) {
+                    $.inidb.SetBoolean("settings", channel.getName(), "permToggleTime", true);
 
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.toggle-success", "Moderator"));
-                } else if ($.permToggleTime == "true") {
-                    $.inidb.set('settings', 'permToggleTime', "false");
-                    $.permToggleTime = $.inidb.get('settings', 'permToggleTime');
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.timesystem.toggle-success", true, "Moderator"), true);
+                } else {
+                    $.inidb.SetBoolean("settings", channel.getName(), "permToggleTime", false);
 
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.toggle-success", "Administrator"));
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.timesystem.toggle-success", true, "Administrator"), true);
                 }
             } else if (action.equalsIgnoreCase("help")) {
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.help"));
+                $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.timesystem.help", true), true);
                 return;
             } else {
-                var othername = "";
-                if(args[0]!=null) {
-                    othername = args[0].toLowerCase();
-                }
-                
-                if ($.inidb.get("visited", othername.toLowerCase()) == "visited")  {
-                            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.get-other", $.username.resolve(othername), $.getTimeString($.getUserTime(othername))));
-                            return;
+                if (args.length > 0 && $.inidb.GetBoolean("visited", channel.getName(), args[0].toLowerCase())) {
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.timesystem.get-other", channel, $.username.resolve(args[0].toLowerCase()), $.getTimeString($.getUserTime(args[0].toLowerCase(), channel), channel)), channel);
+                    return;
                 } else {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.common.user-404", $.username.resolve(othername)));
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.common.user-404", channel, args[0]), channel);
                     return;
                 }
             }
         } else {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.get-self", $.getTimeString($.getUserTime(sender))));
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.timesystem.get-self", channel, $.getTimeString($.getUserTime(sender, channel), channel)), channel);
             return;
         }
     }
 
-    if(command.equalsIgnoreCase("timezone")) {
+    if (command.equalsIgnoreCase("timezone")) {
         if (args.length >= 1) {
-            var action = args[0];
-
-            if (action.equalsIgnoreCase("help") || action.equalsIgnoreCase("usage")) {
-                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timezone.usage"));
+            if (args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("usage")) {
+                $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.timezone.usage", channel), channel);
                 return;
             } else {
-                if (!$.isAdmin(sender)) {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
+                if (!$.isAdmin(sender, channel)) {
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.cmd.adminonly", channel), channel);
                     return;
                 }
 
-                if (setTimezone(action)) {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timezone.success", action));
+                if ($.validateTimezone(args[0])) {
+                    $.inidb.SetString("timezone", channel.getName(), "timezone", args[0]);
+
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.timezone.success", channel, args[0]), channel);
                     return;
                 } else {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timezone.error-invalid", action));
+                    $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.timezone.error-invalid", channel, args[0]), channel);
                     return;
                 }
                 return;
             }
         } else {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timezone.get", $.timeZone));
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.timezone.get", channel, $.inidb.GetString("timezone", channel.getName(), "timezone")), channel);
             return;
         }
     }
 
     if (command.equalsIgnoreCase("streamertime")) {
-        var cal = java.util.Calendar.getInstance(java.util.TimeZone.getTimeZone($.timeZone));
+        var cal = java.util.Calendar.getInstance(java.util.TimeZone.getTimeZone($.inidb.GetString("timezone", channel.getName(), "timezone")));
         var now = cal.getTime();
         var datefmt = new java.text.SimpleDateFormat("EEEE MMMM d, yyyy @ h:mm a z");
-        datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.timeZone));
+        datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.inidb.GetString("timezone", channel.getName(), "timezone")));
         var timestamp = datefmt.format(now);
-            
-        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.streamertime", timestamp, $.username.resolve($.channelName)));
+
+        $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.streamertime", channel, timestamp, $.username.resolve($.channelName)), channel);
     }
 
     if (command.equalsIgnoreCase("botuptime")) {
-        $.say($.lang.get("net.phantombot.botuptime.success", $.username.resolve($.botname), $.getTimeString($.botUptime * 60)));
+        $.say($.lang.get("net.phantombot.botuptime.success", channel, $.username.resolve($.botName), $.getTimeString(parseInt(System.currentTimeMillis() - $.tempdb.GetInteger("t_state", channel.getName(), "bot_up") / 1000), channel)), channel);
         return;
     }
-    
+
     if (command.equalsIgnoreCase("uptime")) {
-        if ($.isOnline($.channelName)) {
-            $.say($.lang.get("net.phantombot.uptime.success-online", $.username.resolve($.channelName), $.getUptime($.channelName)));
+        if ($.isOnline(channel.getName().replaceFirst("#", ""))) {
+            $.say($.lang.get("net.phantombot.uptime.success-online", channel, $.username.resolve(channel.getName().replaceFirst("#", "")), $.getUptime(channel.getName().replaceFirst("#", ""))));
             return;
         } else {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.uptime.success-offline", $.username.resolve($.channelName)));
+            $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.uptime.success-offline", channel, $.username.resolve(channel.getName().replaceFirst("#", ""))));
             return;
         }
     }
 });
 
-$.timer.addTimer("./systems/timeSystem.js", "autosave", true, function() {
-    $.inidb.SaveAll(true);
-}, 300 * 1000);
+$.timer.addTimer("./systems/timeSystem.js", "timesystem", true, function () {
+    var channels = $.phantombot.getChannels();
 
-$.timer.addTimer("./systems/timeSystem.js", "timesystem", true, function() {
-    if (!$.moduleEnabled("./systems/timeSystem.js")) {
-        return;
-    }
+    for (var i = 0; i < channels.size(); i++) {
+        var channel = channels.get(i);
 
-    if ($.botUptime == 0 || $.botUptime == undefined || $.botUptime == null) {
-        $.botUptime = 1;
-    } else {
-        $.botUptime++;
-    }
-
-    for (var i = 0; i < $.users.length; i++) {
-        var nick = $.users[i][0].toLowerCase();
-
-        if ($.isOnline($.channelName)) {
-            $.inidb.incr('time', nick, 60);
-        } else {
-            if ($.timeOffline == "true") {
-                $.inidb.incr('time', nick, 60);
-            }
+        if (!$.moduleEnabled("./systems/timeSystem.js", channel)) {
+            return;
         }
 
-        if ($.timeLevel == "true") {
-            if(!$.isMod(nick)) {
-                if (parseInt($.getUserGroupId(nick)) > regularsGroupID && $.inidb.get('followed', nick) == 1) {
-                    if(parseInt($.inidb.get('time', nick)) >= parseInt($.timePromoteHours * 60) * 60) {
-                        var levelup = parseInt($.getUserGroupId(nick)) - 1;
+        var keys = $.tempdb.GetKeyList("t_users", channel.getName());
+        
+        for (var b = 0; b < keys.length; b++) {
+            var nick = keys[b];
 
-                        $.setUserGroupById(nick, levelup);
-                        $.say($.getWhisperString(nick) + $.lang.get("net.phantombot.timesystem.autolevel-promote", $.username.resolve(nick), $.getGroupNameById(levelup).toLowerCase(), $.timePromoteHours));
+            if ($.isOnline(channel.getName().replaceFirst("#", "")) || $.inidb.GetBoolean('settings', channel.getName(), 'timeOffline')) {
+                $.inidb.SetInteger('time', channel.getName(), nick, $.inidb.GetInteger('time', channel.getName(), nick) + 60);
+            }
+
+            if ($.inidb.GetBoolean('settings', channel.getName(), 'timeLevel')) {
+                if (!$.isMod(nick, null, channel)) {
+                    if ($.getUserGroupId(nick, channel) > 6 && $.inidb.GetBoolean('followed', channel.getName(), nick)) {
+                        if ($.inidb.GetInteger('time', channel.getName(), nick) >= ($.inidb.GetInteger('settings', channel.getName(), 'timePromoteHours') * 60 * 60)) {
+                            var levelup = $.getUserGroupId(nick, channel) - 1;
+
+                            $.setUserGroupById(nick, channel, levelup);
+                            $.say($.getWhisperString(nick, channel) + $.lang.get("net.phantombot.timesystem.autolevel-promote", channel, $.username.resolve(nick), $.getGroupNameById(levelup, channel), $.inidb.GetInteger('settings', channel.getName(), 'timePromoteHours')), channel);
+                        }
                     }
                 }
             }
@@ -441,13 +380,9 @@ $.timer.addTimer("./systems/timeSystem.js", "timesystem", true, function() {
     }
 }, 60 * 1000);
 
-setTimeout(function(){ 
-    if ($.moduleEnabled('./systems/timeSystem.js')) {
-        $.registerChatCommand("./systems/timeSystem.js", "time");
-        $.registerChatCommand("./systems/timeSystem.js", "time help");
-        $.registerChatCommand("./systems/timeSystem.js", "timezone");
-        $.registerChatCommand("./systems/timeSystem.js", "streamertime");
-        $.registerChatCommand("./systems/timeSystem.js", "uptime");
-        $.registerChatCommand("./systems/timeSystem.js", "botuptime");
-    }
-},10*1000);
+$.registerChatCommand("./systems/timeSystem.js", "time");
+$.registerChatCommand("./systems/timeSystem.js", "time help");
+$.registerChatCommand("./systems/timeSystem.js", "timezone");
+$.registerChatCommand("./systems/timeSystem.js", "streamertime");
+$.registerChatCommand("./systems/timeSystem.js", "uptime");
+$.registerChatCommand("./systems/timeSystem.js", "botuptime");
