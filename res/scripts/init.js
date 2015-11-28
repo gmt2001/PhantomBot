@@ -71,7 +71,7 @@ $api.on($script, 'ircJoinComplete', function (event) {
 $api.on($script, 'ircChannelUserMode', function (event) {
     if ($.tempdb.GetBoolean('t_state', event.getChannel().getName(), 'connected')) {
         if ($.phantombot.getChannel(event.getChannel().getName()) != null) {
-            if (event.getUser().equalsIgnoreCase($.botname) && event.getMode().equalsIgnoreCase("o")) {
+            if (event.getUser().equalsIgnoreCase($.botName) && event.getMode().equalsIgnoreCase("o")) {
                 if (event.getAdd() == true) {
                     if (!$.tempdb.GetBoolean('t_state', event.getChannel().getName(), 'modeo')) {
                         var connectedMessage = $.inidb.GetString('settings', event.getChannel().getName(), 'connectedMessage');

@@ -3,7 +3,7 @@ var usercheckinterval = 3 * 60 * 1000;
 var modcheckinterval = 10 * 60 * 1000;
 
 $.isBot = function (user) {
-    return user.equalsIgnoreCase($.botname);
+    return user.equalsIgnoreCase($.botName);
 }
 
 $.isOwner = function (user) {

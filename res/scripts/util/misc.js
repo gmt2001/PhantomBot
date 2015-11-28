@@ -51,10 +51,10 @@ $.say = function (s, channel) {
 
     str = $.replaceAll(str, '<  ', '< ');
 
-    $.println(str);
+    $.println("[" + channel.getName() + "] " + str);
 
     if ($.connected) {
-        $.logChat($.botname, str);
+        $.logChat($.botName, channel, str);
 
         if ($.inidb.GetBoolean("settings", channel.getName(), "response_@all") || str.equals($.lang.get("net.phantombot.misc.response-disable", channel))
                 || str.indexOf(".timeout ") != -1 || str.indexOf(".ban ") != -1 || str.indexOf(".unban ") != -1 || str.equalsIgnoreCase(".clear")
@@ -121,7 +121,7 @@ $.array.contains = function (arr, itm) {
 }
 
 $.logChat = function (sender, channel, message) {
-    if (!$.moduleEnabled("./util/fileSystem.js", channel) || (sender.equalsIgnoreCase($.botname) && message.equalsIgnoreCase(".mods"))) {
+    if (!$.moduleEnabled("./util/fileSystem.js", channel) || (sender.equalsIgnoreCase($.botName) && message.equalsIgnoreCase(".mods"))) {
         return;
     }
 

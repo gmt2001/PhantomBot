@@ -229,7 +229,7 @@ function sendMessage(channel) {
         var EventBus = Packages.me.mast3rplan.phantombot.event.EventBus;
         var CommandEvent = Packages.me.mast3rplan.phantombot.event.command.CommandEvent;
 
-        EventBus.instance().post(new CommandEvent($.botname, cmd, prm, channel));
+        EventBus.instance().post(new CommandEvent($.botName, cmd, prm, channel));
     }
 
     if ($.strlen(message) > 0) {

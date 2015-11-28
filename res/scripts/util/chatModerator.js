@@ -46,7 +46,7 @@ $.on('command', function (event) {
             return;
         }
     }
-    if (command.equalsIgnoreCase("chat") && username.equalsIgnoreCase($.botname)) {
+    if (command.equalsIgnoreCase("chat") && username.equalsIgnoreCase($.botName)) {
         $.say(argsString, channel);
     } else if (command.equalsIgnoreCase("purge")) {
         if ($.isMod(sender, event.getTags(), channel)) {

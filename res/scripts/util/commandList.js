@@ -123,7 +123,7 @@ $.on('command', function (event) {
     var args = event.getArgs();
     var channel = event.getChannel();
 
-    if (command.equalsIgnoreCase("botcommands")) { // !botcommands for bot commands and !commands for custom commands.
+    if (command.equalsIgnoreCase("botcommands") || command.equalsIgnoreCase($.botName)) {
         var cmdList = "";
         var length = 0;
         var start = 0;
