@@ -53,6 +53,9 @@ $.lang.data["net.phantombot.init.module-disable"] = "Module disabled!";
 $.lang.data["net.phantombot.init.module-enabled"] = "The module $1 is currently enabled!";
 $.lang.data["net.phantombot.init.module-disabled"] = "The module $1 is currently disabled!";
 $.lang.data["net.phantombot.init.module-list"] = "Modules: ";
+$.lang.data["net.phantombot.init.blacklist-user-usage"] = "Usage: !blacklistuser (username)";
+$.lang.data["net.phantombot.init.blacklist-user-success"] = "$1 has been added to the bot blacklist.";
+$.lang.data["net.phantombot.init.bot-blacklist"] = "$1 is blacklisted, and can not use this bot.";
 
 //misc.js
 $.lang.data["net.phantombot.misc.log-status"] = "Logging is currently $1! Logs are kept for $2 days! To change this use '!log <enable or disable>' or '!log days <number of days>'";
