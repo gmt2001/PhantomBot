@@ -28,7 +28,7 @@ $.on('twitchHosted', function (event) {
         var s = $.inidb.GetString('settings', channel.getName(), 'hostmessage');
         
         if ($.moduleEnabled("./systems/pointSystem.js", channel) && $.inidb.GetInteger('settings', channel.getName(), 'hostreward') > 0) {
-            $.inidb.SetInteger("points", event.getChannel().getName(), hoster, $.inidb.GetInteger("points", event.getChannel().getName(), hoster) + $.inidb.GetInteger('settings', channel.getName(), 'hostreward'));
+            $.inidb.SetInteger("points", channel.getName(), hoster, $.inidb.GetInteger("points", channel.getName(), hoster) + $.inidb.GetInteger('settings', channel.getName(), 'hostreward'));
         }
 
         s = $.replaceAll(s, '(name)', username);

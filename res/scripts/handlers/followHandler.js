@@ -83,7 +83,7 @@ $.on('twitchFollow', function (event) {
                 var p = $.inidb.GetInteger('settings', channel.getName(), 'followreward');
                 s = $.replaceAll(s, '(pointname)', $.getPointsString(p, channel));
                 s = $.replaceAll(s, '(reward)', p);
-                $.inidb.SetInteger("points", event.getChannel().getName(), follower, $.inidb.GetInteger("points", event.getChannel().getName(), follower) + p);
+                $.inidb.SetInteger("points", channel.getName(), follower, $.inidb.GetInteger("points", channel.getName(), follower) + p);
             }
 
             $.writeToFile(username + " ", "./web/latestfollower.txt", false);
