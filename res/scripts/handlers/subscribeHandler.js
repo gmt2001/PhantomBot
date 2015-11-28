@@ -4,7 +4,7 @@ $.on('ircJoinComplete', function (event) {
 
     for (var i = 0; i < keys.length; i++) {
         if ($.inidb.GetBoolean("subscribed", channel.getName(), keys[i])) {
-            Packages.me.mast3rplan.phantombot.cache.SubscribersCache.instance(channel.getName()).addSubscriber(keys[i]);
+            $.botpkgroot.cache.SubscribersCache.instance(channel.getName()).addSubscriber(keys[i]);
         }
     }
 
@@ -171,7 +171,7 @@ $.on('command', function (event) {
             $.logEvent("subscribeHandler.js", 167, channel, username + " changed the new subscriber detection method to twitchnotify");
 
             $.inidb.SetBoolean('settings', channel.getName(), 'subscribemode', false);
-            Packages.me.mast3rplan.phantombot.cache.SubscribersCache.instance(channel.getName()).doRun(false);
+            $.botpkgroot.cache.SubscribersCache.instance(channel.getName()).doRun(false);
 
             $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.subscribeHandler.changed-sub-mode-twitchnotify", channel), channel);
             return;
@@ -179,7 +179,7 @@ $.on('command', function (event) {
             $.logEvent("subscribeHandler.js", 175, channel, username + " changed the new subscriber detection method to auto");
 
             $.inidb.SetBoolean('settings', channel.getName(), 'subscribemode', true);
-            Packages.me.mast3rplan.phantombot.cache.SubscribersCache.instance(channel.getName()).doRun(true);
+            $.botpkgroot.cache.SubscribersCache.instance(channel.getName()).doRun(true);
 
             $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.subscribeHandler.changed-sub-mode-auto", channel), channel);
             return;
@@ -194,8 +194,8 @@ $.on('ircPrivateMessage', function (event) {
 
         if (message.contains("just subscribed") || message.contains("subscribed for")) {
             var spl = message.split(" ");
-            var EventBus = Packages.me.mast3rplan.phantombot.event.EventBus;
-            var TwitchSubscribeEvent = Packages.me.mast3rplan.phantombot.event.twitch.subscriber.TwitchSubscribeEvent;
+            var EventBus = $.botpkgroot.event.EventBus;
+            var TwitchSubscribeEvent = $.botpkgroot.event.twitch.subscriber.TwitchSubscribeEvent;
 
             EventBus.instance().post(new TwitchSubscribeEvent(spl[0], channel));
         }
@@ -215,9 +215,9 @@ $.timer.addTimer("./handlers/subscribeHandler.js", "subscribehandler", true, fun
         var channel = channels.get(i);
         
         if (!$.moduleEnabled("./handlers/subscribeHandler.js", channel) || !$.inidb.GetBoolean('settings', channel.getName(), 'subscribemode')) {
-            Packages.me.mast3rplan.phantombot.cache.SubscribersCache.instance(channel.getName()).doRun(false);
+            $.botpkgroot.cache.SubscribersCache.instance(channel.getName()).doRun(false);
         } else {
-            Packages.me.mast3rplan.phantombot.cache.SubscribersCache.instance(channel.getName()).doRun(true);
+            $.botpkgroot.cache.SubscribersCache.instance(channel.getName()).doRun(true);
         }
     }
 }, 60 * 1000);

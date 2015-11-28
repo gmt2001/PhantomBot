@@ -105,6 +105,7 @@ public class PhantomBot implements Listener
         return instance;
     }
 
+    @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     public PhantomBot(String username, String oauth, String apioauth, String clientid, String channel, String owner, int baseport,
             String hostname, int port, double msglimit30, String datastore, String datastoreconfig, String youtubekey, String webenable,
             String musicenable)
@@ -120,7 +121,7 @@ public class PhantomBot implements Listener
         com.gmt2001.Console.out.println();
 
         interactive = System.getProperty("interactive") != null;
-        
+
         channel = channel.toLowerCase();
 
         this.username = username;
@@ -155,7 +156,7 @@ public class PhantomBot implements Listener
             this.hostname = hostname;
             this.port = port;
         }
-        
+
         int gport = 6667;
         String ghostname = "199.9.253.119";
 
@@ -263,6 +264,22 @@ public class PhantomBot implements Listener
 
         this.session.addIRCEventListener(new IrcEventHandler());
         this.tgcSession.addIRCEventListener(new IrcEventHandler());
+
+        new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                try
+                {
+                    Thread.sleep(500);
+                    ScriptManager.loadScript(new File("./scripts/init.js"));
+                } catch (InterruptedException | IOException ex)
+                {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
+            }
+        }).start();
     }
 
     public static void setDebugging(boolean debug)
@@ -355,7 +372,6 @@ public class PhantomBot implements Listener
         Script.global.defineProperty("youtube", YouTubeAPIv3.instance(), 0);
         Script.global.defineProperty("connmgr", connectionManager, 0);
         Script.global.defineProperty("hostname", hostname, 0);
-        Script.global.defineProperty("phantombot", PhantomBot.instance(), 0);
 
         t = new Thread(new Runnable()
         {
@@ -367,14 +383,6 @@ public class PhantomBot implements Listener
         });
 
         Runtime.getRuntime().addShutdownHook(t);
-
-        try
-        {
-            ScriptManager.loadScript(new File("./scripts/init.js"));
-        } catch (IOException ex)
-        {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
     }
 
     @SuppressWarnings("SleepWhileInLoop")

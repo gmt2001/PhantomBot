@@ -4,6 +4,9 @@ var out = Packages.com.gmt2001.Console.out;
 
 var initscript = $script;
 
+$.botpkgroot = Packages.me.mast3rplan.phantombot;
+$.phantombot = $.botpkgroot.PhantomBot.instance();
+
 $.tostring = Objects.toString;
 $.println = function (o) {
     out.println(tostring(o));

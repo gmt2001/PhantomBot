@@ -226,8 +226,8 @@ function sendMessage(channel) {
             prm = cmd.substring(cmd.indexOf(" "));
         }
 
-        var EventBus = Packages.me.mast3rplan.phantombot.event.EventBus;
-        var CommandEvent = Packages.me.mast3rplan.phantombot.event.command.CommandEvent;
+        var EventBus = $.botpkgroot.event.EventBus;
+        var CommandEvent = $.botpkgroot.event.command.CommandEvent;
 
         EventBus.instance().post(new CommandEvent($.botName, cmd, prm, channel));
     }

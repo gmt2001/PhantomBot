@@ -4,7 +4,7 @@ $.on('ircJoinComplete', function (event) {
 
     for (var i = 0; i < keys.length; i++) {
         if ($.inidb.GetBoolean("followed", channel.getName(), keys[i])) {
-            Packages.me.mast3rplan.phantombot.cache.FollowersCache.instance(channel.getName()).addFollower(keys[i]);
+            $.botpkgroot.cache.FollowersCache.instance(channel.getName()).addFollower(keys[i]);
         }
     }
 
