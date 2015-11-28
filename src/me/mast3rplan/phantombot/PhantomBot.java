@@ -34,8 +34,6 @@ import java.nio.file.StandardOpenOption;
 import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map.Entry;
-import java.util.TreeMap;
-import java.util.TreeSet;
 import me.mast3rplan.phantombot.cache.ChannelHostCache;
 import me.mast3rplan.phantombot.cache.ChannelUsersCache;
 import me.mast3rplan.phantombot.cache.FollowersCache;
@@ -83,12 +81,10 @@ public class PhantomBot implements Listener
     private String musicenable;
     private DataStore dataStoreObj;
     private SecureRandom rng;
-    private TreeMap<String, Integer> pollResults;
-    private TreeSet<String> voters;
     private Profile profile;
     private ConnectionManager connectionManager;
     private final Session session;
-    public static Session tgcSession;
+    private final Session tgcSession;
     private Channel channel;
     private final HashMap<String, Channel> channels;
     private final HashMap<String, String> channeloauths;
@@ -149,8 +145,6 @@ public class PhantomBot implements Listener
         this.connectionManager = new ConnectionManager(profile);
 
         rng = new SecureRandom();
-        pollResults = new TreeMap<>();
-        voters = new TreeSet<>();
 
         if (hostname.isEmpty())
         {
@@ -161,6 +155,9 @@ public class PhantomBot implements Listener
             this.hostname = hostname;
             this.port = port;
         }
+        
+        int gport = 6667;
+        String ghostname = "199.9.253.119";
 
         if (msglimit30 > 0)
         {
@@ -249,8 +246,8 @@ public class PhantomBot implements Listener
             }
         }
 
-        this.session = connectionManager.requestConnection(this.hostname, this.port, oauth);
-        TwitchGroupChatHandler(this.oauth, this.connectionManager);
+        this.session = connectionManager.requestConnection(this.hostname, this.port, this.oauth);
+        this.tgcSession = connectionManager.requestConnection(ghostname, gport, this.oauth);
 
         if (clientid.length() == 0)
         {
@@ -265,6 +262,7 @@ public class PhantomBot implements Listener
         TwitchAPIv3.instance().SetOAuthList(channeloauths);
 
         this.session.addIRCEventListener(new IrcEventHandler());
+        this.tgcSession.addIRCEventListener(new IrcEventHandler());
     }
 
     public static void setDebugging(boolean debug)
@@ -280,6 +278,11 @@ public class PhantomBot implements Listener
     public Session getSession()
     {
         return session;
+    }
+
+    public Session getTgcSession()
+    {
+        return tgcSession;
     }
 
     public boolean isExiting()
@@ -312,15 +315,6 @@ public class PhantomBot implements Listener
     public HashMap<String, Channel> getChannels()
     {
         return channels;
-    }
-
-    private void TwitchGroupChatHandler(String oauth, ConnectionManager connManager)
-    {
-        int gport = 6667;
-        String ghostname = "199.9.253.119";
-
-        tgcSession = connManager.requestConnection(ghostname, gport, oauth);
-        tgcSession.addIRCEventListener(new IrcEventHandler());
     }
 
     public final void init()
@@ -359,8 +353,6 @@ public class PhantomBot implements Listener
         Script.global.defineProperty("musicplayer", musicsocketserver, 0);
         Script.global.defineProperty("random", rng, 0);
         Script.global.defineProperty("youtube", YouTubeAPIv3.instance(), 0);
-        Script.global.defineProperty("pollResults", pollResults, 0);
-        Script.global.defineProperty("pollVoters", voters, 0);
         Script.global.defineProperty("connmgr", connectionManager, 0);
         Script.global.defineProperty("hostname", hostname, 0);
         Script.global.defineProperty("phantombot", PhantomBot.instance(), 0);
