@@ -1,15 +1,15 @@
 $.on('ircJoinComplete', function (event) {
     var channel = event.getChannel();
 
-    if (!$.inidb.Exists("settings", channel.getName(), "timePromoteHours")) {
+    if (!$.inidb.HasKey("settings", channel.getName(), "timePromoteHours")) {
         $.inidb.SetInteger("settings", channel.getName(), "timePromoteHours", 36);
     }
 
-    if (!$.inidb.Exists("timezone", channel.getName(), "timezone")) {
+    if (!$.inidb.HasKey("timezone", channel.getName(), "timezone")) {
         $.inidb.SetString("timezone", channel.getName(), "timezone", "America/New_York");
     }
 
-    if (!$.inidb.Exists("timezone", channel.getName(), "timeOffline")) {
+    if (!$.inidb.HasKey("timezone", channel.getName(), "timeOffline")) {
         $.inidb.SetBoolean("timezone", channel.getName(), "timeOffline", true);
     }
 

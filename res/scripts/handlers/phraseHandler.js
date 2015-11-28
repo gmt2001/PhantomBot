@@ -6,7 +6,7 @@ $.on('ircChannelMessage', function (event) {
 
     message = message.replace(/[^a-zA-Z0-9\s]+/g, '');
 
-    if ($.inidb.Exists('phrases', channel.getName(), message)) {
+    if ($.inidb.HasKey('phrases', channel.getName(), message)) {
         var s = $.inidb.GetString('phrases', channel.getName(), message);
 
         s = $.replaceAll(s, "(sender)", username);

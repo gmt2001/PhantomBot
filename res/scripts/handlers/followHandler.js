@@ -8,8 +8,8 @@ $.on('ircJoinComplete', function (event) {
         }
     }
 
-    if (!$.inidb.Exists("settings", channel.getName(), "followmessage")) {
-        if ($.moduleEnabled("./systems/pointSystem.js", channel) && (!$.inidb.Exists('settings', channel.getName(), 'followreward')
+    if (!$.inidb.HasKey("settings", channel.getName(), "followmessage")) {
+        if ($.moduleEnabled("./systems/pointSystem.js", channel) && (!$.inidb.HasKey('settings', channel.getName(), 'followreward')
                 || $.inidb.GetInteger('settings', channel.getName(), 'followreward') > 0)) {
             $.inidb.SetString("settings", channel.getName(), "followmessage", $.lang.get("net.phantombot.followHandler.new-follow-message-and-reward", channel));
         } else {
@@ -17,7 +17,7 @@ $.on('ircJoinComplete', function (event) {
         }
     }
 
-    if (!$.inidb.Exists('settings', channel.getName(), 'followreward')) {
+    if (!$.inidb.HasKey('settings', channel.getName(), 'followreward')) {
         $.inidb.SetInteger('settings', channel.getName(), 'followreward', 100);
     }
 });
@@ -71,7 +71,7 @@ $.on('twitchFollow', function (event) {
     var username = $.username.resolve(follower);
     var channel = event.getChannel();
 
-    if (!$.inidb.Exists('followed', channel.getName(), follower)) {
+    if (!$.inidb.HasKey('followed', channel.getName(), follower)) {
         if ($.inidb.GetBoolean("settings", channel.getName(), "announcefollows")
                 && $.tempdb.GetBoolean("t_state", channel.getName(), "announceFollowsAllowed")
                 && $.moduleEnabled("./handlers/followHandler.js", channel)) {
@@ -108,7 +108,7 @@ $.on('twitchUnfollow', function (event) {
     var follower = event.getFollower().toLowerCase();
     var channel = event.getChannel();
 
-    if ($.inidb.Exists('followed', channel.getName(), follower)) {
+    if ($.inidb.HasKey('followed', channel.getName(), follower)) {
         $.inidb.SetBoolean('followed', channel.getName(), follower, false);
     }
 });
@@ -119,7 +119,7 @@ $.on('twitchFollowsInitialized', function (event) {
 
     $.tempdb.SetBoolean("t_state", channel.getName(), "announceFollowsAllowed", true);
 
-    if (!$.inidb.Exists("settings", channel.getName(), "announcefollows")) {
+    if (!$.inidb.HasKey("settings", channel.getName(), "announcefollows")) {
         $.inidb.SetBoolean("settings", channel.getName(), "announcefollows", true);
     }
 });
@@ -233,7 +233,7 @@ $.on('command', function (event) {
         }
 
         if (args.length == 0) {
-            if ($.inidb.Exists('settings', channel.getName(), 'followreward')) {
+            if ($.inidb.HasKey('settings', channel.getName(), 'followreward')) {
                 $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.followHandler.current-follow-reward", channel, $.inidb.GetInteger('settings', channel.getName(), 'followreward')), channel);
             } else {
                 $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.followHandler.current-follow-reward-usage", channel), channel);

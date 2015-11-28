@@ -12,7 +12,7 @@ $.lang.load = function (channel) {
 
     $.lang.langdata["english"] = $.lang.data;
 
-    if ($.inidb.Exists("settings", channel.getName(), "lang")) {
+    if ($.inidb.HasKey("settings", channel.getName(), "lang")) {
         $.loadScriptForce("./lang/lang-" + $.inidb.GetString("settings", channel.getName(), "lang") + ".js");
 
         list = $.findFiles("./scripts/lang", "lang-" + $.inidb.GetString("settings", channel.getName(), "lang") + "-");
@@ -32,7 +32,7 @@ $.on('ircJoinComplete', function (event) {
 $.lang.get = function (str_name, channel) {
     var lang = "english";
 
-    if ($.inidb.Exists("settings", channel.getName(), "lang")) {
+    if ($.inidb.HasKey("settings", channel.getName(), "lang")) {
         lang = $.inidb.GetString("settings", channel.getName(), "lang");
     }
 
@@ -73,7 +73,7 @@ $.on('command', function (event) {
         if (args.length == 0) {
             var lang = "english";
 
-            if ($.inidb.Exists("settings", channel.getName(), "lang")) {
+            if ($.inidb.HasKey("settings", channel.getName(), "lang")) {
                 lang = $.inidb.GetString("settings", channel.getName(), "lang");
             }
 

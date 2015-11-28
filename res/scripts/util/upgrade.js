@@ -53,68 +53,68 @@ $.upgrade = function (channel) {
         println("   Starting version 16 upgrades...");
 
         println("     Updating pointsystem.js setting files");
-        if ($.inidb.Exists("settings", channel.getName(), "pointname")) {
+        if ($.inidb.HasKey("settings", channel.getName(), "pointname")) {
             $.inidb.SetString("settings", channel.getName(), "pointNameSingle", $.inidb.GetString("settings", channel.getName(), "pointname"));
 
             $.inidb.RemoveKey("settings", channel.getName(), "pointname");
         }
 
-        if ($.inidb.Exists("settings", channel.getName(), "pointgain")) {
+        if ($.inidb.HasKey("settings", channel.getName(), "pointgain")) {
             $.inidb.SetInteger("settings", channel.getName(), "pointGain", $.inidb.GetInteger("settings", channel.getName(), "pointgain"));
 
             $.inidb.RemoveKey("settings", channel.getName(), "pointgain");
         }
 
-        if ($.inidb.Exists("settings", channel.getName(), "offlinegain")) {
+        if ($.inidb.HasKey("settings", channel.getName(), "offlinegain")) {
             $.inidb.SetInteger("settings", channel.getName(), "pointGainOffline", $.inidb.GetInteger("settings", channel.getName(), "offlinegain"));
 
             $.inidb.RemoveKey("settings", channel.getName(), "offlinegain");
         }
 
-        if ($.inidb.Exists("settings", channel.getName(), "pointbonus")) {
+        if ($.inidb.HasKey("settings", channel.getName(), "pointbonus")) {
             $.inidb.SetInteger("settings", channel.getName(), "pointBonus", $.inidb.GetInteger("settings", channel.getName(), "pointbonus"));
 
             $.inidb.RemoveKey("settings", channel.getName(), "pointbonus");
         }
 
-        if ($.inidb.Exists("settings", channel.getName(), "pointinverval")) {
+        if ($.inidb.HasKey("settings", channel.getName(), "pointinverval")) {
             $.inidb.SetInteger("settings", channel.getName(), "pointInterval", $.inidb.GetInteger("settings", channel.getName(), "pointinterval"));
 
             $.inidb.RemoveKey("settings", channel.getName(), "pointinterval");
         }
 
-        if ($.inidb.Exists("settings", channel.getName(), "offlineinterval")) {
+        if ($.inidb.HasKey("settings", channel.getName(), "offlineinterval")) {
             $.inidb.SetInteger("settings", channel.getName(), "pointIntervalOffline", $.inidb.GetInteger("settings", channel.getName(), "offlineinterval"));
 
             $.inidb.RemoveKey("settings", channel.getName(), "offlineinterval");
         }
 
-        if ($.inidb.Exists("settings", channel.getName(), "mingift")) {
+        if ($.inidb.HasKey("settings", channel.getName(), "mingift")) {
             $.inidb.SetInteger("settings", channel.getName(), "pointGiftMin", $.inidb.GetInteger("settings", channel.getName(), "mingift"));
 
             $.inidb.RemoveKey("settings", channel.getName(), "mingift");
         }
         println("     Updating timesystem.js setting files");
 
-        if ($.inidb.Exists("settings", channel.getName(), "timelevel")) {
+        if ($.inidb.HasKey("settings", channel.getName(), "timelevel")) {
             $.inidb.SetBoolean("settings", channel.getName(), "timeLevel", $.inidb.GetBoolean("settings", channel.getName(), "timelevel"));
 
             $.inidb.RemoveKey("settings", channel.getName(), "timelevel");
         }
 
-        if ($.inidb.Exists("settings", channel.getName(), "timepromotehours")) {
+        if ($.inidb.HasKey("settings", channel.getName(), "timepromotehours")) {
             $.inidb.SetInteger("settings", channel.getName(), "timePromoteHours", $.inidb.GetInteger("settings", channel.getName(), "timepromotehours"));
 
             $.inidb.RemoveKey("settings", channel.getName(), "timepromotehours");
         }
 
-        if ($.inidb.Exists("settings", channel.getName(), "timeZone")) {
+        if ($.inidb.HasKey("settings", channel.getName(), "timeZone")) {
             $.inidb.SetString("settings", channel.getName(), "timezone", $.inidb.GetString("settings", channel.getName(), "timeZone"));
 
             $.inidb.RemoveKey("settings", channel.getName(), "timeZone");
         }
 
-        if ($.inidb.Exists("settings", channel.getName(), "raffle_toggle")) {
+        if ($.inidb.HasKey("settings", channel.getName(), "raffle_toggle")) {
             $.inidb.SetBoolean("settings", channel.getName(), "raffleToggle", $.inidb.GetBoolean("settings", channel.getName(), "raffle_toggle"));
 
             $.inidb.RemoveKey("settings", channel.getName(), "raffle_toggle");
@@ -126,12 +126,12 @@ $.upgrade = function (channel) {
     if ($.inidb.GetInteger("init", channel.getName(), "version") < 17) {
         println("   Starting version 17 upgrades...");
 
-        if (!$.inidb.Exists("settings", channel.getName(), "autopurgemessage")
+        if (!$.inidb.HasKey("settings", channel.getName(), "autopurgemessage")
                 || $.inidb.GetString("settings", channel.getName(), "autopurgemessage").equalsIgnoreCase("follow the rules!")) {
             $.inidb.SetString("settings", channel.getName(), "autopurgemessage", "auto-purged for using banned phrase #");
         }
 
-        if (!$.inidb.Exists("settings", channel.getName(), "autobanmessage")) {
+        if (!$.inidb.HasKey("settings", channel.getName(), "autobanmessage")) {
             $.inidb.SetString("settings", channel.getName(), "autobanmessage", "auto-banned for using banned phrase #");
         }
 

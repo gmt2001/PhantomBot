@@ -8,8 +8,8 @@ $.on('ircJoinComplete', function (event) {
         }
     }
 
-    if (!$.inidb.Exists("settings", channel.getName(), "subscribemessage")) {
-        if ($.moduleEnabled("./systems/pointSystem.js", channel) && (!$.inidb.Exists('settings', channel.getName(), 'subscribereward')
+    if (!$.inidb.HasKey("settings", channel.getName(), "subscribemessage")) {
+        if ($.moduleEnabled("./systems/pointSystem.js", channel) && (!$.inidb.HasKey('settings', channel.getName(), 'subscribereward')
                 || $.inidb.GetInteger('settings', channel.getName(), 'subscribereward') > 0)) {
             $.inidb.SetString("settings", channel.getName(), "subscribemessage", $.lang.get("net.phantombot.followHandler.default-sub-message-with-points", channel));
         } else {
@@ -17,7 +17,7 @@ $.on('ircJoinComplete', function (event) {
         }
     }
 
-    if (!$.inidb.Exists('settings', channel.getName(), 'subscribereward')) {
+    if (!$.inidb.HasKey('settings', channel.getName(), 'subscribereward')) {
         $.inidb.SetInteger('settings', channel.getName(), 'subscribereward', 100);
     }
 });

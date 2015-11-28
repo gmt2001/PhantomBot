@@ -124,7 +124,7 @@ $.moduleEnabled = function (scriptFile, channel) {
         return false;
     }
 
-    if (channel != null && $.inidb.Exists('modules', channel.getName(), scriptFile + '_enabled')) {
+    if (channel != null && $.inidb.HasKey('modules', channel.getName(), scriptFile + '_enabled')) {
         return $.inidb.GetBoolean('modules', channel.getName(), scriptFile + '_enabled');
     }
 
@@ -398,7 +398,7 @@ $api.on($script, 'command', function (event) {
         return;
     }
 
-    if ($.inidb.Exists('aliases', channel.getName(), event.getCommand().toLowerCase())) {
+    if ($.inidb.HasKey('aliases', channel.getName(), event.getCommand().toLowerCase())) {
         event.setCommand($.inidb.GetString('aliases', channel.getName(), event.getCommand().toLowerCase()));
     }
 
@@ -413,7 +413,7 @@ $api.on($script, 'command', function (event) {
     }
 
     if ($.inidb.GetInteger("settings", channel.getName(), "coolcom") > 0
-            || ($.inidb.Exists("coolcom", channel.getName(), command)
+            || ($.inidb.HasKey("coolcom", channel.getName(), command)
                     && $.inidb.GetInteger("coolcom", channel.getName(), command) > 0)) {
         var tgt = command;
 
@@ -421,7 +421,7 @@ $api.on($script, 'command', function (event) {
             tgt = sender;
         }
 
-        if ($.tempdb.Exists('t_coolcom', channel.getName(), tgt)) {
+        if ($.tempdb.HasKey('t_coolcom', channel.getName(), tgt)) {
             if ($.tempdb.GetInteger('t_coolcom', channel.getName(), tgt) >= System.currentTimeMillis() && !$.isMod(sender, event.getTags(), channel)) {
                 $.println($.lang.get("net.phantombot.init.coolcom-cooldown", channel, origcommand, sender));
                 return;
@@ -429,7 +429,7 @@ $api.on($script, 'command', function (event) {
         }
     }
 
-    if ($.moduleEnabled("./systems/pointSystem.js", channel) && $.inidb.Exists("pricecom", channel.getName(), command.toLowerCase())) {
+    if ($.moduleEnabled("./systems/pointSystem.js", channel) && $.inidb.HasKey("pricecom", channel.getName(), command.toLowerCase())) {
         if (!$.isMod(sender, event.getTags(), channel) || $.inidb.GetBoolean("settings", channel.getName(), "pricecommod")) {
             if ($.inidb.GetInteger("points", channel.getName(), sender) < $.inidb.GetInteger("pricecom", channel.getName(), command.toLowerCase())) {
                 $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.cmd.needpoints", channel, $.getPointsString($.inidb.GetInteger("pricecom", channel.getName(), command.toLowerCase()), channel)), channel);
@@ -446,7 +446,7 @@ $api.on($script, 'command', function (event) {
 
 
     var cd = $.inidb.GetInteger("settings", channel.getName(), "coolcom");
-    if ($.inidb.Exists("coolcom", channel.getName(), command)) {
+    if ($.inidb.HasKey("coolcom", channel.getName(), command)) {
         if ($.inidb.GetInteger("coolcom", channel.getName(), command) > 0) {
             cd = $.inidb.GetInteger("coolcom", channel.getName(), command);
         }
@@ -659,7 +659,7 @@ $api.on(initscript, 'command', function (event) {
                 return;
             }
 
-            if ($.inidb.Exists("coolcom", channel.getName(), args[0].toLowerCase())) {
+            if ($.inidb.HasKey("coolcom", channel.getName(), args[0].toLowerCase())) {
                 $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.init.coolcom-individual", channel, args[0], $.inidb.GetInteger("coolcom", channel.getName(), args[0].toLowerCase())), channel);
             } else {
                 $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.init.coolcom-individual-notset", channel, args[0], $.inidb.GetInteger("settings", channel.getName(), "coolcom")), channel);

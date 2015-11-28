@@ -57,7 +57,7 @@ $.registerCustomChatCommand = function (script, channel, command) {
         }
     }
 
-    if ($.tempdb.Exists("t_customcommandlist", channel.getName(), command)
+    if ($.tempdb.HasKey("t_customcommandlist", channel.getName(), command)
             && !$.tempdb.GetString("t_customcommandlist_script", channel.getName(), command).equalsIgnoreCase(scriptFile)) {
         $.logError("commandList.js", 76, "Command already registered (" + command + ", " + $.customCommandList[i][0] + ", " + scriptFile + ")");
         return;
@@ -68,7 +68,7 @@ $.registerCustomChatCommand = function (script, channel, command) {
 }
 
 $.setCustomChatCommandGroup = function (command, channel, group) {
-    if ($.tempdb.Exists("t_customcommandlist", channel.getName(), command)) {
+    if ($.tempdb.HasKey("t_customcommandlist", channel.getName(), command)) {
         $.tempdb.SetString("t_customcommandlist", channel.getName(), command, group);
     }
 }
@@ -92,11 +92,11 @@ $.commandExists = function (command, channel) {
         return false;
     }
 
-    return $.tempdb.Exists("t_customcommandlist", channel.getName(), command);
+    return $.tempdb.HasKey("t_customcommandlist", channel.getName(), command);
 }
 
 $.isCustomCommand = function (command, channel) {
-    return $.tempdb.Exists("t_customcommandlist", channel.getName(), command);
+    return $.tempdb.HasKey("t_customcommandlist", channel.getName(), command);
 }
 
 $.getCommandGroup = function (command, channel) {

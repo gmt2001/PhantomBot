@@ -1,9 +1,9 @@
 $.on('ircJoinComplete', function (event) {
-    if (!$.inidb.Exists('settings', event.getChannel().getName(), 'checker_storepath')) {
+    if (!$.inidb.HasKey('settings', event.getChannel().getName(), 'checker_storepath')) {
         $.inidb.SetString('settings', event.getChannel().getName(), 'checker_storepath', "addons/donationchecker/latestdonation.txt");
     }
 
-    if (!$.inidb.Exists('settings', event.getChannel().getName(), 'donation_toggle')) {
+    if (!$.inidb.HasKey('settings', event.getChannel().getName(), 'donation_toggle')) {
         $.inidb.SetBoolean('settings', event.getChannel().getName(), 'checker_storepath', true);
     }
 });

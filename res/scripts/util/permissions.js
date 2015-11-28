@@ -61,7 +61,7 @@ $.hasGroupByName = function (user, channel, name) {
 }
 
 $.getUserGroupId = function (user, channel) {
-    if (!$.inidb.Exists('group', channel.getName(), user.toLowerCase())) {
+    if (!$.inidb.HasKey('group', channel.getName(), user.toLowerCase())) {
         return 7;
     }
 
@@ -83,42 +83,42 @@ $.setUserGroupByName = function (user, channel, name) {
 $.on('ircJoinComplete', function (event) {
     var channel = event.getChannel();
 
-    if (!$.inidb.Exists("groups", channel.getName(), "0")) {
+    if (!$.inidb.HasKey("groups", channel.getName(), "0")) {
         $.inidb.SetInteger("grouppoints", channel.getName(), "Caster", "0");
         $.inidb.SetString("groups", channel.getName(), "0", "Caster");
     }
 
-    if (!$.inidb.Exists("groups", channel.getName(), "1")) {
+    if (!$.inidb.HasKey("groups", channel.getName(), "1")) {
         $.inidb.SetInteger("grouppoints", channel.getName(), "Administrator", "0");
         $.inidb.SetString("groups", channel.getName(), "1", "Administrator");
     }
 
-    if (!$.inidb.Exists("groups", channel.getName(), "2")) {
+    if (!$.inidb.HasKey("groups", channel.getName(), "2")) {
         $.inidb.SetInteger("grouppoints", channel.getName(), "Moderator", "0");
         $.inidb.SetString("groups", channel.getName(), "0", "Moderator");
     }
 
-    if (!$.inidb.Exists("groups", channel.getName(), "3")) {
+    if (!$.inidb.HasKey("groups", channel.getName(), "3")) {
         $.inidb.SetInteger("grouppoints", channel.getName(), "Subscriber", "0");
         $.inidb.SetString("groups", channel.getName(), "3", "Subscriber");
     }
 
-    if (!$.inidb.Exists("groups", channel.getName(), "4")) {
+    if (!$.inidb.HasKey("groups", channel.getName(), "4")) {
         $.inidb.SetInteger("grouppoints", channel.getName(), "Donator", "0");
         $.inidb.SetString("groups", channel.getName(), "4", "Donator");
     }
 
-    if (!$.inidb.Exists("groups", channel.getName(), "5")) {
+    if (!$.inidb.HasKey("groups", channel.getName(), "5")) {
         $.inidb.SetInteger("grouppoints", channel.getName(), "Hoster", "0");
         $.inidb.SetString("groups", channel.getName(), "5", "Hoster");
     }
 
-    if (!$.inidb.Exists("groups", channel.getName(), "6")) {
+    if (!$.inidb.HasKey("groups", channel.getName(), "6")) {
         $.inidb.SetInteger("grouppoints", channel.getName(), "Regular", "0");
         $.inidb.SetString("groups", channel.getName(), "6", "Regular");
     }
 
-    if (!$.inidb.Exists("groups", channel.getName(), "7")) {
+    if (!$.inidb.HasKey("groups", channel.getName(), "7")) {
         $.inidb.SetInteger("grouppoints", channel.getName(), "Viewer", "0");
         $.inidb.SetString("groups", channel.getName(), "7", "Viewer");
     }

@@ -593,7 +593,7 @@ $.on('ircChannelMessage', function (event) {
             $.tempdb.RemoveKey("t_permit", channel.getName(), sender);
         }
 
-        if ($.inidb.Exists('whitelist', channel.getName(), 'link') && message.contains($.inidb.GetString('whitelist', channel.getName(), 'link').toLowerCase())) {
+        if ($.inidb.HasKey('whitelist', channel.getName(), 'link') && message.contains($.inidb.GetString('whitelist', channel.getName(), 'link').toLowerCase())) {
             permitted = true;
         }
 

@@ -1,11 +1,11 @@
 $.on('ircJoinComplete', function (event) {
     var channel = event.getChannel();
     
-    if (!$.inidb.Exists('settings', channel.getName(), 'hosttimeout')) {
+    if (!$.inidb.HasKey('settings', channel.getName(), 'hosttimeout')) {
         $.inidb.SetInteger('settings', channel.getName(), 'hosttimeout', 60);
     }
 
-    if (!$.inidb.Exists('settings', channel.getName(), 'hostmessage')) {
+    if (!$.inidb.HasKey('settings', channel.getName(), 'hostmessage')) {
         if ($.moduleEnabled("./systems/pointSystem.js", channel) && $.inidb.GetInteger('settings', channel.getName(), 'hostreward') > 0) {
             $.inidb.SetString('settings', channel.getName(), 'hostmessage', $.lang.get("net.phantombot.hosthandler.default-host-welcome-message-and-reward", channel, $.getPointsString($.inidb.GetInteger('settings', channel.getName(), 'hostreward'), channel)));
         } else {

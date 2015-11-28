@@ -1,15 +1,15 @@
 $.on('ircJoinComplete', function (event) {
     var channel = event.getChannel();
 
-    if (!$.inidb.Exists('notice', channel.getName(), 'interval')) {
+    if (!$.inidb.HasKey('notice', channel.getName(), 'interval')) {
         $.inidb.SetInteger('notice', channel.getName(), 'interval', 10);
     }
 
-    if (!$.inidb.Exists('notice', channel.getName(), 'reqmessages')) {
+    if (!$.inidb.HasKey('notice', channel.getName(), 'reqmessages')) {
         $.inidb.SetInteger('notice', channel.getName(), 'reqmessages', 25);
     }
 
-    if (!$.inidb.Exists('notice', channel.getName(), 'notices_toggle')) {
+    if (!$.inidb.HasKey('notice', channel.getName(), 'notices_toggle')) {
         $.inidb.SetBoolean('notice', channel.getName(), 'notices_toggle', true);
     }
 });
@@ -50,7 +50,7 @@ $.on('command', function (event) {
             if (args.length < 2) {
                 $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.noticehandler.notice-get-usage", channel, num_messages, (num_messages - 1)), channel);
                 return;
-            } else if (!$.inidb.Exists('notices', channel.getName(), 'message_' + message)) {
+            } else if (!$.inidb.HasKey('notices', channel.getName(), 'message_' + message)) {
                 $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.noticehandler.notice-get-error", channel, num_messages, (num_messages - 1), args[1]), channel);
                 return;
             } else {
@@ -161,7 +161,7 @@ $.on('command', function (event) {
         if (args.length == 0 || isNaN(args[0])) {
             $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.noticehandler.notice-remove-usage", channel), channel);
             return;
-        } else if (!$.inidb.Exists('notices', channel.getName(), 'message_' + args[0])) {
+        } else if (!$.inidb.HasKey('notices', channel.getName(), 'message_' + args[0])) {
             $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.noticehandler.notice-remove-error2", channel), channel);
             return;
         } else if ($.inidb.GetInteger("notice", channel.getName(), "num_messages") == 0) {
@@ -197,7 +197,7 @@ function sendMessage(channel) {
         return;
     }
 
-    if (!$.inidb.Exists('notices', channel.getName(), 'message_' + $.tempdb.GetInteger("t_state", channel.getName(), "messageIndex"))) {
+    if (!$.inidb.HasKey('notices', channel.getName(), 'message_' + $.tempdb.GetInteger("t_state", channel.getName(), "messageIndex"))) {
         $.tempdb.SetInteger("t_state", channel.getName(), "messageIndex", 0);
         return;
     }
