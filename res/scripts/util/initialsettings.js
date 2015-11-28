@@ -98,7 +98,9 @@ $.initialsettings = function (channel) {
             key = spl[2];
             value = lines[i].substr($.strlen(file) + $.strlen(section) + $.strlen(key) + 3);
 
-            $.inidb.SetString(file, section, key, value);
+            if (section.equalsIgnoreCase(channel.getName())) {
+                $.inidb.SetString(file, section, key, value);
+            }
         }
 
         Packages.com.gmt2001.Console.out.print("\r   " + i + "/" + lines.length);
