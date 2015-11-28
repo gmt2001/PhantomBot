@@ -46,46 +46,49 @@ for (var name in $api) {
 
 
 $api.on($script, 'ircJoinComplete', function (event) {
-    $.tempdb.SetBoolean('t_state', event.getChannel().getName(), 'connected', true);
-    $.firstrun = false;
+    var channel = event.getChannel();
+    
+    $.tempdb.SetBoolean('t_state', channel.getName(), 'connected', true);
 
-    if ($.inidb.GetBoolean("init", event.getChannel().getName(), "initialsettings") == false) {
-        $.firstrun = true;
-        $.logEvent("init.js", 420, event.getChannel(), "Loading initial settings ...");
+    if ($.inidb.GetBoolean("init", channel.getName(), "initialsettings") == false) {
+        $.tempdb.SetBoolean('t_state', channel.getName(), 'firstrun', true);
+        $.logEvent("init.js", 420, channel, "Loading initial settings ...");
         $.loadScript('./util/initialsettings.js');
-        $.initialsettings(event.getChannel());
+        $.initialsettings(channel);
     }
 
-    if ($.firstrun) {
-        $.inidb.SetInteger("init", event.getChannel().getName(), "version", parseInt($.upgrade_version));
+    if ($.tempdb.GetBoolean('t_state', channel.getName(), 'firstrun')) {
+        $.inidb.SetInteger("init", channel.getName(), "version", parseInt($.upgrade_version));
         $.inidb.SaveAll(true);
     }
 
-    if ($.inidb.GetInteger("init", event.getChannel().getName(), "version") < $.upgrade_version) {
-        $.logEvent("init.js", 426, event.getChannel(), "Running upgrade from v" + $.inidb.GetInteger("init", event.getChannel().getName(), "version") + " to v" + $.upgrade_version + "...");
+    if ($.inidb.GetInteger("init", channel.getName(), "version") < $.upgrade_version) {
+        $.logEvent("init.js", 426, channel, "Running upgrade from v" + $.inidb.GetInteger("init", channel.getName(), "version") + " to v" + $.upgrade_version + "...");
         $.loadScript('./util/upgrade.js');
-        $.upgrade(event.getChannel());
+        $.upgrade(channel);
     }
 });
 
 $api.on($script, 'ircChannelUserMode', function (event) {
-    if ($.tempdb.GetBoolean('t_state', event.getChannel().getName(), 'connected')) {
-        if ($.phantombot.getChannel(event.getChannel().getName()) != null) {
+    var channel = event.getChannel();
+    
+    if ($.tempdb.GetBoolean('t_state', channel.getName(), 'connected')) {
+        if ($.phantombot.getChannel(channel.getName()) != null) {
             if (event.getUser().equalsIgnoreCase($.botName) && event.getMode().equalsIgnoreCase("o")) {
                 if (event.getAdd() == true) {
-                    if (!$.tempdb.GetBoolean('t_state', event.getChannel().getName(), 'modeo')) {
-                        var connectedMessage = $.inidb.GetString('settings', event.getChannel().getName(), 'connectedMessage');
+                    if (!$.tempdb.GetBoolean('t_state', channel.getName(), 'modeo')) {
+                        var connectedMessage = $.inidb.GetString('settings', channel.getName(), 'connectedMessage');
 
                         if (connectedMessage != null && !connectedMessage.isEmpty()) {
-                            $.say(connectedMessage, event.getChannel());
+                            $.say(connectedMessage, channel);
                         } else {
-                            println("[" + event.getChannel().getName() + "] ready");
+                            println("[" + channel.getName() + "] ready");
                         }
                     }
 
-                    $.tempdb.SetBoolean('t_state', event.getChannel().getName(), 'modeo', true);
+                    $.tempdb.SetBoolean('t_state', channel.getName(), 'modeo', true);
                 } else {
-                    $.tempdb.SetBoolean('t_state', event.getChannel().getName(), 'modeo', false);
+                    $.tempdb.SetBoolean('t_state', channel.getName(), 'modeo', false);
                 }
             }
         }

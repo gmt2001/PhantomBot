@@ -1,9 +1,8 @@
 $.upgrade = function (channel) {
-    println("Start upgrade...");
+    println("Start upgrade [" + channel.getName() + "] ...");
 
     var keys;
     var i;
-    var s;
 
     println("   Skipping versions 1 though 12 (obsolete)...");
 

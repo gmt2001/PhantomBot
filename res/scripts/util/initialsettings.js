@@ -1,5 +1,5 @@
 $.initialsettings = function (channel) {
-    println("Start initialsettings...");
+    println("Start initialsettings [" + channel.getName() + "] ...");
 
     println("   Loading default settings...");
 
