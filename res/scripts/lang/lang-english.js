@@ -245,6 +245,7 @@ $.lang.data["net.phantombot.addcommand.permcom-syntax-error"] = "You must specif
 $.lang.data["net.phantombot.addcommand.permcom-error-no-command"] = "The command !$1 does not exist!";
 $.lang.data["net.phantombot.addcommand.permcom-error-usage"] = "Usage: \"!permcom (command name) (group name) (1/2). Restricts usage of a command to viewers with a certain permission level. 1 specifies only a single group, multiple single groups can be added for the same command. 2 specifies recursive (all groups higher than the group specified).\"";
 $.lang.data["net.phantombot.addcommand.error-no-custom-commands"] = "There are no custom commands!";
+$.lang.data["net.phantombot.addcommand.filetag-error"] = "The File path may not contain any Slashes. The file has to be in addons/txt/ folder!";
 
 //raffleSystem.js
 $.lang.data["net.phantombot.rafflesystem.start-success-followers-price"] = "/me [Raffle Started] Enter now for a chance to win [$1]! You need to be following to enter, and the fee to enter is $2. Enter the raffle by typing \"$3\".";
