@@ -350,6 +350,11 @@ $.on('command', function (event) {
             	messageCommand = $.replaceAll(messageCommand, RegExp.$1, getcustomapivalue(RegExp.$2));
             }
         }
+        while (messageCommand.contains('(file')) {
+            if (messageCommand.search(/(\(file ([^)]+)\))/g) >= 0) {
+            	messageCommand = $.replaceAll(messageCommand, RegExp.$1, $.readFile(RegExp.$2)[0]);
+            }
+        }
         if (messageCommand.contains('(code)')) {
             var text = "";
             var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
