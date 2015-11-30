@@ -54,7 +54,7 @@ public abstract class TwitchHostEvent extends TwitchEvent
 
     public String getHoster()
     {
-        return hoster;
+        return hoster.toLowerCase();
     }
 
     public Type getType()

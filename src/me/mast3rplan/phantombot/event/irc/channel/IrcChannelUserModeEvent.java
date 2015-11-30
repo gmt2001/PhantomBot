@@ -36,7 +36,7 @@ public class IrcChannelUserModeEvent extends IrcChannelEvent
 
     public String getUser()
     {
-        return user;
+        return user.toLowerCase();
     }
 
     public String getMode()

@@ -32,6 +32,6 @@ public class IrcChannelJoinEvent extends IrcChannelEvent
 
     public String getUser()
     {
-        return user;
+        return user.toLowerCase();
     }
 }

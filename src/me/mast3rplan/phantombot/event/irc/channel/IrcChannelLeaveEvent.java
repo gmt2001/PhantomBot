@@ -34,7 +34,7 @@ public class IrcChannelLeaveEvent extends IrcChannelEvent
 
     public String getUser()
     {
-        return user;
+        return user.toLowerCase();
     }
 
     public String getMessage()

@@ -54,7 +54,7 @@ public abstract class TwitchSubscriberEvent extends TwitchEvent
 
     public String getSubscriber()
     {
-        return subscriber;
+        return subscriber.toLowerCase();
     }
 
     public Type getType()

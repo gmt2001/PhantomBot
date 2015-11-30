@@ -54,7 +54,7 @@ public abstract class TwitchFollowerEvent extends TwitchEvent
 
     public String getFollower()
     {
-        return follower;
+        return follower.toLowerCase();
     }
 
     public Type getType()
