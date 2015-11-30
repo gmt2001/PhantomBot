@@ -36,7 +36,7 @@ $.on('twitchSubscribe', function (event) {
             var p = $.inidb.GetInteger('settings', channel.getName(), 'subscribereward');
             s = $.replaceAll(s, '(pointname)', $.getPointsString(p, channel));
             s = $.replaceAll(s, '(reward)', p);
-            $.inidb.SetInteger("points", channel.getName(), subscriber, $.inidb.GetInteger("points", channel.getName(), subscriber) + p);
+            $.setPoints(subscriber, $.getPoints(subscriber, channel) + p, channel);
         }
 
         if (!$.inidb.GetBoolean('settings', channel.getName(), 'sub_silentmode')) {

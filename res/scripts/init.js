@@ -434,13 +434,13 @@ $api.on($script, 'command', function (event) {
 
     if ($.moduleEnabled("./systems/pointSystem.js", channel) && $.inidb.HasKey("pricecom", channel.getName(), command.toLowerCase())) {
         if (!$.isMod(sender, event.getTags(), channel) || $.inidb.GetBoolean("settings", channel.getName(), "pricecommod")) {
-            if ($.inidb.GetInteger("points", channel.getName(), sender) < $.inidb.GetInteger("pricecom", channel.getName(), command.toLowerCase())) {
+            if ($.getPoints(sender, channel) < $.inidb.GetInteger("pricecom", channel.getName(), command.toLowerCase())) {
                 $.say($.getWhisperString(sender, channel) + $.lang.get("net.phantombot.cmd.needpoints", channel, $.getPointsString($.inidb.GetInteger("pricecom", channel.getName(), command.toLowerCase()), channel)), channel);
                 return;
             } else {
-                if ($.inidb.GetInteget("pricecom", channel.getName(), command.toLowerCase()) > 0)
+                if ($.inidb.GetInteger("pricecom", channel.getName(), command.toLowerCase()) > 0)
                 {
-                    $.inidb.SetInteger("points", channel.getName(), sender, $.inidb.GetInteger("points", channel.getName(), sender) - $.inidb.GetInteger("pricecom", channel.getName(), command.toLowerCase()));
+                    $.setPoints(sender, $.getPoints(sender, channel) - $.inidb.GetInteger("pricecom", channel.getName(), command.toLowerCase()), channel);
                     $.println($.lang.get("net.phantombot.cmd.paid", channel, sender, $.getPointsString($.inidb.GetInteger("pricecom", channel.getName(), command.toLowerCase()))));
                 }
             }
