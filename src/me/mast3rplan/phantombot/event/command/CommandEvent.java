@@ -98,6 +98,7 @@ public class CommandEvent extends Event
         List<String> tmpArgs = new LinkedList<>();
         boolean inquote = false;
         String tmpStr = "";
+        
         for (char c : arguments.toCharArray())
         {
             if (c == '"')
@@ -115,12 +116,15 @@ public class CommandEvent extends Event
                 tmpStr += c;
             }
         }
+        
         if (tmpStr.length() > 0)
         {
             tmpArgs.add(tmpStr);
         }
+        
         args = new String[tmpArgs.size()];
         int i = 0;
+        
         for (String s : tmpArgs)
         {
             args[i] = s;
@@ -130,7 +134,7 @@ public class CommandEvent extends Event
 
     public String getSender()
     {
-        return sender;
+        return sender.toLowerCase();
     }
 
     public String getCommand()

@@ -70,7 +70,7 @@ public abstract class IrcMessageEvent extends IrcEvent
 
     public String getSender()
     {
-        return sender;
+        return sender.toLowerCase();
     }
 
     public String getMessage()
