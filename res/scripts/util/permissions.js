@@ -145,7 +145,7 @@ $.getGroupPointMultiplier = function (playername, channel) {
 }
 
 $.on('command', function (event) {
-    var sender = event.getSender().toLowerCase();
+    var sender = event.getSender();
     var username = $.username.resolve(sender, event.getTags());
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
@@ -442,7 +442,7 @@ $.on('command', function (event) {
 });
 
 $.on('ircChannelMessage', function (event) {
-    var sender = event.getSender().toLowerCase();
+    var sender = event.getSender();
     var channel = event.getChannel();
 
     $.tempdb.SetInteger("t_users", channel.getName(), sender, System.currentTimeMillis());

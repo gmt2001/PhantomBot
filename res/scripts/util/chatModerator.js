@@ -524,7 +524,7 @@ $.on('command', function (event) {
 });
 
 $.on('ircChannelMessage', function (event) {
-    var sender = event.getSender().toLowerCase();
+    var sender = event.getSender();
     var username = $.username.resolve(sender, event.getTags());
     var message = event.getMessage();
     var channel = event.getChannel();

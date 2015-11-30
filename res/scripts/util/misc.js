@@ -435,7 +435,7 @@ $.on('command', function (event) {
 });
 
 $.on('ircPrivateMessage', function (event) {
-    var sender = event.getSender().toLowerCase();
+    var sender = event.getSender();
     var message = event.getMessage().toLowerCase();
     var channel = event.getChannel();
 

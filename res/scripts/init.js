@@ -393,7 +393,7 @@ $.permCom = function (user, command, channel) {
 };
 
 $api.on($script, 'command', function (event) {
-    var sender = event.getSender().toLowerCase();
+    var sender = event.getSender();
     var origcommand = event.getCommand();
     var channel = event.getChannel();
 

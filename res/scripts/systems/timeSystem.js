@@ -88,7 +88,7 @@ $.validateTimezone = function (timezone) {
 }
 
 $.on('command', function (event) {
-    var sender = event.getSender().toLowerCase();
+    var sender = event.getSender();
     var username = $.username.resolve(sender, event.getTags());
     var command = event.getCommand();
     var argsString = event.getArguments().trim();

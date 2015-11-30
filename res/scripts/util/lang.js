@@ -57,7 +57,7 @@ $.lang.get = function (str_name, channel) {
 }
 
 $.on('command', function (event) {
-    var sender = event.getSender().toLowerCase();
+    var sender = event.getSender();
     var username = $.username.resolve(sender, event.getTags());
     var command = event.getCommand();
     var args = event.getArgs();
