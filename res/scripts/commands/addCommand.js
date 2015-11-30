@@ -30,6 +30,13 @@ $.on('command', function (event) {
             return;
         }
 
+        if (message.search(/(\(file ([^)]+)\))/g) >= 0) {
+            if (RegExp.$2.indexOf('\\') > 0 || RegExp.$2.indexOf('/') > 0 ) {
+				$.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.filetag-error"));
+			return;
+            }
+        }
+
         $.logEvent("addCommand.js", 50, username + " added the command !" + commandString + " with message: " + message);
 
         $.inidb.set('command', commandString, message);
@@ -197,6 +204,13 @@ $.on('command', function (event) {
                 return;
             }
 
+            if (message.search(/(\(file ([^)]+)\))/g) >= 0) {
+                if (RegExp.$2.indexOf('\\') > 0 || RegExp.$2.indexOf('/') > 0 ) {
+        	    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.filetag-error"));
+        	    return;
+        	}
+            }
+
             $.inidb.set('command', commandString, message);
             if (sender == $.botname) {
                 println($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.editcom-success", commandString));
@@ -352,7 +366,11 @@ $.on('command', function (event) {
         }
         while (messageCommand.contains('(file')) {
             if (messageCommand.search(/(\(file ([^)]+)\))/g) >= 0) {
-            	messageCommand = $.replaceAll(messageCommand, RegExp.$1, $.readFile(RegExp.$2)[0]);
+            	if (RegExp.$2.indexOf('\\') > 0 || RegExp.$2.indexOf('/') > 0 ) {
+            		$.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.filetag-error"));
+            		return;
+            	}
+            	messageCommand = $.replaceAll(messageCommand, RegExp.$1, $.readFile('addons/txt/'+RegExp.$2)[0]);
             }
         }
         if (messageCommand.contains('(code)')) {
