@@ -1,10 +1,11 @@
 //Function takes the amount of user and the name of points/currency and converts accordingly
 //then calls next function with information that was processed
 $.econNameFormat = function (amt, name) {
-    regex = /.$\w[^aeiou]+y/i;
+    regex = /.\w[^aeiou]+y$/i;
     if (name === undefined) {
         name = "";
     }
+
     if (amt >= 1) {
         if (regex.test(name)) {
             name = " " + name + "ies";
@@ -12,6 +13,7 @@ $.econNameFormat = function (amt, name) {
             name = " " + name + "s";
         }
     }
+
     return $.formatNumbers(amt, name);
 }
 //Converts int based numbers (not string based) to normal currency values. Ex: 1000 -> 1,000
@@ -20,10 +22,10 @@ $.formatNumbers = function (n, econ) {
     if (econ === undefined) {
         econ = "";
     }
+
     return n.toFixed().replace(/./g, function (c, i, a) {
         return i && c !== "." && ((a.length - i) % 3 === 0) ? ',' + c : c;
-    }
-    ) + econ;
+    }) + econ;
 }
 
 $.say = function (s, channel) {
@@ -53,7 +55,7 @@ $.say = function (s, channel) {
 
     $.println("[" + channel.getName() + "] " + str);
 
-    if ($.connected) {
+    if ($.tempdb.GetBoolean('t_state', channel.getName(), 'connected')) {
         $.logChat($.botName, channel, str);
 
         if ($.inidb.GetBoolean("settings", channel.getName(), "response_@all") || str.equals($.lang.get("net.phantombot.misc.response-disable", channel))

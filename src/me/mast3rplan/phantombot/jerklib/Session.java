@@ -66,6 +66,7 @@ public class Session extends RequestGenerator
     private final List<ModeAdjustment> userModes = new ArrayList<>();
     private final Map<String, Channel> channelMap = new HashMap<>();
     private final ConcurrentLinkedQueue<Message> messages = new ConcurrentLinkedQueue<>();
+    private final ConcurrentLinkedQueue<Message> wmessages = new ConcurrentLinkedQueue<>();
     private int retries = 0;
     public boolean isClosing = false;
     private final Timer sayTimer = new Timer();
@@ -101,6 +102,7 @@ public class Session extends RequestGenerator
 
         private final Session s;
         private long lastMessage = 0;
+        private long wlastMessage = 0;
 
         public MessageTask(Session s)
         {
@@ -131,6 +133,17 @@ public class Session extends RequestGenerator
                     }
 
                     lastMessage = now;
+                }
+            }
+
+            if (now - wlastMessage >= PhantomBot.instance().getMessageInterval())
+            {
+                Message msg = s.wmessages.poll();
+                if (msg != null)
+                {
+                    PhantomBot.instance().getTgcSession().sayRaw(msg.message.replace("/w ", "PRIVMSG #jtv :/w "));
+
+                    wlastMessage = now;
                 }
             }
         }
@@ -304,29 +317,49 @@ public class Session extends RequestGenerator
         {
             if (msg.startsWith("/w "))
             {
-                msg = msg.replace("/w ", "PRIVMSG #jtv :/w ");
-                PhantomBot.instance().getTgcSession().sayRaw(msg);
-                return;
-            }
-            if (msg.length() + 14 + channel.getName().length() < 512)
-            {
-                messages.add(new Message(channel, msg));
+                if (msg.length() + 20 < 512)
+                {
+                    wmessages.add(new Message(channel, msg));
+                } else
+                {
+                    int maxlen = 512 - 20;
+                    int pos = 0;
+
+                    while (pos < msg.length())
+                    {
+                        if (pos + maxlen >= msg.length())
+                        {
+                            wmessages.add(new Message(channel, msg.substring(pos)));
+                        } else
+                        {
+                            wmessages.add(new Message(channel, msg.substring(pos, pos + maxlen)));
+                        }
+
+                        pos += maxlen;
+                    }
+                }
             } else
             {
-                int maxlen = 512 - 14 - channel.getName().length();
-                int pos = 0;
-
-                while (pos < msg.length())
+                if (msg.length() + 14 + channel.getName().length() < 512)
                 {
-                    if (pos + maxlen >= msg.length())
-                    {
-                        messages.add(new Message(channel, msg.substring(pos)));
-                    } else
-                    {
-                        messages.add(new Message(channel, msg.substring(pos, pos + maxlen)));
-                    }
+                    messages.add(new Message(channel, msg));
+                } else
+                {
+                    int maxlen = 512 - 14 - channel.getName().length();
+                    int pos = 0;
 
-                    pos += maxlen;
+                    while (pos < msg.length())
+                    {
+                        if (pos + maxlen >= msg.length())
+                        {
+                            messages.add(new Message(channel, msg.substring(pos)));
+                        } else
+                        {
+                            messages.add(new Message(channel, msg.substring(pos, pos + maxlen)));
+                        }
+
+                        pos += maxlen;
+                    }
                 }
             }
         }
