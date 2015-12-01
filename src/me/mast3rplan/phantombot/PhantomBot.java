@@ -23,6 +23,7 @@ import com.gmt2001.TempStore;
 import com.gmt2001.TwitchAPIv3;
 import com.gmt2001.YouTubeAPIv3;
 import com.google.common.eventbus.Subscribe;
+import de.simeonf.EventWebSocketServer;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -98,6 +99,7 @@ public class PhantomBot implements Listener
     private ChannelUsersCache channelUsersCache;
     private MusicWebSocketServer musicsocketserver;
     private HTTPServer httpserver;
+    private EventWebSocketServer eventsocketserver;
     private ConsoleInputListener cil;
     private static final boolean debugD = false;
     public static boolean enableDebugging = false;
@@ -311,6 +313,8 @@ public class PhantomBot implements Listener
                 musicenabled = true;
                 musicsocketserver = new MusicWebSocketServer(baseport + 1);
             }
+            eventsocketserver = new EventWebSocketServer(baseport + 2);
+            EventBus.instance().register(eventsocketserver);
         }
 
         if (interactive)
@@ -534,7 +538,7 @@ public class PhantomBot implements Listener
     public void onIRCChannelUserMode(IrcChannelUserModeEvent event)
     {
         if (event.getUser().equalsIgnoreCase(username) && event.getMode().equalsIgnoreCase("o")
-                && event.getChannel().getName().equalsIgnoreCase(channel.getName()))
+                && this.channel != null && event.getChannel().getName().equalsIgnoreCase(channel.getName()))
         {
             if (!event.getAdd())
             {

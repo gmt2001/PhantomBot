@@ -54,4 +54,9 @@ public abstract class TwitchFollowerEvent extends TwitchEvent
     {
         return type;
     }
+
+    public String toEventSocket()
+    {
+    	return this.getFollower() + "|" + this.getType();
+    }
 }
