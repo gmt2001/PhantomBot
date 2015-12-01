@@ -381,6 +381,7 @@ public class PhantomBot implements Listener
         {
             com.gmt2001.Console.out.println("[SHUTDOWN] Terminating web server...");
             httpserver.dispose();
+            eventsocketserver.dispose();
         }
 
         if (musicenabled)
