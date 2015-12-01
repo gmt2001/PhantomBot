@@ -30,6 +30,13 @@ $.on('command', function (event) {
             return;
         }
 
+        if (message.search(/(\(file ([^)]+)\))/g) >= 0) {
+            if (RegExp.$2.indexOf('\\') > 0 || RegExp.$2.indexOf('/') > 0 ) {
+				$.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.filetag-error"));
+			return;
+            }
+        }
+
         $.logEvent("addCommand.js", 50, username + " added the command !" + commandString + " with message: " + message);
 
         $.inidb.set('command', commandString, message);
@@ -197,6 +204,13 @@ $.on('command', function (event) {
                 return;
             }
 
+            if (message.search(/(\(file ([^)]+)\))/g) >= 0) {
+                if (RegExp.$2.indexOf('\\') > 0 || RegExp.$2.indexOf('/') > 0 ) {
+        	    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.filetag-error"));
+        	    return;
+        	}
+            }
+
             $.inidb.set('command', commandString, message);
             if (sender == $.botname) {
                 println($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.editcom-success", commandString));
@@ -345,6 +359,20 @@ $.on('command', function (event) {
         if (messageCommand.contains('(z_stroke)')) {
             messageCommand = $.replaceAll(messageCommand, '(z_stroke)', java.lang.Character.toString(java.lang.Character.toChars(0x01B6)[0]));
         } 
+        while (messageCommand.contains('(customapi')) {
+            if (messageCommand.search(/(\(customapi ([^)]+)\))/g) >= 0) {
+            	messageCommand = $.replaceAll(messageCommand, RegExp.$1, getcustomapivalue(RegExp.$2));
+            }
+        }
+        while (messageCommand.contains('(file')) {
+            if (messageCommand.search(/(\(file ([^)]+)\))/g) >= 0) {
+            	if (RegExp.$2.indexOf('\\') > 0 || RegExp.$2.indexOf('/') > 0 ) {
+            		$.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.filetag-error"));
+            		return;
+            	}
+            	messageCommand = $.replaceAll(messageCommand, RegExp.$1, $.readFile('addons/txt/'+RegExp.$2)[0]);
+            }
+        }
         if (messageCommand.contains('(code)')) {
             var text = "";
             var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -457,3 +485,11 @@ $.timer.addTimer("./commands/addCommand.js", "registerAliases", false, function 
         $.registerCustomChatCommand("./commands/addCommand.js", acommands[i]);
     }
 }, 2 * 1000);
+
+getcustomapivalue = function(url) {
+	var HttpResponse = Packages.com.gmt2001.HttpResponse;
+	var HttpRequest = Packages.com.gmt2001.HttpRequest;
+	var HashMap = Packages.java.util.HashMap;
+	var response = HttpRequest.getData(HttpRequest.RequestType.GET, url, "", new HashMap());
+	return response.content;
+}
