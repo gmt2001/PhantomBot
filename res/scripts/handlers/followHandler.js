@@ -143,14 +143,6 @@ $.on('command', function (event) {
     var action = sender;
     var action2 = $.channelName;
 
-    if (args.length > 0) {
-        action = args[0];
-    }
-    if (args.length > 1) {
-        action2 = args[1];
-    }
-    var check = $.twitch.GetUserFollowsChannel($.username.resolve(action.toLowerCase()), action2.toLowerCase());
-
     if (command.equalsIgnoreCase("followed")) {
         if (args.length > 0) {
             if (!$.isModv3(sender)) {
@@ -265,6 +257,13 @@ $.on('command', function (event) {
     }
 
     if (command.equalsIgnoreCase("followage") || command.equalsIgnoreCase("followtime") || command.equalsIgnoreCase("following")) {
+        if (args.length > 0) {
+        action = args[0];
+        }
+        if (args.length > 1) {
+        action2 = args[1];
+        }
+        var check = $.twitch.GetUserFollowsChannel($.username.resolve(action.toLowerCase()), action2.toLowerCase());
         if (action.equalsIgnoreCase("help")) {
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.followHandler.followtime-usage"));
             return;
