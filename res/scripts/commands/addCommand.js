@@ -344,7 +344,7 @@ $.on('command', function (event) {
         if (messageCommand.contains('(points)')) {
             messageCommand = $.replaceAll(messageCommand, '(points)', $.getPointsString(parseInt($.inidb.get("points", sender))));
         } 
-        if (messageCommand.contains('(touser)') >= 0 && args.length > 0) {
+        if (messageCommand.contains('(touser)') && args.length > 0) {
             messageCommand = $.replaceAll(messageCommand, '(touser)', $.username.resolve(args[0]));
         } 
         if (messageCommand.contains('(random)')) {
