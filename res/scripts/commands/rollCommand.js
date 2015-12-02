@@ -107,20 +107,20 @@ $.on('command', function(event) {
 			var d2 = null;
 			var newpoints = 0;
 			
-			if (die1 == 1) { d1 = "\u2776";	}
-			else if (die1 == 2) { d1 = "\u2777"; }
-			else if (die1 == 3) { d1 = "\u2778"; }
-			else if (die1 == 4) { d1 = "\u2779"; }
-			else if (die1 == 5) { d1 = "\u277A"; }
-			else if (die1 == 6) { d1 = "\u277B"; }
+			if (die1 == 1) { d1 = "1";	}
+			else if (die1 == 2) { d1 = "2"; }
+			else if (die1 == 3) { d1 = "3"; }
+			else if (die1 == 4) { d1 = "4"; }
+			else if (die1 == 5) { d1 = "5"; }
+			else if (die1 == 6) { d1 = "6"; }
 			else { d1 = num1.toString(); }
 			
-			if (die2 == 1) { d2 = "\u2776";	}
-			else if (die2 == 2) { d2 = "\u2777"; }
-			else if (die2 == 3) { d2 = "\u2778"; }
-			else if (die2 == 4) { d2 = "\u2779"; }
-			else if (die2 == 5) { d2 = "\u277A"; }
-			else if (die2 == 6) { d2 = "\u277B"; }
+			if (die2 == 1) { d2 = "\1";	}
+			else if (die2 == 2) { d2 = "2"; }
+			else if (die2 == 3) { d2 = "3"; }
+			else if (die2 == 4) { d2 = "4"; }
+			else if (die2 == 5) { d2 = "5"; }
+			else if (die2 == 6) { d2 = "6"; }
 			else { d2 = num1.toString(); }
 			
 			if (die1 == die2) {
