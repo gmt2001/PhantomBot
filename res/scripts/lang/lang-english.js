@@ -810,21 +810,28 @@ $.lang.data["net.phantombot.musicplayer.veto-song"] = "You paid to skip the curr
 $.lang.data["net.phantombot.musicplayer.error-poll-opened"] = "A poll to skip a song is already open and running!";
 
 // ticketraffleSystem.js
-$.lang.data["net.phantombot.ticketrafflesystem.usage"] = "Ticket Raffle Commands: !traffle [open / close / repick]";
+$.lang.data["net.phantombot.ticketrafflesystem.usage"] = "Ticket Raffle Commands: !traffle [open / close / repick / subscriberluck]";
 $.lang.data["net.phantombot.ticketrafflesystem.no-raffle-opened"] = "There is no ticket raffle opened.";
 $.lang.data["net.phantombot.ticketrafflesystem.winner"] = "/me Ticket Raffle ended, winner is $1!";
 $.lang.data["net.phantombot.ticketrafflesystem.no-winner"] = "/me Ticket Raffle ended, no one entered.";
 $.lang.data["net.phantombot.ticketrafflesystem.winner-repick"] = "/me [Ticket Raffle] there is no winner.";
 $.lang.data["net.phantombot.ticketrafflesystem.no-winner-repick"] = "/me Ticket Raffle winner is, $1!";
 $.lang.data["net.phantombot.ticketrafflesystem.raffle-already-opened"] = "A ticket raffle is already opened.";
-$.lang.data["net.phantombot.ticketrafflesystem.user-error"] = "You need to specify the max ticktes allowed to be bought. \"!traffle open (max tickets)\"";
-$.lang.data["net.phantombot.ticketrafflesystem.raffle-opened"] = "/me Ticket Raffle Opened! you can only buy a max of $1 tickets!";
+$.lang.data["net.phantombot.ticketrafflesystem.user-error"] = "Syntax Error. \"!traffle open (max tickets)\" \"!traffle open (max tickets) (followers)\" \"!traffle open (max tickets) (subscribers)\"";
+$.lang.data["net.phantombot.ticketrafflesystem.raffle-opened"] = "/me Ticket Raffle Opened! You can only buy a max of $1 tickets!";
+$.lang.data["net.phantombot.ticketrafflesystem.raffle-opened2"] = "/me Ticket Raffle Opened! You must be following to enter! You can only buy a max of $1 tickets!";
+$.lang.data["net.phantombot.ticketrafflesystem.raffle-opened3"] = "/me Ticket Raffle Opened! You must be subscribed to enter! You can only buy a max of $1 tickets!";
+$.lang.data["net.phantombot.ticketrafflesystem.following"] = "you need to be following to enter.";
+$.lang.data["net.phantombot.ticketrafflesystem.no-sub"] = "you need to be subscribed to enter.";
+$.lang.data["net.phantombot.ticketrafflesystem.sub-luck-usage"] = "usage: !subscriberluck (1 to 10)";
+$.lang.data["net.phantombot.ticketrafflesystem.sub-luck-set"] = "Subscriber luck set to $1. Subscribers will now have $1 time(s) better chance to win.";
 
-// ticketSystem.js
-$.lang.data["net.phantombot.ticketsystem.usage"] = "usage: !tickets (amount) \"Tickets currently cost $1 points.\"";
+// ticketsystem.js
+$.lang.data["net.phantombot.ticketsystem.usage"] = "usage: !tickets (amount) - Tickets currently cost $1 points.";
 $.lang.data["net.phantombot.ticketsystem.need-more-points"] = "you don't have enough points to buy that many tickets.";
 $.lang.data["net.phantombot.ticketsystem.max-tickets-allowed"] = "you can only buy up to $1 ticket(s) in this ticket raffle.";
 $.lang.data["net.phantombot.ticketsystem.error-already-in-raffle"] = "you already entered this ticket raffle.";
 $.lang.data["net.phantombot.ticketsystem.buy-success"] = "you bought $1 ticket(s)";
 $.lang.data["net.phantombot.ticketsystem.cost-usage"] = "!ticket cost (amount)";
 $.lang.data["net.phantombot.ticketsystem.new-cost"] = "Tickets now will cost $1 $2";
+$.lang.data["net.phantombot.ticketsystem.total-entries"] = "There are currently $1 total entrie(s).";
