@@ -1,7 +1,8 @@
 @echo off
 setlocal enableextensions enabledelayedexpansion
 set first=1
-PATH %PATH%;%JAVA_HOME%\bin\
+for /f "delims=" %%a in ("%comspec%") do set "compath=%%~DPa"
+PATH %PATH%;%compath%;%JAVA_HOME%\bin\
 WHERE java >nul 2>nul
 IF %ERRORLEVEL% NEQ 0 (
     echo You must have Java installed, please install it from http://java.com
