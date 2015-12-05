@@ -259,7 +259,17 @@ function nextDefault() {
         var playlistpos;
         if($.song_shuffle==1 && $var.playChoice==false) {
             playlistpos = $.randRange(0, $var.defaultplaylist.length);
-            $var.defaultplaylistpos = playlistpos;
+           
+            if($.inidb.get('musicplayer_shuffle', 'played_' + playlistpos)==null) {
+                $.inidb.set('musicplayer_shuffle', 'played_' + playlistpos, playlistpos);
+                $var.defaultplaylistpos = playlistpos;
+            } else {
+                var musicplayer_shuffle_keys = $.inidb.GetKeyList("musicplayer_shuffle", "");
+                if($var.defaultplaylist.length >= musicplayer_shuffle_keys.length ) {
+                    $.inidb.RemoveFile("musicplayer_shuffle");
+                }
+                nextDefault();
+            }
         } else {
            playlistpos = $var.defaultplaylistpos;
         }
