@@ -1,72 +1,72 @@
-$.readFile = function(path) {
+$.readFile = function (path) {
     var lines = [];
-    
+
     try {
-        var fis = new java.io.FileInputStream (path);
-        var scan = new java.util.Scanner (fis);
-        for (var i = 0; scan.hasNextLine (); ++i) {
-            lines [i] = scan.nextLine ();
+        var fis = new java.io.FileInputStream(path);
+        var scan = new java.util.Scanner(fis);
+        for (var i = 0; scan.hasNextLine(); ++i) {
+            lines [i] = scan.nextLine();
         }
-        fis.close ();
+        fis.close();
     } catch (e) {
-        println ("Failed to open '" + path + "': " + e);
+        println("Failed to open '" + path + "': " + e);
     }
-    
+
     return lines;
 }
 
-$.mkDir = function(path) {
+$.mkDir = function (path) {
     var dir = new java.io.File(path);
     dir.mkdir();
 }
 
-$.moveFile = function(file,path) {
+$.moveFile = function (file, path) {
     var file = new java.io.File(file);
     var path = new java.io.File(path);
-    if((file!=null && path!=null)|| (file!="" && path!=""))
+    if ((file != null && path != null) || (file != "" && path != ""))
     {
         org.apache.commons.io.FileUtils.moveFileToDirectory(file, path, true);
     }
 }
 
-$.saveArray = function(array, path, append) {
+$.saveArray = function (array, path, append) {
     try {
-        var fos = new java.io.FileOutputStream (path, append);
-        var ps = new java.io.PrintStream (fos);
-        var l=array.length;
-        for (var i=0; i<l; ++i) {
-            ps.println (array [i]);
+        var fos = new java.io.FileOutputStream(path, append);
+        var ps = new java.io.PrintStream(fos);
+        var l = array.length;
+        for (var i = 0; i < l; ++i) {
+            ps.println(array [i]);
         }
-        fos.close ();
+        fos.close();
     } catch (e) {
-        println ("Failed to write to '" + path + "': " + e);
+        println("Failed to write to '" + path + "': " + e);
     }
 }
 
-$.writeToFile = function(string, path, append) {
+$.writeToFile = function (string, path, append) {
     try {
-        var fos = new java.io.FileOutputStream (path, append);
-        var ps = new java.io.PrintStream (fos);
-        ps.println (string);
-        fos.close ();
+        var fos = new java.io.FileOutputStream(path, append);
+        var ps = new java.io.PrintStream(fos);
+        ps.println(string);
+        fos.close();
     } catch (e) {
-        println ("Failed to write to '" + path + "': " + e);
+        println("Failed to write to '" + path + "': " + e);
     }
 }
 
-$.touchFile = function(path) {
+$.touchFile = function (path) {
     try {
         var fos = new java.io.FileOutputStream(path, true);
-        fos.close ();
+        fos.close();
     } catch (e) {
-        println ("Failed to touch '" + path + "': " + e);
+        println("Failed to touch '" + path + "': " + e);
     }
 }
 
-$.deleteFile = function(path, now) {
+$.deleteFile = function (path, now) {
     try {
         var f = new java.io.File(path);
-        
+
         if (now) {
             f['delete']();
         } else {
@@ -77,58 +77,58 @@ $.deleteFile = function(path, now) {
     }
 }
 
-$.fileExists = function(path) {
+$.fileExists = function (path) {
     try {
         var f = new java.io.File(path);
         return f.exists();
     } catch (e) {
         return false;
     }
-    
+
     return false;
 }
 
-$.findFiles = function(directory, pattern) {
+$.findFiles = function (directory, pattern) {
     try {
         var f = new java.io.File(directory);
-        
+
         var ret = new Array();
-        
+
         if (!f.isDirectory()) {
             throw "not a valid directory";
         } else {
             var files = f.list();
-            
+
             for (var i = 0; i < files.length; i++) {
                 if (files[i].indexOf(pattern) != -1) {
                     ret.push(files[i]);
                 }
             }
-            
+
             return ret;
         }
     } catch (e) {
         println("Failed to search in '" + directory + "': " + e)
     }
-    
+
     return new Array();
 }
 
-$.isDirectory = function(path) {
+$.isDirectory = function (path) {
     try {
         var f = new java.io.File(path);
         return f.isDirectory();
     } catch (e) {
         return false;
     }
-    
+
     return false;
 }
 
 
 
-$.findSize = function(file) {
-    var file = new java.io.File(file); 
+$.findSize = function (file) {
+    var file = new java.io.File(file);
     return file.length();
 }
 

@@ -253,7 +253,7 @@ public class HTTPServer extends Thread
 
                                 if (password.equals(pass))
                                 {
-                                    if (!args.containsKey("user") || !args.containsKey("message"))
+                                    if (!args.containsKey("user") || !args.containsKey("message") || !args.containsKey("channel"))
                                     {
                                         out.print("HTTP/1.0 400 Bad Request\n"
                                                 + "ContentType: " + "text/text" + "\n"
@@ -267,8 +267,9 @@ public class HTTPServer extends Thread
                                     {
                                         String user = URLDecoder.decode(args.get("user"), "UTF-8");
                                         String message = URLDecoder.decode(args.get("message"), "UTF-8");
+                                        String channel = URLDecoder.decode(args.get("channel"), "UTF-8");
 
-                                        EventBus.instance().post(new IrcChannelMessageEvent(PhantomBot.instance().getSession(), user, message, PhantomBot.instance().getChannel()));
+                                        EventBus.instance().post(new IrcChannelMessageEvent(PhantomBot.instance().getSession(), user, message, PhantomBot.instance().getChannel(channel)));
 
                                         out.print("HTTP/1.0 200 OK\n"
                                                 + "ContentType: " + "text/text" + "\n"

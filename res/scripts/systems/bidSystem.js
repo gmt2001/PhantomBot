@@ -4,7 +4,7 @@ $.auctionRunning = 0;
 $.auctionTopUser = "";
 $.auctionTopPoints = 0;
 
-$.on('command', function(event) {
+$.on('command', function (event) {
     var sender = event.getSender();
     var username = $.username.resolve(sender, event.getTags());
     var command = event.getCommand();
@@ -160,7 +160,7 @@ $.on('command', function(event) {
     }
 });
 
-setTimeout(function(){ 
+setTimeout(function () {
     if ($.moduleEnabled('./systems/bidSystem.js')) {
         $.registerChatCommand("./systems/bidSystem.js", "bid");
     }

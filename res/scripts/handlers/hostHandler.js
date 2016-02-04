@@ -45,7 +45,7 @@ $.on('twitchHosted', function (event) {
         if ($.hostreward > 0) {
             $.inidb.incr('points', username.toLowerCase(), $.hostreward);
         }
-        
+
         s = $.replaceAll(s, '(name)', username);
         $.say(s);
     }
@@ -109,30 +109,30 @@ $.on('command', function (event) {
             return;
         }
     }
-    
-    if (command.equalsIgnoreCase("hostmessage")) {		
-        if (!$.isAdmin(sender)) {		
-            $.say($.getWhisperString(sender) + $.adminmsg);		
-            return;		
-        }		
-				
-        if ($.strlen(argsString) == 0) {		
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.hosthandler.current-host-message", $.hostMessage));		
-		
-            var s = $.lang.get("net.phantombot.hosthandler.host-message-usage");		
-		
-            $.say($.getWhisperString(sender) + s);		
+
+    if (command.equalsIgnoreCase("hostmessage")) {
+        if (!$.isAdmin(sender)) {
+            $.say($.getWhisperString(sender) + $.adminmsg);
             return;
-            
-        } else {		
-            $.logEvent("hostHandler.js", 73, username + " changed the new hoster message to: " + argsString);		
-		
+        }
+
+        if ($.strlen(argsString) == 0) {
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.hosthandler.current-host-message", $.hostMessage));
+
+            var s = $.lang.get("net.phantombot.hosthandler.host-message-usage");
+
+            $.say($.getWhisperString(sender) + s);
+            return;
+
+        } else {
+            $.logEvent("hostHandler.js", 73, username + " changed the new hoster message to: " + argsString);
+
             $.inidb.set('settings', 'hostmessage', argsString);
             $.hostMessage = $.inidb.get('settings', 'hostmessage');
-		
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.hosthandler.host-message-set-success"));		
-            return;		
-        }		
+
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.hosthandler.host-message-set-success"));
+            return;
+        }
     }
 
     if (command.equalsIgnoreCase("hostcount")) {

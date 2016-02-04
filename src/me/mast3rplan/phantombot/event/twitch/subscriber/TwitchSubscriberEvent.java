@@ -57,6 +57,6 @@ public abstract class TwitchSubscriberEvent extends TwitchEvent
 
     public String toEventSocket()
     {
-    	return this.getSubscriber() + "|" + this.getType();
+        return this.getSubscriber() + "|" + this.getType();
     }
 }

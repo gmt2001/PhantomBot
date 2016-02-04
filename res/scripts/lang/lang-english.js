@@ -16,14 +16,14 @@ $.lang.data["net.phantombot.common.command-not-exists"] = "The command !$1 does 
 // To translate the ordinal number prefixes or suffixes, edit the lines below.
 // Warning: Make sure each line contains 10 items total; 0 through 9.
 // Order: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].
-$.lang.data["net.phantombot.common.ordinal-prefixes"] = ["","","","", "", "", "", "", "", ""];
-$.lang.data["net.phantombot.common.ordinal-suffixes"] = ["th","st","nd","rd", "th", "th", "th", "th", "th", "th"];
+$.lang.data["net.phantombot.common.ordinal-prefixes"] = ["", "", "", "", "", "", "", "", "", ""];
+$.lang.data["net.phantombot.common.ordinal-suffixes"] = ["th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th"];
 
 // To translate the time prefixes or suffixes, edit the lines below. This is used for both a single w/d/h/m and multiple w/d/h/m.
 // Warning: Make sure each line contains 4 items total; w, d, h, m.
 // Order: [w, d, h, m].
-$.lang.data["net.phantombot.common.time-prefixes"] = ["","","",""];
-$.lang.data["net.phantombot.common.time-suffixes"] = ["w","d","h","m"];
+$.lang.data["net.phantombot.common.time-prefixes"] = ["", "", "", ""];
+$.lang.data["net.phantombot.common.time-suffixes"] = ["w", "d", "h", "m"];
 
 //command perm/price
 $.lang.data["net.phantombot.cmd.noperm"] = "Your user group, $1, does not have permission to use the command $2.";
@@ -416,9 +416,9 @@ $.lang.data["net.phantombot.followHandler.mega-follow-train"] = "M-M-M-Mega foll
 $.lang.data["net.phantombot.followHandler.ultra-follow-train"] = "Ultra follow train!! ($1) *Explosions*";
 $.lang.data["net.phantombot.followHandler.massive-follow-train"] = "MASSIVE FOLLOW TRAAAAIIIN!! ($1)";
 $.lang.data["net.phantombot.followHandler.followed-command-usage"] = "Usage: !follow (username), !followed (username), !followmessage (message), !followreward (reward)";
-$.lang.data["net.phantombot.followHandler.current-follow-message"] = "The current new follower message is: $1";		
-$.lang.data["net.phantombot.followHandler.follow-message-usage"] = "To change it use '!followmessage <message>'. You can also add the string '(name)' to put the followers name and '(pointname) for the reward.";		
-$.lang.data["net.phantombot.followHandler.follow-message-usage-points"] = ", '(reward)' to put the number of points received for following.";		
+$.lang.data["net.phantombot.followHandler.current-follow-message"] = "The current new follower message is: $1";
+$.lang.data["net.phantombot.followHandler.follow-message-usage"] = "To change it use '!followmessage <message>'. You can also add the string '(name)' to put the followers name and '(pointname) for the reward.";
+$.lang.data["net.phantombot.followHandler.follow-message-usage-points"] = ", '(reward)' to put the number of points received for following.";
 $.lang.data["net.phantombot.followHandler.follow-message-set"] = "New follower message set!";
 
 
@@ -462,8 +462,8 @@ $.lang.data["net.phantombot.hosthandler.host-timeout-time-error"] = "Host timeou
 $.lang.data["net.phantombot.hosthandler.host-timeout-time-set"] = "Host timeout duration is now set to: $1 minutes!";
 $.lang.data["net.phantombot.hosthandler.host-list"] = "This channel is currently being hosted by the hosting $1 channels: $2";
 $.lang.data["net.phantombot.hosthandler.host-list-error"] = "No one is currently hosting this channel.";
-$.lang.data["net.phantombot.hosthandler.current-host-message"] = "The current new hoster message is: $1";		
-$.lang.data["net.phantombot.hosthandler.host-message-usage"] = "To change it use '!hostmessage (message)'. You can also add the string '(name)' to put the hosters name";		
+$.lang.data["net.phantombot.hosthandler.current-host-message"] = "The current new hoster message is: $1";
+$.lang.data["net.phantombot.hosthandler.host-message-usage"] = "To change it use '!hostmessage (message)'. You can also add the string '(name)' to put the hosters name";
 $.lang.data["net.phantombot.hosthandler.host-message-set-success"] = "New host message set!";
 
 //donationHandler.js 

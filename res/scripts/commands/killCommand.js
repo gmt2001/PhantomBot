@@ -168,7 +168,7 @@ $.on('command', function (event) {
         }
         if (messageCommand.contains('(count)')) {
             $.inidb.incr('commandcount', command.toLowerCase(), 1);
-        } 
+        }
         if (messageCommand.contains('(touser)') >= 0 && args.length > 0) {
             messageCommand = $.replaceAll(messageCommand, '(touser)', $.username.resolve(args[0]));
         }
@@ -177,7 +177,7 @@ $.on('command', function (event) {
         }
         if (messageCommand.contains('(#)')) {
             messageCommand = $.replaceAll(messageCommand, '(#)', $.randRange(1, 100));
-        } 
+        }
         if (messageCommand.contains('(count)')) {
             messageCommand = $.replaceAll(messageCommand, '(count)', $.inidb.get('commandcount', command.toLowerCase()));
         }

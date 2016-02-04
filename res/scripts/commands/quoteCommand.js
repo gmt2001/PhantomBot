@@ -1,4 +1,4 @@
-$.on('command', function(event) {
+$.on('command', function (event) {
     var sender = event.getSender();
     var command = event.getCommand();
     var argsString = event.getArguments().trim();
@@ -7,7 +7,7 @@ $.on('command', function(event) {
     var args = event.getArgs();
     var quote;
     var num;
-    
+
     if (command.equalsIgnoreCase("quote")) {
         if (argsString.length() > 0) {
             num = parseInt(argsString);
@@ -28,17 +28,17 @@ $.on('command', function(event) {
             return;
         }
     }
-    
+
     if (command.equalsIgnoreCase("addquote")) {
         if (!$.isModv3(sender, event.getTags())) {
             $.say($.getWhisperString(sender) + $.modmsg);
             return;
         }
-        
+
         if (num_quotes == null || isNaN(num_quotes)) {
             num_quotes = 0;
         }
-        
+
         if (argsString.isEmpty()) {
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.quotecommand.error-quote-usage"));
             return;
@@ -46,7 +46,7 @@ $.on('command', function(event) {
 
         $.inidb.incr("quotes", "num_quotes", 1);
         $.inidb.set("quotes", "quote_" + num_quotes, argsString);
-        
+
         $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.quotecommand.quote-add-success", (num_quotes + 1)));
         return;
     }
@@ -56,7 +56,7 @@ $.on('command', function(event) {
             $.say($.getWhisperString(sender) + $.modmsg);
             return;
         }
-        
+
         num = parseInt(args[0]);
 
         if (num > num_quotes) {
@@ -68,13 +68,13 @@ $.on('command', function(event) {
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.quotecommand.editquote-error-usage"));
             return;
         }
-        
+
         $.inidb.set("quotes", "quote_" + num, argsString2);
-        
+
         $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.quotecommand.editquote-success", num, $.inidb.get("quotes", "quote_" + num)));
         return;
     }
-    
+
     if (command.equalsIgnoreCase("delquote")) {
         if (!$.isModv3(sender, event.getTags())) {
             $.say($.getWhisperString(sender) + $.modmsg);
@@ -85,7 +85,7 @@ $.on('command', function(event) {
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.quotecommand.delquote-error"));
             return;
         }
-        
+
         if (argsString.isEmpty()) {
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.quotecommand.delquote-error-usage"));
             return;
@@ -95,7 +95,7 @@ $.on('command', function(event) {
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.quotecommand.delquote-error-wrong-id", $.inidb.get('quotes', 'num_quotes')));
             return;
         }
-        
+
         if (num_quotes > 1) {
             for (i = 0; i < num_quotes; i++) {
                 if (i > parseInt(argsString)) {
@@ -105,19 +105,19 @@ $.on('command', function(event) {
         }
 
         $.inidb.del('quotes', 'quote_' + (num_quotes - 1));
-        
+
         $.inidb.decr("quotes", "num_quotes", 1);
-        
+
         $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.quotecommand.delquote-success", (num_quotes - 1)));
         return;
     }
 });
 
-setTimeout(function(){ 
+setTimeout(function () {
     if ($.moduleEnabled('./commands/quoteCommand.js')) {
         $.registerChatCommand("./commands/quoteCommand.js", "quote");
         $.registerChatCommand("./commands/quoteCommand.js", "addquote", "mod");
         $.registerChatCommand("./commands/quoteCommand.js", "editquote", "mod");
         $.registerChatCommand("./commands/quoteCommand.js", "delquote", "mod");
     }
-},10 * 1000);
+}, 10 * 1000);

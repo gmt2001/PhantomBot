@@ -26,7 +26,7 @@ if ($.permToggleTime == undefined || $.permToggleTime == null) {
     $.permToggleTime = "false";
 }
 
-if($.firstrun) {
+if ($.firstrun) {
     $.say("");
     $.say("The current time zone is '" + $.timeZone + "'.");
     $.say("To change it use '!timezone (timezone)'.");
@@ -38,7 +38,8 @@ if($.firstrun) {
 $.getUserTime = function (user) {
     // "getUserTime" instead of "getTime" to prevent issues with the "real" function.
     var time = $.inidb.get('time', user.toLowerCase());
-    if (time == null) time = 0;
+    if (time == null)
+        time = 0;
 
     return time;
 }
@@ -101,7 +102,7 @@ $.validateTimezone = function (timezone) {
     return false;
 }
 
-$.setTimezone = function (timezone) { 
+$.setTimezone = function (timezone) {
     if (validateTimezone(timezone)) {
         $.inidb.set("timezone", "timezone", timezone);
         $.timeZone = $.inidb.get('timezone', 'timezone');
@@ -112,7 +113,7 @@ $.setTimezone = function (timezone) {
     }
 }
 
-$.on('command', function(event) {
+$.on('command', function (event) {
     var sender = event.getSender().toLowerCase();
     var username = $.username.resolve(sender, event.getTags()).toLowerCase();
     var command = event.getCommand();
@@ -121,14 +122,14 @@ $.on('command', function(event) {
     var action;
     var time;
     var timeZone;
-    
-    if(argsString.isEmpty()) {
+
+    if (argsString.isEmpty()) {
         args = [];
     } else {
         args = argsString.split(" ");
     }
 
-    if(command.equalsIgnoreCase("time")) {
+    if (command.equalsIgnoreCase("time")) {
         if (args.length >= 1) {
             var action = args[0];
 
@@ -149,10 +150,10 @@ $.on('command', function(event) {
                     $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.give-usage"));
                     return;
                 }
-            
+
                 username = args[1].toLowerCase();
                 time = parseInt(args[2]);
-            
+
                 if (time < 0) {
                     $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.give-error-negative"));
                     return;
@@ -189,10 +190,10 @@ $.on('command', function(event) {
                 time = parseInt(args[2]);
 
                 if (time > $.inidb.get('time', username.toLowerCase())) {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.take-error-toomuch", $.username.resolve(username)));       
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.take-error-toomuch", $.username.resolve(username)));
                     return;
                 } else {
-                    if ($.inidb.get("visited", username.toLowerCase()) == "visited")  {
+                    if ($.inidb.get("visited", username.toLowerCase()) == "visited") {
                         $.inidb.decr('time', username.toLowerCase(), time);
 
                         $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.take-success", $.getTimeString(time), $.username.resolve(username), $.getTimeString($.inidb.get('time', username.toLowerCase()))))
@@ -219,15 +220,15 @@ $.on('command', function(event) {
                     $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.set-usage"));
                     return;
                 }
-            
+
                 username = args[1].toLowerCase();
                 time = parseInt(args[2]);
-            
+
                 if (time < 0) {
-                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.set-error-negative"));  
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.set-error-negative"));
                     return;
                 } else {
-                    if ($.inidb.get("visited", username.toLowerCase()) == "visited")  {
+                    if ($.inidb.get("visited", username.toLowerCase()) == "visited") {
                         $.inidb.set('time', username.toLowerCase(), time);
 
                         $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.set-success", $.username.resolve(username), $.getTimeString($.inidb.get('time', username.toLowerCase()))));
@@ -328,13 +329,13 @@ $.on('command', function(event) {
                 return;
             } else {
                 var othername = "";
-                if(args[0]!=null) {
+                if (args[0] != null) {
                     othername = args[0].toLowerCase();
                 }
-                
-                if ($.inidb.get("visited", othername.toLowerCase()) == "visited")  {
-                            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.get-other", $.username.resolve(othername), $.getTimeString($.getUserTime(othername))));
-                            return;
+
+                if ($.inidb.get("visited", othername.toLowerCase()) == "visited") {
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.timesystem.get-other", $.username.resolve(othername), $.getTimeString($.getUserTime(othername))));
+                    return;
                 } else {
                     $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.common.user-404", $.username.resolve(othername)));
                     return;
@@ -346,7 +347,7 @@ $.on('command', function(event) {
         }
     }
 
-    if(command.equalsIgnoreCase("timezone")) {
+    if (command.equalsIgnoreCase("timezone")) {
         if (args.length >= 1) {
             var action = args[0];
 
@@ -380,7 +381,7 @@ $.on('command', function(event) {
         var datefmt = new java.text.SimpleDateFormat("EEEE MMMM d, yyyy @ h:mm a z");
         datefmt.setTimeZone(java.util.TimeZone.getTimeZone($.timeZone));
         var timestamp = datefmt.format(now);
-            
+
         $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.streamertime", timestamp, $.username.resolve($.channelName)));
     }
 
@@ -388,7 +389,7 @@ $.on('command', function(event) {
         $.say($.lang.get("net.phantombot.botuptime.success", $.username.resolve($.botname), $.getTimeString($.botUptime * 60)));
         return;
     }
-    
+
     if (command.equalsIgnoreCase("uptime")) {
         if ($.isOnline($.channelName)) {
             $.say($.lang.get("net.phantombot.uptime.success-online", $.username.resolve($.channelName), $.getUptime($.channelName)));
@@ -400,11 +401,11 @@ $.on('command', function(event) {
     }
 });
 
-$.timer.addTimer("./systems/timeSystem.js", "autosave", true, function() {
+$.timer.addTimer("./systems/timeSystem.js", "autosave", true, function () {
     $.inidb.SaveAll(true);
 }, 300 * 1000);
 
-$.timer.addTimer("./systems/timeSystem.js", "timesystem", true, function() {
+$.timer.addTimer("./systems/timeSystem.js", "timesystem", true, function () {
     if (!$.moduleEnabled("./systems/timeSystem.js")) {
         return;
     }
@@ -427,9 +428,9 @@ $.timer.addTimer("./systems/timeSystem.js", "timesystem", true, function() {
         }
 
         if ($.timeLevel == "true") {
-            if(!$.isMod(nick)) {
+            if (!$.isMod(nick)) {
                 if (parseInt($.getUserGroupId(nick)) > regularsGroupID && $.inidb.get('followed', nick) == 1) {
-                    if(parseInt($.inidb.get('time', nick)) >= parseInt($.timePromoteHours * 60) * 60) {
+                    if (parseInt($.inidb.get('time', nick)) >= parseInt($.timePromoteHours * 60) * 60) {
                         var levelup = parseInt($.getUserGroupId(nick)) - 1;
 
                         $.setUserGroupById(nick, levelup);
@@ -441,7 +442,7 @@ $.timer.addTimer("./systems/timeSystem.js", "timesystem", true, function() {
     }
 }, 60 * 1000);
 
-setTimeout(function(){ 
+setTimeout(function () {
     if ($.moduleEnabled('./systems/timeSystem.js')) {
         $.registerChatCommand("./systems/timeSystem.js", "time");
         $.registerChatCommand("./systems/timeSystem.js", "time help");
@@ -450,4 +451,4 @@ setTimeout(function(){
         $.registerChatCommand("./systems/timeSystem.js", "uptime");
         $.registerChatCommand("./systems/timeSystem.js", "botuptime");
     }
-},10*1000);
+}, 10 * 1000);

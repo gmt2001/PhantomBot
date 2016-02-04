@@ -265,7 +265,8 @@ function processBankheist() {
             $.say(winnersList);
         }
     }
-};
+}
+;
 
 function startHeist() {
 
@@ -333,10 +334,10 @@ $.on('command', function (event) {
 
                 $.senderId = "";
                 $.senderBet = "";
-		$.bankheistIsOn = false;
-		$.entrySeconds = 0;
-		$.winningPot = 0;
-		$.pointsId = 0;
+                $.bankheistIsOn = false;
+                $.entrySeconds = 0;
+                $.winningPot = 0;
+                $.pointsId = 0;
                 $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.bankheistsystem.bankheist-disabled"));
                 return;
             }
@@ -369,21 +370,21 @@ $.on('command', function (event) {
             return;
 
         } else if (args[0].equalsIgnoreCase("clear")) {
-            
-                $.inidb.set("settings", "bankheistToggle", "false");
-                $.timer.clearTimer("./systems/bankheistSystem.js", "bankheist", true);
-                $.timer.clearTimer("./systems/bankheistSystem.js", "enterbankheist", true);
-                $.inidb.RemoveFile("bankheist_roster");
-                $.inidb.RemoveFile("bankheist_bets");
 
-                $.senderId = "";
-                $.senderBet = "";
-		$.bankheistIsOn = false;
-		$.entrySeconds = 0;
-		$.winningPot = 0;
-		$.pointsId = 0;
-                return;
-                
+            $.inidb.set("settings", "bankheistToggle", "false");
+            $.timer.clearTimer("./systems/bankheistSystem.js", "bankheist", true);
+            $.timer.clearTimer("./systems/bankheistSystem.js", "enterbankheist", true);
+            $.inidb.RemoveFile("bankheist_roster");
+            $.inidb.RemoveFile("bankheist_bets");
+
+            $.senderId = "";
+            $.senderBet = "";
+            $.bankheistIsOn = false;
+            $.entrySeconds = 0;
+            $.winningPot = 0;
+            $.pointsId = 0;
+            return;
+
         } else if (!isNaN(betAmount) && parseInt(betAmount) > 0) {
 
             if ($.bankheistIsOn == false) {
@@ -394,11 +395,11 @@ $.on('command', function (event) {
                 $.userPointsId = parseInt($.pointsId + 1);
 
                 if (parseInt(betAmount) > $.heistUserPoints || parseInt(betAmount) == 0) {
-				//Changed to use point system for formatting
+                    //Changed to use point system for formatting
                     $.say($.getWhisperString(sender) + $.affordBet + "[Points available: " + $.getPointsString($.heistUserPoints) + " ]");
                     return;
                 } else if (parseInt(betAmount) > $.bankheistMaxBet) {
-				//Only reformats the numbers and doesn't add suffix
+                    //Only reformats the numbers and doesn't add suffix
                     $.say($.getWhisperString(sender) + $.betTooLarge + $.formatNumbers($.bankheistMaxBet) + ".");
                     return;
                 } else {
@@ -406,7 +407,7 @@ $.on('command', function (event) {
                     {
                         $.senderId = $.inidb.get("bankheist_roster", sender);
                         $.senderBet = $.inidb.get("bankheist_bets", $.senderId);
-						//Changed to point system for formatting
+                        //Changed to point system for formatting
                         $.say($.getWhisperString(sender) + username + $.alreadyBet + $.getPointsString($.senderBet));
                         return;
                     } else {

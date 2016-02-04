@@ -10,10 +10,10 @@ var count = 0;
 
 function makeVote(option) {
     options = $var.pollOptions;
-    if(!parseInt(option)) {
+    if (!parseInt(option)) {
         option = option.toLowerCase();
     } else {
-        if((parseInt(option) > 0) && (parseInt(option) <= parseInt(options.length))) {
+        if ((parseInt(option) > 0) && (parseInt(option) <= parseInt(options.length))) {
             var option2 = parseInt(option) - 1;
             option = options[option2].toLowerCase();
         } else {
@@ -68,7 +68,7 @@ $.runPoll = function (callback, options, time, pollMaster) {
         var option = options[i];
         $.pollResults.put(option.toLowerCase(), 0);
     }
-    
+
     $var.pollOptions = options;
     $var.pollMaster = pollMaster;
     $var.pollTotalVotes = 0;
@@ -187,7 +187,7 @@ $.on('command', function (event) {
                             WinRV = "0";
                         }
 
-                        $.say("[" + date + "] - [" + vTotal + " Total Votes] - [Winning Result: " + WinR + " with " + WinRV + " votes] - [Options: " + vOptions + "]") 
+                        $.say("[" + date + "] - [" + vTotal + " Total Votes] - [Winning Result: " + WinR + " with " + WinRV + " votes] - [Options: " + vOptions + "]")
                     }
                 }
             }
@@ -231,7 +231,7 @@ $.on('command', function (event) {
             }
 
             if ($.runPoll(function (result) {
-                if (result.length && $.pollResults.get(result[0]).intValue()> 0 ) {
+                if (result.length && $.pollResults.get(result[0]).intValue() > 0) {
                     $.say("Polls are closed! The winner is \"" + result + "\" with " + $.pollResults.get(result[0]).intValue() + " out of " + parseInt($var.pollTotalVotes) + " votes.");
                     $.inidb.set('polls', 'total_votes', parseInt($var.pollTotalVotes));
                     $.inidb.set('polls', 'winning_result', result);
@@ -254,10 +254,10 @@ $.on('command', function (event) {
                 optionsStr = "";
                 l = options.length - 2;
                 for (var i = 0; i < l; ++i) {
-                    optionsStr += (i+1).toString() + "." + options[i] + " | ";
+                    optionsStr += (i + 1).toString() + "." + options[i] + " | ";
                 }
 
-                $.displayOptions = optionsStr + (l+1).toString() + "." + options[l] + " | " + (l+2).toString() + "." + options[l+1];
+                $.displayOptions = optionsStr + (l + 1).toString() + "." + options[l] + " | " + (l + 2).toString() + "." + options[l + 1];
 
                 $.say("Polls are open! Vote with '!vote (option)'. The options are: " + $.displayOptions);
                 $.inidb.set('polls', 'vote_options', $.displayOptions);
@@ -265,7 +265,7 @@ $.on('command', function (event) {
             }
         } else if (args.length >= 1 && action.equalsIgnoreCase("close")) {
             if ($var.pollMaster == null) {
-                
+
             }
 
             if (!$.isModv3(sender, event.getTags())) {
@@ -287,8 +287,8 @@ $.on('command', function (event) {
     }
 });
 
-setTimeout(function(){ 
+setTimeout(function () {
     if ($.moduleEnabled('./systems/pollSystem.js')) {
         $.registerChatCommand("./systems/pollSystem.js", "poll", "mod");
     }
-},10*1000);
+}, 10 * 1000);

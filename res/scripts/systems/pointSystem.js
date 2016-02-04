@@ -43,24 +43,25 @@ if ($.permTogglePoints == undefined || $.permTogglePoints == null) {
 
 $.getPoints = function (user) {
     var points = $.inidb.get('points', user.toLowerCase());
-    if (points == null) points = 0;
+    if (points == null)
+        points = 0;
 
     return points;
 }
 
 $.getPointsString = function (points) {
     points = parseInt(points);
-	//format = $.formatNumbers(points);
-	
+    //format = $.formatNumbers(points);
+
     var pointsString = "";
-	
-	pointsString += $.econNameFormat(points, $.pointNameSingle);
-	//Old way of sending point/currency information
-	/*if (points == 1) {
-		pointsString += points.toString() + " " + $.pointNameSingle;
-    } else {
-		pointsString += points.toString() + " " + $.pointNameMultiple;
-    }*/
+
+    pointsString += $.econNameFormat(points, $.pointNameSingle);
+    //Old way of sending point/currency information
+    /*if (points == 1) {
+     pointsString += points.toString() + " " + $.pointNameSingle;
+     } else {
+     pointsString += points.toString() + " " + $.pointNameMultiple;
+     }*/
 
     return pointsString;
 }
@@ -621,7 +622,7 @@ $.on('command', function (event) {
             for (i = 0; i < $.users.length; i++) {
                 name = $.users[i][0];
                 if (!name.equalsIgnoreCase(sender)) {
-                   $.inidb.incr('points', name.toLowerCase(), reward.toFixed(0));
+                    $.inidb.incr('points', name.toLowerCase(), reward.toFixed(0));
                 }
             }
 
@@ -701,14 +702,14 @@ $.timer.addTimer("./systems/pointSystem.js", "pointsystem", true, function () {
     var points = 0;
     for (var i = 0; i < $.users.length; i++) {
         var nick = $.users[i][0].toLowerCase();
-		
-		if ($.getGroupPointMultiplier(nick) == 0 || $.getGroupPointMultiplier == null || $.getGroupPointMultiplier == undefined) { // Checks for a 0 value to default to !points gain value.
-			points = amount;
-			$.inidb.incr('points', nick, points);
-		} else {
-			points = $.getGroupPointMultiplier(nick); // Does the incrementation of the custom values set by !group points
-			$.inidb.incr('points', nick, points);
-		}
+
+        if ($.getGroupPointMultiplier(nick) == 0 || $.getGroupPointMultiplier == null || $.getGroupPointMultiplier == undefined) { // Checks for a 0 value to default to !points gain value.
+            points = amount;
+            $.inidb.incr('points', nick, points);
+        } else {
+            points = $.getGroupPointMultiplier(nick); // Does the incrementation of the custom values set by !group points
+            $.inidb.incr('points', nick, points);
+        }
     }
 
     $.lastpointInterval = System.currentTimeMillis();

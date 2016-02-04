@@ -4,11 +4,11 @@ if ($.ticketCost == null || $.ticketCost == undefined || isNaN($.ticketCost)) {
     $.ticketCost = 10;
 }
 
-$.on('command', function(event) {
+$.on('command', function (event) {
     var sender = event.getSender().toLowerCase();
     var command = event.getCommand();
     var args = event.getArgs();
-   
+
     if (command.equalsIgnoreCase("tickets")) {
         if ($.TicketRaffleRunning == false) {
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.ticketrafflesystem.no-raffle-opened"));
@@ -67,7 +67,7 @@ $.on('command', function(event) {
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.cmd.adminonly"));
             return;
         }
-        
+
         if (args.length == 0) {
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.ticketsystem.cost-usage"));
             return;

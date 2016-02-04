@@ -35,8 +35,6 @@ import java.nio.file.StandardOpenOption;
 import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map.Entry;
-import java.util.TreeMap;
-import java.util.TreeSet;
 import me.mast3rplan.phantombot.cache.ChannelHostCache;
 import me.mast3rplan.phantombot.cache.ChannelUsersCache;
 import me.mast3rplan.phantombot.cache.FollowersCache;
@@ -56,7 +54,6 @@ import me.mast3rplan.phantombot.jerklib.Channel;
 import me.mast3rplan.phantombot.jerklib.ConnectionManager;
 import me.mast3rplan.phantombot.jerklib.Profile;
 import me.mast3rplan.phantombot.jerklib.Session;
-import me.mast3rplan.phantombot.musicplayer.MusicWebSocketServer;
 import me.mast3rplan.phantombot.script.Script;
 import me.mast3rplan.phantombot.script.ScriptApi;
 import me.mast3rplan.phantombot.script.ScriptEventManager;
@@ -79,33 +76,22 @@ public class PhantomBot implements Listener
     private double msglimit30;
     private String datastore;
     private String datastoreconfig;
-    private String youtubekey;
-    private String webenable;
-    private String musicenable;
-    private String channelStatus;
     private DataStore dataStoreObj;
     private SecureRandom rng;
-    private TreeMap<String, Integer> pollResults;
-    private TreeSet<String> voters;
     private Profile profile;
     private ConnectionManager connectionManager;
     private final Session session;
-    public static Session tgcSession;
-    private Channel channel;
     private final HashMap<String, Channel> channels;
     private FollowersCache followersCache;
     private ChannelHostCache hostCache;
     private SubscribersCache subscribersCache;
     private ChannelUsersCache channelUsersCache;
-    private MusicWebSocketServer musicsocketserver;
     private HTTPServer httpserver;
     private EventWebSocketServer eventsocketserver;
     private ConsoleInputListener cil;
     private static final boolean debugD = false;
     public static boolean enableDebugging = false;
     public static boolean interactive;
-    public static boolean webenabled = false;
-    public static boolean musicenabled = false;
     private boolean exiting = false;
     private Thread t;
     private static PhantomBot instance;
@@ -116,17 +102,15 @@ public class PhantomBot implements Listener
     }
 
     public PhantomBot(String username, String oauth, String apioauth, String clientid, String channel, String owner, int baseport,
-            String hostname, int port, double msglimit30, String datastore, String datastoreconfig, String youtubekey, String webenable,
-            String musicenable)
+            String hostname, int port, double msglimit30, String datastore, String datastoreconfig)
     {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
         com.gmt2001.Console.out.println();
-        com.gmt2001.Console.out.println("PhantomBot Core 1.6.6 11/28/2015");
+        com.gmt2001.Console.out.println("PhantomBot Core - gmt2001's edition");
         com.gmt2001.Console.err.println("Build revision " + RepoVersion.getRepoVersion());
         com.gmt2001.Console.out.println("Creator: mast3rplan");
         com.gmt2001.Console.out.println("Developers: gmt2001, GloriousEggroll, PhantomIndex");
-        com.gmt2001.Console.out.println("www.phantombot.net");
         com.gmt2001.Console.out.println();
 
         interactive = System.getProperty("interactive") != null;
@@ -139,21 +123,13 @@ public class PhantomBot implements Listener
         this.baseport = baseport;
         this.datastore = datastore;
         this.datastoreconfig = datastoreconfig;
-        this.youtubekey = youtubekey;
-        if (!youtubekey.isEmpty())
-        {
-            YouTubeAPIv3.instance().SetAPIKey(youtubekey);
-        }
 
-        this.webenable = webenable;
-        this.musicenable = musicenable;
-
+        com.gmt2001.Console.out.println("[INIT] Initializing connection manager...");
         this.profile = new Profile(username.toLowerCase());
         this.connectionManager = new ConnectionManager(profile);
 
+        com.gmt2001.Console.out.println("[INIT] Initializing random number generator...");
         rng = new SecureRandom();
-        pollResults = new TreeMap<>();
-        voters = new TreeSet<>();
 
         if (hostname.isEmpty())
         {
@@ -173,6 +149,7 @@ public class PhantomBot implements Listener
             this.msglimit30 = 18.75;
         }
 
+        com.gmt2001.Console.out.println("[INIT] Initializing datastore...");
         if (datastore.equalsIgnoreCase("TempStore"))
         {
             dataStoreObj = TempStore.instance();
@@ -186,6 +163,7 @@ public class PhantomBot implements Listener
 
         if (datastore.isEmpty() && IniStore.instance().GetFileList().length > 0 && SqliteStore.instance().GetFileList().length == 0)
         {
+            com.gmt2001.Console.out.println("[INIT] Converting IniStore data to SqliteStore...");
             ini2sqlite(true);
         }
 
@@ -198,6 +176,7 @@ public class PhantomBot implements Listener
         {
             try
             {
+                com.gmt2001.Console.out.println("[INIT] Creating pid file...");
                 java.lang.management.RuntimeMXBean runtime = java.lang.management.ManagementFactory.getRuntimeMXBean();
                 /*
                  * java.lang.reflect.Field jvm =
@@ -235,21 +214,24 @@ public class PhantomBot implements Listener
 
         channels = new HashMap<>();
 
+        com.gmt2001.Console.out.println("[INIT] Requesting irc connection...");
         this.session = connectionManager.requestConnection(this.hostname, this.port, oauth);
-        TwitchGroupChatHandler(this.oauth, this.connectionManager);
 
         if (clientid.length() == 0)
         {
-            this.clientid = "rp2uhin43rvpr70nzwnh07417x2gck0";
+            this.clientid = "fno0eqq3t8ivzr2c9vnwveu8nxgwh27";
         } else
         {
             this.clientid = clientid;
         }
 
+        com.gmt2001.Console.out.println("[INIT] Initializing twitch api...");
         TwitchAPIv3.instance().SetClientID(this.clientid);
         TwitchAPIv3.instance().SetOAuth(apioauth);
 
         this.session.addIRCEventListener(new IrcEventHandler());
+
+        com.gmt2001.Console.out.println("[INIT] Core initialization complete...");
     }
 
     public static void setDebugging(boolean debug)
@@ -272,11 +254,6 @@ public class PhantomBot implements Listener
         return exiting;
     }
 
-    public Channel getChannel()
-    {
-        return channel;
-    }
-
     public long getMessageInterval()
     {
         return (long) ((30.0 / this.msglimit30) * 1000);
@@ -292,42 +269,31 @@ public class PhantomBot implements Listener
         return channels;
     }
 
-    private void TwitchGroupChatHandler(String oauth, ConnectionManager connManager)
-    {
-        int gport = 6667;
-        String ghostname = "199.9.253.119";
-
-        tgcSession = connManager.requestConnection(ghostname, gport, oauth);
-        tgcSession.addIRCEventListener(new IrcEventHandler());
-    }
-
     public final void init()
     {
-        if (!webenable.equalsIgnoreCase("false"))
-        {
-            webenabled = true;
-            httpserver = new HTTPServer(baseport, oauth);
-            httpserver.start();
-            if (!musicenable.equalsIgnoreCase("false"))
-            {
-                musicenabled = true;
-                musicsocketserver = new MusicWebSocketServer(baseport + 1);
-            }
-            eventsocketserver = new EventWebSocketServer(baseport + 2);
-            EventBus.instance().register(eventsocketserver);
-        }
+        com.gmt2001.Console.out.println("[INIT] Initializing http server...");
+        httpserver = new HTTPServer(baseport, oauth);
+        httpserver.start();
+
+        com.gmt2001.Console.out.println("[INIT] Initializing websocket server...");
+        eventsocketserver = new EventWebSocketServer(baseport + 1);
+        EventBus.instance().register(eventsocketserver);
 
         if (interactive)
         {
+            com.gmt2001.Console.out.println("[INIT] Initializing console input...");
             cil = new ConsoleInputListener();
             cil.start();
         }
 
+        com.gmt2001.Console.out.println("[INIT] Initializing event bus...");
         EventBus.instance().register(this);
         EventBus.instance().register(ScriptEventManager.instance());
 
+        com.gmt2001.Console.out.println("[INIT] Loading datastore parameters...");
         dataStoreObj.LoadConfig(datastoreconfig);
 
+        com.gmt2001.Console.out.println("[INIT] Initializing global script scope...");
         Script.global.defineProperty("inidb", dataStoreObj, 0);
         Script.global.defineProperty("tempdb", TempStore.instance(), 0);
         Script.global.defineProperty("username", UsernameCache.instance(), 0);
@@ -340,12 +306,7 @@ public class PhantomBot implements Listener
         Script.global.defineProperty("channelName", channelName, 0);
         Script.global.defineProperty("channels", channels, 0);
         Script.global.defineProperty("ownerName", ownerName, 0);
-        Script.global.defineProperty("channelStatus", channelStatus, 0);
-        Script.global.defineProperty("musicplayer", musicsocketserver, 0);
         Script.global.defineProperty("random", rng, 0);
-        Script.global.defineProperty("youtube", YouTubeAPIv3.instance(), 0);
-        Script.global.defineProperty("pollResults", pollResults, 0);
-        Script.global.defineProperty("pollVoters", voters, 0);
         Script.global.defineProperty("connmgr", connectionManager, 0);
         Script.global.defineProperty("hostname", hostname, 0);
 
@@ -362,6 +323,7 @@ public class PhantomBot implements Listener
 
         try
         {
+            com.gmt2001.Console.out.println("[INIT] Starting init script...");
             ScriptManager.loadScript(new File("./scripts/init.js"));
         } catch (IOException ex)
         {
@@ -377,18 +339,9 @@ public class PhantomBot implements Listener
         com.gmt2001.Console.out.println("[SHUTDOWN] Stopping event & message dispatching...");
         exiting = true;
 
-        if (webenabled)
-        {
-            com.gmt2001.Console.out.println("[SHUTDOWN] Terminating web server...");
-            httpserver.dispose();
-            eventsocketserver.dispose();
-        }
-
-        if (musicenabled)
-        {
-            com.gmt2001.Console.out.println("[SHUTDOWN] Terminating music server...");
-            musicsocketserver.dispose();
-        }
+        com.gmt2001.Console.out.println("[SHUTDOWN] Terminating web and websocket servers...");
+        httpserver.dispose();
+        eventsocketserver.dispose();
 
         com.gmt2001.Console.out.print("[SHUTDOWN] Waiting for running scripts to finish...");
         try
@@ -436,6 +389,7 @@ public class PhantomBot implements Listener
     {
         if (event.getSession().equals(this.session))
         {
+            com.gmt2001.Console.out.println("[IRC] Connection established, requesting ircv3 capability activation...");
             this.session.sayRaw("CAP REQ :twitch.tv/tags");
             this.session.sayRaw("CAP REQ :twitch.tv/commands");
             this.session.sayRaw("CAP REQ :twitch.tv/membership");
@@ -446,36 +400,31 @@ public class PhantomBot implements Listener
 
                 for (String ch : c)
                 {
+                    com.gmt2001.Console.out.println("[IRC] Requesting join on channel #" + ch + "...");
                     this.session.join("#" + ch);
                 }
             } else
             {
+                com.gmt2001.Console.out.println("[IRC] Requesting join on channel #" + channelName.toLowerCase() + "...");
                 this.session.join("#" + channelName.toLowerCase());
             }
-        } else
-        {
-            tgcSession.sayRaw("CAP REQ :twitch.tv/tags");
-            tgcSession.sayRaw("CAP REQ :twitch.tv/commands");
-            tgcSession.sayRaw("CAP REQ :twitch.tv/membership");
         }
-
-        //com.gmt2001.Console.out.println("Connected to server\nJoining channel #" + channelName.toLowerCase());
     }
 
     @Subscribe
     public void onIRCJoinComplete(IrcJoinCompleteEvent event)
     {
-        this.channel = event.getChannel();
+        channels.put(event.getChannel().getName(), event.getChannel());
 
-        this.channels.put(this.channel.getName(), this.channel);
+        com.gmt2001.Console.out.println("[IRC] Joined channel " + event.getChannel() + ". Requesting mod list...");
 
-        //com.gmt2001.Console.out.println("Joined channel: " + event.getChannel().getName());
-        session.sayChannel(this.channel, ".mods");
+        session.sayChannel(event.getChannel(), ".mods");
 
-        this.followersCache = FollowersCache.instance(this.channel.getName().toLowerCase());
-        this.hostCache = ChannelHostCache.instance(this.channel.getName().toLowerCase());
-        this.subscribersCache = SubscribersCache.instance(this.channel.getName().toLowerCase());
-        //this.channelUsersCache = ChannelUsersCache.instance(this.channel.getName().toLowerCase());
+        com.gmt2001.Console.out.println("[IRC] Initializing caches for channel " + event.getChannel() + "...");
+        this.followersCache = FollowersCache.instance(event.getChannel().getName().toLowerCase());
+        this.hostCache = ChannelHostCache.instance(event.getChannel().getName().toLowerCase());
+        this.subscribersCache = SubscribersCache.instance(event.getChannel().getName().toLowerCase());
+        //this.channelUsersCache = ChannelUsersCache.instance(event.getChannel().getName().toLowerCase());
     }
 
     @Subscribe
@@ -491,16 +440,12 @@ public class PhantomBot implements Listener
 
                 for (String spl1 : spl)
                 {
-                    if (spl1.equalsIgnoreCase(this.username))
+                    if (spl1.equalsIgnoreCase(username))
                     {
-                        channel.setAllowSendMessages(true);
+                        channels.get(event.getChannel().getName()).setAllowSendMessages(true);
                     }
                 }
             }
-        }
-        if (!event.getSender().equalsIgnoreCase("jtv") && !event.getSender().equalsIgnoreCase("twitchnotify"))
-        {
-            com.gmt2001.Console.out.println("PMSG: " + event.getSender() + ": " + event.getMessage());
         }
     }
 
@@ -526,9 +471,9 @@ public class PhantomBot implements Listener
 
                 for (String spl1 : spl)
                 {
-                    if (spl1.equalsIgnoreCase(this.username))
+                    if (spl1.equalsIgnoreCase(username))
                     {
-                        channel.setAllowSendMessages(true);
+                        channels.get(event.getChannel().getName()).setAllowSendMessages(true);
                     }
                 }
             }
@@ -539,14 +484,14 @@ public class PhantomBot implements Listener
     public void onIRCChannelUserMode(IrcChannelUserModeEvent event)
     {
         if (event.getUser().equalsIgnoreCase(username) && event.getMode().equalsIgnoreCase("o")
-                && this.channel != null && event.getChannel().getName().equalsIgnoreCase(channel.getName()))
+                && channels.containsKey(event.getChannel().getName()))
         {
             if (!event.getAdd())
             {
-                session.sayChannel(this.channel, ".mods");
+                session.sayChannel(event.getChannel(), ".mods");
             }
 
-            channel.setAllowSendMessages(event.getAdd());
+            channels.get(event.getChannel().getName()).setAllowSendMessages(event.getAdd());
         }
     }
 
@@ -613,56 +558,6 @@ public class PhantomBot implements Listener
             changed = true;
         }
 
-        if (message.equals("youtubekey"))
-        {
-            com.gmt2001.Console.out.print("Please enter a new YouTube API key: ");
-            String newyoutubekey = System.console().readLine().trim();
-
-            YouTubeAPIv3.instance().SetAPIKey(newyoutubekey);
-            youtubekey = newyoutubekey;
-
-            changed = true;
-        }
-
-        if (message.equals("webenable"))
-        {
-            com.gmt2001.Console.out.print("Please note that the music server will also be disabled if the web server is disabled. The bot will require a restart for this to take effect. Type true or false to enable/disable web server: ");
-            String newwebenable = System.console().readLine().trim();
-            webenable = newwebenable;
-            changed = true;
-
-            if (webenable.equalsIgnoreCase("1") || webenable.equalsIgnoreCase("true"))
-            {
-                webenable = "true";
-            } else
-            {
-                webenable = "false";
-            }
-        }
-
-        if (message.equals("musicenable"))
-        {
-            if (webenable.equalsIgnoreCase("false"))
-            {
-                com.gmt2001.Console.out.println("Web server must be enabled first. ");
-            }
-            if (webenable.equalsIgnoreCase("true"))
-            {
-                com.gmt2001.Console.out.print("The bot will require a restart for this to take effect. Please type true or false to enable/disable music server: ");
-                String newmusicenable = System.console().readLine().trim();
-                musicenable = newmusicenable;
-                changed = true;
-            }
-
-            if (musicenable.equalsIgnoreCase("1") || musicenable.equalsIgnoreCase("true"))
-            {
-                musicenable = "true";
-            } else
-            {
-                musicenable = "false";
-            }
-        }
-
         if (changed)
         {
             try
@@ -672,29 +567,17 @@ public class PhantomBot implements Listener
                 data += "oauth=" + oauth + "\r\n";
                 data += "apioauth=" + apioauth + "\r\n";
                 data += "clientid=" + clientid + "\r\n";
-                data += "channel=" + channel.getName().replace("#", "") + "\r\n";
+                data += "channel=" + channelName.replace("#", "") + "\r\n";
                 data += "owner=" + ownerName + "\r\n";
                 data += "baseport=" + baseport + "\r\n";
                 data += "hostname=" + hostname + "\r\n";
                 data += "port=" + port + "\r\n";
                 data += "msglimit30=" + msglimit30 + "\r\n";
-                data += "datastore=" + datastore + "\r\n";
-                data += "youtubekey=" + youtubekey + "\r\n";
-                data += "webenable=" + webenable + "\r\n";
-                data += "musicenable=" + musicenable;
+                data += "datastore=" + datastore;
 
                 Files.write(Paths.get("./botlogin.txt"), data.getBytes(StandardCharsets.UTF_8),
                         StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
-
-                //Commented out since you need to restart the bot for port changes anyway
-                /*
-                 * if(webenabled) { httpserver.dispose(); httpserver = new
-                 * HTTPServer(baseport); httpserver.start(); } if(musicenabled)
-                 * { if(webenabled) { musicsocketserver.dispose();
-                 * musicsocketserver = new MusicWebSocketServer(baseport + 1); }
-                 * }
-                 */
-                com.gmt2001.Console.out.println("Changes have been saved. For web and music server settings to take effect you must restart the bot.");
+                com.gmt2001.Console.out.println("Changes have been saved");
             } catch (IOException ex)
             {
                 com.gmt2001.Console.err.printStackTrace(ex);
@@ -783,7 +666,6 @@ public class PhantomBot implements Listener
             }
         }
 
-        //Don't change this to postAsync. It cannot be processed in async or commands will be delayed
         EventBus.instance().post(new CommandEvent(sender, command, arguments));
     }
 
@@ -877,6 +759,7 @@ public class PhantomBot implements Listener
 
             File f = new File("./inistore");
             f.delete();
+            f.deleteOnExit();
             com.gmt2001.Console.out.println("done");
         }
     }
@@ -895,9 +778,6 @@ public class PhantomBot implements Listener
         double msglimit30 = 0;
         String datastore = "";
         String datastoreconfig = "";
-        String youtubekey = "";
-        String webenable = "";
-        String musicenable = "";
 
         boolean changed = false;
 
@@ -956,18 +836,6 @@ public class PhantomBot implements Listener
                     {
                         datastore = line.substring(10);
                     }
-                    if (line.startsWith("youtubekey=") && line.length() > 12)
-                    {
-                        youtubekey = line.substring(11);
-                    }
-                    if (line.startsWith("webenable=") && line.length() > 11)
-                    {
-                        webenable = line.substring(10);
-                    }
-                    if (line.startsWith("musicenable=") && line.length() > 13)
-                    {
-                        musicenable = line.substring(12);
-                    }
                 }
             }
         } catch (IOException ex)
@@ -1023,9 +891,6 @@ public class PhantomBot implements Listener
                     com.gmt2001.Console.out.println("port='" + port + "'");
                     com.gmt2001.Console.out.println("msglimit30='" + msglimit30 + "'");
                     com.gmt2001.Console.out.println("datastore='" + datastore + "'");
-                    com.gmt2001.Console.out.println("youtubekey='" + youtubekey + "'");
-                    com.gmt2001.Console.out.println("webenable='" + webenable + "'");
-                    com.gmt2001.Console.out.println("musicenable='" + musicenable + "'");
                 }
                 if (arg.equalsIgnoreCase("debugon"))
                 {
@@ -1131,46 +996,6 @@ public class PhantomBot implements Listener
                 {
                     datastoreconfig = arg.substring(16);
                 }
-                if (arg.toLowerCase().startsWith("youtubekey=") && arg.length() > 12)
-                {
-                    if (!youtubekey.equals(arg.substring(11)))
-                    {
-                        youtubekey = arg.substring(11);
-                        changed = true;
-                    }
-                }
-                if (arg.toLowerCase().startsWith("webenable=") && arg.length() > 11)
-                {
-                    if (!webenable.equals(arg.substring(10)))
-                    {
-                        webenable = arg.substring(10);
-                        changed = true;
-
-                        if (webenable.equalsIgnoreCase("1") || webenable.equalsIgnoreCase("true"))
-                        {
-                            webenable = "true";
-                        } else
-                        {
-                            webenable = "false";
-                        }
-                    }
-                }
-                if (arg.toLowerCase().startsWith("musicenable=") && arg.length() > 13)
-                {
-                    if (!musicenable.equals(arg.substring(12)))
-                    {
-                        musicenable = arg.substring(12);
-                        changed = true;
-
-                        if (musicenable.equalsIgnoreCase("1") || musicenable.equalsIgnoreCase("true"))
-                        {
-                            musicenable = "true";
-                        } else
-                        {
-                            musicenable = "false";
-                        }
-                    }
-                }
                 if (arg.equalsIgnoreCase("help") || arg.equalsIgnoreCase("--help") || arg.equalsIgnoreCase("-h") || arg.equalsIgnoreCase("-?"))
                 {
                     com.gmt2001.Console.out.println("Usage: java -Dfile.encoding=UTF-8 -jar PhantomBot.jar [printlogin] [user=<bot username>] "
@@ -1178,8 +1003,7 @@ public class PhantomBot implements Listener
                             + "[owner=<bot owner username>] [baseport=<bot webserver port, music server will be +1>] [hostname=<custom irc server>] "
                             + "[port=<custom irc port>] [msglimit30=<message limit per 30 seconds>] "
                             + "[datastore=<DataStore type, for a list, run java -jar PhantomBot.jar storetypes>] "
-                            + "[datastoreconfig=<Optional DataStore config option, different for each DataStore type>] "
-                            + "[youtubekey=<youtube api key>] [webenable=<true | false>] [musicenable=<true | false>]");
+                            + "[datastoreconfig=<Optional DataStore config option, different for each DataStore type>]");
                     return;
                 }
                 if (arg.equalsIgnoreCase("storetypes"))
@@ -1205,15 +1029,12 @@ public class PhantomBot implements Listener
             data += "hostname=" + hostname + "\r\n";
             data += "port=" + port + "\r\n";
             data += "msglimit30=" + msglimit30 + "\r\n";
-            data += "datastore=" + datastore + "\r\n";
-            data += "youtubekey=" + youtubekey + "\r\n";
-            data += "webenable=" + webenable + "\r\n";
-            data += "musicenable=" + musicenable;
+            data += "datastore=" + datastore;
 
             Files.write(Paths.get("./botlogin.txt"), data.getBytes(StandardCharsets.UTF_8),
                     StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
         }
 
-        PhantomBot.instance = new PhantomBot(user, oauth, apioauth, clientid, channel, owner, baseport, hostname, port, msglimit30, datastore, datastoreconfig, youtubekey, webenable, musicenable);
+        PhantomBot.instance = new PhantomBot(user, oauth, apioauth, clientid, channel, owner, baseport, hostname, port, msglimit30, datastore, datastoreconfig);
     }
 }

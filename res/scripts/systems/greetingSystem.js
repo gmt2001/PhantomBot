@@ -27,7 +27,7 @@ $.on("command", function (event) {
         args = argsString.split(" ");
     }
 
-    if(command.equalsIgnoreCase("greet") || command.equalsIgnoreCase("greeting")) {
+    if (command.equalsIgnoreCase("greet") || command.equalsIgnoreCase("greeting")) {
         if (args.length >= 1) {
             var action = args[0];
 
@@ -192,15 +192,15 @@ $.on("command", function (event) {
                 $.say($.getWhisperString(sender) + greet.replace("(name)", username));
             }
         }
-    }    
+    }
 });
 
-$.on('ircChannelJoin', function(event) {
+$.on('ircChannelJoin', function (event) {
     var sender = event.getUser().toLowerCase();
     var username = $.username.resolve(sender);
 
     $.inidb.set("visited", sender, "visited");
-    
+
     if ($.inidb.get("greeting", sender + "_enabled") == "true") {
         var greet = $.inidb.get("greeting", sender);
 
@@ -210,11 +210,11 @@ $.on('ircChannelJoin', function(event) {
             $.say(greet.replace("(name)", username));
         }
     } else if ($.inidb.get("greeting", "autogreet") == "true") {
-        $.say($.greetGlobal.replace("(name)", username)); 
+        $.say($.greetGlobal.replace("(name)", username));
     }
 });
 
-setTimeout(function(){ 
+setTimeout(function () {
     if ($.moduleEnabled('./systems/greetingSystem.js')) {
         $.registerChatCommand("./systems/greetingSystem.js", "greet");
         $.registerChatCommand("./systems/greetingSystem.js", "greet toggle");

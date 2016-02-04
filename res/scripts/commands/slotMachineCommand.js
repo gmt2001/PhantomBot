@@ -1,4 +1,4 @@
- var arrSlotLimiter = new Array();
+var arrSlotLimiter = new Array();
 $var.lastSlotWin = "";
 $var.lastSlotLoss = "";
 
@@ -34,7 +34,7 @@ if ($.slotCost === undefined || $.slotCost === null || isNaN($.slotCost) || $.sl
     $.slotCost = 3; //To be integrated
 }
 
-if ($.slotCMessages === undefined || $.slotCMessages === null || isNaN($.slotCMessages) || $.slotCMessages < 0 || $.slotCMessages === true || $.slotCMessages === false ) {
+if ($.slotCMessages === undefined || $.slotCMessages === null || isNaN($.slotCMessages) || $.slotCMessages < 0 || $.slotCMessages === true || $.slotCMessages === false) {
     $.slotCMessages = 1;
 }
 
@@ -150,7 +150,7 @@ $.on('command', function (event) {
                 arrSlotLimiter.push(new Array(username));
             }
         }
-        
+
         if (args.length === 0 && $.moduleEnabled("./systems/pointSystem.js")) {
             var b1 = $.randRange(1, 1000);
             var b2 = $.randRange(1, 1000);
@@ -225,14 +225,14 @@ $.on('command', function (event) {
             var lost = new Array(0); //Add loss messages.
             lost.push("Better luck next time!");
             lost.push("I understand, slot machines are hard for you.");
-            lost.push("Dreamin', don't give it up " + sender );
+            lost.push("Dreamin', don't give it up " + sender);
             lost.push("This is sad.");
             lost.push("Can you like.. win? please?");
             lost.push("You're not doing too good.");
             lost.push("Don't looooose your waaaaaaay!");
             lost.push("You just weren't good enough.");
             lost.push("Will " + username + " finally win? Find out on the next episode of DragonBall Z!");
-            lost.push( sender + " has lost something great today!");
+            lost.push(sender + " has lost something great today!");
             lost.push("Perhaps if you trained in the mountains in solitude, you could learn the art to winning.");
             lost.push("Believe in the heart of the cards!");
             lost.push("Believe in me who believes in you!");
@@ -263,38 +263,38 @@ $.on('command', function (event) {
                     s = $.randElement(win);
                 } while (s.equalsIgnoreCase($var.lastRandomWin) && win.length > 1);
                 if (symbol1 == slotEmote1) {
-                    $.say(symbol1  + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + username + " won " + slotEmoteReward1 * $.slotBonus + " " + $.pointNameMultiple + "!" + " " + s);
+                    $.say(symbol1 + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + username + " won " + slotEmoteReward1 * $.slotBonus + " " + $.pointNameMultiple + "!" + " " + s);
                     $.inidb.incr('points', sender, (slotEmoteReward1) * $.slotBonus);
                 }
                 if (symbol1 == slotEmote2) {
-                    $.say(symbol1  + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + username + " won " + slotEmoteReward2 * $.slotBonus + " " + $.pointNameMultiple + "!" + " " + s);
+                    $.say(symbol1 + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + username + " won " + slotEmoteReward2 * $.slotBonus + " " + $.pointNameMultiple + "!" + " " + s);
                     $.inidb.incr('points', sender, (slotEmoteReward2) * $.slotBonus);
                 }
                 if (symbol1 == slotEmote3) {
-                    $.say(symbol1  + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + " won " + slotEmoteReward3 * $.slotBonus + " " + $.pointNameMultiple + "!" + " " + s);
+                    $.say(symbol1 + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + " won " + slotEmoteReward3 * $.slotBonus + " " + $.pointNameMultiple + "!" + " " + s);
                     $.inidb.incr('points', sender, (slotEmoteReward3) * $.slotBonus);
                 }
                 if (symbol1 == slotEmote4) {
-                    $.say(symbol1  + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + username + " won " + slotEmoteReward4 * $.slotBonus + " " + $.pointNameMultiple + "!" + " " + s);
+                    $.say(symbol1 + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + username + " won " + slotEmoteReward4 * $.slotBonus + " " + $.pointNameMultiple + "!" + " " + s);
                     $.inidb.incr('points', sender, (slotEmoteReward4) * $.slotBonus);
                 }
                 if (symbol1 == slotEmote5) {
-                    $.say(symbol1  + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + username + " won " + slotEmoteReward5 * $.slotBonus + " " + $.pointNameMultiple + "!" + " " + s);
+                    $.say(symbol1 + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + username + " won " + slotEmoteReward5 * $.slotBonus + " " + $.pointNameMultiple + "!" + " " + s);
                     $.inidb.incr('points', sender, (slotEmoteReward5) * $.slotBonus);
                 }
                 if (symbol1 == slotEmote6) {
-                    $.say(symbol1  + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + username + " won " + slotEmoteReward6 * $.slotBonus + " " + $.pointNameMultiple + "!" + " " + s);
+                    $.say(symbol1 + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + username + " won " + slotEmoteReward6 * $.slotBonus + " " + $.pointNameMultiple + "!" + " " + s);
                     $.inidb.incr('points', sender, (slotEmoteReward6) * $.slotBonus);
                 }
                 if (symbol1 == slotEmote7) {
-                    $.say(symbol1  + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + "JACKPOT! " + username + " won " + slotJackpot  * $.slotBonus + " " + $.pointNameMultiple + "!" + " " + " points!");
+                    $.say(symbol1 + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + "JACKPOT! " + username + " won " + slotJackpot * $.slotBonus + " " + $.pointNameMultiple + "!" + " " + " points!");
                     $.inidb.incr('points', sender, (slotJackpot) * $.slotBonus);
                 }
-            } else if(symbol1 == slotEmote7 || symbol2 == slotEmote7 || symbol3 == slotEmote7) {
+            } else if (symbol1 == slotEmote7 || symbol2 == slotEmote7 || symbol3 == slotEmote7) {
                 do {
                     s = $.randElement(win);
                 } while (s.equalsIgnoreCase($var.lastRandomWin) && win.length > 1);
-                $.say(symbol1  + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + username + " saw a " + slotEmote7 + "! Here's " + slotSeeingEmoteReward7 * $.slotBonus + " " + $.pointNameMultiple + "!" + " " + s);
+                $.say(symbol1 + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + username + " saw a " + slotEmote7 + "! Here's " + slotSeeingEmoteReward7 * $.slotBonus + " " + $.pointNameMultiple + "!" + " " + s);
                 $.inidb.incr('points', sender, (slotSeeingEmoteReward7) * $.slotBonus);
                 if ((symbol1 == symbol2 && symbol1 == slotEmote7 && slotHalfRewards == 1) || (symbol1 == symbol3 && symbol1 == slotEmote7 && slotHalfRewards == 1) || (symbol3 == symbol2 && symbol3 == slotEmote7 && slotHalfRewards == 1)) {
                     $.say(symbol1 + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + username + " kind of won! Here's  " + slotDoubleEmoteReward7 * $.slotBonus + " " + $.pointNameMultiple + "!" + " " + s);
@@ -304,50 +304,50 @@ $.on('command', function (event) {
                 do {
                     s = $.randElement(win);
                 } while (s.equalsIgnoreCase($var.lastRandomWin) && win.length > 1);
-                $.say(symbol1  + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + username + " kind of won! Here's " + slotDoubleEmoteReward7 * $.slotBonus + " " + $.pointNameMultiple + "!" + " " + s);
+                $.say(symbol1 + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + username + " kind of won! Here's " + slotDoubleEmoteReward7 * $.slotBonus + " " + $.pointNameMultiple + "!" + " " + s);
                 $.inidb.incr('points', sender, (slotDoubleEmoteReward7) * $.slotBonus);
-                if(symbol1 == slotEmote7 || symbol2 == slotEmote7 || symbol3 == slotEmote7) {
-                    $.say(symbol1  + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + username + " saw a " + slotEmote7 + "! Here's " + slotSeeingEmoteReward7 * $.slotBonus + " " + $.pointNameMultiple + "!" + " " + s);
+                if (symbol1 == slotEmote7 || symbol2 == slotEmote7 || symbol3 == slotEmote7) {
+                    $.say(symbol1 + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + username + " saw a " + slotEmote7 + "! Here's " + slotSeeingEmoteReward7 * $.slotBonus + " " + $.pointNameMultiple + "!" + " " + s);
                     $.inidb.incr('points', sender, (slotSeeingEmoteReward7) * $.slotBonus);
                 }
             } else if ((symbol1 == symbol2 && symbol1 == slotEmote6 && slotHalfRewards == 1) || (symbol1 == symbol3 && symbol1 == slotEmote6 && slotHalfRewards == 1) || (symbol3 == symbol2 && symbol3 == slotEmote6 && slotHalfRewards == 1)) {
                 do {
                     s = $.randElement(win);
                 } while (s.equalsIgnoreCase($var.lastRandomWin) && win.length > 1);
-                $.say(symbol1  + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + username + " kind of won! Here's " + slotDoubleEmoteReward6 * $.slotBonus + " " + $.pointNameMultiple + "!" + " " + s);
+                $.say(symbol1 + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + username + " kind of won! Here's " + slotDoubleEmoteReward6 * $.slotBonus + " " + $.pointNameMultiple + "!" + " " + s);
                 $.inidb.incr('points', sender, (slotDoubleEmoteReward6) * $.slotBonus);
-                if(symbol1 == slotEmote7 || symbol2 == slotEmote7 || symbol3 == slotEmote7) {
-                    $.say(symbol1  + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + username + " saw a " + slotEmote7 + "! Here's " + slotSeeingEmoteReward7 * $.slotBonus + " " + $.pointNameMultiple + "!" + " " + s);
+                if (symbol1 == slotEmote7 || symbol2 == slotEmote7 || symbol3 == slotEmote7) {
+                    $.say(symbol1 + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + username + " saw a " + slotEmote7 + "! Here's " + slotSeeingEmoteReward7 * $.slotBonus + " " + $.pointNameMultiple + "!" + " " + s);
                     $.inidb.incr('points', sender, (slotSeeingEmoteReward7) * $.slotBonus);
                 }
             } else if ((symbol1 == symbol2 && symbol1 == slotEmote3 && slotHalfRewards == 1) || (symbol1 == symbol3 && symbol1 == slotEmote3 && slotHalfRewards == 1) || (symbol3 == symbol2 && symbol3 == slotEmote3 && slotHalfRewards == 1)) {
                 do {
                     s = $.randElement(win);
                 } while (s.equalsIgnoreCase($var.lastRandomWin) && win.length > 1);
-                $.say(symbol1  + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + username + " kind of won! Here's " + slotDoubleEmoteReward5 * $.slotBonus + " " + $.pointNameMultiple + "!" + " " + s);
+                $.say(symbol1 + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + username + " kind of won! Here's " + slotDoubleEmoteReward5 * $.slotBonus + " " + $.pointNameMultiple + "!" + " " + s);
                 $.inidb.incr('points', sender, (slotDoubleEmoteReward5) * $.slotBonus);
-                if(symbol1 == slotEmote7 || symbol2 == slotEmote7 || symbol3 == slotEmote7) {
-                    $.say(symbol1  + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + username + " saw a " + slotEmote7 + "! Here's " + slotSeeingEmoteReward7 * $.slotBonus + " " + $.pointNameMultiple + "!" + " " + s);
+                if (symbol1 == slotEmote7 || symbol2 == slotEmote7 || symbol3 == slotEmote7) {
+                    $.say(symbol1 + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + username + " saw a " + slotEmote7 + "! Here's " + slotSeeingEmoteReward7 * $.slotBonus + " " + $.pointNameMultiple + "!" + " " + s);
                     $.inidb.incr('points', sender, (slotSeeingEmoteReward7) * $.slotBonus);
                 }
             } else if ((symbol1 == symbol2 && symbol1 == slotEmote4 && slotHalfRewards == 1) || (symbol1 == symbol3 && symbol1 == slotEmote4 && slotHalfRewards == 1) || (symbol3 == symbol2 && symbol3 == slotEmote4 && slotHalfRewards == 1)) {
                 do {
                     s = $.randElement(win);
                 } while (s.equalsIgnoreCase($var.lastRandomWin) && win.length > 1);
-                $.say(symbol1  + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + username + " kind of won! Here's " + slotDoubleEmoteReward4 * $.slotBonus + " " + $.pointNameMultiple + "!" + " " + s);
+                $.say(symbol1 + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + username + " kind of won! Here's " + slotDoubleEmoteReward4 * $.slotBonus + " " + $.pointNameMultiple + "!" + " " + s);
                 $.inidb.incr('points', sender, (slotDoubleEmoteReward4) * $.slotBonus);
-                if(symbol1 == slotEmote7 || symbol2 == slotEmote7 || symbol3 == slotEmote7) {
-                    $.say(symbol1  + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + username + " saw a " + slotEmote7 + "! Here's " + slotSeeingEmoteReward7 * $.slotBonus + " " + $.pointNameMultiple + "!" + " " + s);
+                if (symbol1 == slotEmote7 || symbol2 == slotEmote7 || symbol3 == slotEmote7) {
+                    $.say(symbol1 + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + username + " saw a " + slotEmote7 + "! Here's " + slotSeeingEmoteReward7 * $.slotBonus + " " + $.pointNameMultiple + "!" + " " + s);
                     $.inidb.incr('points', sender, (slotSeeingEmoteReward7) * $.slotBonus);
                 }
             } else if ((symbol1 == symbol2 && symbol1 == slotEmote5 && slotHalfRewards == 1) || (symbol1 == symbol3 && symbol1 == slotEmote5 && slotHalfRewards == 1) || (symbol3 == symbol2 && symbol3 == slotEmote5 && slotHalfRewards == 1)) {
                 do {
                     s = $.randElement(win);
                 } while (s.equalsIgnoreCase($var.lastRandomWin) && win.length > 1);
-                $.say(symbol1  + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + username + " kind of won! Here's " + slotDoubleEmoteReward3 * $.slotBonus + " " + $.pointNameMultiple + "!" + " " + s);
+                $.say(symbol1 + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + username + " kind of won! Here's " + slotDoubleEmoteReward3 * $.slotBonus + " " + $.pointNameMultiple + "!" + " " + s);
                 $.inidb.incr('points', sender, (slotDoubleEmoteReward3) * $.slotBonus);
-                if(symbol1 == slotEmote7 || symbol2 == slotEmote7 || symbol3 == slotEmote7) {
-                    $.say(symbol1  + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + username + " saw a " + slotEmote7 + "! Here's " + slotSeeingEmoteReward7 * $.slotBonus + " " + $.pointNameMultiple + "!" + " " + s);
+                if (symbol1 == slotEmote7 || symbol2 == slotEmote7 || symbol3 == slotEmote7) {
+                    $.say(symbol1 + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + username + " saw a " + slotEmote7 + "! Here's " + slotSeeingEmoteReward7 * $.slotBonus + " " + $.pointNameMultiple + "!" + " " + s);
                     $.inidb.incr('points', sender, (slotSeeingEmoteReward7) * $.slotBonus);
                 }
             } else {
@@ -355,7 +355,7 @@ $.on('command', function (event) {
                     s = $.randElement(lost);
                 } while (s.equalsIgnoreCase($var.lastRandomLost) && lost.length > 1);
 
-                $.say(symbol1  + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + " " + s);
+                $.say(symbol1 + " \u2726 " + symbol2 + " \u2726 " + symbol3 + " " + " " + s);
             }
         }
     }
@@ -400,7 +400,7 @@ $.on('command', function (event) {
                     $.say("Slot emote 2 is now: " + slotEmote2 + " and uncommon.");
                 } else if (args[1].equalsIgnoreCase("3") && args[2] != null) {
                     $.inidb.set('slotMachine', 'slotEmote3', args[2]);
-                    $.slotEmote3 = args[2]+" ";
+                    $.slotEmote3 = args[2] + " ";
                     $.say("Slot emote 3 is now: " + slotEmote3 + " and very uncommon.");
                 } else if (args[1].equalsIgnoreCase("4") && args[2] != null) {
                     $.inidb.set('slotMachine', 'slotEmote4', args[2]);
@@ -419,7 +419,7 @@ $.on('command', function (event) {
                     $.slotEmote7 = args[2];
                     $.say("Slot emote 7 is now: " + slotEmote7 + " and legendary.");
                 } else {
-                    $.say("Emote 1 is: " + slotEmote1 + " and common. 2. " + slotEmote2 + " 3. " + slotEmote3 + " 4. "+ slotEmote4 + " 5. " + slotEmote5 + " 6. " + slotEmote6 + " 7. "+ slotEmote7 + " and the rarest.");
+                    $.say("Emote 1 is: " + slotEmote1 + " and common. 2. " + slotEmote2 + " 3. " + slotEmote3 + " 4. " + slotEmote4 + " 5. " + slotEmote5 + " 6. " + slotEmote6 + " 7. " + slotEmote7 + " and the rarest.");
                 }
 
             }
@@ -463,7 +463,7 @@ $.on('command', function (event) {
 
             }
 
-            if ((action.equalsIgnoreCase("halfReward") && !argsString.isEmpty())||(action.equalsIgnoreCase("halfRewards") && !argsString.isEmpty())) {
+            if ((action.equalsIgnoreCase("halfReward") && !argsString.isEmpty()) || (action.equalsIgnoreCase("halfRewards") && !argsString.isEmpty())) {
                 if (!$.isMod(sender)) {
                     $.say($.modmsg);
                     return;
@@ -479,7 +479,7 @@ $.on('command', function (event) {
                     $.say("Slot halfrewards on!");
                 }
                 if (args[1].equalsIgnoreCase("toggle")) {
-                    if(!slotCMessages) {
+                    if (!slotCMessages) {
                         $.inidb.set('slotMachine', 'slotHalfRewards', 1);
                         $.slotCMessages = 1;
                         $.say("Slot halfrewards on!");
@@ -524,7 +524,7 @@ $.on('command', function (event) {
                     $.inidb.set('slotMachine', 'slotSeeingEmoteReward7', args[1]);
                     $.slotSeeingEmoteReward7 = args[1];
                     $.say("The reward for seeing a " + slotEmote7 + " is now: " + slotSeeingEmoteReward7);
-                }else {
+                } else {
                     $.say("The reward for seeing a " + slotEmote7 + " is: " + slotSeeingEmoteReward7);
                 }
 
@@ -546,7 +546,7 @@ $.on('command', function (event) {
             }
 
         } else if (action.equalsIgnoreCase("emotes") || action.equalsIgnoreCase("emote")) {
-            $.say("Emote 1 is: " + slotEmote1 + " and common. 2. " + slotEmote2 + " 3. " + slotEmote3 + " 4. "+ slotEmote4 + " 5. " + slotEmote5 + " 6. " + slotEmote6 + " 7. "+ slotEmote7 + " and the rarest.");
+            $.say("Emote 1 is: " + slotEmote1 + " and common. 2. " + slotEmote2 + " 3. " + slotEmote3 + " 4. " + slotEmote4 + " 5. " + slotEmote5 + " 6. " + slotEmote6 + " 7. " + slotEmote7 + " and the rarest.");
         } else if (action.equalsIgnoreCase("rewards") || action.equalsIgnoreCase("reward")) {
             $.say("The reward for emote 1 is: " + slotEmoteReward1 + " and common. [2] " + slotEmoteReward2 + " [3] " + slotEmoteReward3 + " [4] " + slotEmoteReward4 + " [5] " + slotEmoteReward5 + " [6] " + slotEmoteReward6 + " [7] " + slotJackpot + " and the rarest.");
         } else if (action.equalsIgnoreCase("halfRewards") || action.equalsIgnoreCase("halfReward")) {
@@ -574,10 +574,10 @@ $.on('command', function (event) {
         } else {
             $.say("'!slot' -- 'slot bonus <amount>' -- '!slot time <seconds>' -- '!slot emote <1-7> <New Emote>' -- !slot <emotes/rewards/halfrewards/seerewards/jackpot/bonus/time/config> '!slot reward <1-7> <New Reward>' -- '!slot CooldownMessages <On/Off>'");
         }
-            /*
-        if (action.equalsIgnoreCase("commands") && !argsString.isEmpty()) {
-            $.say("'!slot' -- 'slot bonus <amount>' -- '!slot time <seconds>' -- '!slot emote <1-7> <New Emote>' -- !slot emotes -- !slot rewards -- '!slot reward <1-7> <New Reward>'-- '!slot CooldownMessages <On/Off>'");
-        } */
+        /*
+         if (action.equalsIgnoreCase("commands") && !argsString.isEmpty()) {
+         $.say("'!slot' -- 'slot bonus <amount>' -- '!slot time <seconds>' -- '!slot emote <1-7> <New Emote>' -- !slot emotes -- !slot rewards -- '!slot reward <1-7> <New Reward>'-- '!slot CooldownMessages <On/Off>'");
+         } */
     }
 
 

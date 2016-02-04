@@ -7,27 +7,29 @@
         <script type="text/javascript">
             function checkHash() {
                 var h = location.hash;
-                
+
                 if (h.length > 0) {
                     h = h.substring(1);
-                    
+
                     var spl = h.split("&");
-                    
+
                     for (var i = 0; i < spl.length; i++) {
                         var sspl = spl[i].split("=");
-                        
+
                         if (sspl[0] == "access_token") {
                             document.getElementById("msg").innerHTML = "Your Twitch OAuth key is <br><center><b>oauth:" + sspl[1] + "</b></center><br>"
-                                + "Please update the key on the bot by typing the command <b>apioauth</b> in the console (black screen) and then, when the "
-                                + "bot asks for it, paste or type in the key and hit enter.";
-                            
+                                    + "Please update the key on the bot by typing the command <b>apioauth</b> in the console (black screen) and then, when the "
+                                    + "bot asks for it, paste or type in the key and hit enter.";
+
                             document.getElementById("connect").innerHTML = "";
                         }
                     }
                 }
             }
-            
-            setTimeout(function() { checkHash(); }, 500);
+
+            setTimeout(function () {
+                checkHash();
+            }, 500);
         </script>
     </head>
     <body>

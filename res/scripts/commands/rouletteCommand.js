@@ -3,7 +3,7 @@ if ($.roulettetimeout === undefined || $.roulettetimeout === null || isNaN($.rou
     $.roulettetimeout = 600;
 }
 
-$.on('command', function(event) {
+$.on('command', function (event) {
     var sender = event.getSender().toLowerCase();
     var username = $.username.resolve(sender);
     var command = event.getCommand();
@@ -14,9 +14,9 @@ $.on('command', function(event) {
             var d1 = $.randRange(1, 2);
             var d2 = $.randRange(1, 2);
 
-    	 	var Win = new Array();
-    	 	
-    	    Win.push($.lang.get("net.phantombot.roulettecommand-Win1", username));
+            var Win = new Array();
+
+            Win.push($.lang.get("net.phantombot.roulettecommand-Win1", username));
             Win.push($.lang.get("net.phantombot.roulettecommand-Win2", username));
             Win.push($.lang.get("net.phantombot.roulettecommand-Win3", username));
             Win.push($.lang.get("net.phantombot.roulettecommand-Win4", username));
@@ -24,19 +24,19 @@ $.on('command', function(event) {
             Win.push($.lang.get("net.phantombot.roulettecommand-Win1", username));
             Win.push($.lang.get("net.phantombot.roulettecommand-Win2", username));
             Win.push($.lang.get("net.phantombot.roulettecommand-Win3", username));
-	    Win.push($.lang.get("net.phantombot.roulettecommand-Win4", username));
-	    Win.push($.lang.get("net.phantombot.roulettecommand-Win5", username));
-	    Win.push($.lang.get("net.phantombot.roulettecommand-Win1", username));
-    	 	
-    	 	var lost = new Array();
+            Win.push($.lang.get("net.phantombot.roulettecommand-Win4", username));
+            Win.push($.lang.get("net.phantombot.roulettecommand-Win5", username));
+            Win.push($.lang.get("net.phantombot.roulettecommand-Win1", username));
 
-    	    lost.push($.lang.get("net.phantombot.roulettecommand-lost1", username));
+            var lost = new Array();
+
+            lost.push($.lang.get("net.phantombot.roulettecommand-lost1", username));
             lost.push($.lang.get("net.phantombot.roulettecommand-lost2", username));
-	    lost.push($.lang.get("net.phantombot.roulettecommand-lost3", username));
-	    lost.push($.lang.get("net.phantombot.roulettecommand-lost4", username));
-	    lost.push($.lang.get("net.phantombot.roulettecommand-lost5", username));
-	    lost.push($.lang.get("net.phantombot.roulettecommand-lost6", username));
-	    lost.push($.lang.get("net.phantombot.roulettecommand-lost7", username));
+            lost.push($.lang.get("net.phantombot.roulettecommand-lost3", username));
+            lost.push($.lang.get("net.phantombot.roulettecommand-lost4", username));
+            lost.push($.lang.get("net.phantombot.roulettecommand-lost5", username));
+            lost.push($.lang.get("net.phantombot.roulettecommand-lost6", username));
+            lost.push($.lang.get("net.phantombot.roulettecommand-lost7", username));
 
             var lostmod = new Array();
 
@@ -45,25 +45,30 @@ $.on('command', function(event) {
             lostmod.push($.lang.get("net.phantombot.roulettecommand-lostmod3", username));
             lostmod.push($.lang.get("net.phantombot.roulettecommand-lostmod4", username));
             lostmod.push($.lang.get("net.phantombot.roulettecommand-lostmod5", username));
-                 
-    	 	if (d1 == d2) {
-    	 		do {
-    	 			var s = $.randElement(Win);
-    	 		} while (s.equalsIgnoreCase($.lastRandomWin) && Win.length > 1);
-    	 		$.say(s);
-                return;	
-    	 	} else {
-    	 		do {
-    	 			var s = $.randElement(lost);  
-    	 		} while (s.equalsIgnoreCase($.lastRandomlost) && lost.length > 1);
+
+            if (d1 == d2) {
+                do {
+                    var s = $.randElement(Win);
+                } while (s.equalsIgnoreCase($.lastRandomWin) && Win.length > 1);
+                $.say(s);
+                return;
+            } else {
+                do {
+                    var s = $.randElement(lost);
+                } while (s.equalsIgnoreCase($.lastRandomlost) && lost.length > 1);
                 if (!$.isModv3(sender, event.getTags())) {
                     $.say(s);
-                    setTimeout(function() {$.say(".timeout "+ username +" "+ roulettetimeout);},2000);
-                    setTimeout(function() {$.say(".timeout "+ username +" "+ roulettetimeout);},2000);
+                    setTimeout(function () {
+                        $.say(".timeout " + username + " " + roulettetimeout);
+                    }, 2000);
+                    setTimeout(function () {
+                        $.say(".timeout " + username + " " + roulettetimeout);
+                    }, 2000);
                     return;
                 }
                 var m = $.randElement(lostmod);
-                while (m.equalsIgnoreCase($.lastRandomlostmod) && lostmod.length > 1);
+                while (m.equalsIgnoreCase($.lastRandomlostmod) && lostmod.length > 1)
+                    ;
                 $.say(m);
                 return;
             }
@@ -76,10 +81,10 @@ $.on('command', function(event) {
             return;
         }
 
-    $.inidb.set('settings', 'roulettetimeout', parseInt(args[0]));
-    $.roulettetimeout = parseInt(args[0]);
-    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.roulettecommand-timeout-time", $.roulettetimeout));
-    
+        $.inidb.set('settings', 'roulettetimeout', parseInt(args[0]));
+        $.roulettetimeout = parseInt(args[0]);
+        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.roulettecommand-timeout-time", $.roulettetimeout));
+
     }
 });
 $.registerChatCommand("./commands/rouletteCommand.js", "roulette");

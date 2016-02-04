@@ -15,7 +15,7 @@ function onYouTubeIframeAPIReady() {
             //controls: 0,
             showinfo: 0,
             showsearch: 0,
-	    autoplay: 1
+            autoplay: 1
         },
         events: {
             'onReady': onPlayerReady,
@@ -45,7 +45,7 @@ function onPlayerStateChange(event) {
     connection.send("state|" + event.data);
 }
 
-var url = window.location.host.split (":");
+var url = window.location.host.split(":");
 var addr = 'ws://' + url [0] + ':25001';
 var connection = new WebSocket(addr, []);
 
@@ -96,13 +96,15 @@ connection.onmessage = function (e) {
 
 function handleNext(d) {
     i++;
-    if (vids[i] == null) i = 0;
+    if (vids[i] == null)
+        i = 0;
     player.cueVideoById(vids[i], 0, "hd720");
 }
 
 function handlePrevious(d) {
     i--;
-    if (vids[i] == null) i = vids.length - 1;
+    if (vids[i] == null)
+        i = vids.length - 1;
     player.cueVideoById(vids[i], 0, "hd720");
 }
 

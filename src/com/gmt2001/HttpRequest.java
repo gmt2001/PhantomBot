@@ -61,7 +61,7 @@ public class HttpRequest
             URL u = new URL(url);
 
             HttpURLConnection h = (HttpURLConnection) u.openConnection();
-            
+
             for (Entry<String, String> e : headers.entrySet())
             {
                 h.addRequestProperty(e.getKey(), e.getValue());

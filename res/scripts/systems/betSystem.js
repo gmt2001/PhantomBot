@@ -23,20 +23,20 @@ $.on('command', function (event) {
 
     var bet = 0;
     var betTotal = 0;
-    
+
     if (argsString.isEmpty()) {
         args = [];
     } else {
         args = argsString.split(" ");
     }
-        
+
     if (command.equalsIgnoreCase("bet")) {
         if (!$.moduleEnabled("./systems/pointSystem.js")) {
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.points-disabled"));
             return;
         }
 
-        if (args.length >=1) {
+        if (args.length >= 1) {
             var action = args[0];
 
             if (action.equalsIgnoreCase("open") || action.equalsIgnoreCase("start")) {
@@ -92,7 +92,8 @@ $.on('command', function (event) {
                     $.say($.lang.get("net.phantombot.betsystem.start-success", $.betOptionsString, $.betLength, $.inidb.get('settings', 'pointNameMultiple')));
 
                     setTimeout(function () {
-                        if (!$.betRunning) return;
+                        if (!$.betRunning)
+                            return;
                         $.say($.lang.get("net.phantombot.betsystem.autoclose-success", $.getPointsString($.betPot)));
                     }, $.betLength * 1000);
                 }
@@ -151,7 +152,8 @@ $.on('command', function (event) {
                             betWinners += $.username.resolve(user);
                         }
                     }
-                };
+                }
+                ;
 
                 if (a < $.betMinimum) {
                     for (var user in $.betTable) {
@@ -270,8 +272,10 @@ $.on('command', function (event) {
                 var curBetOptions = $.inidb.get('bets', 'options');
                 var curBetPot = $.inidb.get('bets', 'pot');
 
-                if (isNaN(parseInt(curBetEntries))) curBetEntries = 0;
-                if (isNaN(parseInt(curBetPot))) curBetPot = 0;
+                if (isNaN(parseInt(curBetEntries)))
+                    curBetEntries = 0;
+                if (isNaN(parseInt(curBetPot)))
+                    curBetPot = 0;
 
                 var prevBetEntries = $.inidb.get('bets', 'last_entries');
                 var prevBetOptions = $.inidb.get('bets', 'last_options');
@@ -279,9 +283,12 @@ $.on('command', function (event) {
                 var prevBetWinningOption = $.inidb.get('bets', 'last_winning_option');
                 var prevBetDate = $.inidb.get('bets', 'date');
 
-                if (isNaN(parseInt(prevBetEntries))) prevBetEntries = 0;
-                if (isNaN(parseInt(prevBetPot))) prevBetPot = 0;
-                if (prevBetWinningOption == null) prevBetWinningOption = "None";
+                if (isNaN(parseInt(prevBetEntries)))
+                    prevBetEntries = 0;
+                if (isNaN(parseInt(prevBetPot)))
+                    prevBetPot = 0;
+                if (prevBetWinningOption == null)
+                    prevBetWinningOption = "None";
 
                 if ($.betRunning == 1) {
                     if (curBetEntries == 0 && curBetPot == 0) {
@@ -320,7 +327,7 @@ $.on('command', function (event) {
                     $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.entries-usage"));
                     return;
                 } else if (args[1] == null || parseInt(args[1]) <= 1 || maxBetEntrants <= maxResults) {
-                    for (i = 0; i < maxResults; i++) { 
+                    for (i = 0; i < maxResults; i++) {
                         if (arrayBetEntrants[i] != null) {
                             returnString += $.username.resolve(arrayBetEntrants[i]).trim() + ", ";
                         }
@@ -328,13 +335,13 @@ $.on('command', function (event) {
                     if (returnString == "") {
                         $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.entries-error-noresults"));
                     } else {
-                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.entries-success", 1, Math.ceil(maxBetEntrants / maxResults), returnString.slice(0,-2)));
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.entries-success", 1, Math.ceil(maxBetEntrants / maxResults), returnString.slice(0, -2)));
                     }
                     return;
                 } else if (parseInt(args[1])) {
                     var offset = (Math.round(args[1]) - 1) * maxResults;
 
-                    for (i = 0; i < maxResults; i++) { 
+                    for (i = 0; i < maxResults; i++) {
                         if (arrayBetEntrants[i + offset] != null) {
                             returnString += $.username.resolve(arrayBetEntrants[i + offset]).trim() + ", ";
                         }
@@ -342,7 +349,7 @@ $.on('command', function (event) {
                     if (returnString == "") {
                         $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.entries-error-noresults"));
                     } else {
-                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.entries-success", Math.round(args[1]), Math.ceil(maxBetEntrants / maxResults), returnString.slice(0,-2)));
+                        $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.entries-success", Math.round(args[1]), Math.ceil(maxBetEntrants / maxResults), returnString.slice(0, -2)));
                     }
                     return;
                 }
@@ -351,7 +358,8 @@ $.on('command', function (event) {
                     var betWager = parseInt(args[0]);
                     var betOption = args.slice(1).join(" ").trim().toLowerCase();
                     var userPoints = $.inidb.get('points', sender);
-                    if (isNaN(parseInt(userPoints))) userPoints = 0;
+                    if (isNaN(parseInt(userPoints)))
+                        userPoints = 0;
 
                     if (($.betStart + ($.betLength * 1000)) < System.currentTimeMillis()) {
                         $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.betsystem.status-notrunning", "Moderator"));
@@ -391,8 +399,8 @@ $.on('command', function (event) {
                     $.inidb.set('bets', 'entries', $.betEntries);
 
                     $.betTable[sender] = {
-                        amount : betWager,
-                        option : betOption
+                        amount: betWager,
+                        option: betOption
                     };
 
                     if ($.betPot < 1) {

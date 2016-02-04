@@ -535,26 +535,6 @@ $api.on($script, 'ircChannelMessage', function (event) {
     }
 });
 
-$api.on($script, 'musicPlayerConnect', function (event) {
-    $.hook.call('musicPlayerConnect', event, false);
-});
-
-$api.on($script, 'musicPlayerCurrentId', function (event) {
-    $.hook.call('musicPlayerCurrentId', event, false);
-});
-
-$api.on($script, 'musicPlayerCurrentVolume', function (event) {
-    $.hook.call('musicPlayerCurrentVolume', event, false);
-});
-
-$api.on($script, 'musicPlayerDisconnect', function (event) {
-    $.hook.call('musicPlayerDisconnect', event, false);
-});
-
-$api.on($script, 'musicPlayerState', function (event) {
-    $.hook.call('musicPlayerState', event, false);
-});
-
 $.botname = $.botName;
 $.botowner = $.ownerName;
 
@@ -640,7 +620,7 @@ $api.on(initscript, 'command', function (event) {
     if (command.equalsIgnoreCase("helpcoolcom")) {
         $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.init.coolcom-help"));
     }
-    
+
     if (command.equalsIgnoreCase("coolcomuser")) {
         if (!$.isAdmin(sender)) {
             $.say($.getWhisperString(sender) + $.adminmsg);

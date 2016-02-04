@@ -43,17 +43,17 @@ specialTldPattern += "(\\.|\\,)(\\s)*((c|\\()(o|0|\\(\\))(m|\\|\\\\/\\|)|(n|\\|/
 specialTldPattern += "(o|0|\\(\\))|r(u|\\|_\\|))";
 var lastlink = "";
 
-$.hasLinks = function(event, aggressive) {
+$.hasLinks = function (event, aggressive) {
     var message = event.getMessage();
-        
+
     if (message != null && message != undefined) {
         message = message.toLowerCase();
     } else {
         return false;
     }
-        
+
     message = $.deobfuscateLinks(message, aggressive);
-        
+
     var m1 = Pattern.compile(linkPattern).matcher(message);
     var m2 = Pattern.compile(emailPattern).matcher(message);
     var m3 = Pattern.compile(otherPattern).matcher(message);
@@ -61,7 +61,7 @@ $.hasLinks = function(event, aggressive) {
 
     if (m1.find() == true) {
         s = m1.group();
-            
+
         lastlink = s;
 
         println(">>>>Matched link on linkPattern from " + event.getSender() + ": " + s);
@@ -69,12 +69,12 @@ $.hasLinks = function(event, aggressive) {
 
         return true;
     }
-        
+
     if (m2.find() == true) {
         s = m2.group();
-            
+
         lastlink = s;
-            
+
         println(">>>>Matched link on emailPattern from " + event.getSender() + ": " + s);
         $.logLink(event.getSender(), "Matched link on emailPattern: " + s)
 
@@ -83,123 +83,123 @@ $.hasLinks = function(event, aggressive) {
 
     if (m3.find() == true) {
         s = m3.group();
-            
+
         lastlink = s;
-            
+
         println(">>>>Matched link on otherPattern from " + event.getSender() + ": " + s);
         $.logLink(event.getSender(), "Matched link on otherPattern: " + s)
 
         return true;
     }
-    
+
     return false;
 }
 
-$.getLastLink = function() {
+$.getLastLink = function () {
     return lastlink;
 }
 
-$.deobfuscateLinks = function(message, aggressive) {
+$.deobfuscateLinks = function (message, aggressive) {
     var i;
     var s1;
     var s2;
-    
+
     for (i = 0; i < $.strlen(message); i++) {
         if (message.charCodeAt(i) < 32 || message.charCodeAt(i) > 126) {
             s1 = "";
             s2 = "";
-            
+
             if (i > 0) {
                 s1 = message.substring(0, i);
             }
-            
+
             if (i < $.strlen(message)) {
                 s2 = message.substring(i + 1);
             }
-            
+
             message = s1 + " " + s2;
         }
     }
-    
+
     message = $.replaceAll(message, "\"", "");
-    
+
     message = $.replaceAll(message, "--", "(dot)");
-    
+
     message = $.replaceAll(message, "[dot]", "(dot)");
-    
+
     message = $.replaceAll(message, "<dot>", "(dot)");
-    
+
     message = $.replaceAll(message, "{dot}", "(dot)");
-    
+
     message = $.replaceAll(message, "(dot)", ".");
-    
+
     if (aggressive) {
         var ms = Pattern.compile(specialTldPattern).matcher(message);
-    
+
         if (ms.find() == true) {
             message = $.replaceAll(message, " dot ", ".");
-    
+
             message = $.replaceAll(message, ",", ".");
-    
+
             message = $.replaceAll(message, "|-|", "h");
-    
+
             message = $.replaceAll(message, "|_|", "u");
-    
+
             message = $.replaceAll(message, "\\/", "v");
-    
+
             message = $.replaceAll(message, "7", "t");
-    
+
             message = $.replaceAll(message, "8", "b");
-    
+
             message = $.replaceAll(message, "|)", "d");
-    
+
             message = $.replaceAll(message, "3", "e");
-    
+
             message = $.replaceAll(message, "1", "i");
-    
+
             message = $.replaceAll(message, "0", "o");
-    
+
             message = $.replaceAll(message, "()", "o");
-    
+
             message = $.replaceAll(message, "(", "c");
-    
+
             message = $.replaceAll(message, "5", "s");
-    
+
             message = $.replaceAll(message, "$", "s");
-    
+
             message = $.replaceAll(message, "/-\\", "a");
-    
+
             message = $.replaceAll(message, "@", "a");
-    
+
             message = $.replaceAll(message, "|\\/|", "m");
-    
+
             message = $.replaceAll(message, "|/|", "n");
-    
+
             message = $.replaceAll(message, "|\\|", "n");
-    
+
             message = $.replaceAll(message, " .", ".");
-    
+
             message = $.replaceAll(message, ". ", ".");
-    
+
             message = $.replaceAll(message, "..", ".");
         }
     }
-    
+
     return message;
 }
 
 $.getLongestRepeatedSequence = function (event) {
     var message = event.getMessage();
-    
+
     var m = Pattern.compile("(.+?)\\1+").matcher(message);
     var s1;
     var s2;
     var ret = 0;
-    
+
     while (m.find() == true) {
         s1 = m.group(0);
         s2 = m.group(1);
-        
+
         if ($.strlen(s1) > 0 && $.strlen(s2) > 0) {
             if ($.strlen(s1) > $.strlen(s2)) {
                 if (($.strlen(s1) / $.strlen(s2)) > 1) {
@@ -218,16 +218,16 @@ $.getLongestRepeatedSequence = function (event) {
 
 $.getNumberOfRepeatSequences = function (event) {
     var message = event.getMessage();
-    
+
     var m = Pattern.compile("(.+?)\\1+").matcher(message);
     var s1;
     var s2;
     var ret = 0;
-    
+
     while (m.find() == true) {
         s1 = m.group(0);
         s2 = m.group(1);
-        
+
         if ($.strlen(s1) > 0 && $.strlen(s2) > 0) {
             if ($.strlen(s1) > $.strlen(s2)) {
                 if (($.strlen(s1) / $.strlen(s2)) > 1) {
@@ -240,59 +240,59 @@ $.getNumberOfRepeatSequences = function (event) {
             }
         }
     }
-    
+
     return ret;
 }
 
-$.getLongestUnicodeGraphemeCluster = function(event) {
+$.getLongestUnicodeGraphemeCluster = function (event) {
     var message = event.getMessage();
-    
+
     var m = Pattern.compile("(?>\\P{M}\\p{M}+)+").matcher(message);
     var s1;
     var ret = 0;
-    
+
     while (m.find() == true) {
         s1 = m.group(0);
-        
+
         ret = Math.max(ret, $.strlen(s1));
     }
 
     return ret;
 }
 
-$.getNumberOfNonLetters = function(event) {
+$.getNumberOfNonLetters = function (event) {
     var message = event.getMessage();
-    
+
     var m = Pattern.compile("(\\p{InPhonetic_Extensions}|\\p{InLetterlikeSymbols}|\\p{InDingbats}|\\p{InBoxDrawing}|\\p{InBlockElements}|\\p{InGeometricShapes}|\\p{InHalfwidth_and_Fullwidth_Forms}|[!-/:-@\\[-`{-~])").matcher(message);
     var s1;
     var s2;
     var ret = 0;
-    
+
     while (m.find() == true) {
         s1 = m.group(0);
-        
+
         if ($.strlen(s1) > 0) {
             ret++;
         }
     }
-    
+
     return ret;
 }
 
-$.getLongestNonLetterSequence = function(event) {
+$.getLongestNonLetterSequence = function (event) {
     var message = event.getMessage();
-    
+
     var m = Pattern.compile("(\\p{InPhonetic_Extensions}|\\p{InLetterlikeSymbols}|\\p{InDingbats}|\\p{InBoxDrawing}|\\p{InBlockElements}|\\p{InGeometricShapes}|\\p{InHalfwidth_and_Fullwidth_Forms}|[!-/:-@\\[-`{-~])*").matcher(message);
     var s1;
     var s2;
     var ret = 0;
-    
+
     while (m.find() == true) {
         s1 = m.group(0);
-        
+
         while (m.find() == true) {
             s1 = m.group(0);
-        
+
             ret = Math.max(ret, $.strlen(s1));
         }
     }

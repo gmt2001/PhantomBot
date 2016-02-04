@@ -12,7 +12,7 @@ $.on('command', function (event) {
             $.say($.getWhisperString(sender) + $.modmsg);
             return;
         }
-        
+
         if (args.length < 2) {
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.addcom-error-usage"));
             return;
@@ -31,9 +31,9 @@ $.on('command', function (event) {
         }
 
         if (message.search(/(\(file ([^)]+)\))/g) >= 0) {
-            if (RegExp.$2.indexOf('\\') > 0 || RegExp.$2.indexOf('/') > 0 ) {
-				$.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.filetag-error"));
-			return;
+            if (RegExp.$2.indexOf('\\') > 0 || RegExp.$2.indexOf('/') > 0) {
+                $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.filetag-error"));
+                return;
             }
         }
 
@@ -120,7 +120,7 @@ $.on('command', function (event) {
             if (message.substring(0, 1) == '!') {
                 message = message.substring(1);
             }
-            
+
             if (!$.commandExists(commandString)) {
                 $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.aliascom-error-no-command"));
                 return;
@@ -205,10 +205,10 @@ $.on('command', function (event) {
             }
 
             if (message.search(/(\(file ([^)]+)\))/g) >= 0) {
-                if (RegExp.$2.indexOf('\\') > 0 || RegExp.$2.indexOf('/') > 0 ) {
-        	    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.filetag-error"));
-        	    return;
-        	}
+                if (RegExp.$2.indexOf('\\') > 0 || RegExp.$2.indexOf('/') > 0) {
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.filetag-error"));
+                    return;
+                }
             }
 
             $.inidb.set('command', commandString, message);
@@ -336,41 +336,41 @@ $.on('command', function (event) {
         }
         if (messageCommand.contains('(sender)')) {
             messageCommand = $.replaceAll(messageCommand, '(sender)', sender);
-        } 
+        }
         if (messageCommand.contains('(count)')) {
             $.inidb.incr('commandcount', command.toLowerCase(), 1);
             messageCommand = $.replaceAll(messageCommand, '(count)', $.inidb.get('commandcount', command.toLowerCase()));
-        } 
+        }
         if (messageCommand.contains('(points)')) {
             messageCommand = $.replaceAll(messageCommand, '(points)', $.getPointsString(parseInt($.inidb.get("points", sender))));
-        } 
+        }
         if (messageCommand.contains('(touser)') && args.length > 0) {
             messageCommand = $.replaceAll(messageCommand, '(touser)', $.username.resolve(args[0]));
-        } 
+        }
         if (messageCommand.contains('(random)')) {
             messageCommand = $.replaceAll(messageCommand, '(random)', $.users[$.rand($.users.length)][0]);
         }
         if (messageCommand.contains('(#)')) {
             messageCommand = $.replaceAll(messageCommand, '(#)', $.randRange(1, 100));
-        } 
+        }
         if (messageCommand.contains('(count)')) {
             messageCommand = $.replaceAll(messageCommand, '(count)', $.inidb.get('commandcount', command.toLowerCase()));
-        } 
+        }
         if (messageCommand.contains('(z_stroke)')) {
             messageCommand = $.replaceAll(messageCommand, '(z_stroke)', java.lang.Character.toString(java.lang.Character.toChars(0x01B6)[0]));
-        } 
+        }
         while (messageCommand.contains('(customapi')) {
             if (messageCommand.search(/(\(customapi ([^)]+)\))/g) >= 0) {
-            	messageCommand = $.replaceAll(messageCommand, RegExp.$1, getcustomapivalue(RegExp.$2));
+                messageCommand = $.replaceAll(messageCommand, RegExp.$1, getcustomapivalue(RegExp.$2));
             }
         }
         while (messageCommand.contains('(file')) {
             if (messageCommand.search(/(\(file ([^)]+)\))/g) >= 0) {
-            	if (RegExp.$2.indexOf('\\') > 0 || RegExp.$2.indexOf('/') > 0 ) {
-            		$.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.filetag-error"));
-            		return;
-            	}
-            	messageCommand = $.replaceAll(messageCommand, RegExp.$1, $.readFile('addons/txt/'+RegExp.$2)[0]);
+                if (RegExp.$2.indexOf('\\') > 0 || RegExp.$2.indexOf('/') > 0) {
+                    $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.filetag-error"));
+                    return;
+                }
+                messageCommand = $.replaceAll(messageCommand, RegExp.$1, $.readFile('addons/txt/' + RegExp.$2)[0]);
             }
         }
         if (messageCommand.contains('(code)')) {
@@ -390,7 +390,7 @@ $.on('command', function (event) {
             $.say($.getWhisperString(sender) + $.adminmsg);
             return;
         }
-        
+
         if (!$.inidb.exists("settings", "pricecommod") || !$.inidb.get("settings", "pricecommod").equalsIgnoreCase("true")) {
             $.inidb.set("settings", "pricecommod", "true");
             $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.addcommand.pricecommod-enable"));
@@ -486,10 +486,10 @@ $.timer.addTimer("./commands/addCommand.js", "registerAliases", false, function 
     }
 }, 2 * 1000);
 
-getcustomapivalue = function(url) {
-	var HttpResponse = Packages.com.gmt2001.HttpResponse;
-	var HttpRequest = Packages.com.gmt2001.HttpRequest;
-	var HashMap = Packages.java.util.HashMap;
-	var response = HttpRequest.getData(HttpRequest.RequestType.GET, url, "", new HashMap());
-	return response.content;
+getcustomapivalue = function (url) {
+    var HttpResponse = Packages.com.gmt2001.HttpResponse;
+    var HttpRequest = Packages.com.gmt2001.HttpRequest;
+    var HashMap = Packages.java.util.HashMap;
+    var response = HttpRequest.getData(HttpRequest.RequestType.GET, url, "", new HashMap());
+    return response.content;
 }

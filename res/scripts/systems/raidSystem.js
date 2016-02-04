@@ -18,7 +18,7 @@ $.getOrdinal = function (n) {
     }
 }
 
-$.on('command', function(event) {
+$.on('command', function (event) {
     var sender = event.getSender();
     var username = $.username.resolve(sender, event.getTags());
     var command = event.getCommand();
@@ -37,7 +37,7 @@ $.on('command', function(event) {
                 $.say($.getWhisperString(sender) + $.modmsg);
                 return;
             }
-            
+
             if (args[1] == null) {
                 $.say($.lang.get("net.phantombot.raidsystem.raid-success", args[0].toLowerCase(), ""));
                 return;
@@ -49,12 +49,12 @@ $.on('command', function(event) {
                         $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.raidsystem.raid-error-toomuch", maxSpamCount));
                         return;
                     }
-                    
+
                     for (var i = 0; i < parseInt(args[1]); i++) {
-                        if(args[2] != null) {
+                        if (args[2] != null) {
                             $.say($.lang.get("net.phantombot.raidsystem.raid-success", args[0].toLowerCase(), argsString.substring(argsString.indexOf(args[2].toString()), argsString.length())));
                         } else {
-                            $.say($.lang.get("net.phantombot.raidsystem.raid-success", args[0].toLowerCase(), ""));                                
+                            $.say($.lang.get("net.phantombot.raidsystem.raid-success", args[0].toLowerCase(), ""));
                         }
                     }
                     return;
@@ -64,11 +64,11 @@ $.on('command', function(event) {
                 }
             }
         } else {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.raidsystem.raid-usage"));       
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.raidsystem.raid-usage"));
             return;
         }
     }
-    
+
     if (command.equalsIgnoreCase("raider")) {
         if (args.length >= 1) {
             if (!$.isModv3(sender, event.getTags())) {
@@ -78,18 +78,18 @@ $.on('command', function(event) {
 
             $.inidb.incr('raiders', args[0].toLowerCase() + "_count", 1);
 
-            $.say($.lang.get("net.phantombot.raidsystem.raider-success", $.username.resolve(args[0]), getOrdinal($.inidb.get('raiders', args[0].toLowerCase()  + "_count")), args[0].toLowerCase()));  
+            $.say($.lang.get("net.phantombot.raidsystem.raider-success", $.username.resolve(args[0]), getOrdinal($.inidb.get('raiders', args[0].toLowerCase() + "_count")), args[0].toLowerCase()));
             return;
         } else {
-            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.raidsystem.raider-usage"));       
+            $.say($.getWhisperString(sender) + $.lang.get("net.phantombot.raidsystem.raider-usage"));
             return;
         }
     }
 });
 
-setTimeout(function(){ 
+setTimeout(function () {
     if ($.moduleEnabled('./systems/raidSystem.js')) {
         $.registerChatCommand("./systems/raidSystem.js", "raid", "mod");
         $.registerChatCommand("./systems/raidSystem.js", "raider", "mod");
     }
-},10*1000);
+}, 10 * 1000);

@@ -605,7 +605,7 @@ $.on('ircChannelLeave', function (event) {
 $.on('ircChannelUserMode', function (event) {
     var username = event.getUser().toLowerCase();
     $.inidb.set('visited', username, "visited");
-    
+
     if (event.getMode().equalsIgnoreCase("o")) {
         if (event.getAdd() == true) {
             if ($.array.contains($.modeOUsers, username) == false) {
@@ -651,7 +651,7 @@ $.on('ircPrivateMessage', function (event) {
                         return;
                     }
                 }
-                
+
                 $.subUsers.push(new Array(spl[1], System.currentTimeMillis() + 10000));
             }
         }

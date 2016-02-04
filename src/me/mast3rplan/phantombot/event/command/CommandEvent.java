@@ -135,6 +135,6 @@ public class CommandEvent extends Event
 
     public String toEventSocket()
     {
-    	return this.getSender() + "|" + this.getCommand() + "|" + this.getArguments() + "|" + this.getChannel();
+        return this.getSender() + "|" + this.getCommand() + "|" + this.getArguments() + "|" + this.getChannel();
     }
 }

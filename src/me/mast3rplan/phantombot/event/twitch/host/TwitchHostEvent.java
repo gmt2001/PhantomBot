@@ -57,6 +57,6 @@ public abstract class TwitchHostEvent extends TwitchEvent
 
     public String toEventSocket()
     {
-    	return this.getHoster() + "|" + this.getType();
+        return this.getHoster() + "|" + this.getType();
     }
 }
