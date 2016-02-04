@@ -42,7 +42,7 @@ public class EventWebSocketServer extends WebSocketServer implements Listener
     
     public EventWebSocketServer(int port)
     {
-		super(new InetSocketAddress(port));
+		super(new InetSocketAddress(port), 1);
 
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 

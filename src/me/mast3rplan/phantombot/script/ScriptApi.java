@@ -27,7 +27,7 @@ public class ScriptApi
 {
 
     private static final ScriptApi instance = new ScriptApi();
-    private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(8);
+    private static final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
     public static ScriptApi instance()
     {

@@ -32,7 +32,7 @@ public class Script
     @SuppressWarnings("rawtypes")
     private final List<ScriptDestroyable> destroyables = Lists.newArrayList();
     private final NativeObject vars = new NativeObject();
-    private final ScriptFileWatcher fileWatcher;
+    //private final ScriptFileWatcher fileWatcher;
     private final File file;
     private Context context;
     private boolean killed = false;
@@ -40,12 +40,12 @@ public class Script
     @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     public Script(File file)
     {
-        this.fileWatcher = new ScriptFileWatcher(this);
+        //this.fileWatcher = new ScriptFileWatcher(this);
         this.file = file;
 
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
-        new Thread(fileWatcher).start();
+        //new Thread(fileWatcher).start();
     }
 
     @SuppressWarnings("rawtypes")
