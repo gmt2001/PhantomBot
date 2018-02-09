@@ -2,7 +2,7 @@
 This repo shows the revision history of PhantomBot, starting when the bot was released to the public at large.
 
 ## The origins of PhantomBot
-The repo https://github.com/gmt2001/PhantomBot-original shows the original version of PhantomBot. By starting at
+The repo https://github.com/gmt2001/PhantomBot-Original shows the original version of PhantomBot. By starting at
 the first few commits you can see the state of the bot as it was when mast3rplan, the original developer, completed his work.
 
 From there you can see the first few changes I made to bring PhantomBot into a better working state. Note that many of the
